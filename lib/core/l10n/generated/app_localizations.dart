@@ -188,18 +188,6 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 change waiting to sync} other{{count} changes waiting to sync}}'**
   String syncPending(int count);
 
-  /// No description provided for @nextDose.
-  ///
-  /// In en, this message translates to:
-  /// **'Next dose'**
-  String get nextDose;
-
-  /// No description provided for @allDoneToday.
-  ///
-  /// In en, this message translates to:
-  /// **'All of today\'s doses are recorded.'**
-  String get allDoneToday;
-
   /// No description provided for @fromYesterday.
   ///
   /// In en, this message translates to:
@@ -476,12 +464,6 @@ abstract class AppLocalizations {
   /// **'Two phones synced through a simulated server. To simulate a dose recorded late: turn Martín\'s phone off, mark the same dose on both and turn it back on.'**
   String get demoHint;
 
-  /// No description provided for @careOf.
-  ///
-  /// In en, this message translates to:
-  /// **'Caring for {name}'**
-  String careOf(String name);
-
   /// No description provided for @yesterday.
   ///
   /// In en, this message translates to:
@@ -607,6 +589,227 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'At {time}'**
   String givenAtTime(String time);
+
+  /// No description provided for @navToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get navToday;
+
+  /// No description provided for @navMedications.
+  ///
+  /// In en, this message translates to:
+  /// **'Medications'**
+  String get navMedications;
+
+  /// No description provided for @navActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get navActivity;
+
+  /// No description provided for @durationMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String durationMinutes(int minutes);
+
+  /// No description provided for @durationHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h'**
+  String durationHours(int hours);
+
+  /// No description provided for @durationHoursMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h {minutes} min'**
+  String durationHoursMinutes(int hours, int minutes);
+
+  /// No description provided for @nextIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Next dose · in {duration}'**
+  String nextIn(String duration);
+
+  /// No description provided for @nextDueNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Next dose · due now'**
+  String get nextDueNow;
+
+  /// No description provided for @nextLate.
+  ///
+  /// In en, this message translates to:
+  /// **'Late by {duration}'**
+  String nextLate(String duration);
+
+  /// No description provided for @nextFromYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'From yesterday · late'**
+  String get nextFromYesterday;
+
+  /// No description provided for @moreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'More options'**
+  String get moreOptions;
+
+  /// No description provided for @dayDone.
+  ///
+  /// In en, this message translates to:
+  /// **'All of today\'s doses are recorded'**
+  String get dayDone;
+
+  /// No description provided for @dayProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} doses recorded today'**
+  String dayProgress(int done, int total);
+
+  /// No description provided for @medicationsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 active medication} other{{count} active medications}}'**
+  String medicationsCount(int count);
+
+  /// No description provided for @everyDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get everyDay;
+
+  /// No description provided for @minIntervalText.
+  ///
+  /// In en, this message translates to:
+  /// **'at least {duration} apart'**
+  String minIntervalText(String duration);
+
+  /// No description provided for @maxPerDayText.
+  ///
+  /// In en, this message translates to:
+  /// **'up to {count} a day'**
+  String maxPerDayText(int count);
+
+  /// No description provided for @stockNotCounted.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock not counted'**
+  String get stockNotCounted;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @activityEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded yet'**
+  String get activityEmpty;
+
+  /// No description provided for @activityCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added {medication}'**
+  String activityCreated(String name, String medication);
+
+  /// No description provided for @activityUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} edited {medication}'**
+  String activityUpdated(String name, String medication);
+
+  /// No description provided for @activityScheduleChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} changed the schedule of {medication}'**
+  String activityScheduleChanged(String name, String medication);
+
+  /// No description provided for @activityArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} archived {medication}'**
+  String activityArchived(String name, String medication);
+
+  /// No description provided for @activityGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} gave {medication}'**
+  String activityGiven(String name, String medication);
+
+  /// No description provided for @activityGivenSlot.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} gave the {time} {medication}'**
+  String activityGivenSlot(String name, String medication, String time);
+
+  /// No description provided for @activitySkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} skipped the {time} {medication}: {reason}'**
+  String activitySkipped(
+    String name,
+    String medication,
+    String time,
+    String reason,
+  );
+
+  /// No description provided for @activityUndone.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} cancelled a record of {medication}'**
+  String activityUndone(String name, String medication);
+
+  /// No description provided for @activityCounted.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} counted {medication}: {units}'**
+  String activityCounted(String name, String medication, String units);
+
+  /// No description provided for @activityRefilled.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added {units} of {medication}'**
+  String activityRefilled(String name, String medication, String units);
+
+  /// No description provided for @activityReviewed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} reviewed a dose recorded twice'**
+  String activityReviewed(String name);
+
+  /// No description provided for @unknownMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'a medication'**
+  String get unknownMedication;
+
+  /// No description provided for @givenAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'given at {time}'**
+  String givenAtLabel(String time);
+
+  /// No description provided for @caringFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Caring for'**
+  String get caringFor;
+
+  /// No description provided for @stockUnitsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{units} units'**
+  String stockUnitsCount(String units);
+
+  /// No description provided for @stockLasts.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Lasts 1 day} other{Lasts {days} days}}'**
+  String stockLasts(int days);
 }
 
 class _AppLocalizationsDelegate

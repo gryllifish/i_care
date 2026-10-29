@@ -10,18 +10,30 @@ part of 'app_router.dart';
 // ignore_for_file: type=lint, type=warning
 /// Lives in `app/` (not `core/`) because it imports every feature's screens;
 /// `core` must never depend on features.
+///
+/// `routerNeglect` keeps navigation out of the browser history: the web
+/// demo runs two phones, each with its own router, on one page, and the
+/// browser's back button must not move both at once.
 
 @ProviderFor(appRouter)
 final appRouterProvider = AppRouterProvider._();
 
 /// Lives in `app/` (not `core/`) because it imports every feature's screens;
 /// `core` must never depend on features.
+///
+/// `routerNeglect` keeps navigation out of the browser history: the web
+/// demo runs two phones, each with its own router, on one page, and the
+/// browser's back button must not move both at once.
 
 final class AppRouterProvider
     extends $FunctionalProvider<GoRouter, GoRouter, GoRouter>
     with $Provider<GoRouter> {
   /// Lives in `app/` (not `core/`) because it imports every feature's screens;
   /// `core` must never depend on features.
+  ///
+  /// `routerNeglect` keeps navigation out of the browser history: the web
+  /// demo runs two phones, each with its own router, on one page, and the
+  /// browser's back button must not move both at once.
   AppRouterProvider._()
     : super(
         from: null,
@@ -55,4 +67,4 @@ final class AppRouterProvider
   }
 }
 
-String _$appRouterHash() => r'e0101a9b614a2489caae40d8ef8b91653bd7e5ec';
+String _$appRouterHash() => r'1bab94ba445fad162feed81010b0f1d4b5ce2b4a';

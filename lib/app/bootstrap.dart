@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
@@ -29,6 +30,8 @@ Future<void> bootstrap() async {
     AppLogger.error('Uncaught error', error, stackTrace);
     return true;
   };
+
+  LicenseRegistry.addLicense(_fontLicense);
 
   await _initStorage();
   final server = SimulatedServer(
@@ -104,3 +107,10 @@ Future<Box<String>> _openBox(String name) async {
 }
 
 const _storageTimeout = Duration(seconds: 4);
+
+Stream<LicenseEntry> _fontLicense() async* {
+  final license = await rootBundle.loadString(
+    'assets/fonts/OFL-AtkinsonHyperlegibleNext.txt',
+  );
+  yield LicenseEntryWithLineBreaks(['Atkinson Hyperlegible Next'], license);
+}

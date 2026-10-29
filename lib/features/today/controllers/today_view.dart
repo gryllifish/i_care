@@ -42,6 +42,10 @@ abstract class TodayView with _$TodayView {
   const factory TodayView({
     required DateTime day,
 
+    /// Today's scheduled doses, and how many are given or skipped.
+    @Default(0) int totalToday,
+    @Default(0) int resolvedToday,
+
     /// The dose to attend to first: the earliest due or late one, else
     /// the next upcoming one; null when the day is done.
     DoseSlot? next,
@@ -78,6 +82,14 @@ TodayView buildTodayView(CareLog log, DateTime now) {
 
   return TodayView(
     day: day,
+    totalToday: slots.length,
+    resolvedToday: slots
+        .where(
+          (slot) =>
+              slot.status == DoseStatus.given ||
+              slot.status == DoseStatus.skipped,
+        )
+        .length,
     next:
         pending.firstOrNull ??
         slots.where((slot) => slot.status == DoseStatus.upcoming).firstOrNull,

@@ -29,8 +29,6 @@
       }
     }
   },
-  "nextDose": "Next dose",
-  "allDoneToday": "All of today's doses are recorded.",
   "fromYesterday": "From yesterday",
   "dayPartMorning": "Morning",
   "dayPartMidday": "Midday",
@@ -179,14 +177,6 @@
   "networkOn": "Connected",
   "networkOff": "Offline",
   "demoHint": "Two phones synced through a simulated server. To simulate a dose recorded late: turn Martín's phone off, mark the same dose on both and turn it back on.",
-  "careOf": "Caring for {name}",
-  "@careOf": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "yesterday": "Yesterday",
   "notSyncedYet": "Not synced yet",
   "conflictSlotTitle": "{medication} at {time} was recorded {count} times",
@@ -287,6 +277,254 @@
     "placeholders": {
       "time": {
         "type": "String"
+      }
+    }
+  },
+  "navToday": "Today",
+  "navMedications": "Medications",
+  "navActivity": "Activity",
+  "durationMinutes": "{minutes} min",
+  "@durationMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHours": "{hours} h",
+  "@durationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours} h {minutes} min",
+  "@durationHoursMinutes": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "nextIn": "Next dose · in {duration}",
+  "@nextIn": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "nextDueNow": "Next dose · due now",
+  "nextLate": "Late by {duration}",
+  "@nextLate": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "nextFromYesterday": "From yesterday · late",
+  "moreOptions": "More options",
+  "dayDone": "All of today's doses are recorded",
+  "dayProgress": "{done} of {total} doses recorded today",
+  "@dayProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "medicationsCount": "{count, plural, =1{1 active medication} other{{count} active medications}}",
+  "@medicationsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "everyDay": "Every day",
+  "minIntervalText": "at least {duration} apart",
+  "@minIntervalText": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "maxPerDayText": "up to {count} a day",
+  "@maxPerDayText": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stockNotCounted": "Stock not counted",
+  "today": "Today",
+  "activityEmpty": "Nothing recorded yet",
+  "activityCreated": "{name} added {medication}",
+  "@activityCreated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "activityUpdated": "{name} edited {medication}",
+  "@activityUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "activityScheduleChanged": "{name} changed the schedule of {medication}",
+  "@activityScheduleChanged": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "activityArchived": "{name} archived {medication}",
+  "@activityArchived": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "activityGiven": "{name} gave {medication}",
+  "@activityGiven": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "activityGivenSlot": "{name} gave the {time} {medication}",
+  "@activityGivenSlot": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "medication": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "activitySkipped": "{name} skipped the {time} {medication}: {reason}",
+  "@activitySkipped": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "medication": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "activityUndone": "{name} cancelled a record of {medication}",
+  "@activityUndone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "activityCounted": "{name} counted {medication}: {units}",
+  "@activityCounted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "medication": {
+        "type": "String"
+      },
+      "units": {
+        "type": "String"
+      }
+    }
+  },
+  "activityRefilled": "{name} added {units} of {medication}",
+  "@activityRefilled": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "medication": {
+        "type": "String"
+      },
+      "units": {
+        "type": "String"
+      }
+    }
+  },
+  "activityReviewed": "{name} reviewed a dose recorded twice",
+  "@activityReviewed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "unknownMedication": "a medication",
+  "givenAtLabel": "given at {time}",
+  "@givenAtLabel": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "caringFor": "Caring for",
+  "stockUnitsCount": "{units} units",
+  "stockLasts": "{days, plural, =1{Lasts 1 day} other{Lasts {days} days}}",
+  "@stockUnitsCount": {
+    "placeholders": {
+      "units": {
+        "type": "String"
+      }
+    }
+  },
+  "@stockLasts": {
+    "placeholders": {
+      "days": {
+        "type": "int"
       }
     }
   }

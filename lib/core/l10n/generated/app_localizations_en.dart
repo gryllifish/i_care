@@ -67,12 +67,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get nextDose => 'Next dose';
-
-  @override
-  String get allDoneToday => 'All of today\'s doses are recorded.';
-
-  @override
   String get fromYesterday => 'From yesterday';
 
   @override
@@ -245,11 +239,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Two phones synced through a simulated server. To simulate a dose recorded late: turn Martín\'s phone off, mark the same dose on both and turn it back on.';
 
   @override
-  String careOf(String name) {
-    return 'Caring for $name';
-  }
-
-  @override
   String get yesterday => 'Yesterday';
 
   @override
@@ -350,5 +339,176 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String givenAtTime(String time) {
     return 'At $time';
+  }
+
+  @override
+  String get navToday => 'Today';
+
+  @override
+  String get navMedications => 'Medications';
+
+  @override
+  String get navActivity => 'Activity';
+
+  @override
+  String durationMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String durationHours(int hours) {
+    return '$hours h';
+  }
+
+  @override
+  String durationHoursMinutes(int hours, int minutes) {
+    return '$hours h $minutes min';
+  }
+
+  @override
+  String nextIn(String duration) {
+    return 'Next dose · in $duration';
+  }
+
+  @override
+  String get nextDueNow => 'Next dose · due now';
+
+  @override
+  String nextLate(String duration) {
+    return 'Late by $duration';
+  }
+
+  @override
+  String get nextFromYesterday => 'From yesterday · late';
+
+  @override
+  String get moreOptions => 'More options';
+
+  @override
+  String get dayDone => 'All of today\'s doses are recorded';
+
+  @override
+  String dayProgress(int done, int total) {
+    return '$done of $total doses recorded today';
+  }
+
+  @override
+  String medicationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active medications',
+      one: '1 active medication',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get everyDay => 'Every day';
+
+  @override
+  String minIntervalText(String duration) {
+    return 'at least $duration apart';
+  }
+
+  @override
+  String maxPerDayText(int count) {
+    return 'up to $count a day';
+  }
+
+  @override
+  String get stockNotCounted => 'Stock not counted';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get activityEmpty => 'Nothing recorded yet';
+
+  @override
+  String activityCreated(String name, String medication) {
+    return '$name added $medication';
+  }
+
+  @override
+  String activityUpdated(String name, String medication) {
+    return '$name edited $medication';
+  }
+
+  @override
+  String activityScheduleChanged(String name, String medication) {
+    return '$name changed the schedule of $medication';
+  }
+
+  @override
+  String activityArchived(String name, String medication) {
+    return '$name archived $medication';
+  }
+
+  @override
+  String activityGiven(String name, String medication) {
+    return '$name gave $medication';
+  }
+
+  @override
+  String activityGivenSlot(String name, String medication, String time) {
+    return '$name gave the $time $medication';
+  }
+
+  @override
+  String activitySkipped(
+    String name,
+    String medication,
+    String time,
+    String reason,
+  ) {
+    return '$name skipped the $time $medication: $reason';
+  }
+
+  @override
+  String activityUndone(String name, String medication) {
+    return '$name cancelled a record of $medication';
+  }
+
+  @override
+  String activityCounted(String name, String medication, String units) {
+    return '$name counted $medication: $units';
+  }
+
+  @override
+  String activityRefilled(String name, String medication, String units) {
+    return '$name added $units of $medication';
+  }
+
+  @override
+  String activityReviewed(String name) {
+    return '$name reviewed a dose recorded twice';
+  }
+
+  @override
+  String get unknownMedication => 'a medication';
+
+  @override
+  String givenAtLabel(String time) {
+    return 'given at $time';
+  }
+
+  @override
+  String get caringFor => 'Caring for';
+
+  @override
+  String stockUnitsCount(String units) {
+    return '$units units';
+  }
+
+  @override
+  String stockLasts(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Lasts $days days',
+      one: 'Lasts 1 day',
+    );
+    return '$_temp0';
   }
 }

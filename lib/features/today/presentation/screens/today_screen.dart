@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_care/core/constants/app_durations.dart';
+import 'package:i_care/core/l10n/duration_text.dart';
 import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_radius.dart';
+import 'package:i_care/core/theme/app_shadows.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
+import 'package:i_care/features/care/domain/entities/stock_level.dart';
+import 'package:i_care/features/today/controllers/dose_controller.dart';
 import 'package:i_care/features/today/controllers/today_view.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_sheet.dart';
-import 'package:i_care/features/today/presentation/widgets/dose_status_style.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_tile.dart';
 import 'package:i_care/features/today/presentation/widgets/sync_banner.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
+import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
+import 'package:i_care/shared/widgets/screen_header.dart';
 
 /// Today's doses: what is next, what is late and who did what.
 class TodayScreen extends ConsumerWidget {
@@ -40,17 +45,16 @@ class TodayScreen extends ConsumerWidget {
       }
     });
 
-    return Scaffold(
-      body: SafeArea(
-        child: switch (ref.watch(todayViewProvider)) {
-          AsyncData(:final value) => _TodayContent(view: value),
-          AsyncError(:final error) => ErrorView(
-            message: context.l10n.errorMessage(error),
-            onRetry: () => ref.invalidate(careLogProvider),
-          ),
-          _ => const Center(child: CircularProgressIndicator()),
-        },
-      ),
+    return SafeArea(
+      bottom: false,
+      child: switch (ref.watch(todayViewProvider)) {
+        AsyncData(:final value) => _TodayContent(view: value),
+        AsyncError(:final error) => ErrorView(
+          message: context.l10n.errorMessage(error),
+          onRetry: () => ref.invalidate(careLogProvider),
+        ),
+        _ => const Center(child: CircularProgressIndicator()),
+      },
     );
   }
 }
@@ -97,46 +101,41 @@ class _TodayContent extends StatelessWidget {
     );
 
     return ListView(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.screenHorizontal,
-        vertical: AppSpacing.xl,
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.screenHorizontal,
+        AppSpacing.lg,
+        AppSpacing.screenHorizontal,
+        AppSpacing.xxl,
       ),
       children: [
         _Header(day: view.day),
-        const SizedBox(height: AppSpacing.md),
-        const SyncBanner(),
+        const SizedBox(height: AppSpacing.lg),
+        _DayProgress(done: view.resolvedToday, total: view.totalToday),
         for (final item in view.conflicts) ...[
-          const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.md),
           _ConflictCard(item: item, onTap: () => _openConflict(context, item)),
         ],
-        const SizedBox(height: AppSpacing.xl),
-        if (next != null)
+        if (next != null) ...[
+          const SizedBox(height: AppSpacing.lg),
           _NextDoseCard(
             slot: next,
             isFromYesterday: next.slotAt.isBefore(view.day),
-            onTap: () => open(next),
-          )
-        else
-          Text(l10n.allDoneToday, style: AppTextStyles.body),
+            onOpen: () => open(next),
+          ),
+        ],
         if (view.fromYesterday.isNotEmpty)
-          _Section(
+          _Timeline(
             title: l10n.fromYesterday,
-            children: [
-              for (final slot in view.fromYesterday)
-                DoseTile(slot: slot, onTap: () => open(slot)),
-            ],
+            slots: view.fromYesterday,
+            stock: view.stock,
+            onOpen: open,
           ),
         for (final MapEntry(key: part, value: slots) in view.byDayPart.entries)
-          _Section(
+          _Timeline(
             title: part.label(l10n),
-            children: [
-              for (final slot in slots)
-                DoseTile(
-                  slot: slot,
-                  stock: view.stock[slot.medication.id],
-                  onTap: () => open(slot),
-                ),
-            ],
+            slots: slots,
+            stock: view.stock,
+            onOpen: open,
           ),
         if (view.asNeeded.isNotEmpty)
           _Section(
@@ -153,8 +152,8 @@ class _TodayContent extends StatelessWidget {
                 ),
             ],
           ),
-        const SizedBox(height: AppSpacing.xxl),
-        Text(l10n.medicalDisclaimer, style: AppTextStyles.bodyMuted),
+        const SizedBox(height: AppSpacing.xl),
+        const _Disclaimer(),
       ],
     );
   }
@@ -169,61 +168,130 @@ extension on DayPart {
   };
 }
 
-class _Header extends ConsumerWidget {
+class _Header extends StatelessWidget {
   const _Header({required this.day});
 
   final DateTime day;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: AppSpacing.xs,
-            children: [
-              Text(l10n.todayTitle, style: AppTextStyles.headline),
-              Text(Formatters.longDay(day, locale), style: AppTextStyles.body),
-              Text(
-                '${l10n.careOf(SampleCircle.recipientName)} · '
-                '${l10n.sampleData}',
-                style: AppTextStyles.bodyMuted,
-              ),
-            ],
-          ),
-        ),
-        const _CaregiverButton(),
-      ],
+    return ScreenHeader(
+      leading: const _RecipientAvatar(),
+      overline: l10n.caringFor,
+      title: SampleCircle.recipientName,
+      subtitle: Formatters.longDay(day, locale),
+      trailing: const _TeamButton(),
+      footer: const Wrap(
+        spacing: AppSpacing.sm,
+        runSpacing: AppSpacing.sm,
+        children: [SyncBanner(), _SampleDataPill()],
+      ),
     );
   }
 }
 
-/// Shows who is recording on this phone and lets them switch.
-class _CaregiverButton extends ConsumerWidget {
-  const _CaregiverButton();
+class _RecipientAvatar extends StatelessWidget {
+  const _RecipientAvatar();
+
+  static const _size = 52.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExcludeSemantics(
+      child: CircleAvatar(
+        radius: _size / 2,
+        backgroundColor: AppColors.recipient,
+        child: Text(
+          SampleCircle.recipientName.characters.first,
+          style: AppTextStyles.headline.copyWith(color: AppColors.onAccent),
+        ),
+      ),
+    );
+  }
+}
+
+class _SampleDataPill extends StatelessWidget {
+  const _SampleDataPill();
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColors.surfaceMuted,
+        borderRadius: AppRadius.pillBorder,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.xs + AppSpacing.xxs,
+        ),
+        child: Text(
+          context.l10n.sampleData,
+          style: AppTextStyles.pill.copyWith(color: AppColors.inkMuted),
+        ),
+      ),
+    );
+  }
+}
+
+/// The circle's members as overlapping avatars, the current one first.
+/// Tapping switches who is recording on this phone.
+class _TeamButton extends ConsumerWidget {
+  const _TeamButton();
 
   static const _avatarSize = 40.0;
+  static const _overlap = 12.0;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final current = ref.watch(currentCaregiverProvider);
-    final l10n = context.l10n;
+    final members = [
+      current,
+      for (final caregiver in ref.watch(caregiversProvider))
+        if (caregiver != current) caregiver,
+    ];
+    const step = _avatarSize - _overlap;
+
     return Semantics(
-      label: '${l10n.whoAreYou} ${current.name}',
+      label: '${context.l10n.whoAreYou} ${current.name}',
       button: true,
       excludeSemantics: true,
-      child: IconButton(
-        tooltip: l10n.whoAreYou,
-        onPressed: () => showModalBottomSheet<void>(
+      child: InkWell(
+        customBorder: const StadiumBorder(),
+        onTap: () => showModalBottomSheet<void>(
           context: context,
-          showDragHandle: true,
           builder: (_) => const _CaregiverPicker(),
         ),
-        icon: CaregiverAvatar(caregiver: current, size: _avatarSize),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xs),
+          child: SizedBox(
+            width: _avatarSize + (members.length - 1) * step,
+            height: _avatarSize,
+            child: Stack(
+              children: [
+                // Painted last to first, so the current caregiver is on top.
+                for (final (index, caregiver)
+                    in members.indexed.toList().reversed)
+                  Positioned(
+                    left: index * step,
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.xxs),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.background,
+                      ),
+                      child: CaregiverAvatar(
+                        caregiver: caregiver,
+                        size: _avatarSize - AppSpacing.xs,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -236,85 +304,227 @@ class _CaregiverPicker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final current = ref.watch(currentCaregiverProvider);
     return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          0,
+          AppSpacing.lg,
+          AppSpacing.lg,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: AppSpacing.sm,
+          children: [
+            Text(context.l10n.whoAreYou, style: AppTextStyles.headline),
+            for (final caregiver in ref.watch(caregiversProvider))
+              AppCard(
+                raised: false,
+                color: caregiver == current
+                    ? AppColors.tealSoft
+                    : AppColors.surface,
+                onTap: () {
+                  ref.read(currentCaregiverProvider.notifier).select(caregiver);
+                  Navigator.of(context).pop();
+                },
+                child: Row(
+                  spacing: AppSpacing.md,
+                  children: [
+                    CaregiverAvatar(caregiver: caregiver),
+                    Expanded(
+                      child: Text(caregiver.name, style: AppTextStyles.label),
+                    ),
+                    if (caregiver == current)
+                      const Icon(Icons.check_circle, color: AppColors.teal),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DayProgress extends StatelessWidget {
+  const _DayProgress({required this.done, required this.total});
+
+  final int done;
+  final int total;
+
+  static const _barHeight = 10.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isDone = total > 0 && done >= total;
+    final color = isDone ? AppColors.given : AppColors.teal;
+    return AppCard(
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: AppSpacing.md,
         children: [
-          Text(context.l10n.whoAreYou, style: AppTextStyles.title),
-          const SizedBox(height: AppSpacing.sm),
-          for (final caregiver in ref.watch(caregiversProvider))
-            ListTile(
-              leading: CaregiverAvatar(caregiver: caregiver),
-              title: Text(caregiver.name, style: AppTextStyles.body),
-              selected: caregiver == current,
-              trailing: caregiver == current ? const Icon(Icons.check) : null,
-              onTap: () {
-                ref.read(currentCaregiverProvider.notifier).select(caregiver);
-                Navigator.of(context).pop();
-              },
+          Row(
+            spacing: AppSpacing.sm,
+            children: [
+              Icon(
+                isDone ? Icons.check_circle : Icons.donut_large,
+                color: color,
+              ),
+              Expanded(
+                child: Text(
+                  isDone ? l10n.dayDone : l10n.dayProgress(done, total),
+                  style: AppTextStyles.label,
+                ),
+              ),
+            ],
+          ),
+          ClipRRect(
+            borderRadius: AppRadius.pillBorder,
+            child: LinearProgressIndicator(
+              value: total == 0 ? 0 : done / total,
+              minHeight: _barHeight,
+              color: color,
+              backgroundColor: AppColors.surfaceMuted,
             ),
+          ),
         ],
       ),
     );
   }
 }
 
-class _NextDoseCard extends StatelessWidget {
+/// The dose to attend to first, with the main action one tap away.
+class _NextDoseCard extends ConsumerStatefulWidget {
   const _NextDoseCard({
     required this.slot,
     required this.isFromYesterday,
-    required this.onTap,
+    required this.onOpen,
   });
 
   final DoseSlot slot;
   final bool isFromYesterday;
-  final VoidCallback onTap;
+  final VoidCallback onOpen;
+
+  @override
+  ConsumerState<_NextDoseCard> createState() => _NextDoseCardState();
+}
+
+class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
+  var _busy = false;
+
+  static const List<Color> _lateGradient = [
+    AppColors.overdue,
+    AppColors.overdueDark,
+  ];
+  static const List<Color> _gradient = [AppColors.teal, AppColors.tealDark];
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final style = slot.style(l10n);
+    final now = ref.watch(nowProvider);
+    final slot = widget.slot;
     final details = slot.medication.details;
+    final isLate = slot.status == DoseStatus.overdue;
 
-    return Semantics(
-      button: true,
-      child: Material(
-        color: style.background,
+    final overline = switch (slot.status) {
+      _ when widget.isFromYesterday => l10n.nextFromYesterday,
+      DoseStatus.overdue => l10n.nextLate(
+        l10n.duration(now.difference(slot.slotAt)),
+      ),
+      DoseStatus.due => l10n.nextDueNow,
+      _ => l10n.nextIn(l10n.duration(slot.slotAt.difference(now))),
+    };
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadius.lg),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isLate ? _lateGradient : _gradient,
+        ),
+        boxShadow: AppShadows.hero,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xl,
+          AppSpacing.xl,
+          AppSpacing.xl,
+          AppSpacing.md,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: AppSpacing.sm,
+          children: [
+            Row(
               spacing: AppSpacing.sm,
               children: [
-                Text(l10n.nextDose, style: AppTextStyles.bodyMuted),
-                Text(
-                  '${isFromYesterday ? '${l10n.yesterday} ' : ''}'
-                  '${Formatters.time(slot.slotAt, locale)} · '
-                  '${details.name} ${details.strength}',
-                  style: AppTextStyles.title,
+                Icon(
+                  isLate ? Icons.warning_amber : Icons.schedule,
+                  color: AppColors.onAccent,
                 ),
-                if (details.instructions.isNotEmpty)
-                  Text(details.instructions, style: AppTextStyles.body),
-                Row(
-                  spacing: AppSpacing.sm,
-                  children: [
-                    Icon(style.icon, color: style.color),
-                    Text(
-                      style.label,
-                      style: AppTextStyles.label.copyWith(color: style.color),
+                Expanded(
+                  child: Text(
+                    overline.toUpperCase(),
+                    style: AppTextStyles.overline.copyWith(
+                      color: AppColors.onAccentMuted,
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
-          ),
+            Text(
+              '${Formatters.time(slot.slotAt, locale)} · ${details.name}',
+              style: AppTextStyles.headline.copyWith(color: AppColors.onAccent),
+            ),
+            Text(
+              [
+                details.strength,
+                if (details.instructions.isNotEmpty) details.instructions,
+              ].join(' · '),
+              style: AppTextStyles.body.copyWith(
+                color: AppColors.onAccentMuted,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            FilledButton.icon(
+              onPressed: _busy ? null : _give,
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.surface,
+                foregroundColor: isLate
+                    ? AppColors.overdue
+                    : AppColors.tealDark,
+              ),
+              icon: const Icon(Icons.check),
+              label: Text(l10n.markGiven),
+            ),
+            TextButton(
+              onPressed: widget.onOpen,
+              style: TextButton.styleFrom(foregroundColor: AppColors.onAccent),
+              child: Text(l10n.moreOptions),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  /// Gives the dose right away when there is nothing to check first;
+  /// otherwise opens the sheet, so warnings are always seen.
+  Future<void> _give() async {
+    final slot = widget.slot;
+    final detail = ref
+        .read(doseDetailProvider(slot.medication.id, slot.slotAt))
+        .value;
+    if (detail == null || detail.warnings.isNotEmpty) {
+      widget.onOpen();
+      return;
+    }
+    setState(() => _busy = true);
+    await recordDoseGiven(context, ref, detail: detail, slotAt: slot.slotAt);
+    if (mounted) setState(() => _busy = false);
   }
 }
 
@@ -331,63 +541,92 @@ class _ConflictCard extends ConsumerWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     return Semantics(
       liveRegion: true,
-      button: true,
-      child: Material(
+      child: AppCard(
         color: AppColors.overdueSoft,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Row(
-              spacing: AppSpacing.md,
-              children: [
-                const Icon(Icons.error, color: AppColors.overdue),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: AppSpacing.xs,
-                    children: [
-                      Text(
-                        item.title(l10n, locale),
-                        style: AppTextStyles.label.copyWith(
-                          color: AppColors.overdue,
-                        ),
-                      ),
-                      Text(
-                        conflictRecordsText(
-                          l10n,
-                          item: item,
-                          caregivers: ref.watch(caregiversByIdProvider),
-                          today: ref.watch(nowProvider),
-                          locale: locale,
-                        ),
-                        style: AppTextStyles.body,
-                      ),
-                    ],
+        raised: false,
+        onTap: onTap,
+        child: Row(
+          spacing: AppSpacing.md,
+          children: [
+            const Icon(Icons.error, color: AppColors.overdue),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: AppSpacing.xs,
+                children: [
+                  Text(
+                    item.title(l10n, locale),
+                    style: AppTextStyles.label.copyWith(
+                      color: AppColors.overdue,
+                    ),
                   ),
-                ),
-                Text(
-                  l10n.review,
-                  style: AppTextStyles.label.copyWith(
-                    color: AppColors.overdue,
+                  Text(
+                    conflictRecordsText(
+                      l10n,
+                      item: item,
+                      caregivers: ref.watch(caregiversByIdProvider),
+                      today: ref.watch(nowProvider),
+                      locale: locale,
+                    ),
+                    style: AppTextStyles.body,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+            Text(
+              l10n.review,
+              style: AppTextStyles.label.copyWith(color: AppColors.overdue),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
+/// A part of the day as a section of the timeline.
+class _Timeline extends StatelessWidget {
+  const _Timeline({
+    required this.title,
+    required this.slots,
+    required this.stock,
+    required this.onOpen,
+  });
+
+  final String title;
+  final List<DoseSlot> slots;
+  final Map<String, StockLevel> stock;
+  final ValueChanged<DoseSlot> onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    return _Section(
+      title: title,
+      spacing: 0,
+      children: [
+        for (final (index, slot) in slots.indexed)
+          DoseTile(
+            slot: slot,
+            stock: stock[slot.medication.id],
+            isFirst: index == 0,
+            isLast: index == slots.length - 1,
+            onTap: () => onOpen(slot),
+          ),
+      ],
+    );
+  }
+}
+
 class _Section extends StatelessWidget {
-  const _Section({required this.title, required this.children});
+  const _Section({
+    required this.title,
+    required this.children,
+    this.spacing = AppSpacing.sm,
+  });
 
   final String title;
   final List<Widget> children;
+  final double spacing;
 
   @override
   Widget build(BuildContext context) {
@@ -395,13 +634,41 @@ class _Section extends StatelessWidget {
       padding: const EdgeInsets.only(top: AppSpacing.xl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: AppSpacing.sm,
+        spacing: spacing,
         children: [
-          Semantics(
-            header: true,
-            child: Text(title, style: AppTextStyles.title),
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: Semantics(
+              header: true,
+              child: Text(title, style: AppTextStyles.title),
+            ),
           ),
           ...children,
+        ],
+      ),
+    );
+  }
+}
+
+class _Disclaimer extends StatelessWidget {
+  const _Disclaimer();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      raised: false,
+      color: AppColors.surfaceMuted,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: AppSpacing.md,
+        children: [
+          const Icon(Icons.info_outline, color: AppColors.inkMuted),
+          Expanded(
+            child: Text(
+              context.l10n.medicalDisclaimer,
+              style: AppTextStyles.bodyMuted,
+            ),
+          ),
         ],
       ),
     );

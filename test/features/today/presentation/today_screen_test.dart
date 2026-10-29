@@ -5,6 +5,9 @@ import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 
+import 'package:i_care/features/today/presentation/widgets/dose_tile.dart';
+import 'package:i_care/shared/widgets/app_card.dart';
+
 import '../../../helpers/pump_app.dart';
 import '../../care/helpers/care_events.dart';
 
@@ -27,21 +30,49 @@ void main() {
     ])..status = SyncStatus(lastSyncedAt: now);
   }
 
+  /// Opens the sheet of the dose at [time] on the timeline.
   Future<void> openDose(WidgetTester tester, String time) async {
-    await tester.tap(find.text(time).last);
+    final tile = find.ancestor(
+      of: find.text(time),
+      matching: find.byType(DoseTile),
+    );
+    await tester.scrollUntilVisible(
+      tile,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(
+      find.descendant(of: tile.first, matching: find.byType(AppCard)),
+    );
     await tester.pumpAndSettle();
   }
+
+  /// [text] inside the open dose sheet, not on the screen behind it.
+  Finder inSheet(String text) => find.descendant(
+    of: find.byType(BottomSheet),
+    matching: find.text(text),
+  );
+
+  /// Scrolls the timeline until [finder] is built and visible.
+  Future<void> scrollTo(WidgetTester tester, Finder finder) =>
+      tester.scrollUntilVisible(
+        finder,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
 
   testWidgets('shows the next dose and today by part of the day', (
     tester,
   ) async {
     await pumpApp(tester, repository: circle(), now: now);
 
-    expect(find.text('Next dose'), findsOneWidget);
-    expect(find.text('08:00 · Enalapril 10 mg'), findsOneWidget);
+    expect(find.text('NEXT DOSE · DUE NOW'), findsOneWidget);
+    expect(find.text('08:00 · Enalapril'), findsOneWidget);
+    expect(find.text('1 of 2 doses recorded today'), findsNothing);
+    expect(find.text('0 of 2 doses recorded today'), findsOneWidget);
+    await scrollTo(tester, find.text('Night'));
     expect(find.text('Morning'), findsOneWidget);
-    expect(find.text('Night'), findsOneWidget);
-    expect(find.text('Due now'), findsWidgets);
+    expect(find.text('Due now'), findsOneWidget);
   });
 
   testWidgets('recording a dose names the caregiver and offers undo', (
@@ -51,14 +82,15 @@ void main() {
     await pumpApp(tester, repository: repository, now: now);
 
     await openDose(tester, '08:00');
-    await tester.tap(find.text('Mark as given'));
+    await tester.tap(inSheet('Mark as given'));
     await tester.pumpAndSettle();
 
     final given = repository.recorded.single as DoseGiven;
     expect(given.slotAt, eight);
     expect(given.meta.caregiverId, 'ana');
     expect(given.knownDoseIds, isEmpty);
-    expect(find.text('Given · Ana at 08:10'), findsOneWidget);
+    expect(find.text('Ana at 08:10'), findsOneWidget);
+    expect(find.text('Given'), findsOneWidget);
     // The fake never syncs, so the record stays on this phone only.
     expect(find.text('Not synced yet'), findsOneWidget);
 
@@ -69,7 +101,7 @@ void main() {
       repository.recorded.last,
       isA<DoseUndone>().having((e) => e.targetEventId, 'target', 'new-0'),
     );
-    expect(find.text('Due now'), findsWidgets);
+    expect(find.text('Ana at 08:10'), findsNothing);
   });
 
   testWidgets('warns when this phone has not synced for a while', (
@@ -99,13 +131,13 @@ void main() {
     await openDose(tester, '08:00');
     await tester.tap(find.text('1 hour ago'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Mark as given'));
+    await tester.tap(inSheet('Mark as given'));
     await tester.pumpAndSettle();
 
     final given = repository.recorded.single as DoseGiven;
     expect(given.givenAt, DateTime(2026, 11, 2, 7, 10));
     expect(given.meta.occurredAt, now);
-    expect(find.text('Given · Ana at 07:10'), findsOneWidget);
+    expect(find.text('Ana at 07:10'), findsOneWidget);
   });
 
   testWidgets('a dose already given is confirmed knowingly', (tester) async {
@@ -123,7 +155,8 @@ void main() {
 
     final given = repository.recorded.single as DoseGiven;
     expect(given.knownDoseIds, [martins.meta.id]);
-    expect(find.text('Given twice · Martín at 08:00 · Ana at 08:10'), findsOne);
+    expect(find.text('Martín at 08:00 · Ana at 08:10'), findsOneWidget);
+    expect(find.text('Given twice'), findsOneWidget);
   });
 
   group('doses given twice without seeing each other', () {
@@ -162,7 +195,7 @@ void main() {
 
       await openConflict(tester);
       expect(find.text('Did Elena get both doses?'), findsOneWidget);
-      expect(find.text('Mark as given'), findsNothing);
+      expect(inSheet('Mark as given'), findsNothing);
 
       await tester.tap(find.text('No, only one'));
       await tester.pumpAndSettle();
@@ -176,7 +209,8 @@ void main() {
         ),
       );
       expect(find.text('Repeated record cancelled'), findsOneWidget);
-      expect(find.text('Given · Ana at 08:00'), findsOneWidget);
+      await scrollTo(tester, find.text('Ana at 08:00'));
+      expect(find.text('Given'), findsOneWidget);
     });
 
     testWidgets('"both were given" keeps the double dose on record', (
@@ -248,13 +282,15 @@ void main() {
     ])..status = SyncStatus(lastSyncedAt: now);
     await pumpApp(tester, repository: repository, now: now);
 
-    await tester.tap(find.text('Yesterday 08:00 · Enalapril 10 mg'));
-    await tester.pumpAndSettle();
+    expect(find.text('FROM YESTERDAY · LATE'), findsOneWidget);
+
+    // Nothing to check first, so the card records it right away.
     await tester.tap(find.text('Mark as given'));
     await tester.pumpAndSettle();
 
+    expect(repository.recorded.single, isA<DoseGiven>());
+    await scrollTo(tester, find.text('Ana, today at 08:10'));
     expect(find.text('From yesterday'), findsOneWidget);
-    expect(find.text('Given · Ana, today at 08:10'), findsOneWidget);
   });
 
   testWidgets('a dose can be skipped with a reason', (tester) async {
@@ -271,7 +307,8 @@ void main() {
       repository.recorded.single,
       isA<DoseSkipped>().having((e) => e.reason, 'reason', SkipReason.asleep),
     );
-    expect(find.text('Skipped · Ana at 08:10'), findsOneWidget);
+    expect(find.text('Ana at 08:10'), findsOneWidget);
+    expect(find.text('Skipped'), findsOneWidget);
   });
 
   testWidgets('as-needed doses show who gave the last one', (tester) async {
@@ -303,7 +340,7 @@ void main() {
     await pumpApp(tester, repository: repository, now: now);
 
     await openDose(tester, '08:00');
-    await tester.tap(find.text('Mark as given'));
+    await tester.tap(inSheet('Mark as given'));
     await tester.pumpAndSettle();
 
     expect(find.text("We couldn't read the saved data."), findsOneWidget);

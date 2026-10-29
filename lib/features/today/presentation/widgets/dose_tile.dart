@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/core/theme/app_colors.dart';
-import 'package:i_care/core/theme/app_radius.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
@@ -14,13 +13,20 @@ import 'package:i_care/features/today/controllers/today_view.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_status_style.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
+import 'package:i_care/shared/widgets/app_card.dart';
+import 'package:i_care/shared/widgets/low_stock_pill.dart';
+import 'package:i_care/shared/widgets/medication_icon.dart';
+import 'package:i_care/shared/widgets/status_pill.dart';
 
-/// A scheduled dose: time, medication, status and who recorded it.
+/// A scheduled dose on the day's timeline: its time on the left, a dot on
+/// the rail colored by status, and a card with what was recorded.
 class DoseTile extends ConsumerWidget {
   const DoseTile({
     required this.slot,
     required this.onTap,
     this.stock,
+    this.isFirst = false,
+    this.isLast = false,
     super.key,
   });
 
@@ -28,15 +34,21 @@ class DoseTile extends ConsumerWidget {
   final StockLevel? stock;
   final VoidCallback onTap;
 
+  /// Whether the rail starts or ends at this dose.
+  final bool isFirst;
+  final bool isLast;
+
+  static const _timeWidth = 52.0;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
     final names = ref.watch(caregiversByIdProvider);
+    final today = ref.watch(nowProvider);
     final style = slot.style(l10n);
     final details = slot.medication.details;
 
-    final today = ref.watch(nowProvider);
     String record(CareEvent event, DateTime at) => recordedByText(
       l10n,
       name: names[event.meta.caregiverId]?.name ?? l10n.unknownCaregiver,
@@ -49,21 +61,115 @@ class DoseTile extends ConsumerWidget {
       for (final dose in slot.given) record(dose, dose.givenAt),
       for (final skip in slot.skipped) record(skip, skip.meta.occurredAt),
     ];
+    final isPending = [
+      ...slot.given,
+      ...slot.skipped,
+    ].any((record) => !record.meta.isSynced);
 
-    return _TileFrame(
-      onTap: onTap,
-      leading: Text(
-        Formatters.time(slot.slotAt, locale),
-        style: AppTextStyles.title,
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            width: _timeWidth,
+            child: Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.lg),
+              child: Text(
+                Formatters.time(slot.slotAt, locale),
+                style: AppTextStyles.label,
+              ),
+            ),
+          ),
+          _Rail(color: style.color, isFirst: isFirst, isLast: isLast),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.md),
+              child: AppCard(
+                onTap: onTap,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: AppSpacing.sm,
+                  children: [
+                    Text(
+                      '${details.name} ${details.strength}',
+                      style: AppTextStyles.label,
+                    ),
+                    Wrap(
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.xs,
+                      children: [
+                        StatusPill(
+                          icon: style.icon,
+                          label: style.label,
+                          color: style.color,
+                          background: style.background,
+                        ),
+                        if (stock case final StockLevel level when level.isLow)
+                          LowStockPill(level: level),
+                        if (isPending) const PendingPill(),
+                      ],
+                    ),
+                    if (records.isNotEmpty)
+                      Text(records.join(' · '), style: AppTextStyles.bodyMuted),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      title: '${details.name} ${details.strength}',
-      statusStyle: style,
-      lines: [style.label, ...records].join(' · '),
-      stock: stock,
-      isPending: [
-        ...slot.given,
-        ...slot.skipped,
-      ].any((record) => !record.meta.isSynced),
+    );
+  }
+}
+
+/// The vertical line joining the day's doses, with a dot for each.
+class _Rail extends StatelessWidget {
+  const _Rail({
+    required this.color,
+    required this.isFirst,
+    required this.isLast,
+  });
+
+  final Color color;
+  final bool isFirst;
+  final bool isLast;
+
+  static const _width = 28.0;
+  static const _lineWidth = 2.0;
+  static const _dotSize = 14.0;
+  static const double _dotTop = AppSpacing.lg + 3;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: _width,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          if (!(isFirst && isLast))
+            Positioned(
+              top: isFirst ? _dotTop : 0,
+              bottom: isLast ? null : 0,
+              height: isLast ? _dotTop : null,
+              child: const SizedBox(
+                width: _lineWidth,
+                child: ColoredBox(color: AppColors.divider),
+              ),
+            ),
+          Positioned(
+            top: _dotTop,
+            child: Container(
+              width: _dotSize,
+              height: _dotSize,
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.background, width: 3),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -75,9 +181,6 @@ class AsNeededTile extends ConsumerWidget {
   final AsNeededItem item;
   final VoidCallback onTap;
 
-  static const IconData _icon = Icons.medication_outlined;
-  static const _iconSize = 28.0;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
@@ -86,151 +189,53 @@ class AsNeededTile extends ConsumerWidget {
     final details = item.medication.details;
     final last = item.lastDose;
 
-    return _TileFrame(
+    return AppCard(
       onTap: onTap,
-      leading: const Icon(_icon, size: _iconSize, color: AppColors.teal),
-      title: '${details.name} ${details.strength}',
-      lines: last == null
-          ? l10n.noDoseYet
-          : l10n.lastDose(
-              Formatters.time(last.givenAt, locale),
-              names[last.meta.caregiverId]?.name ?? l10n.unknownCaregiver,
-            ),
-      stock: item.stock,
-      isPending: last != null && !last.meta.isSynced,
-    );
-  }
-}
-
-class _TileFrame extends StatelessWidget {
-  const _TileFrame({
-    required this.onTap,
-    required this.leading,
-    required this.title,
-    required this.lines,
-    this.statusStyle,
-    this.stock,
-    this.isPending = false,
-  });
-
-  final VoidCallback onTap;
-  final Widget leading;
-  final String title;
-  final String lines;
-  final DoseStatusStyle? statusStyle;
-  final StockLevel? stock;
-
-  /// A record shown here is still only on this phone.
-  final bool isPending;
-
-  static const _leadingWidth = 64.0;
-  static const _statusIconSize = 28.0;
-
-  @override
-  Widget build(BuildContext context) {
-    final style = statusStyle;
-    return Semantics(
-      button: true,
-      child: Material(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Row(
+      child: Row(
+        spacing: AppSpacing.md,
+        children: [
+          MedicationIcon(form: details.form),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: AppSpacing.xs,
               children: [
-                SizedBox(width: _leadingWidth, child: leading),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: AppSpacing.xs,
-                    children: [
-                      Text(title, style: AppTextStyles.label),
-                      Text(lines, style: AppTextStyles.bodyMuted),
-                      if (stock case final StockLevel level when level.isLow)
-                        _LowStockBadge(level: level),
-                      if (isPending) const _PendingBadge(),
-                    ],
-                  ),
+                Text(
+                  '${details.name} ${details.strength}',
+                  style: AppTextStyles.label,
                 ),
-                if (style != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: AppSpacing.sm),
-                    child: Icon(
-                      style.icon,
-                      color: style.color,
-                      size: _statusIconSize,
-                    ),
-                  ),
+                Text(
+                  last == null
+                      ? l10n.noDoseYet
+                      : l10n.lastDose(
+                          Formatters.time(last.givenAt, locale),
+                          names[last.meta.caregiverId]?.name ??
+                              l10n.unknownCaregiver,
+                        ),
+                  style: AppTextStyles.bodyMuted,
+                ),
+                if (item.stock case final StockLevel level when level.isLow)
+                  LowStockPill(level: level),
+                if (last != null && !last.meta.isSynced) const PendingPill(),
               ],
             ),
           ),
-        ),
+          const Icon(Icons.chevron_right, color: AppColors.inkMuted),
+        ],
       ),
     );
   }
 }
 
-class _PendingBadge extends StatelessWidget {
-  const _PendingBadge();
-
-  static const _iconSize = 16.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      spacing: AppSpacing.xs,
-      children: [
-        const Icon(
-          Icons.cloud_upload_outlined,
-          color: AppColors.inkMuted,
-          size: _iconSize,
-        ),
-        Flexible(
-          child: Text(
-            context.l10n.notSyncedYet,
-            style: AppTextStyles.bodyMuted,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _LowStockBadge extends StatelessWidget {
-  const _LowStockBadge({required this.level});
-
-  final StockLevel level;
-
-  static const _iconSize = 16.0;
+/// A record shown here is still only on this phone.
+class PendingPill extends StatelessWidget {
+  const PendingPill({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final text = switch (level) {
-      StockLevel(:final units) when units <= 0 => l10n.stockOut,
-      StockLevel(daysLeft: final int days) => l10n.stockDays(days),
-      _ => l10n.stockOut,
-    };
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      spacing: AppSpacing.xs,
-      children: [
-        const Icon(
-          Icons.inventory_2_outlined,
-          color: AppColors.due,
-          size: _iconSize,
-        ),
-        Flexible(
-          child: Text(
-            text,
-            style: AppTextStyles.bodyMuted.copyWith(color: AppColors.due),
-          ),
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => StatusPill(
+    icon: Icons.cloud_upload_outlined,
+    label: context.l10n.notSyncedYet,
+    color: AppColors.inkMuted,
+    background: AppColors.surfaceMuted,
+  );
 }

@@ -151,9 +151,18 @@ documented), nursing-home features.
 - Accessibility is a requirement: targets ≥ 48 dp (primary actions 56 dp),
   contrast ≥ 4.5:1, layouts that survive 200 % text, `Semantics` on custom
   controls, plain language, no time pressure except the undo window.
+- Bottom navigation bar with only tabs that have real content: Today,
+  Medications, Activity (Appointments joins in phase 3).
+- Today: header (recipient, date, team avatars, sync and sample-data
+  pills), day progress, conflict cards, a filled next-dose card with a
+  one-tap "Mark as given" (opens the sheet instead when there is a
+  warning), and a vertical timeline per part of the day with status
+  pills.
+- Rounded surfaces (20–28 px), soft shadows, stadium buttons and chips.
+- Typography: Atkinson Hyperlegible Next, bundled (OFL), designed by the
+  Braille Institute for low vision; its slashed zero is intentional.
 - Light theme first; dark theme (night doses) is a phase 4 candidate.
-- Typography: platform font for now; a legibility-focused font (e.g.
-  Atkinson Hyperlegible, bundled) is a phase 4 candidate.
+- A widget test walks every tab at 200 % text size; overflows fail CI.
 
 ## Status
 ### Done
@@ -167,10 +176,14 @@ documented), nursing-home features.
   and per-dose "not synced yet" badge,
   "Who are you?"; sample circle seeded on first run; two-device demo
   shell with per-phone network switches.
+- Visual refresh: navigation bar, read-only Medications (schedule,
+  instructions, stock) and Activity (feed by day) tabs, redesigned Today,
+  bundled font.
 
 ### Known gaps
-- Both phones' GoRouters share the browser URL on the web; harmless with
-  one route, to revisit when phase 2 adds routes.
+- Routers use `routerNeglect`, so the browser back button never moves
+  both demo phones; on the web a deep link to a tab is not honored
+  either (two apps on one page). Acceptable for the demo.
 - The chosen identity ("Who are you?") resets on reload.
 
 ### Next steps, in order

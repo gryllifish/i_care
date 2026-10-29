@@ -1,6 +1,5 @@
 import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/core/utils/formatters.dart';
-import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/caregiver.dart';
 import 'package:i_care/features/care/domain/projections/dose_warnings.dart';
 import 'package:i_care/features/today/controllers/today_view.dart';
@@ -58,16 +57,6 @@ extension ConflictItemTitle on ConflictItem {
 
 bool _isSameDay(DateTime a, DateTime b) =>
     a.year == b.year && a.month == b.month && a.day == b.day;
-
-extension SkipReasonLabel on SkipReason {
-  String label(AppLocalizations l10n) => switch (this) {
-    SkipReason.refused => l10n.skipRefused,
-    SkipReason.asleep => l10n.skipAsleep,
-    SkipReason.unwell => l10n.skipUnwell,
-    SkipReason.doctorAdvice => l10n.skipDoctorAdvice,
-    SkipReason.other => l10n.skipOther,
-  };
-}
 
 extension DoseWarningText on DoseWarning {
   String text(

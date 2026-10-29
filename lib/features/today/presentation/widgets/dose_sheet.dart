@@ -17,6 +17,7 @@ import 'package:i_care/features/care/domain/projections/dose_warnings.dart';
 import 'package:i_care/features/today/controllers/dose_controller.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_status_style.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
+import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
@@ -34,6 +35,45 @@ Future<void> showDoseSheet(
   showDragHandle: true,
   builder: (_) => DoseSheet(medicationId: medicationId, slotAt: slotAt),
 );
+
+/// Records the dose in [detail] as given at [givenAt] (now when null),
+/// counting the doses its warnings showed as known, and confirms it with
+/// an undo option.
+Future<void> recordDoseGiven(
+  BuildContext context,
+  WidgetRef ref, {
+  required DoseDetail detail,
+  required DateTime? slotAt,
+  DateTime? givenAt,
+}) async {
+  final l10n = context.l10n;
+  final messenger = ScaffoldMessenger.of(context);
+  final actions = ref.read(doseActionsProvider.notifier);
+  final isConnected = ref.read(syncStatusProvider).value?.isConnected ?? true;
+  final name = detail.medication.details.name;
+
+  final result = await actions.give(
+    detail.medication,
+    slotAt: slotAt,
+    givenAt: givenAt,
+    knownDoseIds: knownDoseIdsOf(detail.warnings),
+  );
+  messenger.showSnackBar(switch (result) {
+    Ok(:final value) => SnackBar(
+      content: Text(
+        isConnected
+            ? l10n.doseRecordedGiven(name)
+            : l10n.doseRecordedOffline(name),
+      ),
+      duration: AppDurations.undoWindow,
+      action: SnackBarAction(
+        label: l10n.undo,
+        onPressed: () => actions.undo(value),
+      ),
+    ),
+    Err(:final failure) => SnackBar(content: Text(failure.message(l10n))),
+  });
+}
 
 class DoseSheet extends ConsumerStatefulWidget {
   const DoseSheet({
@@ -208,36 +248,15 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
   static const _secondaryButtonHeight = 48.0;
 
   Future<void> _give(DoseDetail detail) async {
-    final l10n = context.l10n;
-    final messenger = ScaffoldMessenger.of(context);
-    final actions = ref.read(doseActionsProvider.notifier);
-    final isConnected = ref.read(syncStatusProvider).value?.isConnected ?? true;
-    final name = detail.medication.details.name;
     setState(() => _busy = true);
-
-    final result = await actions.give(
-      detail.medication,
+    await recordDoseGiven(
+      context,
+      ref,
+      detail: detail,
       slotAt: widget.slotAt,
       givenAt: _givenAt.resolve(ref.read(clockProvider)()),
-      knownDoseIds: knownDoseIdsOf(detail.warnings),
     );
-    if (!mounted) return;
-    Navigator.of(context).pop();
-    messenger.showSnackBar(switch (result) {
-      Ok(:final value) => SnackBar(
-        content: Text(
-          isConnected
-              ? l10n.doseRecordedGiven(name)
-              : l10n.doseRecordedOffline(name),
-        ),
-        duration: AppDurations.undoWindow,
-        action: SnackBarAction(
-          label: l10n.undo,
-          onPressed: () => actions.undo(value),
-        ),
-      ),
-      Err(:final failure) => SnackBar(content: Text(failure.message(l10n))),
-    });
+    if (mounted) Navigator.of(context).pop();
   }
 
   Future<void> _skip(
