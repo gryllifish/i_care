@@ -1,0 +1,151 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:i_care/core/error/app_exception.dart';
+import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
+import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
+import 'package:i_care/features/care/domain/entities/medication.dart';
+
+void main() {
+  final at = DateTime(2026, 11, 2, 8, 5);
+  final meta = EventMeta(
+    id: 'e1',
+    caregiverId: 'ana',
+    occurredAt: at,
+    receivedAt: at.add(const Duration(seconds: 2)),
+  );
+  const details = MedicationDetails(
+    name: 'Enalapril',
+    strength: '10 mg',
+    form: MedicationForm.tablet,
+    instructions: 'With food',
+    unitsPerDose: 0.5,
+    lowStockDays: 5,
+  );
+
+  final everyKind = <CareEvent>[
+    CareEvent.medicationCreated(
+      meta: meta,
+      medicationId: 'm1',
+      details: details,
+      schedule: const DoseSchedule.fixed(
+        minutesOfDay: [480, 1200],
+        weekdays: {DateTime.friday, DateTime.monday},
+        minInterval: Duration(hours: 8),
+      ),
+      effectiveFrom: at,
+    ),
+    CareEvent.medicationUpdated(
+      meta: meta,
+      medicationId: 'm1',
+      baseVersion: 2,
+      details: details,
+    ),
+    CareEvent.scheduleChanged(
+      meta: meta.copyWith(receivedAt: null),
+      medicationId: 'm1',
+      baseVersion: 1,
+      schedule: const DoseSchedule.asNeeded(
+        minInterval: Duration(hours: 6),
+        maxPerDay: 3,
+      ),
+      effectiveFrom: at,
+    ),
+    CareEvent.medicationArchived(
+      meta: meta,
+      medicationId: 'm1',
+      baseVersion: 4,
+    ),
+    CareEvent.doseGiven(
+      meta: meta,
+      medicationId: 'm1',
+      slotAt: DateTime(2026, 11, 2, 8),
+      givenAt: at,
+      units: 1,
+      knownDoseIds: const ['e0'],
+      note: 'Took it with tea',
+    ),
+    CareEvent.doseGiven(
+      meta: meta,
+      medicationId: 'm1',
+      slotAt: null,
+      givenAt: at,
+      units: 2,
+    ),
+    CareEvent.doseSkipped(
+      meta: meta,
+      medicationId: 'm1',
+      slotAt: DateTime(2026, 11, 2, 8),
+      reason: SkipReason.doctorAdvice,
+    ),
+    CareEvent.doseUndone(meta: meta, targetEventId: 'e0'),
+    CareEvent.stockCounted(meta: meta, medicationId: 'm1', units: 28),
+    CareEvent.stockRefilled(meta: meta, medicationId: 'm1', units: 30),
+    CareEvent.conflictAcknowledged(meta: meta, conflictKey: 'dose:m1:x'),
+  ];
+
+  for (final event in everyKind) {
+    test('${event.runtimeType} survives a round trip', () {
+      expect(
+        CareEventCodec.decodeString(CareEventCodec.encodeString(event)),
+        event,
+      );
+    });
+  }
+
+  test('the stored format stays stable', () {
+    // Data already on devices and on the server is written in this shape;
+    // changing it requires a new format version and a migration.
+    final event = CareEvent.doseGiven(
+      meta: meta.copyWith(receivedAt: null),
+      medicationId: 'm1',
+      slotAt: DateTime(2026, 11, 2, 8),
+      givenAt: at,
+      units: 1,
+    );
+
+    expect(CareEventCodec.encode(event), {
+      'v': 1,
+      'id': 'e1',
+      'caregiver_id': 'ana',
+      'occurred_at': '2026-11-02T08:05:00.000',
+      'received_at': null,
+      'type': 'dose_given',
+      'medication_id': 'm1',
+      'slot_at': '2026-11-02T08:00:00.000',
+      'given_at': '2026-11-02T08:05:00.000',
+      'units': 1.0,
+      'known_dose_ids': <String>[],
+      'note': null,
+    });
+  });
+
+  group('rejects with a ParsingException', () {
+    Map<String, Object?> valid() => CareEventCodec.encode(everyKind.last);
+
+    for (final (description, json) in [
+      ('another format version', {...valid(), 'v': 2}),
+      ('an unknown type', {...valid(), 'type': 'dose_teleported'}),
+      ('a missing field', {...valid()}..remove('conflict_key')),
+      ('a mistyped field', {...valid(), 'caregiver_id': 7}),
+      ('a malformed date', {...valid(), 'occurred_at': 'yesterday'}),
+    ]) {
+      test(description, () {
+        expect(
+          () => CareEventCodec.decode(json),
+          throwsA(isA<ParsingException>()),
+        );
+      });
+    }
+
+    test('text that is not a JSON object', () {
+      expect(
+        () => CareEventCodec.decodeString('[1, 2]'),
+        throwsA(isA<ParsingException>()),
+      );
+      expect(
+        () => CareEventCodec.decodeString('{'),
+        throwsA(isA<ParsingException>()),
+      );
+    });
+  });
+}

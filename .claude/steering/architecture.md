@@ -27,6 +27,10 @@ Shared data follows the event model in `docs/backend.md`:
 - Conflicts (two doses for one slot, two edits from one version) are part
   of the projected state and rendered as such; nothing resolves them
   silently.
+- Events are encoded by a hand-written `CareEventCodec` instead of a
+  generated DTO: the JSON is a versioned contract between devices, the
+  server and stored data, so Dart renames must never change it. A test
+  pins the format.
 - Only `data` knows the `SyncGateway` implementation. Device clocks never
   order or resolve anything; `receivedAt` from the server does.
 

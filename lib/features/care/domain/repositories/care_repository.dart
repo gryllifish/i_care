@@ -1,0 +1,20 @@
+import 'package:i_care/core/error/failure.dart';
+import 'package:i_care/core/error/result.dart';
+import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/sync_status.dart';
+
+/// The care circle's event log on this device, kept in sync with the
+/// other caregivers' devices in the background.
+abstract interface class CareRepository {
+  /// The whole log, now and after every change. Errors arrive as
+  /// [Failure]s on the stream.
+  Stream<List<CareEvent>> watchEvents();
+
+  /// Appends [event] to the log on this device and syncs it in the
+  /// background. Fails only if it could not be stored here; being offline
+  /// is not a failure.
+  Future<Result<void>> record(CareEvent event);
+
+  /// The sync state, now and after every change.
+  Stream<SyncStatus> watchSyncStatus();
+}
