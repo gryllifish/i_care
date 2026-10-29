@@ -27,6 +27,7 @@ lib/
     │   └── repositories/     # Implementations + their @riverpod providers
     ├── domain/
     │   ├── entities/         # Pure Dart business objects and rules
+    │   ├── projections/      # Pure functions from events to state (care only)
     │   └── repositories/     # Abstract interfaces
     ├── controllers/          # @riverpod Notifiers/AsyncNotifiers + state classes
     └── presentation/

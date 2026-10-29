@@ -16,7 +16,7 @@ feed, the latest version of a medication) is a projection of the log.
 | `MedicationCreated` / `MedicationUpdated` | full medication snapshot, `baseVersion` |
 | `MedicationArchived` | `medicationId`, `baseVersion` |
 | `ScheduleChanged` | `medicationId`, new schedule, `effectiveFrom` |
-| `DoseGiven` | `medicationId`, `slotAt` (null when as needed), `units`, note |
+| `DoseGiven` | `medicationId`, `slotAt` (null when as needed), `givenAt` (stated by the caregiver), `units`, `knownDoseIds`, note |
 | `DoseSkipped` | `medicationId`, `slotAt`, reason |
 | `DoseUndone` | `targetEventId` |
 | `StockCounted` / `StockRefilled` | `medicationId`, units |
@@ -32,8 +32,13 @@ Every event carries `id` (UUID v4, generated on the device), `circleId`,
 - **Merging is a set union by `id`**: commutative and idempotent, so
   devices converge whatever the order or number of retries.
 - Conflicts become **visible facts** instead of lost writes:
-  - two `DoseGiven` for the same `medicationId` + `slotAt` → "given twice";
-  - two updates with the same `baseVersion` → "conflicting changes, review".
+  - two `DoseGiven` for the same `medicationId` + `slotAt`, or closer than
+    the minimum interval → "given twice", unless the later one lists the
+    earlier in `knownDoseIds` (a warning showed it and the caregiver
+    confirmed anyway);
+  - a change made on an older `baseVersion` that overlaps a change applied
+    since (details with details, schedule with schedule, archiving with
+    anything) → "conflicting changes, review".
   Nothing is resolved silently; a caregiver resolves it with a new event.
 - A "given twice" record is a fact about the patient, not a sync error.
   Resolving it as "server wins" (one confirmation per dose) would drop
