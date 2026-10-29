@@ -181,9 +181,24 @@ void main() {
       ]);
 
       expect(
-        log.unresolvedBefore(day, now: eight).map((s) => s.slotAt),
+        log.fromYesterday(day, now: eight).map((s) => s.slotAt),
         [DateTime(2026, 11, 1, 20)],
       );
+    });
+
+    test('doses from the day before resolved today stay visible today', () {
+      final yesterdayEight = DateTime(2026, 11, 1, 8);
+      final yesterdayNight = DateTime(2026, 11, 1, 20);
+      final log = CareLog([
+        events.created('m1'),
+        events.given('m1', at: yesterdayEight, slotAt: yesterdayEight),
+        events.given('m1', at: eight, slotAt: yesterdayNight),
+      ]);
+      final [slot] = log.fromYesterday(day, now: eight);
+
+      expect(slot.slotAt, yesterdayNight);
+      expect(slot.status, DoseStatus.given);
+      expect(log.fromYesterday(DateTime(2026, 11, 3), now: eight), isEmpty);
     });
   });
 

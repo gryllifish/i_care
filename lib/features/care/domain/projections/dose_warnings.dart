@@ -32,6 +32,12 @@ final class DailyLimitReached extends DoseWarning {
   final int max;
 }
 
+/// This device is offline right now, so others' doses may be missing
+/// from what it shows, however recently it synced.
+final class Offline extends DoseWarning {
+  const Offline();
+}
+
 /// This device has not synced for a while, so others' doses may be
 /// missing from what it shows.
 final class OutOfDate extends DoseWarning {
@@ -48,7 +54,7 @@ List<String> knownDoseIdsOf(List<DoseWarning> warnings) => [
     ...switch (warning) {
       AlreadyGiven(:final dose) => [dose.meta.id],
       TooSoon(:final lastDose) => [lastDose.meta.id],
-      DailyLimitReached() || OutOfDate() => const <String>[],
+      DailyLimitReached() || Offline() || OutOfDate() => const <String>[],
     },
 ];
 
@@ -63,6 +69,7 @@ List<DoseWarning> doseWarnings(
   required DateTime? slotAt,
   required DateTime now,
   required DateTime? lastSyncedAt,
+  required bool isConnected,
 }) {
   final schedule = medication.scheduleAt(now) ?? medication.schedule;
   final lastDose = log.lastDose(medication.id);
@@ -91,7 +98,10 @@ List<DoseWarning> doseWarnings(
       ),
     if (maxPerDay != null && givenToday >= maxPerDay)
       DailyLimitReached(given: givenToday, max: maxPerDay),
-    if (lastSyncedAt == null || now.difference(lastSyncedAt) > staleSyncAfter)
+    if (!isConnected)
+      const Offline()
+    else if (lastSyncedAt == null ||
+        now.difference(lastSyncedAt) > staleSyncAfter)
       OutOfDate(lastSyncedAt: lastSyncedAt),
   ];
 }

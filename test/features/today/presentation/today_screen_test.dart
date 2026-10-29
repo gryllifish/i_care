@@ -108,23 +108,135 @@ void main() {
     expect(find.text('Given twice · Martín at 08:00 · Ana at 08:10'), findsOne);
   });
 
-  testWidgets('doses given twice without seeing each other ask for review', (
-    tester,
-  ) async {
-    final repository = circle([
-      events.given('m1', at: eight, slotAt: eight),
-      events.given('m1', at: eight, slotAt: eight, by: 'martin'),
-    ]);
+  group('doses given twice without seeing each other', () {
+    late FakeCareRepository repository;
+    late DoseGiven anas;
+    late DoseGiven martins;
+
+    setUp(() {
+      anas = events.given('m1', at: eight, slotAt: eight);
+      martins = events.given(
+        'm1',
+        at: eight.add(const Duration(minutes: 1)),
+        slotAt: eight,
+        by: 'martin',
+      );
+      repository = circle([anas, martins]);
+    });
+
+    Future<void> openConflict(WidgetTester tester) async {
+      await tester.tap(find.text('Enalapril at 08:00 was recorded 2 times'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('say what happened at the top of Today', (tester) async {
+      await pumpApp(tester, repository: repository, now: now);
+
+      expect(
+        find.text('Enalapril at 08:00 was recorded 2 times'),
+        findsOneWidget,
+      );
+      expect(find.text('Ana at 08:00 · Martín at 08:01'), findsOneWidget);
+    });
+
+    testWidgets('"only one" cancels the repeated record', (tester) async {
+      await pumpApp(tester, repository: repository, now: now);
+
+      await openConflict(tester);
+      expect(find.text('Did Elena get both doses?'), findsOneWidget);
+      expect(find.text('Mark as given'), findsNothing);
+
+      await tester.tap(find.text('No, only one'));
+      await tester.pumpAndSettle();
+
+      expect(
+        repository.recorded.single,
+        isA<DoseUndone>().having(
+          (e) => e.targetEventId,
+          'target',
+          martins.meta.id,
+        ),
+      );
+      expect(find.text('Repeated record cancelled'), findsOneWidget);
+      expect(find.text('Given · Ana at 08:00'), findsOneWidget);
+    });
+
+    testWidgets('"both were given" keeps the double dose on record', (
+      tester,
+    ) async {
+      await pumpApp(tester, repository: repository, now: now);
+
+      await openConflict(tester);
+      await tester.tap(find.text('Yes, both were given'));
+      await tester.pumpAndSettle();
+
+      expect(repository.recorded.single, isA<ConflictAcknowledged>());
+      expect(
+        find.text(
+          'Recorded as given more than once. If in doubt, ask the doctor '
+          'or pharmacist.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('interrupt when they arrive with a sync', (tester) async {
+      final repository = circle([anas]);
+      await pumpApp(tester, repository: repository, now: now);
+
+      repository.receive(martins);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Enalapril was recorded more than once'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Review').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Did Elena get both doses?'), findsOneWidget);
+    });
+  });
+
+  testWidgets('an offline phone warns before giving and says where the '
+      'record is', (tester) async {
+    final repository = circle()
+      ..status = SyncStatus(lastSyncedAt: now, isConnected: false);
     await pumpApp(tester, repository: repository, now: now);
 
-    expect(find.text('1 thing to review'), findsOneWidget);
-
     await openDose(tester, '08:00');
-    await tester.tap(find.text('Mark as reviewed'));
+    expect(
+      find.text('This phone is offline: someone may have given it already.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Mark as given anyway'));
     await tester.pumpAndSettle();
 
-    expect(repository.recorded.single, isA<ConflictAcknowledged>());
-    expect(find.text('1 thing to review'), findsNothing);
+    expect(
+      find.text(
+        'Enalapril saved on this phone. It will sync when the connection '
+        'is back.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets("yesterday's dose stays visible after giving it today", (
+    tester,
+  ) async {
+    final repository = FakeCareRepository([
+      events.created('m1', effectiveFrom: DateTime(2026, 11)),
+    ])..status = SyncStatus(lastSyncedAt: now);
+    await pumpApp(tester, repository: repository, now: now);
+
+    await tester.tap(find.text('Yesterday 08:00 · Enalapril 10 mg'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Mark as given'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('From yesterday'), findsOneWidget);
+    expect(find.text('Given · Ana, today at 08:10'), findsOneWidget);
   });
 
   testWidgets('a dose can be skipped with a reason', (tester) async {

@@ -60,13 +60,19 @@ class CareLog {
     );
   }
 
-  /// The day before [day]'s doses nobody resolved, so they are not lost
-  /// at midnight.
-  List<DoseSlot> unresolvedBefore(DateTime day, {required DateTime now}) {
+  /// The day before [day]'s doses that still need attention on [day]:
+  /// unresolved ones, so they are not lost at midnight, and ones resolved
+  /// on [day], so whoever resolved them can still see the result.
+  List<DoseSlot> fromYesterday(DateTime day, {required DateTime now}) {
     final previousDay = DateTime(day.year, day.month, day.day - 1);
     return [
       for (final slot in slotsOn(previousDay, now: now))
-        if (slot.status == DoseStatus.overdue) slot,
+        if (slot.status == DoseStatus.overdue ||
+            [
+              ...slot.given,
+              ...slot.skipped,
+            ].any((record) => _isSameDay(record.meta.occurredAt, day)))
+          slot,
     ];
   }
 

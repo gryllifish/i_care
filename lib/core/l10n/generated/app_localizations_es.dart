@@ -137,26 +137,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get stockOut => 'Sin stock';
 
   @override
-  String toReview(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count cosas para revisar',
-      one: '1 cosa para revisar',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get conflictDoseBody =>
-      'Más de una persona registró esta toma como dada sin ver el otro registro. Hablá con ellas antes de la próxima dosis.';
-
-  @override
   String get doubleDoseBody =>
-      'Registrada como dada más de una vez, a sabiendas.';
-
-  @override
-  String get markReviewed => 'Marcar como revisado';
+      'Registrada como dada más de una vez. Si tenés dudas, consultá con su médico o farmacéutico.';
 
   @override
   String get markGiven => 'Marcar como dada';
@@ -272,4 +254,71 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get notSyncedYet => 'Aún no sincronizada';
+
+  @override
+  String conflictSlotTitle(String medication, String time, int count) {
+    return '$medication de las $time se registró $count veces';
+  }
+
+  @override
+  String conflictCloseTitle(String medication) {
+    return '$medication: dosis muy seguidas';
+  }
+
+  @override
+  String get conflictExplanation =>
+      'Se registraron en teléfonos distintos, sin ver el registro del otro.';
+
+  @override
+  String conflictQuestion(String name, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '¿$name recibió las $count dosis?',
+      two: '¿$name recibió las dos dosis?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get conflictOnlyOne => 'No, fue una sola';
+
+  @override
+  String conflictAllGiven(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Sí, se dieron todas',
+      two: 'Sí, se dieron las dos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get conflictNotSure => 'Todavía no sé';
+
+  @override
+  String get conflictResolvedOne => 'Se anuló el registro repetido';
+
+  @override
+  String conflictArrived(String medication) {
+    return '$medication se registró más de una vez';
+  }
+
+  @override
+  String get review => 'Revisar';
+
+  @override
+  String get warningOffline =>
+      'Este teléfono está sin conexión: puede que alguien ya la haya dado.';
+
+  @override
+  String doseRecordedOffline(String medication) {
+    return '$medication: guardada en este teléfono. Se enviará al volver la conexión.';
+  }
+
+  @override
+  String recordedByToday(String name, String time) {
+    return '$name, hoy a las $time';
+  }
 }

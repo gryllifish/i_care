@@ -79,7 +79,7 @@ final class DoseDetailProvider
   }
 }
 
-String _$doseDetailHash() => r'455416dcd6579ec088e198b9d3838343a075090b';
+String _$doseDetailHash() => r'52ead28f0d14453072353c483a2aa7f93654fcad';
 
 /// The dose of [medicationId] scheduled at [slotAt] (null for as-needed
 /// doses), kept current while the sheet is open.

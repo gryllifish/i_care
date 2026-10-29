@@ -13,6 +13,10 @@ abstract final class AppDurations {
 
   /// How long "Undo" stays offered after recording a dose.
   static const undoWindow = Duration(seconds: 8);
+
+  /// How long the notice of a conflict that just arrived stays up; the
+  /// conflict itself stays on Today until reviewed.
+  static const conflictNotice = Duration(seconds: 12);
 }
 
 /// Shared easing curves.

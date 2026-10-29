@@ -75,17 +75,7 @@
     }
   },
   "stockOut": "Out of stock",
-  "toReview": "{count, plural, =1{1 thing to review} other{{count} things to review}}",
-  "@toReview": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "conflictDoseBody": "More than one person recorded this dose as given, without seeing the other record. Talk to them before the next dose.",
-  "doubleDoseBody": "Recorded as given more than once, on purpose.",
-  "markReviewed": "Mark as reviewed",
+  "doubleDoseBody": "Recorded as given more than once. If in doubt, ask the doctor or pharmacist.",
   "markGiven": "Mark as given",
   "markGivenAnyway": "Mark as given anyway",
   "skipDose": "Skip this dose",
@@ -198,5 +188,79 @@
     }
   },
   "yesterday": "Yesterday",
-  "notSyncedYet": "Not synced yet"
+  "notSyncedYet": "Not synced yet",
+  "conflictSlotTitle": "{medication} at {time} was recorded {count} times",
+  "@conflictSlotTitle": {
+    "placeholders": {
+      "medication": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "conflictCloseTitle": "{medication}: doses too close together",
+  "@conflictCloseTitle": {
+    "placeholders": {
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "conflictExplanation": "They were recorded on different phones, without seeing each other's record.",
+  "conflictQuestion": "{count, plural, =2{Did {name} get both doses?} other{Did {name} get all {count} doses?}}",
+  "@conflictQuestion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "conflictOnlyOne": "No, only one",
+  "conflictAllGiven": "{count, plural, =2{Yes, both were given} other{Yes, all were given}}",
+  "@conflictAllGiven": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "conflictNotSure": "I don't know yet",
+  "conflictResolvedOne": "Repeated record cancelled",
+  "conflictArrived": "{medication} was recorded more than once",
+  "@conflictArrived": {
+    "placeholders": {
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "review": "Review",
+  "warningOffline": "This phone is offline: someone may have given it already.",
+  "doseRecordedOffline": "{medication} saved on this phone. It will sync when the connection is back.",
+  "@doseRecordedOffline": {
+    "placeholders": {
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "recordedByToday": "{name}, today at {time}",
+  "@recordedByToday": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

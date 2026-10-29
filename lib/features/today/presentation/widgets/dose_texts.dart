@@ -3,6 +3,61 @@ import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/caregiver.dart';
 import 'package:i_care/features/care/domain/projections/dose_warnings.dart';
+import 'package:i_care/features/today/controllers/today_view.dart';
+
+/// "Ana at 08:04", or "Ana, today at 08:04" when a dose scheduled on an
+/// earlier day was recorded [today], so it is not read as that day's time.
+String recordedByText(
+  AppLocalizations l10n, {
+  required String name,
+  required DateTime at,
+  required DateTime? slotAt,
+  required DateTime today,
+  required String locale,
+}) {
+  final time = Formatters.time(at, locale);
+  final recordedLater =
+      slotAt != null && !_isSameDay(at, slotAt) && _isSameDay(at, today);
+  return recordedLater
+      ? l10n.recordedByToday(name, time)
+      : l10n.recordedBy(name, time);
+}
+
+/// Who recorded each dose in a conflict, and when.
+String conflictRecordsText(
+  AppLocalizations l10n, {
+  required ConflictItem item,
+  required Map<String, Caregiver> caregivers,
+  required DateTime today,
+  required String locale,
+}) => [
+  for (final dose in item.conflict.doses)
+    recordedByText(
+      l10n,
+      name: caregivers[dose.meta.caregiverId]?.name ?? l10n.unknownCaregiver,
+      at: dose.givenAt,
+      slotAt: dose.slotAt,
+      today: today,
+      locale: locale,
+    ),
+].join(' · ');
+
+extension ConflictItemTitle on ConflictItem {
+  String title(AppLocalizations l10n, String locale) {
+    final name = medication.details.name;
+    return switch (slotAt) {
+      final DateTime slotAt => l10n.conflictSlotTitle(
+        name,
+        Formatters.time(slotAt, locale),
+        conflict.doses.length,
+      ),
+      null => l10n.conflictCloseTitle(name),
+    };
+  }
+}
+
+bool _isSameDay(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;
 
 extension SkipReasonLabel on SkipReason {
   String label(AppLocalizations l10n) => switch (this) {
@@ -36,6 +91,7 @@ extension DoseWarningText on DoseWarning {
         given,
         max,
       ),
+      Offline() => l10n.warningOffline,
       OutOfDate(lastSyncedAt: final DateTime at) => l10n.warningOutOfDate(
         time(at),
       ),

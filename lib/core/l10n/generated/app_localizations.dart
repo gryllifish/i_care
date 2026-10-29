@@ -302,29 +302,11 @@ abstract class AppLocalizations {
   /// **'Out of stock'**
   String get stockOut;
 
-  /// No description provided for @toReview.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 thing to review} other{{count} things to review}}'**
-  String toReview(int count);
-
-  /// No description provided for @conflictDoseBody.
-  ///
-  /// In en, this message translates to:
-  /// **'More than one person recorded this dose as given, without seeing the other record. Talk to them before the next dose.'**
-  String get conflictDoseBody;
-
   /// No description provided for @doubleDoseBody.
   ///
   /// In en, this message translates to:
-  /// **'Recorded as given more than once, on purpose.'**
+  /// **'Recorded as given more than once. If in doubt, ask the doctor or pharmacist.'**
   String get doubleDoseBody;
-
-  /// No description provided for @markReviewed.
-  ///
-  /// In en, this message translates to:
-  /// **'Mark as reviewed'**
-  String get markReviewed;
 
   /// No description provided for @markGiven.
   ///
@@ -511,6 +493,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not synced yet'**
   String get notSyncedYet;
+
+  /// No description provided for @conflictSlotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{medication} at {time} was recorded {count} times'**
+  String conflictSlotTitle(String medication, String time, int count);
+
+  /// No description provided for @conflictCloseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{medication}: doses too close together'**
+  String conflictCloseTitle(String medication);
+
+  /// No description provided for @conflictExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'They were recorded on different phones, without seeing each other\'s record.'**
+  String get conflictExplanation;
+
+  /// No description provided for @conflictQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =2{Did {name} get both doses?} other{Did {name} get all {count} doses?}}'**
+  String conflictQuestion(String name, int count);
+
+  /// No description provided for @conflictOnlyOne.
+  ///
+  /// In en, this message translates to:
+  /// **'No, only one'**
+  String get conflictOnlyOne;
+
+  /// No description provided for @conflictAllGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =2{Yes, both were given} other{Yes, all were given}}'**
+  String conflictAllGiven(int count);
+
+  /// No description provided for @conflictNotSure.
+  ///
+  /// In en, this message translates to:
+  /// **'I don\'t know yet'**
+  String get conflictNotSure;
+
+  /// No description provided for @conflictResolvedOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeated record cancelled'**
+  String get conflictResolvedOne;
+
+  /// No description provided for @conflictArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'{medication} was recorded more than once'**
+  String conflictArrived(String medication);
+
+  /// No description provided for @review.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get review;
+
+  /// No description provided for @warningOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone is offline: someone may have given it already.'**
+  String get warningOffline;
+
+  /// No description provided for @doseRecordedOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'{medication} saved on this phone. It will sync when the connection is back.'**
+  String doseRecordedOffline(String medication);
+
+  /// No description provided for @recordedByToday.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, today at {time}'**
+  String recordedByToday(String name, String time);
 }
 
 class _AppLocalizationsDelegate

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i_care/core/constants/app_durations.dart';
 import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/core/theme/app_colors.dart';
@@ -13,8 +14,10 @@ import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/today/controllers/today_view.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_sheet.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_status_style.dart';
+import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_tile.dart';
 import 'package:i_care/features/today/presentation/widgets/sync_banner.dart';
+import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
 
@@ -24,6 +27,19 @@ class TodayScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(todayViewProvider, (previous, next) {
+      // Conflicts already there when the screen opens show in the list;
+      // only ones that arrive with a sync interrupt.
+      final before = previous?.value?.conflicts;
+      final after = next.value?.conflicts;
+      if (before == null || after == null) return;
+      final known = {for (final item in before) item.conflict.key};
+      final arrived = after.where((item) => !known.contains(item.conflict.key));
+      if (arrived.firstOrNull case final item?) {
+        _announceConflict(context, item);
+      }
+    });
+
     return Scaffold(
       body: SafeArea(
         child: switch (ref.watch(todayViewProvider)) {
@@ -38,6 +54,31 @@ class TodayScreen extends ConsumerWidget {
     );
   }
 }
+
+/// Interrupts with a conflict that just arrived, replacing any other
+/// message: it matters more than a confirmation.
+void _announceConflict(BuildContext context, ConflictItem item) {
+  final l10n = context.l10n;
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        content: Text(l10n.conflictArrived(item.medication.details.name)),
+        duration: AppDurations.conflictNotice,
+        action: SnackBarAction(
+          label: l10n.review,
+          onPressed: () => _openConflict(context, item),
+        ),
+      ),
+    );
+}
+
+Future<void> _openConflict(BuildContext context, ConflictItem item) =>
+    showDoseSheet(
+      context,
+      medicationId: item.medication.id,
+      slotAt: item.slotAt,
+    );
 
 class _TodayContent extends StatelessWidget {
   const _TodayContent({required this.view});
@@ -64,9 +105,9 @@ class _TodayContent extends StatelessWidget {
         _Header(day: view.day),
         const SizedBox(height: AppSpacing.md),
         const SyncBanner(),
-        if (view.conflicts.isNotEmpty) ...[
+        for (final item in view.conflicts) ...[
           const SizedBox(height: AppSpacing.lg),
-          _ReviewBanner(count: view.conflicts.length),
+          _ConflictCard(item: item, onTap: () => _openConflict(context, item)),
         ],
         const SizedBox(height: AppSpacing.xl),
         if (next != null)
@@ -277,32 +318,65 @@ class _NextDoseCard extends StatelessWidget {
   }
 }
 
-class _ReviewBanner extends StatelessWidget {
-  const _ReviewBanner({required this.count});
+/// A dose recorded more than once, at the top of Today until reviewed.
+class _ConflictCard extends ConsumerWidget {
+  const _ConflictCard({required this.item, required this.onTap});
 
-  final int count;
+  final ConflictItem item;
+  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final locale = Localizations.localeOf(context).toLanguageTag();
     return Semantics(
       liveRegion: true,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: AppColors.overdueSoft,
+      button: true,
+      child: Material(
+        color: AppColors.overdueSoft,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(AppRadius.md),
-        ),
-        child: Row(
-          spacing: AppSpacing.sm,
-          children: [
-            const Icon(Icons.error, color: AppColors.overdue),
-            Expanded(
-              child: Text(
-                context.l10n.toReview(count),
-                style: AppTextStyles.label.copyWith(color: AppColors.overdue),
-              ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Row(
+              spacing: AppSpacing.md,
+              children: [
+                const Icon(Icons.error, color: AppColors.overdue),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: AppSpacing.xs,
+                    children: [
+                      Text(
+                        item.title(l10n, locale),
+                        style: AppTextStyles.label.copyWith(
+                          color: AppColors.overdue,
+                        ),
+                      ),
+                      Text(
+                        conflictRecordsText(
+                          l10n,
+                          item: item,
+                          caregivers: ref.watch(caregiversByIdProvider),
+                          today: ref.watch(nowProvider),
+                          locale: locale,
+                        ),
+                        style: AppTextStyles.body,
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  l10n.review,
+                  style: AppTextStyles.label.copyWith(
+                    color: AppColors.overdue,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

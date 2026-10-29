@@ -73,15 +73,24 @@ family portal for residents' relatives is a possible later path.
    minimum interval. Medications are archived, never deleted.
 3. **Today**: next dose highlighted; doses grouped by time of day with
    status: upcoming, due (±30 min), overdue, given (who, when), given
-   twice (conflict), skipped (reason). Unresolved doses from yesterday
-   stay in a "From yesterday" section until someone resolves them.
+   twice (conflict), skipped (reason). Doses from yesterday stay in a
+   "From yesterday" section while unresolved, and for the rest of the day
+   once resolved, so whoever resolved them sees the result ("today at").
    As-needed medications show "Last dose: 3 h ago, by Ana". Doses
    recorded on this device but not yet synced show a "Not synced yet"
    badge.
 4. **Dose sheet**: big "Given" button, "Skip" with reason, history of the
    dose. Confirmation when it is already given or the minimum interval
    has not passed; warning when the last sync is older than N minutes.
-   Undo for a few seconds (as a `DoseUndone` event).
+   Undo for a few seconds (as a `DoseUndone` event). An offline phone
+   always warns, and its confirmation says the record is saved on the
+   phone until the connection is back.
+   **Conflicts** (doses recorded twice unseen) interrupt when they arrive
+   with a sync, stay as cards at the top of Today, and open a guided
+   review: "Did Elena get both doses?" → "No, only one" cancels the
+   repeated records; "Yes" keeps the double dose on record with a
+   pointer to the doctor or pharmacist; "I don't know yet" leaves it
+   pending. Giving or skipping is hidden until it is answered.
 5. **Stock** derived from events: counted, refilled, consumed by given
    doses (units stored in each event). Low-stock alert by days left.
 6. **Appointments**: upcoming and past, prep notes and questions for the

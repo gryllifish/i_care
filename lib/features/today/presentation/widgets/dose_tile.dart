@@ -7,10 +7,13 @@ import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
+import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/today/controllers/today_view.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_status_style.dart';
+import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
+import 'package:i_care/shared/providers/now_provider.dart';
 
 /// A scheduled dose: time, medication, status and who recorded it.
 class DoseTile extends ConsumerWidget {
@@ -33,18 +36,18 @@ class DoseTile extends ConsumerWidget {
     final style = slot.style(l10n);
     final details = slot.medication.details;
 
-    String nameOf(String id) => names[id]?.name ?? l10n.unknownCaregiver;
+    final today = ref.watch(nowProvider);
+    String record(CareEvent event, DateTime at) => recordedByText(
+      l10n,
+      name: names[event.meta.caregiverId]?.name ?? l10n.unknownCaregiver,
+      at: at,
+      slotAt: slot.slotAt,
+      today: today,
+      locale: locale,
+    );
     final records = [
-      for (final dose in slot.given)
-        l10n.recordedBy(
-          nameOf(dose.meta.caregiverId),
-          Formatters.time(dose.givenAt, locale),
-        ),
-      for (final skip in slot.skipped)
-        l10n.recordedBy(
-          nameOf(skip.meta.caregiverId),
-          Formatters.time(skip.meta.occurredAt, locale),
-        ),
+      for (final dose in slot.given) record(dose, dose.givenAt),
+      for (final skip in slot.skipped) record(skip, skip.meta.occurredAt),
     ];
 
     return _TileFrame(

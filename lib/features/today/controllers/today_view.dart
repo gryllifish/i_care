@@ -23,6 +23,19 @@ abstract class AsNeededItem with _$AsNeededItem {
   }) = _AsNeededItem;
 }
 
+/// A dose conflict with what the screen needs to describe it.
+@freezed
+abstract class ConflictItem with _$ConflictItem {
+  const factory ConflictItem({
+    required DoseConflict conflict,
+    required Medication medication,
+
+    /// The scheduled time the doses were for; null for as-needed doses or
+    /// doses for different times given too close together.
+    DateTime? slotAt,
+  }) = _ConflictItem;
+}
+
 /// Everything the Today screen shows.
 @freezed
 abstract class TodayView with _$TodayView {
@@ -33,7 +46,7 @@ abstract class TodayView with _$TodayView {
     /// the next upcoming one; null when the day is done.
     DoseSlot? next,
 
-    /// Yesterday's doses nobody resolved.
+    /// Yesterday's doses still unresolved, or resolved today.
     @Default(<DoseSlot>[]) List<DoseSlot> fromYesterday,
 
     /// Today's doses by part of the day, in day order; empty parts left
@@ -44,7 +57,10 @@ abstract class TodayView with _$TodayView {
 
     /// Stock per medication, for low-stock badges.
     @Default(<String, StockLevel>{}) Map<String, StockLevel> stock,
-    @Default(<Conflict>[]) List<Conflict> conflicts,
+
+    /// Dose conflicts nobody has reviewed. Edit conflicts are shown with
+    /// the medication they affect.
+    @Default(<ConflictItem>[]) List<ConflictItem> conflicts,
   }) = _TodayView;
 }
 
@@ -52,10 +68,9 @@ abstract class TodayView with _$TodayView {
 TodayView buildTodayView(CareLog log, DateTime now) {
   final day = DateTime(now.year, now.month, now.day);
   final slots = log.slotsOn(day, now: now);
-  final fromYesterday = log.unresolvedBefore(day, now: now);
+  final fromYesterday = log.fromYesterday(day, now: now);
   final pending = [
-    ...fromYesterday,
-    ...slots.where(
+    ...[...fromYesterday, ...slots].where(
       (slot) =>
           slot.status == DoseStatus.due || slot.status == DoseStatus.overdue,
     ),
@@ -87,8 +102,22 @@ TodayView buildTodayView(CareLog log, DateTime now) {
         if (log.stockOf(medication.id) case final StockLevel level)
           medication.id: level,
     },
-    conflicts: log.conflicts,
+    conflicts: [
+      for (final conflict in log.conflicts.whereType<DoseConflict>())
+        if (log.medication(conflict.medicationId) case final medication?)
+          ConflictItem(
+            conflict: conflict,
+            medication: medication,
+            slotAt: _sharedSlot(conflict),
+          ),
+    ],
   );
+}
+
+/// The scheduled time every dose in [conflict] was for, if they share one.
+DateTime? _sharedSlot(DoseConflict conflict) {
+  final slots = conflict.doses.map((dose) => dose.slotAt).toSet();
+  return slots.length == 1 ? slots.single : null;
 }
 
 @riverpod

@@ -10,12 +10,14 @@ import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
+import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/projections/dose_warnings.dart';
 import 'package:i_care/features/today/controllers/dose_controller.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_status_style.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
+import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 
 /// Opens the sheet to record the dose of [medicationId] scheduled at
@@ -103,63 +105,91 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
           ),
           if (details.instructions.isNotEmpty)
             Text(details.instructions, style: AppTextStyles.bodyMuted),
-          if (detail.conflicts.isNotEmpty)
+          if (detail.conflicts.isNotEmpty) ...[
             _Notice(
               icon: Icons.error,
               color: AppColors.overdue,
               background: AppColors.overdueSoft,
               title: l10n.statusGivenTwice,
-              lines: [l10n.conflictDoseBody],
-              action: TextButton(
-                onPressed: _busy ? null : () => _acknowledge(detail),
-                child: Text(l10n.markReviewed),
+              lines: [l10n.conflictExplanation],
+            ),
+            _History(detail: detail),
+            Text(
+              l10n.conflictQuestion(
+                SampleCircle.recipientName,
+                _conflictDoseCount(detail),
               ),
-            )
-          else if (slot?.isDouble ?? false)
-            _Notice(
-              icon: Icons.info_outline,
-              color: AppColors.inkMuted,
-              background: AppColors.skippedSoft,
-              title: l10n.statusGivenTwice,
-              lines: [l10n.doubleDoseBody],
+              style: AppTextStyles.title,
             ),
-          _History(detail: detail),
-          if (detail.warnings.isNotEmpty)
-            _Notice(
-              icon: Icons.warning_amber,
-              color: AppColors.due,
-              background: AppColors.dueSoft,
-              title: l10n.checkBeforeGiving,
-              lines: [
-                for (final warning in detail.warnings)
-                  warning.text(
-                    l10n,
-                    locale: locale,
-                    caregivers: ref.watch(caregiversByIdProvider),
-                  ),
-              ],
-            ),
-          if (_choosingReason && slot != null)
-            _ReasonPicker(
-              onPicked: _busy ? null : (reason) => _skip(detail, slot, reason),
-            )
-          else ...[
             FilledButton(
-              onPressed: _busy ? null : () => _give(detail),
-              child: Text(
-                detail.warnings.isEmpty ? l10n.markGiven : l10n.markGivenAnyway,
-              ),
+              onPressed: _busy ? null : () => _keepOnlyOne(detail),
+              child: Text(l10n.conflictOnlyOne),
             ),
-            if (slot != null && !isResolved)
-              OutlinedButton(
-                onPressed: _busy
-                    ? null
-                    : () => setState(() => _choosingReason = true),
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(_secondaryButtonHeight),
-                ),
-                child: Text(l10n.skipDose),
+            OutlinedButton(
+              onPressed: _busy ? null : () => _confirmAll(detail),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size.fromHeight(_secondaryButtonHeight),
               ),
+              child: Text(l10n.conflictAllGiven(_conflictDoseCount(detail))),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: TextButton.styleFrom(
+                minimumSize: const Size.fromHeight(_secondaryButtonHeight),
+              ),
+              child: Text(l10n.conflictNotSure),
+            ),
+          ] else ...[
+            if (slot?.isDouble ?? false)
+              _Notice(
+                icon: Icons.info_outline,
+                color: AppColors.inkMuted,
+                background: AppColors.skippedSoft,
+                title: l10n.statusGivenTwice,
+                lines: [l10n.doubleDoseBody],
+              ),
+            _History(detail: detail),
+            if (detail.warnings.isNotEmpty)
+              _Notice(
+                icon: Icons.warning_amber,
+                color: AppColors.due,
+                background: AppColors.dueSoft,
+                title: l10n.checkBeforeGiving,
+                lines: [
+                  for (final warning in detail.warnings)
+                    warning.text(
+                      l10n,
+                      locale: locale,
+                      caregivers: ref.watch(caregiversByIdProvider),
+                    ),
+                ],
+              ),
+            if (_choosingReason && slot != null)
+              _ReasonPicker(
+                onPicked: _busy
+                    ? null
+                    : (reason) => _skip(detail, slot, reason),
+              )
+            else ...[
+              FilledButton(
+                onPressed: _busy ? null : () => _give(detail),
+                child: Text(
+                  detail.warnings.isEmpty
+                      ? l10n.markGiven
+                      : l10n.markGivenAnyway,
+                ),
+              ),
+              if (slot != null && !isResolved)
+                OutlinedButton(
+                  onPressed: _busy
+                      ? null
+                      : () => setState(() => _choosingReason = true),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(_secondaryButtonHeight),
+                  ),
+                  child: Text(l10n.skipDose),
+                ),
+            ],
           ],
         ],
       ),
@@ -172,6 +202,8 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     final actions = ref.read(doseActionsProvider.notifier);
+    final isConnected = ref.read(syncStatusProvider).value?.isConnected ?? true;
+    final name = detail.medication.details.name;
     setState(() => _busy = true);
 
     final result = await actions.give(
@@ -183,7 +215,11 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     Navigator.of(context).pop();
     messenger.showSnackBar(switch (result) {
       Ok(:final value) => SnackBar(
-        content: Text(l10n.doseRecordedGiven(detail.medication.details.name)),
+        content: Text(
+          isConnected
+              ? l10n.doseRecordedGiven(name)
+              : l10n.doseRecordedOffline(name),
+        ),
         duration: AppDurations.undoWindow,
         action: SnackBarAction(
           label: l10n.undo,
@@ -224,7 +260,28 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     });
   }
 
-  Future<void> _acknowledge(DoseDetail detail) async {
+  /// The doses were one and the same: cancels every record after the
+  /// first, so the dose reads as given once.
+  Future<void> _keepOnlyOne(DoseDetail detail) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final actions = ref.read(doseActionsProvider.notifier);
+    setState(() => _busy = true);
+
+    final repeated = {
+      for (final conflict in detail.conflicts) ...conflict.doses.skip(1),
+    };
+    for (final dose in repeated) {
+      await actions.undo(dose);
+    }
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    messenger.showSnackBar(SnackBar(content: Text(l10n.conflictResolvedOne)));
+  }
+
+  /// Every dose was really given: the conflict is reviewed and the dose
+  /// stays marked as given more than once.
+  Future<void> _confirmAll(DoseDetail detail) async {
     final actions = ref.read(doseActionsProvider.notifier);
     setState(() => _busy = true);
     for (final conflict in detail.conflicts) {
@@ -233,6 +290,10 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     if (mounted) setState(() => _busy = false);
   }
 }
+
+int _conflictDoseCount(DoseDetail detail) => detail.conflicts
+    .map((conflict) => conflict.doses.length)
+    .fold(0, (most, count) => count > most ? count : most);
 
 /// Who recorded what for this dose.
 class _History extends ConsumerWidget {
@@ -271,9 +332,13 @@ class _History extends ConsumerWidget {
         for (final dose in detail.history)
           row(
             dose.meta.caregiverId,
-            l10n.recordedBy(
-              nameOf(dose.meta.caregiverId),
-              Formatters.time(dose.givenAt, locale),
+            recordedByText(
+              l10n,
+              name: nameOf(dose.meta.caregiverId),
+              at: dose.givenAt,
+              slotAt: dose.slotAt,
+              today: ref.watch(nowProvider),
+              locale: locale,
             ),
           ),
         for (final skip in skipped)
@@ -326,7 +391,6 @@ class _Notice extends StatelessWidget {
     required this.background,
     required this.title,
     required this.lines,
-    this.action,
   });
 
   final IconData icon;
@@ -334,7 +398,6 @@ class _Notice extends StatelessWidget {
   final Color background;
   final String title;
   final List<String> lines;
-  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
@@ -361,7 +424,6 @@ class _Notice extends StatelessWidget {
             ],
           ),
           for (final line in lines) Text(line, style: AppTextStyles.body),
-          ?action,
         ],
       ),
     );

@@ -18,6 +18,7 @@ void main() {
     DateTime? slotAt,
     DateTime? now,
     DateTime? lastSyncedAt,
+    bool isConnected = true,
   }) {
     final careLog = CareLog(log);
     final medication = careLog.medication('m1');
@@ -28,6 +29,7 @@ void main() {
       slotAt: slotAt,
       now: now ?? eight,
       lastSyncedAt: lastSyncedAt ?? justSynced,
+      isConnected: isConnected,
     );
   }
 
@@ -91,6 +93,13 @@ void main() {
         lastSyncedAt: eight.subtract(staleSyncAfter * 2),
       ),
       [isA<OutOfDate>()],
+    );
+  });
+
+  test('warns when the device is offline, however recently it synced', () {
+    expect(
+      warn([events.created('m1')], slotAt: eight, isConnected: false),
+      [isA<Offline>()],
     );
   });
 

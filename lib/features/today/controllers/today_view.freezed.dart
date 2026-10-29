@@ -317,15 +317,302 @@ $StockLevelCopyWith<$Res>? get stock {
 }
 
 /// @nodoc
+mixin _$ConflictItem {
+
+ DoseConflict get conflict; Medication get medication;/// The scheduled time the doses were for; null for as-needed doses or
+/// doses for different times given too close together.
+ DateTime? get slotAt;
+/// Create a copy of ConflictItem
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ConflictItemCopyWith<ConflictItem> get copyWith => _$ConflictItemCopyWithImpl<ConflictItem>(this as ConflictItem, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConflictItem&&const DeepCollectionEquality().equals(other.conflict, conflict)&&(identical(other.medication, medication) || other.medication == medication)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(conflict),medication,slotAt);
+
+@override
+String toString() {
+  return 'ConflictItem(conflict: $conflict, medication: $medication, slotAt: $slotAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ConflictItemCopyWith<$Res>  {
+  factory $ConflictItemCopyWith(ConflictItem value, $Res Function(ConflictItem) _then) = _$ConflictItemCopyWithImpl;
+@useResult
+$Res call({
+ DoseConflict conflict, Medication medication, DateTime? slotAt
+});
+
+
+$MedicationCopyWith<$Res> get medication;
+
+}
+/// @nodoc
+class _$ConflictItemCopyWithImpl<$Res>
+    implements $ConflictItemCopyWith<$Res> {
+  _$ConflictItemCopyWithImpl(this._self, this._then);
+
+  final ConflictItem _self;
+  final $Res Function(ConflictItem) _then;
+
+/// Create a copy of ConflictItem
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? conflict = freezed,Object? medication = null,Object? slotAt = freezed,}) {
+  return _then(_self.copyWith(
+conflict: freezed == conflict ? _self.conflict : conflict // ignore: cast_nullable_to_non_nullable
+as DoseConflict,medication: null == medication ? _self.medication : medication // ignore: cast_nullable_to_non_nullable
+as Medication,slotAt: freezed == slotAt ? _self.slotAt : slotAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+/// Create a copy of ConflictItem
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MedicationCopyWith<$Res> get medication {
+  
+  return $MedicationCopyWith<$Res>(_self.medication, (value) {
+    return _then(_self.copyWith(medication: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [ConflictItem].
+extension ConflictItemPatterns on ConflictItem {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ConflictItem value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ConflictItem() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ConflictItem value)  $default,){
+final _that = this;
+switch (_that) {
+case _ConflictItem():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ConflictItem value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ConflictItem() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DoseConflict conflict,  Medication medication,  DateTime? slotAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ConflictItem() when $default != null:
+return $default(_that.conflict,_that.medication,_that.slotAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DoseConflict conflict,  Medication medication,  DateTime? slotAt)  $default,) {final _that = this;
+switch (_that) {
+case _ConflictItem():
+return $default(_that.conflict,_that.medication,_that.slotAt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DoseConflict conflict,  Medication medication,  DateTime? slotAt)?  $default,) {final _that = this;
+switch (_that) {
+case _ConflictItem() when $default != null:
+return $default(_that.conflict,_that.medication,_that.slotAt);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _ConflictItem implements ConflictItem {
+  const _ConflictItem({required this.conflict, required this.medication, this.slotAt});
+  
+
+@override final  DoseConflict conflict;
+@override final  Medication medication;
+/// The scheduled time the doses were for; null for as-needed doses or
+/// doses for different times given too close together.
+@override final  DateTime? slotAt;
+
+/// Create a copy of ConflictItem
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ConflictItemCopyWith<_ConflictItem> get copyWith => __$ConflictItemCopyWithImpl<_ConflictItem>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConflictItem&&const DeepCollectionEquality().equals(other.conflict, conflict)&&(identical(other.medication, medication) || other.medication == medication)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(conflict),medication,slotAt);
+
+@override
+String toString() {
+  return 'ConflictItem(conflict: $conflict, medication: $medication, slotAt: $slotAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ConflictItemCopyWith<$Res> implements $ConflictItemCopyWith<$Res> {
+  factory _$ConflictItemCopyWith(_ConflictItem value, $Res Function(_ConflictItem) _then) = __$ConflictItemCopyWithImpl;
+@override @useResult
+$Res call({
+ DoseConflict conflict, Medication medication, DateTime? slotAt
+});
+
+
+@override $MedicationCopyWith<$Res> get medication;
+
+}
+/// @nodoc
+class __$ConflictItemCopyWithImpl<$Res>
+    implements _$ConflictItemCopyWith<$Res> {
+  __$ConflictItemCopyWithImpl(this._self, this._then);
+
+  final _ConflictItem _self;
+  final $Res Function(_ConflictItem) _then;
+
+/// Create a copy of ConflictItem
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? conflict = freezed,Object? medication = null,Object? slotAt = freezed,}) {
+  return _then(_ConflictItem(
+conflict: freezed == conflict ? _self.conflict : conflict // ignore: cast_nullable_to_non_nullable
+as DoseConflict,medication: null == medication ? _self.medication : medication // ignore: cast_nullable_to_non_nullable
+as Medication,slotAt: freezed == slotAt ? _self.slotAt : slotAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
+  ));
+}
+
+/// Create a copy of ConflictItem
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$MedicationCopyWith<$Res> get medication {
+  
+  return $MedicationCopyWith<$Res>(_self.medication, (value) {
+    return _then(_self.copyWith(medication: value));
+  });
+}
+}
+
+/// @nodoc
 mixin _$TodayView {
 
  DateTime get day;/// The dose to attend to first: the earliest due or late one, else
 /// the next upcoming one; null when the day is done.
- DoseSlot? get next;/// Yesterday's doses nobody resolved.
+ DoseSlot? get next;/// Yesterday's doses still unresolved, or resolved today.
  List<DoseSlot> get fromYesterday;/// Today's doses by part of the day, in day order; empty parts left
 /// out.
  Map<DayPart, List<DoseSlot>> get byDayPart; List<AsNeededItem> get asNeeded;/// Stock per medication, for low-stock badges.
- Map<String, StockLevel> get stock; List<Conflict> get conflicts;
+ Map<String, StockLevel> get stock;/// Dose conflicts nobody has reviewed. Edit conflicts are shown with
+/// the medication they affect.
+ List<ConflictItem> get conflicts;
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -356,7 +643,7 @@ abstract mixin class $TodayViewCopyWith<$Res>  {
   factory $TodayViewCopyWith(TodayView value, $Res Function(TodayView) _then) = _$TodayViewCopyWithImpl;
 @useResult
 $Res call({
- DateTime day, DoseSlot? next, List<DoseSlot> fromYesterday, Map<DayPart, List<DoseSlot>> byDayPart, List<AsNeededItem> asNeeded, Map<String, StockLevel> stock, List<Conflict> conflicts
+ DateTime day, DoseSlot? next, List<DoseSlot> fromYesterday, Map<DayPart, List<DoseSlot>> byDayPart, List<AsNeededItem> asNeeded, Map<String, StockLevel> stock, List<ConflictItem> conflicts
 });
 
 
@@ -382,7 +669,7 @@ as List<DoseSlot>,byDayPart: null == byDayPart ? _self.byDayPart : byDayPart // 
 as Map<DayPart, List<DoseSlot>>,asNeeded: null == asNeeded ? _self.asNeeded : asNeeded // ignore: cast_nullable_to_non_nullable
 as List<AsNeededItem>,stock: null == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
 as Map<String, StockLevel>,conflicts: null == conflicts ? _self.conflicts : conflicts // ignore: cast_nullable_to_non_nullable
-as List<Conflict>,
+as List<ConflictItem>,
   ));
 }
 /// Create a copy of TodayView
@@ -479,7 +766,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DateTime day,  DoseSlot? next,  List<DoseSlot> fromYesterday,  Map<DayPart, List<DoseSlot>> byDayPart,  List<AsNeededItem> asNeeded,  Map<String, StockLevel> stock,  List<Conflict> conflicts)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DateTime day,  DoseSlot? next,  List<DoseSlot> fromYesterday,  Map<DayPart, List<DoseSlot>> byDayPart,  List<AsNeededItem> asNeeded,  Map<String, StockLevel> stock,  List<ConflictItem> conflicts)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
 return $default(_that.day,_that.next,_that.fromYesterday,_that.byDayPart,_that.asNeeded,_that.stock,_that.conflicts);case _:
@@ -500,7 +787,7 @@ return $default(_that.day,_that.next,_that.fromYesterday,_that.byDayPart,_that.a
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DateTime day,  DoseSlot? next,  List<DoseSlot> fromYesterday,  Map<DayPart, List<DoseSlot>> byDayPart,  List<AsNeededItem> asNeeded,  Map<String, StockLevel> stock,  List<Conflict> conflicts)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DateTime day,  DoseSlot? next,  List<DoseSlot> fromYesterday,  Map<DayPart, List<DoseSlot>> byDayPart,  List<AsNeededItem> asNeeded,  Map<String, StockLevel> stock,  List<ConflictItem> conflicts)  $default,) {final _that = this;
 switch (_that) {
 case _TodayView():
 return $default(_that.day,_that.next,_that.fromYesterday,_that.byDayPart,_that.asNeeded,_that.stock,_that.conflicts);case _:
@@ -520,7 +807,7 @@ return $default(_that.day,_that.next,_that.fromYesterday,_that.byDayPart,_that.a
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DateTime day,  DoseSlot? next,  List<DoseSlot> fromYesterday,  Map<DayPart, List<DoseSlot>> byDayPart,  List<AsNeededItem> asNeeded,  Map<String, StockLevel> stock,  List<Conflict> conflicts)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DateTime day,  DoseSlot? next,  List<DoseSlot> fromYesterday,  Map<DayPart, List<DoseSlot>> byDayPart,  List<AsNeededItem> asNeeded,  Map<String, StockLevel> stock,  List<ConflictItem> conflicts)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
 return $default(_that.day,_that.next,_that.fromYesterday,_that.byDayPart,_that.asNeeded,_that.stock,_that.conflicts);case _:
@@ -535,16 +822,16 @@ return $default(_that.day,_that.next,_that.fromYesterday,_that.byDayPart,_that.a
 
 
 class _TodayView implements TodayView {
-  const _TodayView({required this.day, this.next, final  List<DoseSlot> fromYesterday = const <DoseSlot>[], final  Map<DayPart, List<DoseSlot>> byDayPart = const <DayPart, List<DoseSlot>>{}, final  List<AsNeededItem> asNeeded = const <AsNeededItem>[], final  Map<String, StockLevel> stock = const <String, StockLevel>{}, final  List<Conflict> conflicts = const <Conflict>[]}): _fromYesterday = fromYesterday,_byDayPart = byDayPart,_asNeeded = asNeeded,_stock = stock,_conflicts = conflicts;
+  const _TodayView({required this.day, this.next, final  List<DoseSlot> fromYesterday = const <DoseSlot>[], final  Map<DayPart, List<DoseSlot>> byDayPart = const <DayPart, List<DoseSlot>>{}, final  List<AsNeededItem> asNeeded = const <AsNeededItem>[], final  Map<String, StockLevel> stock = const <String, StockLevel>{}, final  List<ConflictItem> conflicts = const <ConflictItem>[]}): _fromYesterday = fromYesterday,_byDayPart = byDayPart,_asNeeded = asNeeded,_stock = stock,_conflicts = conflicts;
   
 
 @override final  DateTime day;
 /// The dose to attend to first: the earliest due or late one, else
 /// the next upcoming one; null when the day is done.
 @override final  DoseSlot? next;
-/// Yesterday's doses nobody resolved.
+/// Yesterday's doses still unresolved, or resolved today.
  final  List<DoseSlot> _fromYesterday;
-/// Yesterday's doses nobody resolved.
+/// Yesterday's doses still unresolved, or resolved today.
 @override@JsonKey() List<DoseSlot> get fromYesterday {
   if (_fromYesterday is EqualUnmodifiableListView) return _fromYesterday;
   // ignore: implicit_dynamic_type
@@ -578,8 +865,12 @@ class _TodayView implements TodayView {
   return EqualUnmodifiableMapView(_stock);
 }
 
- final  List<Conflict> _conflicts;
-@override@JsonKey() List<Conflict> get conflicts {
+/// Dose conflicts nobody has reviewed. Edit conflicts are shown with
+/// the medication they affect.
+ final  List<ConflictItem> _conflicts;
+/// Dose conflicts nobody has reviewed. Edit conflicts are shown with
+/// the medication they affect.
+@override@JsonKey() List<ConflictItem> get conflicts {
   if (_conflicts is EqualUnmodifiableListView) return _conflicts;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_conflicts);
@@ -616,7 +907,7 @@ abstract mixin class _$TodayViewCopyWith<$Res> implements $TodayViewCopyWith<$Re
   factory _$TodayViewCopyWith(_TodayView value, $Res Function(_TodayView) _then) = __$TodayViewCopyWithImpl;
 @override @useResult
 $Res call({
- DateTime day, DoseSlot? next, List<DoseSlot> fromYesterday, Map<DayPart, List<DoseSlot>> byDayPart, List<AsNeededItem> asNeeded, Map<String, StockLevel> stock, List<Conflict> conflicts
+ DateTime day, DoseSlot? next, List<DoseSlot> fromYesterday, Map<DayPart, List<DoseSlot>> byDayPart, List<AsNeededItem> asNeeded, Map<String, StockLevel> stock, List<ConflictItem> conflicts
 });
 
 
@@ -642,7 +933,7 @@ as List<DoseSlot>,byDayPart: null == byDayPart ? _self._byDayPart : byDayPart //
 as Map<DayPart, List<DoseSlot>>,asNeeded: null == asNeeded ? _self._asNeeded : asNeeded // ignore: cast_nullable_to_non_nullable
 as List<AsNeededItem>,stock: null == stock ? _self._stock : stock // ignore: cast_nullable_to_non_nullable
 as Map<String, StockLevel>,conflicts: null == conflicts ? _self._conflicts : conflicts // ignore: cast_nullable_to_non_nullable
-as List<Conflict>,
+as List<ConflictItem>,
   ));
 }
 

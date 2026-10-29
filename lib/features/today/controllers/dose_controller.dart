@@ -35,7 +35,7 @@ AsyncValue<DoseDetail?> doseDetail(
   DateTime? slotAt,
 ) {
   final now = ref.watch(nowProvider);
-  final lastSyncedAt = ref.watch(syncStatusProvider).value?.lastSyncedAt;
+  final status = ref.watch(syncStatusProvider).value;
   return ref.watch(careLogProvider).whenData((log) {
     final medication = log.medication(medicationId);
     if (medication == null) return null;
@@ -53,7 +53,8 @@ AsyncValue<DoseDetail?> doseDetail(
         medication: medication,
         slotAt: slotAt,
         now: now,
-        lastSyncedAt: lastSyncedAt,
+        lastSyncedAt: status?.lastSyncedAt,
+        isConnected: status?.isConnected ?? true,
       ),
       conflicts: [
         for (final conflict in log.conflicts.whereType<DoseConflict>())

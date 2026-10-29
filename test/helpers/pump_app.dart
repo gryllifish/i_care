@@ -47,6 +47,12 @@ class FakeCareRepository implements CareRepository {
     return const Ok<void>(null);
   }
 
+  /// Adds [event] as if it had arrived from another phone.
+  void receive(CareEvent event) {
+    events.add(event);
+    _changes.add(null);
+  }
+
   @override
   Stream<SyncStatus> watchSyncStatus() => Stream.value(status);
 }
