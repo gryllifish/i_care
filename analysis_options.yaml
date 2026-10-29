@@ -1,0 +1,31 @@
+include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - lib/core/l10n/generated/**
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+  errors:
+    # freezed places json annotations on constructor parameters.
+    invalid_annotation_target: ignore
+
+linter:
+  rules:
+    # Already enabled by very_good_analysis; listed so they are explicit.
+    always_declare_return_types: true
+    avoid_print: true
+    prefer_const_constructors: true
+    prefer_final_locals: true
+    unawaited_futures: true
+
+    # Doc comments are required for public APIs in core/ and domain/ only
+    # (see .claude/steering/code-style.md), not for every widget.
+    public_member_api_docs: false
+    # Riverpod notifiers expose intent-named methods, not setters.
+    use_setters_to_change_properties: false
+    # The tall-style formatter (Dart >= 3.7) manages trailing commas itself.
+    require_trailing_commas: false

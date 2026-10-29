@@ -1,0 +1,5 @@
+# Generated code is committed (so the repo runs right after cloning) but
+# collapsed in GitHub diffs and excluded from language stats.
+*.g.dart linguist-generated=true
+*.freezed.dart linguist-generated=true
+lib/core/l10n/generated/** linguist-generated=true

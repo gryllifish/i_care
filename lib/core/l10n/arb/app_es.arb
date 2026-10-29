@@ -1,0 +1,13 @@
+{
+  "@@locale": "es",
+  "appTitle": "ICare",
+  "retry": "Reintentar",
+  "todayTitle": "Hoy",
+  "medicalDisclaimer": "ICare ayuda a coordinar el cuidado entre varias personas. No da consejo médico: seguí las indicaciones del médico o farmacéutico tratante.",
+  "errorLoadData": "No pudimos leer los datos guardados.",
+  "errorNotFound": "No encontramos ese elemento.",
+  "errorUnexpected": "Algo salió mal. Probá de nuevo.",
+  "errorOffline": "Estás sin conexión. Los cambios quedan guardados en este dispositivo y se sincronizan al volver la conexión.",
+  "errorTimeout": "Está tardando demasiado. Probá de nuevo.",
+  "errorServer": "El servicio de sincronización tiene problemas. Probá en un rato."
+}
