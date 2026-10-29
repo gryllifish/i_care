@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:i_care/core/constants/app_durations.dart';
 import 'package:i_care/core/l10n/duration_text.dart';
 import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
+import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_radius.dart';
 import 'package:i_care/core/theme/app_shadows.dart';
@@ -12,6 +14,7 @@ import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
+import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/today/controllers/dose_controller.dart';
@@ -20,9 +23,11 @@ import 'package:i_care/features/today/presentation/widgets/dose_sheet.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_tile.dart';
 import 'package:i_care/features/today/presentation/widgets/sync_banner.dart';
+import 'package:i_care/shared/l10n/date_texts.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
+import 'package:i_care/shared/widgets/date_badge.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
 import 'package:i_care/shared/widgets/screen_header.dart';
 
@@ -122,6 +127,10 @@ class _TodayContent extends StatelessWidget {
             isFromYesterday: next.slotAt.isBefore(view.day),
             onOpen: () => open(next),
           ),
+        ],
+        if (view.nextAppointment case final appointment?) ...[
+          const SizedBox(height: AppSpacing.lg),
+          _NextAppointmentCard(appointment: appointment),
         ],
         if (view.fromYesterday.isNotEmpty)
           _Timeline(
@@ -525,6 +534,56 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
     setState(() => _busy = true);
     await recordDoseGiven(context, ref, detail: detail, slotAt: slot.slotAt);
     if (mounted) setState(() => _busy = false);
+  }
+}
+
+/// The next appointment, when it is close; opens it in its tab.
+class _NextAppointmentCard extends ConsumerWidget {
+  const _NextAppointmentCard({required this.appointment});
+
+  final Appointment appointment;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final details = appointment.details;
+    final questions = details.questionList.length;
+    return AppCard(
+      onTap: () => context.go(AppRoutes.appointmentPath(appointment.id)),
+      child: Row(
+        spacing: AppSpacing.md,
+        children: [
+          DateBadge(day: appointment.startsAt),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: AppSpacing.xxs,
+              children: [
+                Text(
+                  l10n.nextAppointment.toUpperCase(),
+                  style: AppTextStyles.overline,
+                ),
+                Text(details.title, style: AppTextStyles.title),
+                Text(
+                  [
+                    appointmentWhen(
+                      l10n,
+                      appointment.startsAt,
+                      now: ref.watch(nowProvider),
+                      locale: locale,
+                    ),
+                    if (questions > 0) l10n.questionsCount(questions),
+                  ].join(' · '),
+                  style: AppTextStyles.bodyMuted,
+                ),
+              ],
+            ),
+          ),
+          const Icon(Icons.chevron_right, color: AppColors.inkMuted),
+        ],
+      ),
+    );
   }
 }
 

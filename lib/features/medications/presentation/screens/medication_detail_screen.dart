@@ -21,6 +21,7 @@ import 'package:i_care/features/medications/presentation/widgets/stock_input.dar
 import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
+import 'package:i_care/shared/widgets/edit_conflict_card.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
 import 'package:i_care/shared/widgets/low_stock_pill.dart';
 import 'package:i_care/shared/widgets/medication_icon.dart';
@@ -180,7 +181,7 @@ class _DetailContent extends StatelessWidget {
         ),
         for (final conflict in detail.conflicts) ...[
           const SizedBox(height: AppSpacing.lg),
-          _EditConflictCard(conflict: conflict, medication: medication),
+          _MedicationConflict(conflict: conflict, medication: medication),
         ],
         _Section(
           title: l10n.scheduleTitle,
@@ -390,118 +391,32 @@ class _RecentDoses extends ConsumerWidget {
   }
 }
 
-/// Changes made at the same time by different people, side by side, to
-/// keep the one in use or bring back another.
-class _EditConflictCard extends ConsumerStatefulWidget {
-  const _EditConflictCard({required this.conflict, required this.medication});
+/// A concurrent edit of this medication, to keep or undo.
+class _MedicationConflict extends ConsumerWidget {
+  const _MedicationConflict({required this.conflict, required this.medication});
 
   final EditConflict conflict;
   final Medication medication;
 
   @override
-  ConsumerState<_EditConflictCard> createState() => _EditConflictCardState();
-}
-
-class _EditConflictCardState extends ConsumerState<_EditConflictCard> {
-  var _busy = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final caregivers = ref.watch(caregiversByIdProvider);
-    final changes = widget.conflict.changes;
-
-    String summary(CareEvent change) => switch (change) {
-      MedicationUpdated(:final details) => [
-        details.name,
-        if (details.strength.isNotEmpty) details.strength,
-        if (details.instructions.isNotEmpty) details.instructions,
-      ].join(' · '),
-      ScheduleChanged(:final schedule) => schedule.describe(l10n, locale),
-      MedicationArchived() => l10n.changeArchived,
-      _ => '',
-    };
-
-    return AppCard(
-      color: AppColors.overdueSoft,
-      raised: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: AppSpacing.md,
-        children: [
-          Row(
-            spacing: AppSpacing.sm,
-            children: [
-              const Icon(Icons.error, color: AppColors.overdue),
-              Expanded(
-                child: Text(
-                  l10n.editConflictTitle,
-                  style: AppTextStyles.label.copyWith(
-                    color: AppColors.overdue,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Text(l10n.editConflictBody, style: AppTextStyles.body),
-          for (final change in changes)
-            AppCard(
-              raised: false,
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: AppSpacing.sm,
-                children: [
-                  Text(
-                    l10n.changeBy(
-                      caregivers[change.meta.caregiverId]?.name ??
-                          l10n.unknownCaregiver,
-                      Formatters.time(change.meta.occurredAt, locale),
-                    ),
-                    style: AppTextStyles.bodyMuted,
-                  ),
-                  Text(summary(change), style: AppTextStyles.body),
-                  OverflowBar(
-                    alignment: MainAxisAlignment.spaceBetween,
-                    overflowAlignment: OverflowBarAlignment.end,
-                    overflowSpacing: AppSpacing.xs,
-                    children: [
-                      if (change == changes.last)
-                        StatusPill(
-                          icon: Icons.check,
-                          label: l10n.inUse,
-                          color: AppColors.given,
-                          background: AppColors.givenSoft,
-                        )
-                      else
-                        const SizedBox.shrink(),
-                      TextButton(
-                        onPressed: _busy ? null : () => _choose(change),
-                        child: Text(
-                          change == changes.last ? l10n.keepThis : l10n.useThis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
+    return EditConflictCard(
+      conflict: conflict,
+      summarize: (change) => switch (change) {
+        MedicationUpdated(:final details) => [
+          details.name,
+          if (details.strength.isNotEmpty) details.strength,
+          if (details.instructions.isNotEmpty) details.instructions,
+        ].join(' · '),
+        ScheduleChanged(:final schedule) => schedule.describe(l10n, locale),
+        MedicationArchived() => l10n.changeArchived,
+        _ => '',
+      },
+      onChoose: (change) => ref
+          .read(medicationActionsProvider.notifier)
+          .resolve(conflict, medication, chosen: change),
     );
-  }
-
-  Future<void> _choose(CareEvent change) async {
-    final l10n = context.l10n;
-    final messenger = ScaffoldMessenger.of(context);
-    setState(() => _busy = true);
-    final result = await ref
-        .read(medicationActionsProvider.notifier)
-        .resolve(widget.conflict, widget.medication, chosen: change);
-    if (result case Err(:final failure)) {
-      messenger.showSnackBar(SnackBar(content: Text(failure.message(l10n))));
-    }
-    if (mounted) setState(() => _busy = false);
   }
 }

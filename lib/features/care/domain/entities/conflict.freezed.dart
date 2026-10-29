@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Conflict {
 
- String get key; String get medicationId;
+ String get key;
 /// Create a copy of Conflict
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ConflictCopyWith<Conflict> get copyWith => _$ConflictCopyWithImpl<Conflict>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Conflict&&(identical(other.key, key) || other.key == key)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Conflict&&(identical(other.key, key) || other.key == key));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,medicationId);
+int get hashCode => Object.hash(runtimeType,key);
 
 @override
 String toString() {
-  return 'Conflict(key: $key, medicationId: $medicationId)';
+  return 'Conflict(key: $key)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ConflictCopyWith<$Res>  {
   factory $ConflictCopyWith(Conflict value, $Res Function(Conflict) _then) = _$ConflictCopyWithImpl;
 @useResult
 $Res call({
- String key, String medicationId
+ String key
 });
 
 
@@ -62,10 +62,9 @@ class _$ConflictCopyWithImpl<$Res>
 
 /// Create a copy of Conflict
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? key = null,Object? medicationId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? key = null,}) {
   return _then(_self.copyWith(
 key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
-as String,medicationId: null == medicationId ? _self.medicationId : medicationId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -151,11 +150,11 @@ return edit(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String key,  String medicationId,  List<DoseGiven> doses)?  dose,TResult Function( String key,  String medicationId,  List<CareEvent> changes)?  edit,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String key,  String medicationId,  List<DoseGiven> doses)?  dose,TResult Function( String key,  String entityId,  List<CareEvent> changes)?  edit,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case DoseConflict() when dose != null:
 return dose(_that.key,_that.medicationId,_that.doses);case EditConflict() when edit != null:
-return edit(_that.key,_that.medicationId,_that.changes);case _:
+return edit(_that.key,_that.entityId,_that.changes);case _:
   return orElse();
 
 }
@@ -173,11 +172,11 @@ return edit(_that.key,_that.medicationId,_that.changes);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String key,  String medicationId,  List<DoseGiven> doses)  dose,required TResult Function( String key,  String medicationId,  List<CareEvent> changes)  edit,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String key,  String medicationId,  List<DoseGiven> doses)  dose,required TResult Function( String key,  String entityId,  List<CareEvent> changes)  edit,}) {final _that = this;
 switch (_that) {
 case DoseConflict():
 return dose(_that.key,_that.medicationId,_that.doses);case EditConflict():
-return edit(_that.key,_that.medicationId,_that.changes);}
+return edit(_that.key,_that.entityId,_that.changes);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -191,11 +190,11 @@ return edit(_that.key,_that.medicationId,_that.changes);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String key,  String medicationId,  List<DoseGiven> doses)?  dose,TResult? Function( String key,  String medicationId,  List<CareEvent> changes)?  edit,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String key,  String medicationId,  List<DoseGiven> doses)?  dose,TResult? Function( String key,  String entityId,  List<CareEvent> changes)?  edit,}) {final _that = this;
 switch (_that) {
 case DoseConflict() when dose != null:
 return dose(_that.key,_that.medicationId,_that.doses);case EditConflict() when edit != null:
-return edit(_that.key,_that.medicationId,_that.changes);case _:
+return edit(_that.key,_that.entityId,_that.changes);case _:
   return null;
 
 }
@@ -211,7 +210,7 @@ class DoseConflict implements Conflict {
   
 
 @override final  String key;
-@override final  String medicationId;
+ final  String medicationId;
  final  List<DoseGiven> _doses;
  List<DoseGiven> get doses {
   if (_doses is EqualUnmodifiableListView) return _doses;
@@ -283,11 +282,12 @@ as List<DoseGiven>,
 
 
 class EditConflict implements Conflict {
-  const EditConflict({required this.key, required this.medicationId, required final  List<CareEvent> changes}): _changes = changes;
+  const EditConflict({required this.key, required this.entityId, required final  List<CareEvent> changes}): _changes = changes;
   
 
 @override final  String key;
-@override final  String medicationId;
+/// The medication or appointment changed.
+ final  String entityId;
  final  List<CareEvent> _changes;
  List<CareEvent> get changes {
   if (_changes is EqualUnmodifiableListView) return _changes;
@@ -306,16 +306,16 @@ $EditConflictCopyWith<EditConflict> get copyWith => _$EditConflictCopyWithImpl<E
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditConflict&&(identical(other.key, key) || other.key == key)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&const DeepCollectionEquality().equals(other._changes, _changes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditConflict&&(identical(other.key, key) || other.key == key)&&(identical(other.entityId, entityId) || other.entityId == entityId)&&const DeepCollectionEquality().equals(other._changes, _changes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,medicationId,const DeepCollectionEquality().hash(_changes));
+int get hashCode => Object.hash(runtimeType,key,entityId,const DeepCollectionEquality().hash(_changes));
 
 @override
 String toString() {
-  return 'Conflict.edit(key: $key, medicationId: $medicationId, changes: $changes)';
+  return 'Conflict.edit(key: $key, entityId: $entityId, changes: $changes)';
 }
 
 
@@ -326,7 +326,7 @@ abstract mixin class $EditConflictCopyWith<$Res> implements $ConflictCopyWith<$R
   factory $EditConflictCopyWith(EditConflict value, $Res Function(EditConflict) _then) = _$EditConflictCopyWithImpl;
 @override @useResult
 $Res call({
- String key, String medicationId, List<CareEvent> changes
+ String key, String entityId, List<CareEvent> changes
 });
 
 
@@ -343,10 +343,10 @@ class _$EditConflictCopyWithImpl<$Res>
 
 /// Create a copy of Conflict
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? key = null,Object? medicationId = null,Object? changes = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? key = null,Object? entityId = null,Object? changes = null,}) {
   return _then(EditConflict(
 key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
-as String,medicationId: null == medicationId ? _self.medicationId : medicationId // ignore: cast_nullable_to_non_nullable
+as String,entityId: null == entityId ? _self.entityId : entityId // ignore: cast_nullable_to_non_nullable
 as String,changes: null == changes ? _self._changes : changes // ignore: cast_nullable_to_non_nullable
 as List<CareEvent>,
   ));

@@ -400,6 +400,64 @@ void main() {
     });
   });
 
+  group('appointments', () {
+    final later = DateTime(2026, 11, 10, 10);
+    final sooner = DateTime(2026, 11, 4, 9);
+
+    test('are listed soonest first, without cancelled ones', () {
+      final log = CareLog([
+        events.appointment('a1', startsAt: later),
+        events.appointment('a2', startsAt: sooner, title: 'Dentist'),
+        events.appointment('a3', startsAt: sooner),
+        events.appointmentCancelled('a3', baseVersion: 0),
+      ]);
+
+      expect(log.appointments.map((a) => a.id), ['a2', 'a1']);
+      expect(log.appointment('a3')?.isCancelled, isTrue);
+    });
+
+    test('gather visit notes from several caregivers', () {
+      final anas = events.note('a1', 'Keep the dose');
+      final martins = events.note('a1', 'Check again in May', by: 'martin');
+      final log = CareLog([
+        events.appointment('a1', startsAt: sooner),
+        anas,
+        martins,
+      ]);
+
+      expect(log.appointment('a1')?.notes, [anas, martins]);
+    });
+
+    test('concurrent edits conflict like medication edits', () {
+      final log = CareLog([
+        events.appointment('a1', startsAt: sooner),
+        events.appointmentUpdated('a1', baseVersion: 0, startsAt: later),
+        events.appointmentUpdated(
+          'a1',
+          baseVersion: 0,
+          startsAt: sooner,
+          by: 'martin',
+        ),
+      ]);
+
+      expect(
+        log.conflicts.single,
+        isA<EditConflict>().having((c) => c.entityId, 'entityId', 'a1'),
+      );
+    });
+
+    test('a note never conflicts with an edit', () {
+      final log = CareLog([
+        events.appointment('a1', startsAt: sooner),
+        events.appointmentUpdated('a1', baseVersion: 0, startsAt: later),
+        events.note('a1', 'Fine'),
+      ]);
+
+      expect(log.conflicts, isEmpty);
+      expect(log.appointment('a1')?.version, 1);
+    });
+  });
+
   test('lastDose and givenOn use when doses happened', () {
     final morning = events.given('m1', at: eight, slotAt: eight);
     final evening = events.given('m1', at: eightPm, slotAt: eightPm);

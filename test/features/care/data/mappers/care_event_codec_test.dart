@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/core/error/app_exception.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
+import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
@@ -80,6 +81,29 @@ void main() {
     CareEvent.doseUndone(meta: meta, targetEventId: 'e0'),
     CareEvent.stockCounted(meta: meta, medicationId: 'm1', units: 28),
     CareEvent.stockRefilled(meta: meta, medicationId: 'm1', units: 30),
+    CareEvent.appointmentCreated(
+      meta: meta,
+      appointmentId: 'a1',
+      details: AppointmentDetails(
+        title: 'Cardiology',
+        startsAt: at,
+        doctor: 'Dr. Pérez',
+        location: 'Hospital',
+        questions: 'Blood pressure?\nDiet?',
+      ),
+    ),
+    CareEvent.appointmentUpdated(
+      meta: meta,
+      appointmentId: 'a1',
+      baseVersion: 1,
+      details: AppointmentDetails(title: 'Cardiology', startsAt: at),
+    ),
+    CareEvent.appointmentCancelled(
+      meta: meta,
+      appointmentId: 'a1',
+      baseVersion: 2,
+    ),
+    CareEvent.visitNoteAdded(meta: meta, appointmentId: 'a1', text: 'OK'),
     CareEvent.conflictAcknowledged(meta: meta, conflictKey: 'dose:m1:x'),
   ];
 

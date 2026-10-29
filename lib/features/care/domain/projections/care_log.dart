@@ -1,3 +1,4 @@
+import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
@@ -20,6 +21,7 @@ class CareLog {
   CareLog._({
     required this.events,
     required this._medications,
+    required this._appointments,
     required this._doses,
     required this._stock,
     required this.conflicts,
@@ -32,6 +34,7 @@ class CareLog {
   final List<Conflict> conflicts;
 
   final Map<String, Medication> _medications;
+  final Map<String, Appointment> _appointments;
 
   /// [DoseGiven] and [DoseSkipped] events per medication, undone ones
   /// left out.
@@ -44,6 +47,15 @@ class CareLog {
         ..sort((a, b) => a.details.name.compareTo(b.details.name));
 
   Medication? medication(String id) => _medications[id];
+
+  /// Appointments not cancelled, soonest first.
+  List<Appointment> get appointments =>
+      _appointments.values
+          .where((appointment) => !appointment.isCancelled)
+          .toList()
+        ..sort((a, b) => a.startsAt.compareTo(b.startsAt));
+
+  Appointment? appointment(String id) => _appointments[id];
 
   /// Scheduled doses on [day] for active medications, by time and name.
   List<DoseSlot> slotsOn(DateTime day, {required DateTime now}) {
@@ -194,9 +206,10 @@ class _Projector {
   final Set<String> _undone;
 
   final _medications = <String, Medication>{};
+  final _appointments = <String, Appointment>{};
 
-  /// Changes applied to each medication; the one at index `i` produced
-  /// version `i + 1`.
+  /// Changes applied to each medication or appointment; the one at index
+  /// `i` produced version `i + 1`.
   final _changes = <String, List<CareEvent>>{};
   final _doses = <String, List<CareEvent>>{};
   final _stock = <String, double>{};
@@ -209,6 +222,7 @@ class _Projector {
     return CareLog._(
       events: List.unmodifiable(_events),
       medications: _medications,
+      appointments: _appointments,
       doses: _doses,
       stock: _stock,
       conflicts: List.unmodifiable(
@@ -236,11 +250,11 @@ class _Projector {
         // A repeated id: the first creation stands.
         break;
       case MedicationUpdated(:final medicationId, :final baseVersion):
-        _change(event, medicationId, baseVersion, (medication) {
+        _changeMedication(event, medicationId, baseVersion, (medication) {
           return medication.copyWith(details: event.details);
         });
       case ScheduleChanged(:final medicationId, :final baseVersion):
-        _change(event, medicationId, baseVersion, (medication) {
+        _changeMedication(event, medicationId, baseVersion, (medication) {
           final version = ScheduleVersion(
             schedule: event.schedule,
             effectiveFrom: event.effectiveFrom,
@@ -253,9 +267,33 @@ class _Projector {
           return medication.copyWith(schedules: schedules);
         });
       case MedicationArchived(:final medicationId, :final baseVersion):
-        _change(event, medicationId, baseVersion, (medication) {
+        _changeMedication(event, medicationId, baseVersion, (medication) {
           return medication.copyWith(isArchived: true);
         });
+      case AppointmentCreated(:final appointmentId)
+          when !_appointments.containsKey(appointmentId):
+        _appointments[appointmentId] = Appointment(
+          id: appointmentId,
+          details: event.details,
+        );
+        _changes[appointmentId] = [];
+      case AppointmentCreated():
+        // A repeated id: the first creation stands.
+        break;
+      case AppointmentUpdated(:final appointmentId, :final baseVersion):
+        _changeAppointment(event, appointmentId, baseVersion, (appointment) {
+          return appointment.copyWith(details: event.details);
+        });
+      case AppointmentCancelled(:final appointmentId, :final baseVersion):
+        _changeAppointment(event, appointmentId, baseVersion, (appointment) {
+          return appointment.copyWith(isCancelled: true);
+        });
+      case VisitNoteAdded(:final appointmentId):
+        if (_appointments[appointmentId] case final appointment?) {
+          _appointments[appointmentId] = appointment.copyWith(
+            notes: [...appointment.notes, event],
+          );
+        }
       case DoseGiven(:final medicationId, :final units)
           when !_undone.contains(event.meta.id):
         (_doses[medicationId] ??= []).add(event);
@@ -281,19 +319,39 @@ class _Projector {
     }
   }
 
-  /// Applies a change to an existing medication. The change wins in log
-  /// order, but if it was made on an older version and overlaps a change
-  /// applied since, it is flagged with every change it raced against.
-  void _change(
+  void _changeMedication(
     CareEvent event,
     String medicationId,
     int baseVersion,
     Medication Function(Medication) update,
   ) {
     final medication = _medications[medicationId];
-    final changes = _changes[medicationId];
-    if (medication == null || changes == null) return;
+    if (medication == null) return;
+    _recordChange(event, medicationId, baseVersion);
+    _medications[medicationId] = update(
+      medication,
+    ).copyWith(version: medication.version + 1);
+  }
 
+  void _changeAppointment(
+    CareEvent event,
+    String appointmentId,
+    int baseVersion,
+    Appointment Function(Appointment) update,
+  ) {
+    final appointment = _appointments[appointmentId];
+    if (appointment == null) return;
+    _recordChange(event, appointmentId, baseVersion);
+    _appointments[appointmentId] = update(
+      appointment,
+    ).copyWith(version: appointment.version + 1);
+  }
+
+  /// Records a change to an existing entity. The change wins in log
+  /// order, but if it was made on an older version and overlaps a change
+  /// applied since, it is flagged with every change it raced against.
+  void _recordChange(CareEvent event, String entityId, int baseVersion) {
+    final changes = _changes[entityId] ??= [];
     final raced = [
       for (final change in changes.skip(baseVersion.clamp(0, changes.length)))
         if (_overlap(change, event)) change,
@@ -302,23 +360,23 @@ class _Projector {
       _conflicts.add(
         Conflict.edit(
           key: CareLog.editConflictKey(event.meta.id),
-          medicationId: medicationId,
+          entityId: entityId,
           changes: [...raced, event],
         ),
       );
     }
-    _medications[medicationId] = update(
-      medication,
-    ).copyWith(version: medication.version + 1);
     changes.add(event);
   }
 
-  /// Whether two concurrent changes touch the same part of a medication.
-  /// Details and schedule are independent; archiving overlaps everything.
+  /// Whether two concurrent changes touch the same part of an entity.
+  /// A medication's details and schedule are independent; archiving or
+  /// cancelling overlaps everything.
   static bool _overlap(CareEvent a, CareEvent b) => switch ((a, b)) {
-    (MedicationArchived(), _) || (_, MedicationArchived()) => true,
+    (MedicationArchived() || AppointmentCancelled(), _) ||
+    (_, MedicationArchived() || AppointmentCancelled()) => true,
     (MedicationUpdated(), MedicationUpdated()) => true,
     (ScheduleChanged(), ScheduleChanged()) => true,
+    (AppointmentUpdated(), AppointmentUpdated()) => true,
     _ => false,
   };
 

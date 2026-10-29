@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 
@@ -113,6 +114,32 @@ sealed class CareEvent with _$CareEvent {
     required String medicationId,
     required double units,
   }) = StockRefilled;
+
+  const factory CareEvent.appointmentCreated({
+    required EventMeta meta,
+    required String appointmentId,
+    required AppointmentDetails details,
+  }) = AppointmentCreated;
+
+  const factory CareEvent.appointmentUpdated({
+    required EventMeta meta,
+    required String appointmentId,
+    required int baseVersion,
+    required AppointmentDetails details,
+  }) = AppointmentUpdated;
+
+  const factory CareEvent.appointmentCancelled({
+    required EventMeta meta,
+    required String appointmentId,
+    required int baseVersion,
+  }) = AppointmentCancelled;
+
+  /// What the doctor said, written by a caregiver after the visit.
+  const factory CareEvent.visitNoteAdded({
+    required EventMeta meta,
+    required String appointmentId,
+    required String text,
+  }) = VisitNoteAdded;
 
   /// A caregiver reviewed a conflict; it stops being shown as pending.
   const factory CareEvent.conflictAcknowledged({

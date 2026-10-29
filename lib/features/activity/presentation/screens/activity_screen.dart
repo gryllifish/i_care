@@ -181,7 +181,8 @@ class _EntryRow extends ConsumerWidget {
     Caregiver? caregiver,
   ) {
     final name = caregiver?.name ?? l10n.unknownCaregiver;
-    final medication = entry.medicationName ?? l10n.unknownMedication;
+    final medication = entry.subject ?? l10n.unknownMedication;
+    final appointment = entry.subject ?? l10n.unknownAppointment;
     String time(DateTime at) => Formatters.time(at, locale);
     String units(double value) => Formatters.units(value, locale);
 
@@ -213,6 +214,19 @@ class _EntryRow extends ConsumerWidget {
         units(count),
         medication,
       ),
+      AppointmentCreated() => l10n.activityAppointmentCreated(
+        name,
+        appointment,
+      ),
+      AppointmentUpdated() => l10n.activityAppointmentUpdated(
+        name,
+        appointment,
+      ),
+      AppointmentCancelled() => l10n.activityAppointmentCancelled(
+        name,
+        appointment,
+      ),
+      VisitNoteAdded() => l10n.activityVisitNote(name, appointment),
       ConflictAcknowledged() => l10n.activityReviewed(name),
     };
   }

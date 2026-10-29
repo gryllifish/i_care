@@ -33,7 +33,7 @@ class MedicationsScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push(AppRoutes.newMedicationPath()),
         icon: const Icon(Icons.add),
-        label: Text(l10n.addMedication),
+        label: Text(l10n.add),
       ),
       body: SafeArea(
         bottom: false,

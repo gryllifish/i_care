@@ -31,7 +31,7 @@ void main() {
     );
 
     expect(
-      days.expand((d) => d.entries).map((e) => e.medicationName),
+      days.expand((d) => d.entries).map((e) => e.subject),
       everyElement('Enalapril'),
     );
   });
@@ -39,6 +39,6 @@ void main() {
   test('acknowledged conflicts have no medication', () {
     final days = buildActivity(CareLog([events.acknowledged('dose:m1:x')]));
 
-    expect(days.single.entries.single.medicationName, isNull);
+    expect(days.single.entries.single.subject, isNull);
   });
 }

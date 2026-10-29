@@ -1,3 +1,4 @@
+import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
@@ -147,6 +148,59 @@ class EventFactory {
             baseVersion: baseVersion,
           )
           as MedicationArchived;
+
+  AppointmentCreated appointment(
+    String appointmentId, {
+    required DateTime startsAt,
+    String title = 'Cardiology',
+    DateTime? at,
+  }) =>
+      CareEvent.appointmentCreated(
+            meta: meta(at: at ?? DateTime(2026)),
+            appointmentId: appointmentId,
+            details: AppointmentDetails(title: title, startsAt: startsAt),
+          )
+          as AppointmentCreated;
+
+  AppointmentUpdated appointmentUpdated(
+    String appointmentId, {
+    required int baseVersion,
+    required DateTime startsAt,
+    String title = 'Cardiology',
+    String by = 'ana',
+    DateTime? at,
+  }) =>
+      CareEvent.appointmentUpdated(
+            meta: meta(at: at ?? DateTime(2026, 1, 2), by: by),
+            appointmentId: appointmentId,
+            baseVersion: baseVersion,
+            details: AppointmentDetails(title: title, startsAt: startsAt),
+          )
+          as AppointmentUpdated;
+
+  AppointmentCancelled appointmentCancelled(
+    String appointmentId, {
+    required int baseVersion,
+  }) =>
+      CareEvent.appointmentCancelled(
+            meta: meta(at: DateTime(2026, 1, 2)),
+            appointmentId: appointmentId,
+            baseVersion: baseVersion,
+          )
+          as AppointmentCancelled;
+
+  VisitNoteAdded note(
+    String appointmentId,
+    String text, {
+    String by = 'ana',
+    DateTime? at,
+  }) =>
+      CareEvent.visitNoteAdded(
+            meta: meta(at: at ?? DateTime(2026, 1, 3), by: by),
+            appointmentId: appointmentId,
+            text: text,
+          )
+          as VisitNoteAdded;
 
   ConflictAcknowledged acknowledged(String key) =>
       CareEvent.conflictAcknowledged(

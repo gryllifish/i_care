@@ -20,7 +20,8 @@ feed, the latest version of a medication) is a projection of the log.
 | `DoseSkipped` | `medicationId`, `slotAt`, reason |
 | `DoseUndone` | `targetEventId` |
 | `StockCounted` / `StockRefilled` | `medicationId`, units |
-| `AppointmentCreated` / `AppointmentUpdated` | snapshot, `baseVersion` |
+| `AppointmentCreated` / `AppointmentUpdated` | snapshot (title, `startsAt`, doctor, place, questions), `baseVersion` on updates |
+| `AppointmentCancelled` | `appointmentId`, `baseVersion` |
 | `VisitNoteAdded` | `appointmentId`, text |
 | `RecipientProfileUpdated` | profile snapshot (allergies, conditions, doctors, contacts), `baseVersion` |
 

@@ -16,10 +16,12 @@ sealed class Conflict with _$Conflict {
     required List<DoseGiven> doses,
   }) = DoseConflict;
 
-  /// Two changes made on the same version of a medication.
+  /// Changes made on the same version of a medication or appointment.
   const factory Conflict.edit({
     required String key,
-    required String medicationId,
+
+    /// The medication or appointment changed.
+    required String entityId,
     required List<CareEvent> changes,
   }) = EditConflict;
 }

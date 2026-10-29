@@ -528,7 +528,7 @@
       }
     }
   },
-  "addMedication": "Add",
+  "add": "Add",
   "newMedication": "New medication",
   "editMedication": "Edit medication",
   "save": "Save",
@@ -664,5 +664,127 @@
   "done": "Done",
   "sectionMedication": "Medication",
   "sectionDoseAndStock": "Dose and stock",
-  "sectionFromWhen": "From when"
+  "sectionFromWhen": "From when",
+  "unknownAppointment": "an appointment",
+  "activityAppointmentCreated": "{name} added the {title} appointment",
+  "@activityAppointmentCreated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "activityAppointmentUpdated": "{name} edited the {title} appointment",
+  "@activityAppointmentUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "activityAppointmentCancelled": "{name} cancelled the {title} appointment",
+  "@activityAppointmentCancelled": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "activityVisitNote": "{name} added a note to the {title} appointment",
+  "@activityVisitNote": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "navAppointments": "Appointments",
+  "upcomingTitle": "Upcoming",
+  "pastTitle": "Past",
+  "appointmentsEmpty": "No appointments yet",
+  "noNotesPrompt": "No notes yet: add what the doctor said",
+  "questionsCount": "{count, plural, =1{1 question to ask} other{{count} questions to ask}}",
+  "@questionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notesCount": "{count, plural, =1{1 note} other{{count} notes}}",
+  "@notesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newAppointment": "New appointment",
+  "editAppointment": "Edit appointment",
+  "sectionAppointment": "Appointment",
+  "fieldTitle": "Specialty or reason",
+  "fieldTitleHint": "e.g. Cardiology",
+  "fieldDoctor": "Doctor (optional)",
+  "fieldLocation": "Place (optional)",
+  "fieldWhen": "Date and time",
+  "sectionQuestions": "Questions for the doctor",
+  "fieldQuestionsHint": "One per line",
+  "issueTitleMissing": "Enter the specialty or reason",
+  "visitNotes": "Visit notes",
+  "addNoteHint": "What did the doctor say?",
+  "addNote": "Add note",
+  "cancelAppointment": "Cancel appointment",
+  "cancelAppointmentTitle": "Cancel the {title} appointment?",
+  "@cancelAppointmentTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelAppointmentBody": "It will no longer appear in the list. Its notes stay in Activity.",
+  "keepAppointment": "Keep it",
+  "cancelled": "Cancelled",
+  "nextAppointment": "Next appointment",
+  "todayAt": "Today, {time}",
+  "@todayAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "tomorrowAt": "Tomorrow, {time}",
+  "@tomorrowAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dayAt": "{day}, {time}",
+  "@dayAt": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "changeCancelled": "Cancelled it",
+  "newNote": "New note"
 }

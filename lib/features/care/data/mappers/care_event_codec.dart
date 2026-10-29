@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:i_care/core/error/app_exception.dart';
+import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
@@ -96,6 +97,27 @@ abstract final class CareEventCodec {
         'medication_id': event.medicationId,
         'units': event.units,
       },
+      AppointmentCreated() => {
+        'type': 'appointment_created',
+        'appointment_id': event.appointmentId,
+        'details': _encodeAppointment(event.details),
+      },
+      AppointmentUpdated() => {
+        'type': 'appointment_updated',
+        'appointment_id': event.appointmentId,
+        'base_version': event.baseVersion,
+        'details': _encodeAppointment(event.details),
+      },
+      AppointmentCancelled() => {
+        'type': 'appointment_cancelled',
+        'appointment_id': event.appointmentId,
+        'base_version': event.baseVersion,
+      },
+      VisitNoteAdded() => {
+        'type': 'visit_note_added',
+        'appointment_id': event.appointmentId,
+        'text': event.text,
+      },
       ConflictAcknowledged() => {
         'type': 'conflict_acknowledged',
         'conflict_key': event.conflictKey,
@@ -180,6 +202,27 @@ abstract final class CareEventCodec {
         medicationId: json.string('medication_id'),
         units: json.number('units'),
       ),
+      'appointment_created' => CareEvent.appointmentCreated(
+        meta: meta,
+        appointmentId: json.string('appointment_id'),
+        details: _decodeAppointment(json.object('details')),
+      ),
+      'appointment_updated' => CareEvent.appointmentUpdated(
+        meta: meta,
+        appointmentId: json.string('appointment_id'),
+        baseVersion: json.integer('base_version'),
+        details: _decodeAppointment(json.object('details')),
+      ),
+      'appointment_cancelled' => CareEvent.appointmentCancelled(
+        meta: meta,
+        appointmentId: json.string('appointment_id'),
+        baseVersion: json.integer('base_version'),
+      ),
+      'visit_note_added' => CareEvent.visitNoteAdded(
+        meta: meta,
+        appointmentId: json.string('appointment_id'),
+        text: json.string('text'),
+      ),
       'conflict_acknowledged' => CareEvent.conflictAcknowledged(
         meta: meta,
         conflictKey: json.string('conflict_key'),
@@ -205,6 +248,24 @@ abstract final class CareEventCodec {
     unitsPerDose: json.number('units_per_dose'),
     lowStockDays: json.integer('low_stock_days'),
   );
+
+  static Map<String, Object?> _encodeAppointment(AppointmentDetails details) =>
+      {
+        'title': details.title,
+        'starts_at': _date(details.startsAt),
+        'doctor': details.doctor,
+        'location': details.location,
+        'questions': details.questions,
+      };
+
+  static AppointmentDetails _decodeAppointment(_Reader json) =>
+      AppointmentDetails(
+        title: json.string('title'),
+        startsAt: json.date('starts_at'),
+        doctor: json.string('doctor'),
+        location: json.string('location'),
+        questions: json.string('questions'),
+      );
 
   static Map<String, Object?> _encodeSchedule(DoseSchedule schedule) =>
       switch (schedule) {

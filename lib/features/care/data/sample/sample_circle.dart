@@ -1,3 +1,4 @@
+import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/caregiver.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
@@ -64,7 +65,75 @@ class _SampleHistory {
     }
     _addScheduledDoses();
     _addAsNeededDose();
+    _addAppointments();
     return _events;
+  }
+
+  /// A blood test with a note, a check-up yesterday nobody wrote notes
+  /// for yet, and a cardiology visit in two days with questions.
+  void _addAppointments() {
+    final spanish = language == 'es';
+    DateTime dayAt(int offset, int hour, [int minute = 0]) =>
+        DateTime(today.year, today.month, today.day + offset, hour, minute);
+
+    final appointments = [
+      (
+        id: 'appointment-lab',
+        details: AppointmentDetails(
+          title: spanish ? 'Análisis de sangre' : 'Blood test',
+          startsAt: dayAt(-_days, 9),
+          location: spanish ? 'Laboratorio Central' : 'Central Lab',
+        ),
+        note: spanish ? 'Resultados en 5 días.' : 'Results in 5 days.',
+      ),
+      (
+        id: 'appointment-checkup',
+        details: AppointmentDetails(
+          title: spanish ? 'Clínica médica' : 'General practice',
+          startsAt: dayAt(-1, 11),
+          doctor: 'Dr. Gómez',
+          location: spanish ? 'Centro de salud' : 'Health center',
+        ),
+        note: null,
+      ),
+      (
+        id: 'appointment-cardiology',
+        details: AppointmentDetails(
+          title: spanish ? 'Cardiología' : 'Cardiology',
+          startsAt: dayAt(2, 10, 30),
+          doctor: 'Dra. Pérez',
+          location: spanish ? 'Hospital Italiano' : 'City Hospital',
+          questions: spanish
+              ? '¿Hay que cambiar algo del enalapril?\n'
+                    '¿Puede seguir caminando todos los días?'
+              : 'Should anything change with the enalapril?\n'
+                    'Can she keep walking every day?',
+        ),
+        note: null,
+      ),
+    ];
+    for (final appointment in appointments) {
+      _add(
+        (meta) => CareEvent.appointmentCreated(
+          meta: meta,
+          appointmentId: appointment.id,
+          details: appointment.details,
+        ),
+        at: start,
+        by: SampleCircle.ana.id,
+      );
+      if (appointment.note case final String note) {
+        _add(
+          (meta) => CareEvent.visitNoteAdded(
+            meta: meta,
+            appointmentId: appointment.id,
+            text: note,
+          ),
+          at: appointment.details.startsAt.add(const Duration(hours: 2)),
+          by: SampleCircle.ana.id,
+        );
+      }
+    }
   }
 
   void _addScheduledDoses() {

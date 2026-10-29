@@ -369,7 +369,7 @@ extension CareEventPatterns on CareEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MedicationCreated value)?  medicationCreated,TResult Function( MedicationUpdated value)?  medicationUpdated,TResult Function( ScheduleChanged value)?  scheduleChanged,TResult Function( MedicationArchived value)?  medicationArchived,TResult Function( DoseGiven value)?  doseGiven,TResult Function( DoseSkipped value)?  doseSkipped,TResult Function( DoseUndone value)?  doseUndone,TResult Function( StockCounted value)?  stockCounted,TResult Function( StockRefilled value)?  stockRefilled,TResult Function( ConflictAcknowledged value)?  conflictAcknowledged,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MedicationCreated value)?  medicationCreated,TResult Function( MedicationUpdated value)?  medicationUpdated,TResult Function( ScheduleChanged value)?  scheduleChanged,TResult Function( MedicationArchived value)?  medicationArchived,TResult Function( DoseGiven value)?  doseGiven,TResult Function( DoseSkipped value)?  doseSkipped,TResult Function( DoseUndone value)?  doseUndone,TResult Function( StockCounted value)?  stockCounted,TResult Function( StockRefilled value)?  stockRefilled,TResult Function( AppointmentCreated value)?  appointmentCreated,TResult Function( AppointmentUpdated value)?  appointmentUpdated,TResult Function( AppointmentCancelled value)?  appointmentCancelled,TResult Function( VisitNoteAdded value)?  visitNoteAdded,TResult Function( ConflictAcknowledged value)?  conflictAcknowledged,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case MedicationCreated() when medicationCreated != null:
@@ -381,7 +381,11 @@ return doseGiven(_that);case DoseSkipped() when doseSkipped != null:
 return doseSkipped(_that);case DoseUndone() when doseUndone != null:
 return doseUndone(_that);case StockCounted() when stockCounted != null:
 return stockCounted(_that);case StockRefilled() when stockRefilled != null:
-return stockRefilled(_that);case ConflictAcknowledged() when conflictAcknowledged != null:
+return stockRefilled(_that);case AppointmentCreated() when appointmentCreated != null:
+return appointmentCreated(_that);case AppointmentUpdated() when appointmentUpdated != null:
+return appointmentUpdated(_that);case AppointmentCancelled() when appointmentCancelled != null:
+return appointmentCancelled(_that);case VisitNoteAdded() when visitNoteAdded != null:
+return visitNoteAdded(_that);case ConflictAcknowledged() when conflictAcknowledged != null:
 return conflictAcknowledged(_that);case _:
   return orElse();
 
@@ -400,7 +404,7 @@ return conflictAcknowledged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MedicationCreated value)  medicationCreated,required TResult Function( MedicationUpdated value)  medicationUpdated,required TResult Function( ScheduleChanged value)  scheduleChanged,required TResult Function( MedicationArchived value)  medicationArchived,required TResult Function( DoseGiven value)  doseGiven,required TResult Function( DoseSkipped value)  doseSkipped,required TResult Function( DoseUndone value)  doseUndone,required TResult Function( StockCounted value)  stockCounted,required TResult Function( StockRefilled value)  stockRefilled,required TResult Function( ConflictAcknowledged value)  conflictAcknowledged,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MedicationCreated value)  medicationCreated,required TResult Function( MedicationUpdated value)  medicationUpdated,required TResult Function( ScheduleChanged value)  scheduleChanged,required TResult Function( MedicationArchived value)  medicationArchived,required TResult Function( DoseGiven value)  doseGiven,required TResult Function( DoseSkipped value)  doseSkipped,required TResult Function( DoseUndone value)  doseUndone,required TResult Function( StockCounted value)  stockCounted,required TResult Function( StockRefilled value)  stockRefilled,required TResult Function( AppointmentCreated value)  appointmentCreated,required TResult Function( AppointmentUpdated value)  appointmentUpdated,required TResult Function( AppointmentCancelled value)  appointmentCancelled,required TResult Function( VisitNoteAdded value)  visitNoteAdded,required TResult Function( ConflictAcknowledged value)  conflictAcknowledged,}){
 final _that = this;
 switch (_that) {
 case MedicationCreated():
@@ -412,7 +416,11 @@ return doseGiven(_that);case DoseSkipped():
 return doseSkipped(_that);case DoseUndone():
 return doseUndone(_that);case StockCounted():
 return stockCounted(_that);case StockRefilled():
-return stockRefilled(_that);case ConflictAcknowledged():
+return stockRefilled(_that);case AppointmentCreated():
+return appointmentCreated(_that);case AppointmentUpdated():
+return appointmentUpdated(_that);case AppointmentCancelled():
+return appointmentCancelled(_that);case VisitNoteAdded():
+return visitNoteAdded(_that);case ConflictAcknowledged():
 return conflictAcknowledged(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -427,7 +435,7 @@ return conflictAcknowledged(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MedicationCreated value)?  medicationCreated,TResult? Function( MedicationUpdated value)?  medicationUpdated,TResult? Function( ScheduleChanged value)?  scheduleChanged,TResult? Function( MedicationArchived value)?  medicationArchived,TResult? Function( DoseGiven value)?  doseGiven,TResult? Function( DoseSkipped value)?  doseSkipped,TResult? Function( DoseUndone value)?  doseUndone,TResult? Function( StockCounted value)?  stockCounted,TResult? Function( StockRefilled value)?  stockRefilled,TResult? Function( ConflictAcknowledged value)?  conflictAcknowledged,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MedicationCreated value)?  medicationCreated,TResult? Function( MedicationUpdated value)?  medicationUpdated,TResult? Function( ScheduleChanged value)?  scheduleChanged,TResult? Function( MedicationArchived value)?  medicationArchived,TResult? Function( DoseGiven value)?  doseGiven,TResult? Function( DoseSkipped value)?  doseSkipped,TResult? Function( DoseUndone value)?  doseUndone,TResult? Function( StockCounted value)?  stockCounted,TResult? Function( StockRefilled value)?  stockRefilled,TResult? Function( AppointmentCreated value)?  appointmentCreated,TResult? Function( AppointmentUpdated value)?  appointmentUpdated,TResult? Function( AppointmentCancelled value)?  appointmentCancelled,TResult? Function( VisitNoteAdded value)?  visitNoteAdded,TResult? Function( ConflictAcknowledged value)?  conflictAcknowledged,}){
 final _that = this;
 switch (_that) {
 case MedicationCreated() when medicationCreated != null:
@@ -439,7 +447,11 @@ return doseGiven(_that);case DoseSkipped() when doseSkipped != null:
 return doseSkipped(_that);case DoseUndone() when doseUndone != null:
 return doseUndone(_that);case StockCounted() when stockCounted != null:
 return stockCounted(_that);case StockRefilled() when stockRefilled != null:
-return stockRefilled(_that);case ConflictAcknowledged() when conflictAcknowledged != null:
+return stockRefilled(_that);case AppointmentCreated() when appointmentCreated != null:
+return appointmentCreated(_that);case AppointmentUpdated() when appointmentUpdated != null:
+return appointmentUpdated(_that);case AppointmentCancelled() when appointmentCancelled != null:
+return appointmentCancelled(_that);case VisitNoteAdded() when visitNoteAdded != null:
+return visitNoteAdded(_that);case ConflictAcknowledged() when conflictAcknowledged != null:
 return conflictAcknowledged(_that);case _:
   return null;
 
@@ -457,7 +469,7 @@ return conflictAcknowledged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)?  medicationCreated,TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)?  medicationUpdated,TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)?  scheduleChanged,TResult Function( EventMeta meta,  String medicationId,  int baseVersion)?  medicationArchived,TResult Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)?  doseGiven,TResult Function( EventMeta meta,  String medicationId,  DateTime slotAt,  SkipReason reason,  String? note)?  doseSkipped,TResult Function( EventMeta meta,  String targetEventId)?  doseUndone,TResult Function( EventMeta meta,  String medicationId,  double units)?  stockCounted,TResult Function( EventMeta meta,  String medicationId,  double units)?  stockRefilled,TResult Function( EventMeta meta,  String conflictKey)?  conflictAcknowledged,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)?  medicationCreated,TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)?  medicationUpdated,TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)?  scheduleChanged,TResult Function( EventMeta meta,  String medicationId,  int baseVersion)?  medicationArchived,TResult Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)?  doseGiven,TResult Function( EventMeta meta,  String medicationId,  DateTime slotAt,  SkipReason reason,  String? note)?  doseSkipped,TResult Function( EventMeta meta,  String targetEventId)?  doseUndone,TResult Function( EventMeta meta,  String medicationId,  double units)?  stockCounted,TResult Function( EventMeta meta,  String medicationId,  double units)?  stockRefilled,TResult Function( EventMeta meta,  String appointmentId,  AppointmentDetails details)?  appointmentCreated,TResult Function( EventMeta meta,  String appointmentId,  int baseVersion,  AppointmentDetails details)?  appointmentUpdated,TResult Function( EventMeta meta,  String appointmentId,  int baseVersion)?  appointmentCancelled,TResult Function( EventMeta meta,  String appointmentId,  String text)?  visitNoteAdded,TResult Function( EventMeta meta,  String conflictKey)?  conflictAcknowledged,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MedicationCreated() when medicationCreated != null:
 return medicationCreated(_that.meta,_that.medicationId,_that.details,_that.schedule,_that.effectiveFrom);case MedicationUpdated() when medicationUpdated != null:
@@ -468,7 +480,11 @@ return doseGiven(_that.meta,_that.medicationId,_that.slotAt,_that.givenAt,_that.
 return doseSkipped(_that.meta,_that.medicationId,_that.slotAt,_that.reason,_that.note);case DoseUndone() when doseUndone != null:
 return doseUndone(_that.meta,_that.targetEventId);case StockCounted() when stockCounted != null:
 return stockCounted(_that.meta,_that.medicationId,_that.units);case StockRefilled() when stockRefilled != null:
-return stockRefilled(_that.meta,_that.medicationId,_that.units);case ConflictAcknowledged() when conflictAcknowledged != null:
+return stockRefilled(_that.meta,_that.medicationId,_that.units);case AppointmentCreated() when appointmentCreated != null:
+return appointmentCreated(_that.meta,_that.appointmentId,_that.details);case AppointmentUpdated() when appointmentUpdated != null:
+return appointmentUpdated(_that.meta,_that.appointmentId,_that.baseVersion,_that.details);case AppointmentCancelled() when appointmentCancelled != null:
+return appointmentCancelled(_that.meta,_that.appointmentId,_that.baseVersion);case VisitNoteAdded() when visitNoteAdded != null:
+return visitNoteAdded(_that.meta,_that.appointmentId,_that.text);case ConflictAcknowledged() when conflictAcknowledged != null:
 return conflictAcknowledged(_that.meta,_that.conflictKey);case _:
   return orElse();
 
@@ -487,7 +503,7 @@ return conflictAcknowledged(_that.meta,_that.conflictKey);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)  medicationCreated,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)  medicationUpdated,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)  scheduleChanged,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion)  medicationArchived,required TResult Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)  doseGiven,required TResult Function( EventMeta meta,  String medicationId,  DateTime slotAt,  SkipReason reason,  String? note)  doseSkipped,required TResult Function( EventMeta meta,  String targetEventId)  doseUndone,required TResult Function( EventMeta meta,  String medicationId,  double units)  stockCounted,required TResult Function( EventMeta meta,  String medicationId,  double units)  stockRefilled,required TResult Function( EventMeta meta,  String conflictKey)  conflictAcknowledged,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)  medicationCreated,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)  medicationUpdated,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)  scheduleChanged,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion)  medicationArchived,required TResult Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)  doseGiven,required TResult Function( EventMeta meta,  String medicationId,  DateTime slotAt,  SkipReason reason,  String? note)  doseSkipped,required TResult Function( EventMeta meta,  String targetEventId)  doseUndone,required TResult Function( EventMeta meta,  String medicationId,  double units)  stockCounted,required TResult Function( EventMeta meta,  String medicationId,  double units)  stockRefilled,required TResult Function( EventMeta meta,  String appointmentId,  AppointmentDetails details)  appointmentCreated,required TResult Function( EventMeta meta,  String appointmentId,  int baseVersion,  AppointmentDetails details)  appointmentUpdated,required TResult Function( EventMeta meta,  String appointmentId,  int baseVersion)  appointmentCancelled,required TResult Function( EventMeta meta,  String appointmentId,  String text)  visitNoteAdded,required TResult Function( EventMeta meta,  String conflictKey)  conflictAcknowledged,}) {final _that = this;
 switch (_that) {
 case MedicationCreated():
 return medicationCreated(_that.meta,_that.medicationId,_that.details,_that.schedule,_that.effectiveFrom);case MedicationUpdated():
@@ -498,7 +514,11 @@ return doseGiven(_that.meta,_that.medicationId,_that.slotAt,_that.givenAt,_that.
 return doseSkipped(_that.meta,_that.medicationId,_that.slotAt,_that.reason,_that.note);case DoseUndone():
 return doseUndone(_that.meta,_that.targetEventId);case StockCounted():
 return stockCounted(_that.meta,_that.medicationId,_that.units);case StockRefilled():
-return stockRefilled(_that.meta,_that.medicationId,_that.units);case ConflictAcknowledged():
+return stockRefilled(_that.meta,_that.medicationId,_that.units);case AppointmentCreated():
+return appointmentCreated(_that.meta,_that.appointmentId,_that.details);case AppointmentUpdated():
+return appointmentUpdated(_that.meta,_that.appointmentId,_that.baseVersion,_that.details);case AppointmentCancelled():
+return appointmentCancelled(_that.meta,_that.appointmentId,_that.baseVersion);case VisitNoteAdded():
+return visitNoteAdded(_that.meta,_that.appointmentId,_that.text);case ConflictAcknowledged():
 return conflictAcknowledged(_that.meta,_that.conflictKey);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -513,7 +533,7 @@ return conflictAcknowledged(_that.meta,_that.conflictKey);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)?  medicationCreated,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)?  medicationUpdated,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)?  scheduleChanged,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion)?  medicationArchived,TResult? Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)?  doseGiven,TResult? Function( EventMeta meta,  String medicationId,  DateTime slotAt,  SkipReason reason,  String? note)?  doseSkipped,TResult? Function( EventMeta meta,  String targetEventId)?  doseUndone,TResult? Function( EventMeta meta,  String medicationId,  double units)?  stockCounted,TResult? Function( EventMeta meta,  String medicationId,  double units)?  stockRefilled,TResult? Function( EventMeta meta,  String conflictKey)?  conflictAcknowledged,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)?  medicationCreated,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)?  medicationUpdated,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)?  scheduleChanged,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion)?  medicationArchived,TResult? Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)?  doseGiven,TResult? Function( EventMeta meta,  String medicationId,  DateTime slotAt,  SkipReason reason,  String? note)?  doseSkipped,TResult? Function( EventMeta meta,  String targetEventId)?  doseUndone,TResult? Function( EventMeta meta,  String medicationId,  double units)?  stockCounted,TResult? Function( EventMeta meta,  String medicationId,  double units)?  stockRefilled,TResult? Function( EventMeta meta,  String appointmentId,  AppointmentDetails details)?  appointmentCreated,TResult? Function( EventMeta meta,  String appointmentId,  int baseVersion,  AppointmentDetails details)?  appointmentUpdated,TResult? Function( EventMeta meta,  String appointmentId,  int baseVersion)?  appointmentCancelled,TResult? Function( EventMeta meta,  String appointmentId,  String text)?  visitNoteAdded,TResult? Function( EventMeta meta,  String conflictKey)?  conflictAcknowledged,}) {final _that = this;
 switch (_that) {
 case MedicationCreated() when medicationCreated != null:
 return medicationCreated(_that.meta,_that.medicationId,_that.details,_that.schedule,_that.effectiveFrom);case MedicationUpdated() when medicationUpdated != null:
@@ -524,7 +544,11 @@ return doseGiven(_that.meta,_that.medicationId,_that.slotAt,_that.givenAt,_that.
 return doseSkipped(_that.meta,_that.medicationId,_that.slotAt,_that.reason,_that.note);case DoseUndone() when doseUndone != null:
 return doseUndone(_that.meta,_that.targetEventId);case StockCounted() when stockCounted != null:
 return stockCounted(_that.meta,_that.medicationId,_that.units);case StockRefilled() when stockRefilled != null:
-return stockRefilled(_that.meta,_that.medicationId,_that.units);case ConflictAcknowledged() when conflictAcknowledged != null:
+return stockRefilled(_that.meta,_that.medicationId,_that.units);case AppointmentCreated() when appointmentCreated != null:
+return appointmentCreated(_that.meta,_that.appointmentId,_that.details);case AppointmentUpdated() when appointmentUpdated != null:
+return appointmentUpdated(_that.meta,_that.appointmentId,_that.baseVersion,_that.details);case AppointmentCancelled() when appointmentCancelled != null:
+return appointmentCancelled(_that.meta,_that.appointmentId,_that.baseVersion);case VisitNoteAdded() when visitNoteAdded != null:
+return visitNoteAdded(_that.meta,_that.appointmentId,_that.text);case ConflictAcknowledged() when conflictAcknowledged != null:
 return conflictAcknowledged(_that.meta,_that.conflictKey);case _:
   return null;
 
@@ -1301,6 +1325,342 @@ meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
 as EventMeta,medicationId: null == medicationId ? _self.medicationId : medicationId // ignore: cast_nullable_to_non_nullable
 as String,units: null == units ? _self.units : units // ignore: cast_nullable_to_non_nullable
 as double,
+  ));
+}
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EventMetaCopyWith<$Res> get meta {
+  
+  return $EventMetaCopyWith<$Res>(_self.meta, (value) {
+    return _then(_self.copyWith(meta: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class AppointmentCreated implements CareEvent {
+  const AppointmentCreated({required this.meta, required this.appointmentId, required this.details});
+  
+
+@override final  EventMeta meta;
+ final  String appointmentId;
+ final  AppointmentDetails details;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AppointmentCreatedCopyWith<AppointmentCreated> get copyWith => _$AppointmentCreatedCopyWithImpl<AppointmentCreated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentCreated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.details, details) || other.details == details));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meta,appointmentId,details);
+
+@override
+String toString() {
+  return 'CareEvent.appointmentCreated(meta: $meta, appointmentId: $appointmentId, details: $details)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AppointmentCreatedCopyWith<$Res> implements $CareEventCopyWith<$Res> {
+  factory $AppointmentCreatedCopyWith(AppointmentCreated value, $Res Function(AppointmentCreated) _then) = _$AppointmentCreatedCopyWithImpl;
+@override @useResult
+$Res call({
+ EventMeta meta, String appointmentId, AppointmentDetails details
+});
+
+
+@override $EventMetaCopyWith<$Res> get meta;$AppointmentDetailsCopyWith<$Res> get details;
+
+}
+/// @nodoc
+class _$AppointmentCreatedCopyWithImpl<$Res>
+    implements $AppointmentCreatedCopyWith<$Res> {
+  _$AppointmentCreatedCopyWithImpl(this._self, this._then);
+
+  final AppointmentCreated _self;
+  final $Res Function(AppointmentCreated) _then;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? meta = null,Object? appointmentId = null,Object? details = null,}) {
+  return _then(AppointmentCreated(
+meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as EventMeta,appointmentId: null == appointmentId ? _self.appointmentId : appointmentId // ignore: cast_nullable_to_non_nullable
+as String,details: null == details ? _self.details : details // ignore: cast_nullable_to_non_nullable
+as AppointmentDetails,
+  ));
+}
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EventMetaCopyWith<$Res> get meta {
+  
+  return $EventMetaCopyWith<$Res>(_self.meta, (value) {
+    return _then(_self.copyWith(meta: value));
+  });
+}/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AppointmentDetailsCopyWith<$Res> get details {
+  
+  return $AppointmentDetailsCopyWith<$Res>(_self.details, (value) {
+    return _then(_self.copyWith(details: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class AppointmentUpdated implements CareEvent {
+  const AppointmentUpdated({required this.meta, required this.appointmentId, required this.baseVersion, required this.details});
+  
+
+@override final  EventMeta meta;
+ final  String appointmentId;
+ final  int baseVersion;
+ final  AppointmentDetails details;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AppointmentUpdatedCopyWith<AppointmentUpdated> get copyWith => _$AppointmentUpdatedCopyWithImpl<AppointmentUpdated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentUpdated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.details, details) || other.details == details));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meta,appointmentId,baseVersion,details);
+
+@override
+String toString() {
+  return 'CareEvent.appointmentUpdated(meta: $meta, appointmentId: $appointmentId, baseVersion: $baseVersion, details: $details)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AppointmentUpdatedCopyWith<$Res> implements $CareEventCopyWith<$Res> {
+  factory $AppointmentUpdatedCopyWith(AppointmentUpdated value, $Res Function(AppointmentUpdated) _then) = _$AppointmentUpdatedCopyWithImpl;
+@override @useResult
+$Res call({
+ EventMeta meta, String appointmentId, int baseVersion, AppointmentDetails details
+});
+
+
+@override $EventMetaCopyWith<$Res> get meta;$AppointmentDetailsCopyWith<$Res> get details;
+
+}
+/// @nodoc
+class _$AppointmentUpdatedCopyWithImpl<$Res>
+    implements $AppointmentUpdatedCopyWith<$Res> {
+  _$AppointmentUpdatedCopyWithImpl(this._self, this._then);
+
+  final AppointmentUpdated _self;
+  final $Res Function(AppointmentUpdated) _then;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? meta = null,Object? appointmentId = null,Object? baseVersion = null,Object? details = null,}) {
+  return _then(AppointmentUpdated(
+meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as EventMeta,appointmentId: null == appointmentId ? _self.appointmentId : appointmentId // ignore: cast_nullable_to_non_nullable
+as String,baseVersion: null == baseVersion ? _self.baseVersion : baseVersion // ignore: cast_nullable_to_non_nullable
+as int,details: null == details ? _self.details : details // ignore: cast_nullable_to_non_nullable
+as AppointmentDetails,
+  ));
+}
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EventMetaCopyWith<$Res> get meta {
+  
+  return $EventMetaCopyWith<$Res>(_self.meta, (value) {
+    return _then(_self.copyWith(meta: value));
+  });
+}/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AppointmentDetailsCopyWith<$Res> get details {
+  
+  return $AppointmentDetailsCopyWith<$Res>(_self.details, (value) {
+    return _then(_self.copyWith(details: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class AppointmentCancelled implements CareEvent {
+  const AppointmentCancelled({required this.meta, required this.appointmentId, required this.baseVersion});
+  
+
+@override final  EventMeta meta;
+ final  String appointmentId;
+ final  int baseVersion;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AppointmentCancelledCopyWith<AppointmentCancelled> get copyWith => _$AppointmentCancelledCopyWithImpl<AppointmentCancelled>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentCancelled&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meta,appointmentId,baseVersion);
+
+@override
+String toString() {
+  return 'CareEvent.appointmentCancelled(meta: $meta, appointmentId: $appointmentId, baseVersion: $baseVersion)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AppointmentCancelledCopyWith<$Res> implements $CareEventCopyWith<$Res> {
+  factory $AppointmentCancelledCopyWith(AppointmentCancelled value, $Res Function(AppointmentCancelled) _then) = _$AppointmentCancelledCopyWithImpl;
+@override @useResult
+$Res call({
+ EventMeta meta, String appointmentId, int baseVersion
+});
+
+
+@override $EventMetaCopyWith<$Res> get meta;
+
+}
+/// @nodoc
+class _$AppointmentCancelledCopyWithImpl<$Res>
+    implements $AppointmentCancelledCopyWith<$Res> {
+  _$AppointmentCancelledCopyWithImpl(this._self, this._then);
+
+  final AppointmentCancelled _self;
+  final $Res Function(AppointmentCancelled) _then;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? meta = null,Object? appointmentId = null,Object? baseVersion = null,}) {
+  return _then(AppointmentCancelled(
+meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as EventMeta,appointmentId: null == appointmentId ? _self.appointmentId : appointmentId // ignore: cast_nullable_to_non_nullable
+as String,baseVersion: null == baseVersion ? _self.baseVersion : baseVersion // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EventMetaCopyWith<$Res> get meta {
+  
+  return $EventMetaCopyWith<$Res>(_self.meta, (value) {
+    return _then(_self.copyWith(meta: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class VisitNoteAdded implements CareEvent {
+  const VisitNoteAdded({required this.meta, required this.appointmentId, required this.text});
+  
+
+@override final  EventMeta meta;
+ final  String appointmentId;
+ final  String text;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$VisitNoteAddedCopyWith<VisitNoteAdded> get copyWith => _$VisitNoteAddedCopyWithImpl<VisitNoteAdded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VisitNoteAdded&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.text, text) || other.text == text));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meta,appointmentId,text);
+
+@override
+String toString() {
+  return 'CareEvent.visitNoteAdded(meta: $meta, appointmentId: $appointmentId, text: $text)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $VisitNoteAddedCopyWith<$Res> implements $CareEventCopyWith<$Res> {
+  factory $VisitNoteAddedCopyWith(VisitNoteAdded value, $Res Function(VisitNoteAdded) _then) = _$VisitNoteAddedCopyWithImpl;
+@override @useResult
+$Res call({
+ EventMeta meta, String appointmentId, String text
+});
+
+
+@override $EventMetaCopyWith<$Res> get meta;
+
+}
+/// @nodoc
+class _$VisitNoteAddedCopyWithImpl<$Res>
+    implements $VisitNoteAddedCopyWith<$Res> {
+  _$VisitNoteAddedCopyWithImpl(this._self, this._then);
+
+  final VisitNoteAdded _self;
+  final $Res Function(VisitNoteAdded) _then;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? meta = null,Object? appointmentId = null,Object? text = null,}) {
+  return _then(VisitNoteAdded(
+meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as EventMeta,appointmentId: null == appointmentId ? _self.appointmentId : appointmentId // ignore: cast_nullable_to_non_nullable
+as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

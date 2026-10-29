@@ -7,15 +7,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'activity_view.freezed.dart';
 part 'activity_view.g.dart';
 
-/// One thing a caregiver did, with the medication it concerns.
+/// One thing a caregiver did, with what it concerns.
 @freezed
 abstract class ActivityEntry with _$ActivityEntry {
   const factory ActivityEntry({
     required CareEvent event,
 
-    /// Name of the medication involved, looked up through the cancelled
-    /// record for undos; null when none applies or it is unknown.
-    String? medicationName,
+    /// Name of the medication or title of the appointment involved,
+    /// looked up through the cancelled record for undos; null when none
+    /// applies or it is unknown.
+    String? subject,
   }) = _ActivityEntry;
 }
 
@@ -29,7 +30,9 @@ List<ActivityDay> buildActivity(CareLog log) {
   final byId = {for (final event in log.events) event.meta.id: event};
   String? nameOf(String medicationId) =>
       log.medication(medicationId)?.details.name;
-  String? medicationOf(CareEvent event) => switch (event) {
+  String? titleOf(String appointmentId) =>
+      log.appointment(appointmentId)?.details.title;
+  String? subjectOf(CareEvent event) => switch (event) {
     MedicationCreated(:final medicationId) ||
     MedicationUpdated(:final medicationId) ||
     ScheduleChanged(:final medicationId) ||
@@ -39,9 +42,13 @@ List<ActivityDay> buildActivity(CareLog log) {
     StockCounted(:final medicationId) ||
     StockRefilled(:final medicationId) => nameOf(medicationId),
     DoseUndone(:final targetEventId) => switch (byId[targetEventId]) {
-      final CareEvent target => medicationOf(target),
+      final CareEvent target => subjectOf(target),
       null => null,
     },
+    AppointmentCreated(:final appointmentId) ||
+    AppointmentUpdated(:final appointmentId) ||
+    AppointmentCancelled(:final appointmentId) ||
+    VisitNoteAdded(:final appointmentId) => titleOf(appointmentId),
     ConflictAcknowledged() => null,
   };
 
@@ -55,7 +62,7 @@ List<ActivityDay> buildActivity(CareLog log) {
       days.add((day: day, entries: []));
     }
     days.last.entries.add(
-      ActivityEntry(event: event, medicationName: medicationOf(event)),
+      ActivityEntry(event: event, subject: subjectOf(event)),
     );
   }
   return days;

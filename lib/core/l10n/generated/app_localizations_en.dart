@@ -513,7 +513,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get addMedication => 'Add';
+  String get add => 'Add';
 
   @override
   String get newMedication => 'New medication';
@@ -778,4 +778,148 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sectionFromWhen => 'From when';
+
+  @override
+  String get unknownAppointment => 'an appointment';
+
+  @override
+  String activityAppointmentCreated(String name, String title) {
+    return '$name added the $title appointment';
+  }
+
+  @override
+  String activityAppointmentUpdated(String name, String title) {
+    return '$name edited the $title appointment';
+  }
+
+  @override
+  String activityAppointmentCancelled(String name, String title) {
+    return '$name cancelled the $title appointment';
+  }
+
+  @override
+  String activityVisitNote(String name, String title) {
+    return '$name added a note to the $title appointment';
+  }
+
+  @override
+  String get navAppointments => 'Appointments';
+
+  @override
+  String get upcomingTitle => 'Upcoming';
+
+  @override
+  String get pastTitle => 'Past';
+
+  @override
+  String get appointmentsEmpty => 'No appointments yet';
+
+  @override
+  String get noNotesPrompt => 'No notes yet: add what the doctor said';
+
+  @override
+  String questionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count questions to ask',
+      one: '1 question to ask',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes',
+      one: '1 note',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get newAppointment => 'New appointment';
+
+  @override
+  String get editAppointment => 'Edit appointment';
+
+  @override
+  String get sectionAppointment => 'Appointment';
+
+  @override
+  String get fieldTitle => 'Specialty or reason';
+
+  @override
+  String get fieldTitleHint => 'e.g. Cardiology';
+
+  @override
+  String get fieldDoctor => 'Doctor (optional)';
+
+  @override
+  String get fieldLocation => 'Place (optional)';
+
+  @override
+  String get fieldWhen => 'Date and time';
+
+  @override
+  String get sectionQuestions => 'Questions for the doctor';
+
+  @override
+  String get fieldQuestionsHint => 'One per line';
+
+  @override
+  String get issueTitleMissing => 'Enter the specialty or reason';
+
+  @override
+  String get visitNotes => 'Visit notes';
+
+  @override
+  String get addNoteHint => 'What did the doctor say?';
+
+  @override
+  String get addNote => 'Add note';
+
+  @override
+  String get cancelAppointment => 'Cancel appointment';
+
+  @override
+  String cancelAppointmentTitle(String title) {
+    return 'Cancel the $title appointment?';
+  }
+
+  @override
+  String get cancelAppointmentBody =>
+      'It will no longer appear in the list. Its notes stay in Activity.';
+
+  @override
+  String get keepAppointment => 'Keep it';
+
+  @override
+  String get cancelled => 'Cancelled';
+
+  @override
+  String get nextAppointment => 'Next appointment';
+
+  @override
+  String todayAt(String time) {
+    return 'Today, $time';
+  }
+
+  @override
+  String tomorrowAt(String time) {
+    return 'Tomorrow, $time';
+  }
+
+  @override
+  String dayAt(String day, String time) {
+    return '$day, $time';
+  }
+
+  @override
+  String get changeCancelled => 'Cancelled it';
+
+  @override
+  String get newNote => 'New note';
 }

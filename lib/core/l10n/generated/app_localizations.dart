@@ -811,11 +811,11 @@ abstract class AppLocalizations {
   /// **'{days, plural, =1{Lasts 1 day} other{Lasts {days} days}}'**
   String stockLasts(int days);
 
-  /// No description provided for @addMedication.
+  /// No description provided for @add.
   ///
   /// In en, this message translates to:
   /// **'Add'**
-  String get addMedication;
+  String get add;
 
   /// No description provided for @newMedication.
   ///
@@ -1278,6 +1278,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'From when'**
   String get sectionFromWhen;
+
+  /// No description provided for @unknownAppointment.
+  ///
+  /// In en, this message translates to:
+  /// **'an appointment'**
+  String get unknownAppointment;
+
+  /// No description provided for @activityAppointmentCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added the {title} appointment'**
+  String activityAppointmentCreated(String name, String title);
+
+  /// No description provided for @activityAppointmentUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} edited the {title} appointment'**
+  String activityAppointmentUpdated(String name, String title);
+
+  /// No description provided for @activityAppointmentCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} cancelled the {title} appointment'**
+  String activityAppointmentCancelled(String name, String title);
+
+  /// No description provided for @activityVisitNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added a note to the {title} appointment'**
+  String activityVisitNote(String name, String title);
+
+  /// No description provided for @navAppointments.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointments'**
+  String get navAppointments;
+
+  /// No description provided for @upcomingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming'**
+  String get upcomingTitle;
+
+  /// No description provided for @pastTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Past'**
+  String get pastTitle;
+
+  /// No description provided for @appointmentsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No appointments yet'**
+  String get appointmentsEmpty;
+
+  /// No description provided for @noNotesPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes yet: add what the doctor said'**
+  String get noNotesPrompt;
+
+  /// No description provided for @questionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 question to ask} other{{count} questions to ask}}'**
+  String questionsCount(int count);
+
+  /// No description provided for @notesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 note} other{{count} notes}}'**
+  String notesCount(int count);
+
+  /// No description provided for @newAppointment.
+  ///
+  /// In en, this message translates to:
+  /// **'New appointment'**
+  String get newAppointment;
+
+  /// No description provided for @editAppointment.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit appointment'**
+  String get editAppointment;
+
+  /// No description provided for @sectionAppointment.
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment'**
+  String get sectionAppointment;
+
+  /// No description provided for @fieldTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty or reason'**
+  String get fieldTitle;
+
+  /// No description provided for @fieldTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Cardiology'**
+  String get fieldTitleHint;
+
+  /// No description provided for @fieldDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor (optional)'**
+  String get fieldDoctor;
+
+  /// No description provided for @fieldLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Place (optional)'**
+  String get fieldLocation;
+
+  /// No description provided for @fieldWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'Date and time'**
+  String get fieldWhen;
+
+  /// No description provided for @sectionQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions for the doctor'**
+  String get sectionQuestions;
+
+  /// No description provided for @fieldQuestionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One per line'**
+  String get fieldQuestionsHint;
+
+  /// No description provided for @issueTitleMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the specialty or reason'**
+  String get issueTitleMissing;
+
+  /// No description provided for @visitNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit notes'**
+  String get visitNotes;
+
+  /// No description provided for @addNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What did the doctor say?'**
+  String get addNoteHint;
+
+  /// No description provided for @addNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Add note'**
+  String get addNote;
+
+  /// No description provided for @cancelAppointment.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel appointment'**
+  String get cancelAppointment;
+
+  /// No description provided for @cancelAppointmentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel the {title} appointment?'**
+  String cancelAppointmentTitle(String title);
+
+  /// No description provided for @cancelAppointmentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It will no longer appear in the list. Its notes stay in Activity.'**
+  String get cancelAppointmentBody;
+
+  /// No description provided for @keepAppointment.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get keepAppointment;
+
+  /// No description provided for @cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get cancelled;
+
+  /// No description provided for @nextAppointment.
+  ///
+  /// In en, this message translates to:
+  /// **'Next appointment'**
+  String get nextAppointment;
+
+  /// No description provided for @todayAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Today, {time}'**
+  String todayAt(String time);
+
+  /// No description provided for @tomorrowAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow, {time}'**
+  String tomorrowAt(String time);
+
+  /// No description provided for @dayAt.
+  ///
+  /// In en, this message translates to:
+  /// **'{day}, {time}'**
+  String dayAt(String day, String time);
+
+  /// No description provided for @changeCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled it'**
+  String get changeCancelled;
+
+  /// No description provided for @newNote.
+  ///
+  /// In en, this message translates to:
+  /// **'New note'**
+  String get newNote;
 }
 
 class _AppLocalizationsDelegate

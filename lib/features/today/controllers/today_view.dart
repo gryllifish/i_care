@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
+import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
@@ -59,6 +60,9 @@ abstract class TodayView with _$TodayView {
     Map<DayPart, List<DoseSlot>> byDayPart,
     @Default(<AsNeededItem>[]) List<AsNeededItem> asNeeded,
 
+    /// The next appointment if it is within [upcomingAppointmentWindow].
+    Appointment? nextAppointment,
+
     /// Stock per medication, for low-stock badges.
     @Default(<String, StockLevel>{}) Map<String, StockLevel> stock,
 
@@ -67,6 +71,9 @@ abstract class TodayView with _$TodayView {
     @Default(<ConflictItem>[]) List<ConflictItem> conflicts,
   }) = _TodayView;
 }
+
+/// How far ahead Today shows the next appointment.
+const upcomingAppointmentWindow = Duration(hours: 48);
 
 /// Builds the Today screen's state from the log at [now].
 TodayView buildTodayView(CareLog log, DateTime now) {
@@ -114,6 +121,13 @@ TodayView buildTodayView(CareLog log, DateTime now) {
         if (log.stockOf(medication.id) case final StockLevel level)
           medication.id: level,
     },
+    nextAppointment: log.appointments
+        .where(
+          (appointment) =>
+              appointment.startsAt.isAfter(now) &&
+              appointment.startsAt.difference(now) <= upcomingAppointmentWindow,
+        )
+        .firstOrNull,
     conflicts: [
       for (final conflict in log.conflicts.whereType<DoseConflict>())
         if (log.medication(conflict.medicationId) case final medication?)

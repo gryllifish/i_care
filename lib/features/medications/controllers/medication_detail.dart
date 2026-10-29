@@ -40,7 +40,7 @@ MedicationDetail? buildMedicationDetail(CareLog log, String medicationId) {
     recentDoses: doses.take(recentDoseCount).toList(),
     conflicts: [
       for (final conflict in log.conflicts.whereType<EditConflict>())
-        if (conflict.medicationId == medicationId) conflict,
+        if (conflict.entityId == medicationId) conflict,
     ],
   );
 }
@@ -60,7 +60,7 @@ AsyncValue<ConflictsByMedication> medicationConflicts(Ref ref) =>
     ref.watch(careLogProvider).whenData((log) {
       final byMedication = <String, List<EditConflict>>{};
       for (final conflict in log.conflicts.whereType<EditConflict>()) {
-        (byMedication[conflict.medicationId] ??= []).add(conflict);
+        (byMedication[conflict.entityId] ??= []).add(conflict);
       }
       return byMedication;
     });

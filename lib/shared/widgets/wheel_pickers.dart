@@ -15,9 +15,7 @@ Future<TimeOfDay?> showTimeWheel(
   int minuteInterval = 1,
 }) async {
   final locale = Localizations.localeOf(context).toLanguageTag();
-  final uses24Hours =
-      MediaQuery.alwaysUse24HourFormatOf(context) ||
-      !(DateFormat.jm(locale).pattern ?? '').contains('a');
+  final uses24Hours = _uses24Hours(context, locale);
   final rounded = initial.minute - initial.minute % minuteInterval;
   final picked = await _showWheel(
     context,
@@ -28,6 +26,31 @@ Future<TimeOfDay?> showTimeWheel(
   );
   return picked == null ? null : TimeOfDay.fromDateTime(picked);
 }
+
+/// Picks a day and time with scroll wheels, minutes in steps of five.
+Future<DateTime?> showDateTimeWheel(
+  BuildContext context, {
+  required DateTime initial,
+}) {
+  const minuteInterval = 5;
+  final locale = Localizations.localeOf(context).toLanguageTag();
+  return _showWheel(
+    context,
+    mode: CupertinoDatePickerMode.dateAndTime,
+    initial: initial.copyWith(
+      minute: initial.minute - initial.minute % minuteInterval,
+      second: 0,
+      millisecond: 0,
+      microsecond: 0,
+    ),
+    minuteInterval: minuteInterval,
+    use24hFormat: _uses24Hours(context, locale),
+  );
+}
+
+bool _uses24Hours(BuildContext context, String locale) =>
+    MediaQuery.alwaysUse24HourFormatOf(context) ||
+    !(DateFormat.jm(locale).pattern ?? '').contains('a');
 
 /// Picks a day between [first] and [last] with a scroll wheel.
 Future<DateTime?> showDateWheel(

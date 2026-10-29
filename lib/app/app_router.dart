@@ -2,6 +2,9 @@ import 'package:go_router/go_router.dart';
 import 'package:i_care/app/app_shell.dart';
 import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/features/activity/presentation/screens/activity_screen.dart';
+import 'package:i_care/features/appointments/presentation/screens/appointment_detail_screen.dart';
+import 'package:i_care/features/appointments/presentation/screens/appointment_form_screen.dart';
+import 'package:i_care/features/appointments/presentation/screens/appointments_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/medication_detail_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/medication_form_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/medications_screen.dart';
@@ -46,19 +49,47 @@ GoRouter appRouter(Ref ref) {
                   GoRoute(
                     path: AppRoutes.medication,
                     builder: (context, state) => MedicationDetailScreen(
-                      medicationId: _medicationIdOf(state),
+                      medicationId: _idOf(state),
                     ),
                     routes: [
                       GoRoute(
                         path: AppRoutes.editMedication,
                         builder: (context, state) => MedicationFormScreen(
-                          medicationId: _medicationIdOf(state),
+                          medicationId: _idOf(state),
                         ),
                       ),
                       GoRoute(
                         path: AppRoutes.changeSchedule,
                         builder: (context, state) => ScheduleChangeScreen(
-                          medicationId: _medicationIdOf(state),
+                          medicationId: _idOf(state),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.appointments,
+                builder: (context, state) => const AppointmentsScreen(),
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.newAppointment,
+                    builder: (context, state) => const AppointmentFormScreen(),
+                  ),
+                  GoRoute(
+                    path: AppRoutes.appointment,
+                    builder: (context, state) => AppointmentDetailScreen(
+                      appointmentId: _idOf(state),
+                    ),
+                    routes: [
+                      GoRoute(
+                        path: AppRoutes.editAppointment,
+                        builder: (context, state) => AppointmentFormScreen(
+                          appointmentId: _idOf(state),
                         ),
                       ),
                     ],
@@ -84,5 +115,5 @@ GoRouter appRouter(Ref ref) {
 }
 
 /// The path only matches with a non-empty id, so it is always present.
-String _medicationIdOf(GoRouterState state) =>
-    state.pathParameters[AppRoutes.medicationIdParam] ?? '';
+String _idOf(GoRouterState state) =>
+    state.pathParameters[AppRoutes.idParam] ?? '';

@@ -15,6 +15,18 @@ abstract final class Formatters {
   static String shortDate(DateTime day, String locale) =>
       DateFormat.MMMd(locale).format(day);
 
+  /// "Thursday" / "jueves".
+  static String weekdayName(DateTime day, String locale) =>
+      DateFormat.EEEE(locale).format(day);
+
+  /// "4", the day of the month.
+  static String dayOfMonth(DateTime day, String locale) =>
+      DateFormat.d(locale).format(day);
+
+  /// "NOV" / "NOV.", the month in a date badge.
+  static String monthBadge(DateTime day, String locale) =>
+      DateFormat.MMM(locale).format(day).toUpperCase();
+
   /// "Mon" / "lun" for a `DateTime.monday`..`DateTime.sunday` weekday.
   static String weekday(int weekday, String locale) =>
       // 2024-01-01 was a Monday.

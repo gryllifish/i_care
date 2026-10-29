@@ -14,9 +14,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ActivityEntry {
 
- CareEvent get event;/// Name of the medication involved, looked up through the cancelled
-/// record for undos; null when none applies or it is unknown.
- String? get medicationName;
+ CareEvent get event;/// Name of the medication or title of the appointment involved,
+/// looked up through the cancelled record for undos; null when none
+/// applies or it is unknown.
+ String? get subject;
 /// Create a copy of ActivityEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +28,16 @@ $ActivityEntryCopyWith<ActivityEntry> get copyWith => _$ActivityEntryCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ActivityEntry&&(identical(other.event, event) || other.event == event)&&(identical(other.medicationName, medicationName) || other.medicationName == medicationName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ActivityEntry&&(identical(other.event, event) || other.event == event)&&(identical(other.subject, subject) || other.subject == subject));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,event,medicationName);
+int get hashCode => Object.hash(runtimeType,event,subject);
 
 @override
 String toString() {
-  return 'ActivityEntry(event: $event, medicationName: $medicationName)';
+  return 'ActivityEntry(event: $event, subject: $subject)';
 }
 
 
@@ -47,7 +48,7 @@ abstract mixin class $ActivityEntryCopyWith<$Res>  {
   factory $ActivityEntryCopyWith(ActivityEntry value, $Res Function(ActivityEntry) _then) = _$ActivityEntryCopyWithImpl;
 @useResult
 $Res call({
- CareEvent event, String? medicationName
+ CareEvent event, String? subject
 });
 
 
@@ -64,10 +65,10 @@ class _$ActivityEntryCopyWithImpl<$Res>
 
 /// Create a copy of ActivityEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? event = null,Object? medicationName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? event = null,Object? subject = freezed,}) {
   return _then(_self.copyWith(
 event: null == event ? _self.event : event // ignore: cast_nullable_to_non_nullable
-as CareEvent,medicationName: freezed == medicationName ? _self.medicationName : medicationName // ignore: cast_nullable_to_non_nullable
+as CareEvent,subject: freezed == subject ? _self.subject : subject // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -162,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CareEvent event,  String? medicationName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CareEvent event,  String? subject)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ActivityEntry() when $default != null:
-return $default(_that.event,_that.medicationName);case _:
+return $default(_that.event,_that.subject);case _:
   return orElse();
 
 }
@@ -183,10 +184,10 @@ return $default(_that.event,_that.medicationName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CareEvent event,  String? medicationName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CareEvent event,  String? subject)  $default,) {final _that = this;
 switch (_that) {
 case _ActivityEntry():
-return $default(_that.event,_that.medicationName);case _:
+return $default(_that.event,_that.subject);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +204,10 @@ return $default(_that.event,_that.medicationName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CareEvent event,  String? medicationName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CareEvent event,  String? subject)?  $default,) {final _that = this;
 switch (_that) {
 case _ActivityEntry() when $default != null:
-return $default(_that.event,_that.medicationName);case _:
+return $default(_that.event,_that.subject);case _:
   return null;
 
 }
@@ -218,13 +219,14 @@ return $default(_that.event,_that.medicationName);case _:
 
 
 class _ActivityEntry implements ActivityEntry {
-  const _ActivityEntry({required this.event, this.medicationName});
+  const _ActivityEntry({required this.event, this.subject});
   
 
 @override final  CareEvent event;
-/// Name of the medication involved, looked up through the cancelled
-/// record for undos; null when none applies or it is unknown.
-@override final  String? medicationName;
+/// Name of the medication or title of the appointment involved,
+/// looked up through the cancelled record for undos; null when none
+/// applies or it is unknown.
+@override final  String? subject;
 
 /// Create a copy of ActivityEntry
 /// with the given fields replaced by the non-null parameter values.
@@ -236,16 +238,16 @@ _$ActivityEntryCopyWith<_ActivityEntry> get copyWith => __$ActivityEntryCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ActivityEntry&&(identical(other.event, event) || other.event == event)&&(identical(other.medicationName, medicationName) || other.medicationName == medicationName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ActivityEntry&&(identical(other.event, event) || other.event == event)&&(identical(other.subject, subject) || other.subject == subject));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,event,medicationName);
+int get hashCode => Object.hash(runtimeType,event,subject);
 
 @override
 String toString() {
-  return 'ActivityEntry(event: $event, medicationName: $medicationName)';
+  return 'ActivityEntry(event: $event, subject: $subject)';
 }
 
 
@@ -256,7 +258,7 @@ abstract mixin class _$ActivityEntryCopyWith<$Res> implements $ActivityEntryCopy
   factory _$ActivityEntryCopyWith(_ActivityEntry value, $Res Function(_ActivityEntry) _then) = __$ActivityEntryCopyWithImpl;
 @override @useResult
 $Res call({
- CareEvent event, String? medicationName
+ CareEvent event, String? subject
 });
 
 
@@ -273,10 +275,10 @@ class __$ActivityEntryCopyWithImpl<$Res>
 
 /// Create a copy of ActivityEntry
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? event = null,Object? medicationName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? event = null,Object? subject = freezed,}) {
   return _then(_ActivityEntry(
 event: null == event ? _self.event : event // ignore: cast_nullable_to_non_nullable
-as CareEvent,medicationName: freezed == medicationName ? _self.medicationName : medicationName // ignore: cast_nullable_to_non_nullable
+as CareEvent,subject: freezed == subject ? _self.subject : subject // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

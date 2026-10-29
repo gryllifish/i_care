@@ -188,6 +188,12 @@ documented), nursing-home features.
   confirmation, and review of concurrent edits ("keep this one" / "use
   this one"). Validation is pure domain code; every flow has widget
   tests, including 200 % text.
+- Phase 3, appointments: a tab with upcoming and past appointments
+  (date badges, questions to ask, "no notes yet" prompt), detail with
+  questions and visit notes from several caregivers (open from the
+  visit's start), add/edit form with a date-and-time wheel, cancel with
+  confirmation, and concurrent edits reviewed like medications. Today
+  shows the next appointment within 48 h.
 - Visual refresh: navigation bar, read-only Medications (schedule,
   instructions, stock) and Activity (feed by day) tabs, redesigned Today,
   bundled font.

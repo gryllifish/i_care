@@ -513,7 +513,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get addMedication => 'Agregar';
+  String get add => 'Agregar';
 
   @override
   String get newMedication => 'Nuevo medicamento';
@@ -777,4 +777,148 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get sectionFromWhen => 'Desde cuándo';
+
+  @override
+  String get unknownAppointment => 'un turno';
+
+  @override
+  String activityAppointmentCreated(String name, String title) {
+    return '$name agregó el turno de $title';
+  }
+
+  @override
+  String activityAppointmentUpdated(String name, String title) {
+    return '$name editó el turno de $title';
+  }
+
+  @override
+  String activityAppointmentCancelled(String name, String title) {
+    return '$name canceló el turno de $title';
+  }
+
+  @override
+  String activityVisitNote(String name, String title) {
+    return '$name agregó una nota al turno de $title';
+  }
+
+  @override
+  String get navAppointments => 'Turnos';
+
+  @override
+  String get upcomingTitle => 'Próximos';
+
+  @override
+  String get pastTitle => 'Pasados';
+
+  @override
+  String get appointmentsEmpty => 'Todavía no hay turnos';
+
+  @override
+  String get noNotesPrompt => 'Sin notas: agregá lo que dijo el médico';
+
+  @override
+  String questionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count preguntas para hacer',
+      one: '1 pregunta para hacer',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notas',
+      one: '1 nota',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get newAppointment => 'Nuevo turno';
+
+  @override
+  String get editAppointment => 'Editar turno';
+
+  @override
+  String get sectionAppointment => 'Turno';
+
+  @override
+  String get fieldTitle => 'Especialidad o motivo';
+
+  @override
+  String get fieldTitleHint => 'Ej.: Cardiología';
+
+  @override
+  String get fieldDoctor => 'Médico (opcional)';
+
+  @override
+  String get fieldLocation => 'Lugar (opcional)';
+
+  @override
+  String get fieldWhen => 'Fecha y hora';
+
+  @override
+  String get sectionQuestions => 'Preguntas para el médico';
+
+  @override
+  String get fieldQuestionsHint => 'Una por línea';
+
+  @override
+  String get issueTitleMissing => 'Escribí la especialidad o el motivo';
+
+  @override
+  String get visitNotes => 'Notas de la visita';
+
+  @override
+  String get addNoteHint => '¿Qué dijo el médico?';
+
+  @override
+  String get addNote => 'Agregar nota';
+
+  @override
+  String get cancelAppointment => 'Cancelar turno';
+
+  @override
+  String cancelAppointmentTitle(String title) {
+    return '¿Cancelar el turno de $title?';
+  }
+
+  @override
+  String get cancelAppointmentBody =>
+      'Deja de aparecer en la lista. Sus notas quedan en Actividad.';
+
+  @override
+  String get keepAppointment => 'No, mantener';
+
+  @override
+  String get cancelled => 'Cancelado';
+
+  @override
+  String get nextAppointment => 'Próximo turno';
+
+  @override
+  String todayAt(String time) {
+    return 'Hoy, $time';
+  }
+
+  @override
+  String tomorrowAt(String time) {
+    return 'Mañana, $time';
+  }
+
+  @override
+  String dayAt(String day, String time) {
+    return '$day, $time';
+  }
+
+  @override
+  String get changeCancelled => 'Lo canceló';
+
+  @override
+  String get newNote => 'Nueva nota';
 }
