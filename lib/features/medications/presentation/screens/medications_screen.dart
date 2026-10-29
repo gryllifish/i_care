@@ -13,7 +13,7 @@ import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/medications/controllers/medication_detail.dart';
 import 'package:i_care/features/medications/controllers/medications_view.dart';
-import 'package:i_care/features/medications/presentation/widgets/schedule_text.dart';
+import 'package:i_care/shared/l10n/schedule_text.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
 import 'package:i_care/shared/widgets/low_stock_pill.dart';

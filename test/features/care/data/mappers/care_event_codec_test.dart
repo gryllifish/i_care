@@ -5,6 +5,7 @@ import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 
 void main() {
   final at = DateTime(2026, 11, 2, 8, 5);
@@ -104,6 +105,19 @@ void main() {
       baseVersion: 2,
     ),
     CareEvent.visitNoteAdded(meta: meta, appointmentId: 'a1', text: 'OK'),
+    CareEvent.recipientProfileUpdated(
+      meta: meta,
+      baseVersion: 3,
+      profile: RecipientProfile(
+        name: 'Elena',
+        birthDate: DateTime(1942, 3, 14),
+        allergies: 'Penicillin',
+        doctors: const [
+          CareContact(name: 'Dr. Pérez', role: 'Cardiology', phone: '+1'),
+        ],
+        contacts: const [CareContact(name: 'Ana')],
+      ),
+    ),
     CareEvent.conflictAcknowledged(meta: meta, conflictKey: 'dose:m1:x'),
   ];
 

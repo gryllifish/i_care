@@ -7,6 +7,7 @@ import 'package:i_care/features/medications/presentation/screens/medication_deta
 import 'package:i_care/shared/widgets/labeled_field.dart';
 
 import '../../../helpers/pump_app.dart';
+import '../../../helpers/scrolling.dart';
 import '../../care/helpers/care_events.dart';
 
 void main() {
@@ -33,32 +34,17 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  /// Scrolls the top screen's list until [finder] is built, then brings
-  /// it to the middle, so a tap never lands on the navigation bar. Lists
-  /// build their items lazily; text fields have scrollables of their own,
-  /// so the list's is looked up explicitly.
-  Future<void> bringIntoView(WidgetTester tester, Finder finder) async {
-    final list = find
-        .descendant(
-          of: find.byType(ListView).last,
-          matching: find.byType(Scrollable),
-        )
-        .first;
-    if (finder.evaluate().isEmpty) {
-      await tester.scrollUntilVisible(finder, 300, scrollable: list);
-    }
-    final inList = find.descendant(of: list, matching: finder);
-    if (inList.evaluate().isEmpty) return;
-    // Part of each drag goes to the touch slop, so a few may be needed. A
-    // drag shorter than the slop would count as a tap, so stop before.
-    for (var attempt = 0; attempt < 3; attempt++) {
-      final offset =
-          tester.getRect(list).center.dy - tester.getCenter(finder).dy;
-      if (offset.abs() <= kDragSlopDefault * 2) break;
-      await tester.drag(list, Offset(0, offset));
-      await tester.pumpAndSettle();
-    }
-  }
+  /// The pushed screen's list; text fields have scrollables of their
+  /// own, so the list's is looked up explicitly.
+  Finder topList() => find
+      .descendant(
+        of: find.byType(ListView).last,
+        matching: find.byType(Scrollable),
+      )
+      .first;
+
+  Future<void> bringIntoView(WidgetTester tester, Finder finder) =>
+      centerInList(tester, finder, list: topList());
 
   Future<void> tapAndSettle(WidgetTester tester, Finder finder) async {
     await bringIntoView(tester, finder);

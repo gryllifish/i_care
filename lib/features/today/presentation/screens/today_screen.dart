@@ -195,7 +195,7 @@ class _Header extends StatelessWidget {
       footer: const Wrap(
         spacing: AppSpacing.sm,
         runSpacing: AppSpacing.sm,
-        children: [SyncBanner(), _SampleDataPill()],
+        children: [_EmergencyCardButton(), SyncBanner(), _SampleDataPill()],
       ),
     );
   }
@@ -215,6 +215,54 @@ class _RecipientAvatar extends StatelessWidget {
         child: Text(
           SampleCircle.recipientName.characters.first,
           style: AppTextStyles.headline.copyWith(color: AppColors.onAccent),
+        ),
+      ),
+    );
+  }
+}
+
+/// Opens the emergency card: one tap from the first screen, for the
+/// moment someone needs it at a hospital.
+class _EmergencyCardButton extends StatelessWidget {
+  const _EmergencyCardButton();
+
+  static const _iconSize = 18.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      child: Material(
+        color: AppColors.overdueSoft,
+        shape: const StadiumBorder(),
+        child: InkWell(
+          customBorder: const StadiumBorder(),
+          onTap: () => context.push(AppRoutes.emergency),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.xs + AppSpacing.xxs,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: AppSpacing.xs,
+              children: [
+                const Icon(
+                  Icons.medical_information,
+                  size: _iconSize,
+                  color: AppColors.overdue,
+                ),
+                Flexible(
+                  child: Text(
+                    context.l10n.emergencyCard,
+                    style: AppTextStyles.pill.copyWith(
+                      color: AppColors.overdue,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

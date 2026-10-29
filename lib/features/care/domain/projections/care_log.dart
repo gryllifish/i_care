@@ -4,6 +4,7 @@ import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 
 /// Current state of the care circle, projected from its event log.
@@ -22,6 +23,8 @@ class CareLog {
     required this.events,
     required this._medications,
     required this._appointments,
+    required this.profile,
+    required this.profileVersion,
     required this._doses,
     required this._stock,
     required this.conflicts,
@@ -35,6 +38,15 @@ class CareLog {
 
   final Map<String, Medication> _medications;
   final Map<String, Appointment> _appointments;
+
+  /// The emergency card's profile; null until someone fills it in.
+  final RecipientProfile? profile;
+
+  /// Number of profile changes applied, for edits' `baseVersion`.
+  final int profileVersion;
+
+  /// The entity id under which profile edits are tracked and conflict.
+  static const profileId = 'recipient-profile';
 
   /// [DoseGiven] and [DoseSkipped] events per medication, undone ones
   /// left out.
@@ -207,6 +219,8 @@ class _Projector {
 
   final _medications = <String, Medication>{};
   final _appointments = <String, Appointment>{};
+  RecipientProfile? _profile;
+  var _profileVersion = 0;
 
   /// Changes applied to each medication or appointment; the one at index
   /// `i` produced version `i + 1`.
@@ -223,6 +237,8 @@ class _Projector {
       events: List.unmodifiable(_events),
       medications: _medications,
       appointments: _appointments,
+      profile: _profile,
+      profileVersion: _profileVersion,
       doses: _doses,
       stock: _stock,
       conflicts: List.unmodifiable(
@@ -311,6 +327,10 @@ class _Projector {
           (stock) => stock + units,
           ifAbsent: () => units,
         );
+      case RecipientProfileUpdated(:final baseVersion, :final profile):
+        _recordChange(event, CareLog.profileId, baseVersion);
+        _profile = profile;
+        _profileVersion++;
       case ConflictAcknowledged(:final conflictKey):
         _acknowledged.add(conflictKey);
       case DoseGiven() || DoseSkipped() || DoseUndone():
@@ -377,6 +397,7 @@ class _Projector {
     (MedicationUpdated(), MedicationUpdated()) => true,
     (ScheduleChanged(), ScheduleChanged()) => true,
     (AppointmentUpdated(), AppointmentUpdated()) => true,
+    (RecipientProfileUpdated(), RecipientProfileUpdated()) => true,
     _ => false,
   };
 

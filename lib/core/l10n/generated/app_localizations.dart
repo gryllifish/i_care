@@ -1500,6 +1500,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New note'**
   String get newNote;
+
+  /// No description provided for @activityProfileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} updated the emergency card'**
+  String activityProfileUpdated(String name);
+
+  /// No description provided for @emergencyCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency card'**
+  String get emergencyCard;
+
+  /// No description provided for @ageYears.
+  ///
+  /// In en, this message translates to:
+  /// **'{years} years old'**
+  String ageYears(int years);
+
+  /// No description provided for @allergiesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies'**
+  String get allergiesTitle;
+
+  /// No description provided for @noAllergies.
+  ///
+  /// In en, this message translates to:
+  /// **'No known allergies'**
+  String get noAllergies;
+
+  /// No description provided for @conditionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions'**
+  String get conditionsTitle;
+
+  /// No description provided for @medicationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medications'**
+  String get medicationsTitle;
+
+  /// No description provided for @doctorsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctors'**
+  String get doctorsTitle;
+
+  /// No description provided for @contactsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency contacts'**
+  String get contactsTitle;
+
+  /// No description provided for @notesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notesTitle;
+
+  /// No description provided for @copyAsText.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy as text'**
+  String get copyAsText;
+
+  /// No description provided for @copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied. Paste it in a message or show it at the hospital.'**
+  String get copied;
+
+  /// No description provided for @callName.
+  ///
+  /// In en, this message translates to:
+  /// **'Call {name}'**
+  String callName(String name);
+
+  /// No description provided for @callFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the phone app'**
+  String get callFailed;
+
+  /// No description provided for @emptyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody has filled in the emergency card yet.'**
+  String get emptyProfile;
+
+  /// No description provided for @fillIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill it in'**
+  String get fillIn;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit emergency card'**
+  String get editProfile;
+
+  /// No description provided for @sectionPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Person'**
+  String get sectionPerson;
+
+  /// No description provided for @fieldFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get fieldFullName;
+
+  /// No description provided for @fieldBirthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth (optional)'**
+  String get fieldBirthDate;
+
+  /// No description provided for @notSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get notSet;
+
+  /// No description provided for @fieldAllergies.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies (one per line)'**
+  String get fieldAllergies;
+
+  /// No description provided for @fieldConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions (one per line)'**
+  String get fieldConditions;
+
+  /// No description provided for @fieldNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get fieldNotes;
+
+  /// No description provided for @addDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Add doctor'**
+  String get addDoctor;
+
+  /// No description provided for @addContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Add contact'**
+  String get addContact;
+
+  /// No description provided for @fieldPersonName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get fieldPersonName;
+
+  /// No description provided for @fieldSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty'**
+  String get fieldSpecialty;
+
+  /// No description provided for @fieldRelationship.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship'**
+  String get fieldRelationship;
+
+  /// No description provided for @fieldPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get fieldPhone;
+
+  /// No description provided for @remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
 }
 
 class _AppLocalizationsDelegate

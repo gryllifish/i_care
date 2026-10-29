@@ -2,6 +2,7 @@ import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 
 /// Builds events tersely. Ids are sequential so tests stay readable;
 /// pass `receivedAt` to mark an event as synced.
@@ -201,6 +202,19 @@ class EventFactory {
             text: text,
           )
           as VisitNoteAdded;
+
+  RecipientProfileUpdated profile(
+    RecipientProfile profile, {
+    int baseVersion = 0,
+    String by = 'ana',
+    DateTime? at,
+  }) =>
+      CareEvent.recipientProfileUpdated(
+            meta: meta(at: at ?? DateTime(2026), by: by),
+            baseVersion: baseVersion,
+            profile: profile,
+          )
+          as RecipientProfileUpdated;
 
   ConflictAcknowledged acknowledged(String key) =>
       CareEvent.conflictAcknowledged(

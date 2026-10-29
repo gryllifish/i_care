@@ -194,6 +194,12 @@ documented), nursing-home features.
   visit's start), add/edit form with a date-and-time wheel, cancel with
   confirmation, and concurrent edits reviewed like medications. Today
   shows the next appointment within 48 h.
+- Phase 3, emergency card: full-screen card opened from a red pill on
+  Today; allergies first on red, conditions, active medications from
+  the log, doctors and contacts with call buttons (`url_launcher`),
+  notes, and "Copy as text". Edited through a versioned
+  `RecipientProfileUpdated`; sample phone numbers use the fictional 555
+  range.
 - Visual refresh: navigation bar, read-only Medications (schedule,
   instructions, stock) and Activity (feed by day) tabs, redesigned Today,
   bundled font.

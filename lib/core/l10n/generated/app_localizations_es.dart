@@ -921,4 +921,104 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get newNote => 'Nueva nota';
+
+  @override
+  String activityProfileUpdated(String name) {
+    return '$name actualizó la ficha de emergencia';
+  }
+
+  @override
+  String get emergencyCard => 'Ficha de emergencia';
+
+  @override
+  String ageYears(int years) {
+    return '$years años';
+  }
+
+  @override
+  String get allergiesTitle => 'Alergias';
+
+  @override
+  String get noAllergies => 'Sin alergias conocidas';
+
+  @override
+  String get conditionsTitle => 'Condiciones';
+
+  @override
+  String get medicationsTitle => 'Medicación';
+
+  @override
+  String get doctorsTitle => 'Médicos';
+
+  @override
+  String get contactsTitle => 'Contactos de emergencia';
+
+  @override
+  String get notesTitle => 'Notas';
+
+  @override
+  String get copyAsText => 'Copiar como texto';
+
+  @override
+  String get copied =>
+      'Copiada. Pegala en un mensaje o mostrala en la guardia.';
+
+  @override
+  String callName(String name) {
+    return 'Llamar a $name';
+  }
+
+  @override
+  String get callFailed => 'No se pudo abrir el teléfono';
+
+  @override
+  String get emptyProfile => 'Todavía nadie completó la ficha de emergencia.';
+
+  @override
+  String get fillIn => 'Completarla';
+
+  @override
+  String get editProfile => 'Editar ficha';
+
+  @override
+  String get sectionPerson => 'Persona';
+
+  @override
+  String get fieldFullName => 'Nombre completo';
+
+  @override
+  String get fieldBirthDate => 'Fecha de nacimiento (opcional)';
+
+  @override
+  String get notSet => 'Sin cargar';
+
+  @override
+  String get fieldAllergies => 'Alergias (una por línea)';
+
+  @override
+  String get fieldConditions => 'Condiciones (una por línea)';
+
+  @override
+  String get fieldNotes => 'Notas (opcional)';
+
+  @override
+  String get addDoctor => 'Agregar médico';
+
+  @override
+  String get addContact => 'Agregar contacto';
+
+  @override
+  String get fieldPersonName => 'Nombre';
+
+  @override
+  String get fieldSpecialty => 'Especialidad';
+
+  @override
+  String get fieldRelationship => 'Relación';
+
+  @override
+  String get fieldPhone => 'Teléfono';
+
+  @override
+  String get remove => 'Quitar';
 }

@@ -227,6 +227,7 @@ class _EntryRow extends ConsumerWidget {
         appointment,
       ),
       VisitNoteAdded() => l10n.activityVisitNote(name, appointment),
+      RecipientProfileUpdated() => l10n.activityProfileUpdated(name),
       ConflictAcknowledged() => l10n.activityReviewed(name),
     };
   }

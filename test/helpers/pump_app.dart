@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/app/app.dart';
 import 'package:i_care/core/error/failure.dart';
@@ -67,6 +68,7 @@ Future<void> pumpApp(
   required FakeCareRepository repository,
   required DateTime now,
   Size size = phoneSize,
+  List<Override> overrides = const [],
 }) async {
   tester.view
     ..physicalSize = size * 3
@@ -80,6 +82,7 @@ Future<void> pumpApp(
         careRepositoryProvider.overrideWithValue(repository),
         clockProvider.overrideWithValue(() => now),
         newIdProvider.overrideWithValue(() => 'new-${nextId++}'),
+        ...overrides,
       ],
       // Riverpod retries failed providers by default; tests want the raw
       // error on screen.

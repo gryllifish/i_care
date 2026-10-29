@@ -786,5 +786,57 @@
     }
   },
   "changeCancelled": "Cancelled it",
-  "newNote": "New note"
+  "newNote": "New note",
+  "activityProfileUpdated": "{name} updated the emergency card",
+  "@activityProfileUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "emergencyCard": "Emergency card",
+  "ageYears": "{years} years old",
+  "@ageYears": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "allergiesTitle": "Allergies",
+  "noAllergies": "No known allergies",
+  "conditionsTitle": "Conditions",
+  "medicationsTitle": "Medications",
+  "doctorsTitle": "Doctors",
+  "contactsTitle": "Emergency contacts",
+  "notesTitle": "Notes",
+  "copyAsText": "Copy as text",
+  "copied": "Copied. Paste it in a message or show it at the hospital.",
+  "callName": "Call {name}",
+  "@callName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "callFailed": "Couldn't open the phone app",
+  "emptyProfile": "Nobody has filled in the emergency card yet.",
+  "fillIn": "Fill it in",
+  "editProfile": "Edit emergency card",
+  "sectionPerson": "Person",
+  "fieldFullName": "Full name",
+  "fieldBirthDate": "Date of birth (optional)",
+  "notSet": "Not set",
+  "fieldAllergies": "Allergies (one per line)",
+  "fieldConditions": "Conditions (one per line)",
+  "fieldNotes": "Notes (optional)",
+  "addDoctor": "Add doctor",
+  "addContact": "Add contact",
+  "fieldPersonName": "Name",
+  "fieldSpecialty": "Specialty",
+  "fieldRelationship": "Relationship",
+  "fieldPhone": "Phone",
+  "remove": "Remove"
 }

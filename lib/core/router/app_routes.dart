@@ -35,6 +35,12 @@ abstract final class AppRoutes {
   static String changeSchedulePath(String id) =>
       '${medicationPath(id)}/$changeSchedule';
 
+  /// Full screen, over the tabs: reachable from Today in one tap.
+  static const emergency = '/emergency';
+  static const editEmergency = 'edit';
+
+  static String editEmergencyPath() => '$emergency/$editEmergency';
+
   /// Nested under [appointments], like medications.
   static const newAppointment = 'new';
   static const appointment = ':$idParam';

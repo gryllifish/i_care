@@ -5,6 +5,7 @@ import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 
 /// Wire and storage format of [CareEvent]s.
 ///
@@ -118,6 +119,11 @@ abstract final class CareEventCodec {
         'appointment_id': event.appointmentId,
         'text': event.text,
       },
+      RecipientProfileUpdated() => {
+        'type': 'recipient_profile_updated',
+        'base_version': event.baseVersion,
+        'profile': _encodeProfile(event.profile),
+      },
       ConflictAcknowledged() => {
         'type': 'conflict_acknowledged',
         'conflict_key': event.conflictKey,
@@ -223,6 +229,11 @@ abstract final class CareEventCodec {
         appointmentId: json.string('appointment_id'),
         text: json.string('text'),
       ),
+      'recipient_profile_updated' => CareEvent.recipientProfileUpdated(
+        meta: meta,
+        baseVersion: json.integer('base_version'),
+        profile: _decodeProfile(json.object('profile')),
+      ),
       'conflict_acknowledged' => CareEvent.conflictAcknowledged(
         meta: meta,
         conflictKey: json.string('conflict_key'),
@@ -266,6 +277,38 @@ abstract final class CareEventCodec {
         location: json.string('location'),
         questions: json.string('questions'),
       );
+
+  static Map<String, Object?> _encodeProfile(RecipientProfile profile) => {
+    'name': profile.name,
+    'birth_date': profile.birthDate.let(_date),
+    'allergies': profile.allergies,
+    'conditions': profile.conditions,
+    'doctors': [for (final c in profile.doctors) _encodeContact(c)],
+    'contacts': [for (final c in profile.contacts) _encodeContact(c)],
+    'notes': profile.notes,
+  };
+
+  static RecipientProfile _decodeProfile(_Reader json) => RecipientProfile(
+    name: json.string('name'),
+    birthDate: json.optionalDate('birth_date'),
+    allergies: json.string('allergies'),
+    conditions: json.string('conditions'),
+    doctors: [for (final c in json.objects('doctors')) _decodeContact(c)],
+    contacts: [for (final c in json.objects('contacts')) _decodeContact(c)],
+    notes: json.string('notes'),
+  );
+
+  static Map<String, Object?> _encodeContact(CareContact contact) => {
+    'name': contact.name,
+    'role': contact.role,
+    'phone': contact.phone,
+  };
+
+  static CareContact _decodeContact(_Reader json) => CareContact(
+    name: json.string('name'),
+    role: json.string('role'),
+    phone: json.string('phone'),
+  );
 
   static Map<String, Object?> _encodeSchedule(DoseSchedule schedule) =>
       switch (schedule) {
@@ -348,6 +391,10 @@ extension type const _Reader(Map<String, Object?> _json) {
   _Reader object(String key) => _Reader(_field<Map<String, Object?>>(key));
 
   List<String> strings(String key) => _list<String>(key);
+
+  List<_Reader> objects(String key) => [
+    for (final item in _list<Map<String, Object?>>(key)) _Reader(item),
+  ];
 
   List<int> integers(String key) => _list<int>(key);
 

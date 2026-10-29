@@ -11,6 +11,10 @@ abstract final class Formatters {
   static String longDay(DateTime day, String locale) =>
       DateFormat.MMMMEEEEd(locale).format(day);
 
+  /// "Mar 14, 1942" / "14 mar 1942", for dates far from today.
+  static String fullDate(DateTime day, String locale) =>
+      DateFormat.yMMMd(locale).format(day);
+
   /// "Nov 2" / "2 nov".
   static String shortDate(DateTime day, String locale) =>
       DateFormat.MMMd(locale).format(day);

@@ -3,6 +3,7 @@ import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/caregiver.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 
 /// The demo's care circle: Elena, her two children and a hired carer.
 ///
@@ -66,7 +67,57 @@ class _SampleHistory {
     _addScheduledDoses();
     _addAsNeededDose();
     _addAppointments();
+    _addProfile();
     return _events;
+  }
+
+  /// The emergency card. Phone numbers use the 555 range reserved for
+  /// fiction, so none of them reaches a real person.
+  void _addProfile() {
+    final spanish = language == 'es';
+    _add(
+      (meta) => CareEvent.recipientProfileUpdated(
+        meta: meta,
+        baseVersion: 0,
+        profile: RecipientProfile(
+          name: 'Elena Rossi',
+          birthDate: DateTime(1942, 3, 14),
+          allergies: spanish ? 'Penicilina' : 'Penicillin',
+          conditions: spanish
+              ? 'Hipertensión\nHipotiroidismo\nDiabetes tipo 2'
+              : 'High blood pressure\nHypothyroidism\nType 2 diabetes',
+          doctors: [
+            CareContact(
+              name: 'Dra. Pérez',
+              role: spanish ? 'Cardiología' : 'Cardiology',
+              phone: '+54 11 5555-0101',
+            ),
+            CareContact(
+              name: 'Dr. Gómez',
+              role: spanish ? 'Clínica médica' : 'General practice',
+              phone: '+54 11 5555-0102',
+            ),
+          ],
+          contacts: [
+            CareContact(
+              name: 'Ana',
+              role: spanish ? 'Hija' : 'Daughter',
+              phone: '+54 11 5555-0201',
+            ),
+            CareContact(
+              name: 'Martín',
+              role: spanish ? 'Hijo' : 'Son',
+              phone: '+54 11 5555-0202',
+            ),
+          ],
+          notes: spanish
+              ? 'Usa audífono en el oído derecho.'
+              : 'Wears a hearing aid in the right ear.',
+        ),
+      ),
+      at: start,
+      by: SampleCircle.ana.id,
+    );
   }
 
   /// A blood test with a note, a check-up yesterday nobody wrote notes

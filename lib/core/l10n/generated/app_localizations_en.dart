@@ -922,4 +922,104 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newNote => 'New note';
+
+  @override
+  String activityProfileUpdated(String name) {
+    return '$name updated the emergency card';
+  }
+
+  @override
+  String get emergencyCard => 'Emergency card';
+
+  @override
+  String ageYears(int years) {
+    return '$years years old';
+  }
+
+  @override
+  String get allergiesTitle => 'Allergies';
+
+  @override
+  String get noAllergies => 'No known allergies';
+
+  @override
+  String get conditionsTitle => 'Conditions';
+
+  @override
+  String get medicationsTitle => 'Medications';
+
+  @override
+  String get doctorsTitle => 'Doctors';
+
+  @override
+  String get contactsTitle => 'Emergency contacts';
+
+  @override
+  String get notesTitle => 'Notes';
+
+  @override
+  String get copyAsText => 'Copy as text';
+
+  @override
+  String get copied =>
+      'Copied. Paste it in a message or show it at the hospital.';
+
+  @override
+  String callName(String name) {
+    return 'Call $name';
+  }
+
+  @override
+  String get callFailed => 'Couldn\'t open the phone app';
+
+  @override
+  String get emptyProfile => 'Nobody has filled in the emergency card yet.';
+
+  @override
+  String get fillIn => 'Fill it in';
+
+  @override
+  String get editProfile => 'Edit emergency card';
+
+  @override
+  String get sectionPerson => 'Person';
+
+  @override
+  String get fieldFullName => 'Full name';
+
+  @override
+  String get fieldBirthDate => 'Date of birth (optional)';
+
+  @override
+  String get notSet => 'Not set';
+
+  @override
+  String get fieldAllergies => 'Allergies (one per line)';
+
+  @override
+  String get fieldConditions => 'Conditions (one per line)';
+
+  @override
+  String get fieldNotes => 'Notes (optional)';
+
+  @override
+  String get addDoctor => 'Add doctor';
+
+  @override
+  String get addContact => 'Add contact';
+
+  @override
+  String get fieldPersonName => 'Name';
+
+  @override
+  String get fieldSpecialty => 'Specialty';
+
+  @override
+  String get fieldRelationship => 'Relationship';
+
+  @override
+  String get fieldPhone => 'Phone';
+
+  @override
+  String get remove => 'Remove';
 }

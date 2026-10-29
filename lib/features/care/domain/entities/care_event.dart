@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 
 part 'care_event.freezed.dart';
 
@@ -140,6 +141,13 @@ sealed class CareEvent with _$CareEvent {
     required String appointmentId,
     required String text,
   }) = VisitNoteAdded;
+
+  /// Replaces the emergency card's profile of the person cared for.
+  const factory CareEvent.recipientProfileUpdated({
+    required EventMeta meta,
+    required int baseVersion,
+    required RecipientProfile profile,
+  }) = RecipientProfileUpdated;
 
   /// A caregiver reviewed a conflict; it stops being shown as pending.
   const factory CareEvent.conflictAcknowledged({

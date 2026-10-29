@@ -19,6 +19,7 @@ dependencies:
   intl: ^0.20.2
   json_annotation: ^4.11.0
   riverpod_annotation: ^4.0.2
+  url_launcher: ^6.3.3
   uuid: ^4.6.0
 
 dev_dependencies:

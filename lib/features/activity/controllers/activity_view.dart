@@ -49,7 +49,7 @@ List<ActivityDay> buildActivity(CareLog log) {
     AppointmentUpdated(:final appointmentId) ||
     AppointmentCancelled(:final appointmentId) ||
     VisitNoteAdded(:final appointmentId) => titleOf(appointmentId),
-    ConflictAcknowledged() => null,
+    RecipientProfileUpdated() || ConflictAcknowledged() => null,
   };
 
   final newestFirst = [...log.events]

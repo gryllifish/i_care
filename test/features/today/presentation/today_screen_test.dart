@@ -9,6 +9,7 @@ import 'package:i_care/features/today/presentation/widgets/dose_tile.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 
 import '../../../helpers/pump_app.dart';
+import '../../../helpers/scrolling.dart';
 import '../../care/helpers/care_events.dart';
 
 void main() {
@@ -36,11 +37,7 @@ void main() {
       of: find.text(time),
       matching: find.byType(DoseTile),
     );
-    await tester.scrollUntilVisible(
-      tile,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await centerInList(tester, tile, list: find.byType(Scrollable).first);
     await tester.tap(
       find.descendant(of: tile.first, matching: find.byType(AppCard)),
     );

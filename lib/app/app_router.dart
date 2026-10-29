@@ -5,6 +5,8 @@ import 'package:i_care/features/activity/presentation/screens/activity_screen.da
 import 'package:i_care/features/appointments/presentation/screens/appointment_detail_screen.dart';
 import 'package:i_care/features/appointments/presentation/screens/appointment_form_screen.dart';
 import 'package:i_care/features/appointments/presentation/screens/appointments_screen.dart';
+import 'package:i_care/features/emergency/presentation/screens/emergency_card_screen.dart';
+import 'package:i_care/features/emergency/presentation/screens/profile_form_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/medication_detail_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/medication_form_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/medications_screen.dart';
@@ -25,6 +27,17 @@ GoRouter appRouter(Ref ref) {
   final router = GoRouter(
     routerNeglect: true,
     routes: [
+      // Outside the shell, so they cover the tab bar.
+      GoRoute(
+        path: AppRoutes.emergency,
+        builder: (context, state) => const EmergencyCardScreen(),
+        routes: [
+          GoRoute(
+            path: AppRoutes.editEmergency,
+            builder: (context, state) => const ProfileFormScreen(),
+          ),
+        ],
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(shell: shell),
         branches: [
