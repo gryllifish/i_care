@@ -9,5 +9,194 @@
   "errorUnexpected": "Something went wrong. Please try again.",
   "errorOffline": "You're offline. Changes are saved on this device and sync when the connection is back.",
   "errorTimeout": "This is taking too long. Please try again.",
-  "errorServer": "The sync service is having trouble. Try again soon."
+  "errorServer": "The sync service is having trouble. Try again soon.",
+  "sampleData": "Sample data",
+  "syncedAt": "Synced at {time}",
+  "@syncedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "syncNever": "Not synced yet",
+  "syncOffline": "Offline",
+  "syncPending": "{count, plural, =1{1 change waiting to sync} other{{count} changes waiting to sync}}",
+  "@syncPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nextDose": "Next dose",
+  "allDoneToday": "All of today's doses are recorded.",
+  "fromYesterday": "From yesterday",
+  "dayPartMorning": "Morning",
+  "dayPartMidday": "Midday",
+  "dayPartAfternoon": "Afternoon",
+  "dayPartNight": "Night",
+  "asNeeded": "As needed",
+  "statusUpcoming": "Upcoming",
+  "statusDue": "Due now",
+  "statusOverdue": "Late",
+  "statusGiven": "Given",
+  "statusSkipped": "Skipped",
+  "statusGivenTwice": "Given twice",
+  "recordedBy": "{name} at {time}",
+  "@recordedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastDose": "Last dose: {time}, by {name}",
+  "@lastDose": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "noDoseYet": "No doses recorded",
+  "stockDays": "{days, plural, =0{Runs out today} =1{1 day left} other{{days} days left}}",
+  "@stockDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "stockOut": "Out of stock",
+  "toReview": "{count, plural, =1{1 thing to review} other{{count} things to review}}",
+  "@toReview": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "conflictDoseBody": "More than one person recorded this dose as given, without seeing the other record. Talk to them before the next dose.",
+  "doubleDoseBody": "Recorded as given more than once, on purpose.",
+  "markReviewed": "Mark as reviewed",
+  "markGiven": "Mark as given",
+  "markGivenAnyway": "Mark as given anyway",
+  "skipDose": "Skip this dose",
+  "skipReasonTitle": "Why is it skipped?",
+  "skipRefused": "Refused it",
+  "skipAsleep": "Was asleep",
+  "skipUnwell": "Felt unwell",
+  "skipDoctorAdvice": "Doctor's advice",
+  "skipOther": "Other reason",
+  "skippedBy": "Skipped by {name}: {reason}",
+  "@skippedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "doseRecordedGiven": "{medication} recorded as given",
+  "@doseRecordedGiven": {
+    "placeholders": {
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "doseRecordedSkipped": "{medication} recorded as skipped",
+  "@doseRecordedSkipped": {
+    "placeholders": {
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "undo": "Undo",
+  "checkBeforeGiving": "Check before giving it",
+  "warningAlreadyGiven": "{name} already recorded it at {time}.",
+  "@warningAlreadyGiven": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "warningTooSoon": "The last dose was at {last}. With the interval you entered, the next one is from {next}.",
+  "@warningTooSoon": {
+    "placeholders": {
+      "last": {
+        "type": "String"
+      },
+      "next": {
+        "type": "String"
+      }
+    }
+  },
+  "warningDailyLimit": "{given} of {max} doses given today, the maximum you entered.",
+  "@warningDailyLimit": {
+    "placeholders": {
+      "given": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "warningOutOfDate": "This phone last synced at {time}: someone may have given it already.",
+  "@warningOutOfDate": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "warningNeverSynced": "This phone has not synced yet: someone may have given it already.",
+  "scheduledAt": "Scheduled at {time}",
+  "@scheduledAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "recordedToday": "Recorded today",
+  "recordedForThisDose": "Recorded for this dose",
+  "unknownCaregiver": "Someone",
+  "whoAreYou": "Who are you?",
+  "phoneOf": "{name}'s phone",
+  "@phoneOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "networkOn": "Connected",
+  "networkOff": "Offline",
+  "demoHint": "Two caregivers' phones, synced through a simulated server. Turn one offline and record the same dose on both.",
+  "careOf": "Caring for {name}",
+  "@careOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "yesterday": "Yesterday",
+  "notSyncedYet": "Not synced yet"
 }

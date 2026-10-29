@@ -40,4 +40,235 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorServer =>
       'The sync service is having trouble. Try again soon.';
+
+  @override
+  String get sampleData => 'Sample data';
+
+  @override
+  String syncedAt(String time) {
+    return 'Synced at $time';
+  }
+
+  @override
+  String get syncNever => 'Not synced yet';
+
+  @override
+  String get syncOffline => 'Offline';
+
+  @override
+  String syncPending(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count changes waiting to sync',
+      one: '1 change waiting to sync',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get nextDose => 'Next dose';
+
+  @override
+  String get allDoneToday => 'All of today\'s doses are recorded.';
+
+  @override
+  String get fromYesterday => 'From yesterday';
+
+  @override
+  String get dayPartMorning => 'Morning';
+
+  @override
+  String get dayPartMidday => 'Midday';
+
+  @override
+  String get dayPartAfternoon => 'Afternoon';
+
+  @override
+  String get dayPartNight => 'Night';
+
+  @override
+  String get asNeeded => 'As needed';
+
+  @override
+  String get statusUpcoming => 'Upcoming';
+
+  @override
+  String get statusDue => 'Due now';
+
+  @override
+  String get statusOverdue => 'Late';
+
+  @override
+  String get statusGiven => 'Given';
+
+  @override
+  String get statusSkipped => 'Skipped';
+
+  @override
+  String get statusGivenTwice => 'Given twice';
+
+  @override
+  String recordedBy(String name, String time) {
+    return '$name at $time';
+  }
+
+  @override
+  String lastDose(String time, String name) {
+    return 'Last dose: $time, by $name';
+  }
+
+  @override
+  String get noDoseYet => 'No doses recorded';
+
+  @override
+  String stockDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days left',
+      one: '1 day left',
+      zero: 'Runs out today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get stockOut => 'Out of stock';
+
+  @override
+  String toReview(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count things to review',
+      one: '1 thing to review',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get conflictDoseBody =>
+      'More than one person recorded this dose as given, without seeing the other record. Talk to them before the next dose.';
+
+  @override
+  String get doubleDoseBody => 'Recorded as given more than once, on purpose.';
+
+  @override
+  String get markReviewed => 'Mark as reviewed';
+
+  @override
+  String get markGiven => 'Mark as given';
+
+  @override
+  String get markGivenAnyway => 'Mark as given anyway';
+
+  @override
+  String get skipDose => 'Skip this dose';
+
+  @override
+  String get skipReasonTitle => 'Why is it skipped?';
+
+  @override
+  String get skipRefused => 'Refused it';
+
+  @override
+  String get skipAsleep => 'Was asleep';
+
+  @override
+  String get skipUnwell => 'Felt unwell';
+
+  @override
+  String get skipDoctorAdvice => 'Doctor\'s advice';
+
+  @override
+  String get skipOther => 'Other reason';
+
+  @override
+  String skippedBy(String name, String reason) {
+    return 'Skipped by $name: $reason';
+  }
+
+  @override
+  String doseRecordedGiven(String medication) {
+    return '$medication recorded as given';
+  }
+
+  @override
+  String doseRecordedSkipped(String medication) {
+    return '$medication recorded as skipped';
+  }
+
+  @override
+  String get undo => 'Undo';
+
+  @override
+  String get checkBeforeGiving => 'Check before giving it';
+
+  @override
+  String warningAlreadyGiven(String name, String time) {
+    return '$name already recorded it at $time.';
+  }
+
+  @override
+  String warningTooSoon(String last, String next) {
+    return 'The last dose was at $last. With the interval you entered, the next one is from $next.';
+  }
+
+  @override
+  String warningDailyLimit(int given, int max) {
+    return '$given of $max doses given today, the maximum you entered.';
+  }
+
+  @override
+  String warningOutOfDate(String time) {
+    return 'This phone last synced at $time: someone may have given it already.';
+  }
+
+  @override
+  String get warningNeverSynced =>
+      'This phone has not synced yet: someone may have given it already.';
+
+  @override
+  String scheduledAt(String time) {
+    return 'Scheduled at $time';
+  }
+
+  @override
+  String get recordedToday => 'Recorded today';
+
+  @override
+  String get recordedForThisDose => 'Recorded for this dose';
+
+  @override
+  String get unknownCaregiver => 'Someone';
+
+  @override
+  String get whoAreYou => 'Who are you?';
+
+  @override
+  String phoneOf(String name) {
+    return '$name\'s phone';
+  }
+
+  @override
+  String get networkOn => 'Connected';
+
+  @override
+  String get networkOff => 'Offline';
+
+  @override
+  String get demoHint =>
+      'Two caregivers\' phones, synced through a simulated server. Turn one offline and record the same dose on both.';
+
+  @override
+  String careOf(String name) {
+    return 'Caring for $name';
+  }
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get notSyncedYet => 'Not synced yet';
 }

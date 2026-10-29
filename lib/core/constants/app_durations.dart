@@ -10,6 +10,9 @@ abstract final class AppDurations {
 
   /// Page transitions.
   static const page = Duration(milliseconds: 400);
+
+  /// How long "Undo" stays offered after recording a dose.
+  static const undoWindow = Duration(seconds: 8);
 }
 
 /// Shared easing curves.

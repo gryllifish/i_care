@@ -146,18 +146,26 @@ documented), nursing-home features.
 ## Status
 ### Done
 - Scaffold from Mise: core (errors, Result, guard, retry policy, logger,
-  l10n, env), tokens, phone frame, placeholder Today screen, verify script,
-  CI with GitHub Pages deploy, skills.
+  l10n, env), tokens, phone frame, verify script, CI with GitHub Pages
+  deploy, skills.
+- Phase 1: event-sourced care domain (schedules, dose slots, stock,
+  conflicts with `knownDoseIds`, warnings); event codec, Hive event store,
+  simulated server and connection, gateway contract suite; Today screen,
+  dose sheet (give, skip, undo, warnings, conflict review), sync banner
+  and per-dose "not synced yet" badge,
+  "Who are you?"; sample circle seeded on first run; two-device demo
+  shell with per-phone network switches.
+
+### Known gaps
+- Both phones' GoRouters share the browser URL on the web; harmless with
+  one route, to revisit when phase 2 adds routes.
+- The chosen identity ("Who are you?") resets on reload.
 
 ### Next steps, in order
-1. **Phase 1**: domain (schedules, dose slots and status, stock,
-   conflicts) with exhaustive unit tests; event store (Hive) and simulated
-   remote with contract tests; Today + dose sheet (last as-needed dose,
-   not-synced badge); sample data; two-device mode.
-2. **Phase 2**: medications CRUD with schedule versions and stock events.
-3. **Phase 3**: appointments and visit notes (questions, post-visit
+1. **Phase 2**: medications CRUD with schedule versions and stock events.
+2. **Phase 3**: appointments and visit notes (questions, post-visit
    prompt); emergency card; handoff summary; Activity; Settings.
-4. **Phase 4**: accessibility pass (large text, screen readers), dark
+3. **Phase 4**: accessibility pass (large text, screen readers), dark
    theme, app icon, screenshots, README.
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.

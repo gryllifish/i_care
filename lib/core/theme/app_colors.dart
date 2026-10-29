@@ -29,4 +29,13 @@ abstract final class AppColors {
   static const dueSoft = Color(0xFFF7E9CC);
   static const overdue = Color(0xFFB3261E);
   static const overdueSoft = Color(0xFFF9DEDC);
+  static const skipped = Color(0xFF55615D);
+  static const skippedSoft = Color(0xFFE6E9E7);
+
+  /// Caregiver avatars, picked by `Caregiver.colorIndex`.
+  static const avatars = [
+    Color(0xFF1F5F5B),
+    Color(0xFF6B4BA1),
+    Color(0xFFA14B2E),
+  ];
 }
