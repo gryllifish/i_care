@@ -1,5 +1,6 @@
 # Quality gate on every push and PR; main also deploys the web demo to
-# GitHub Pages. Actions are pinned to commit SHAs (tag in the comment) so a
+# GitHub Pages once the repository is public (Pages needs a paid plan for
+# private repositories). Actions are pinned to commit SHAs (tag in the comment) so a
 # moved tag can't change what runs here; Dependabot keeps them current.
 name: CI
 
@@ -37,17 +38,17 @@ jobs:
         run: git diff --exit-code
 
       - name: Build web demo
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.event.repository.visibility == 'public'
         run: flutter build web --release --base-href /i_care/
 
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.event.repository.visibility == 'public'
         with:
           path: build/web
 
   deploy:
     needs: verify
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.event.repository.visibility == 'public'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
