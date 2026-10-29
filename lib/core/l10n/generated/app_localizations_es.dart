@@ -242,7 +242,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get demoHint =>
-      'Los teléfonos de dos cuidadores, sincronizados con un servidor simulado. Desconectá uno y registrá la misma toma en los dos.';
+      'Dos teléfonos sincronizados con un servidor simulado. Para simular una toma registrada tarde: desconectá el de Martín, marcá la misma toma en los dos y volvé a conectarlo.';
 
   @override
   String careOf(String name) {
@@ -320,5 +320,35 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String recordedByToday(String name, String time) {
     return '$name, hoy a las $time';
+  }
+
+  @override
+  String get givenWhen => '¿Cuándo la diste?';
+
+  @override
+  String get givenNow => 'Ahora';
+
+  @override
+  String givenMinutesAgo(int minutes) {
+    return 'Hace $minutes min';
+  }
+
+  @override
+  String givenHoursAgo(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: 'Hace $hours horas',
+      one: 'Hace 1 hora',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get givenPickTime => 'Elegir hora';
+
+  @override
+  String givenAtTime(String time) {
+    return 'A las $time';
   }
 }

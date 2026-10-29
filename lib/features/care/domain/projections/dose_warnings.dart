@@ -16,7 +16,8 @@ final class AlreadyGiven extends DoseWarning {
   final DoseGiven dose;
 }
 
-/// The last dose was less than the entered minimum interval ago.
+/// Another dose is closer than the entered minimum interval: usually the
+/// last one, or a later one when recording a dose given earlier.
 final class TooSoon extends DoseWarning {
   const TooSoon({required this.lastDose, required this.allowedFrom});
 
@@ -61,8 +62,9 @@ List<String> knownDoseIdsOf(List<DoseWarning> warnings) => [
 /// How long without syncing before [OutOfDate] is raised.
 const staleSyncAfter = Duration(minutes: 10);
 
-/// What to warn about before giving [medication] at [now], for the
-/// scheduled dose at [slotAt] (null for as-needed doses).
+/// What to warn about before recording [medication] as given at
+/// [givenAt] (default [now]), for the scheduled dose at [slotAt] (null for
+/// as-needed doses).
 List<DoseWarning> doseWarnings(
   CareLog log, {
   required Medication medication,
@@ -70,9 +72,10 @@ List<DoseWarning> doseWarnings(
   required DateTime now,
   required DateTime? lastSyncedAt,
   required bool isConnected,
+  DateTime? givenAt,
 }) {
-  final schedule = medication.scheduleAt(now) ?? medication.schedule;
-  final lastDose = log.lastDose(medication.id);
+  final at = givenAt ?? now;
+  final schedule = medication.scheduleAt(at) ?? medication.schedule;
   final alreadyGiven = slotAt == null
       ? null
       : log.givenFor(medication.id, slotAt).firstOrNull;
@@ -84,24 +87,42 @@ List<DoseWarning> doseWarnings(
     AsNeededSchedule(:final maxPerDay) => maxPerDay,
     FixedSchedule() => null,
   };
-  final givenToday = log.givenOn(medication.id, now).length;
+  final givenThatDay = log.givenOn(medication.id, at).length;
+  final closest = minInterval == null
+      ? null
+      : _closestWithin(log.dosesGiven(medication.id), at, minInterval);
 
   return [
     if (alreadyGiven != null) AlreadyGiven(alreadyGiven),
-    if ((minInterval, lastDose) case (
+    if ((minInterval, closest) case (
       final Duration interval,
-      final DoseGiven last,
-    ) when now.isBefore(last.givenAt.add(interval)))
-      TooSoon(
-        lastDose: last,
-        allowedFrom: last.givenAt.add(interval),
-      ),
-    if (maxPerDay != null && givenToday >= maxPerDay)
-      DailyLimitReached(given: givenToday, max: maxPerDay),
+      final DoseGiven other,
+    ))
+      TooSoon(lastDose: other, allowedFrom: other.givenAt.add(interval)),
+    if (maxPerDay != null && givenThatDay >= maxPerDay)
+      DailyLimitReached(given: givenThatDay, max: maxPerDay),
     if (!isConnected)
       const Offline()
     else if (lastSyncedAt == null ||
         now.difference(lastSyncedAt) > staleSyncAfter)
       OutOfDate(lastSyncedAt: lastSyncedAt),
   ];
+}
+
+/// The dose nearest to [at] if it is closer than [interval].
+DoseGiven? _closestWithin(
+  List<DoseGiven> doses,
+  DateTime at,
+  Duration interval,
+) {
+  DoseGiven? closest;
+  Duration? distance;
+  for (final dose in doses) {
+    final gap = dose.givenAt.difference(at).abs();
+    if (gap < interval && (distance == null || gap < distance)) {
+      closest = dose;
+      distance = gap;
+    }
+  }
+  return closest;
 }

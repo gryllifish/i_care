@@ -242,7 +242,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get demoHint =>
-      'Two caregivers\' phones, synced through a simulated server. Turn one offline and record the same dose on both.';
+      'Two phones synced through a simulated server. To simulate a dose recorded late: turn Martín\'s phone off, mark the same dose on both and turn it back on.';
 
   @override
   String careOf(String name) {
@@ -320,5 +320,35 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String recordedByToday(String name, String time) {
     return '$name, today at $time';
+  }
+
+  @override
+  String get givenWhen => 'When was it given?';
+
+  @override
+  String get givenNow => 'Now';
+
+  @override
+  String givenMinutesAgo(int minutes) {
+    return '$minutes min ago';
+  }
+
+  @override
+  String givenHoursAgo(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours hours ago',
+      one: '1 hour ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get givenPickTime => 'Pick a time';
+
+  @override
+  String givenAtTime(String time) {
+    return 'At $time';
   }
 }

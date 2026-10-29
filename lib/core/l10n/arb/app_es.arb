@@ -62,7 +62,7 @@
   "phoneOf": "Teléfono de {name}",
   "networkOn": "Con conexión",
   "networkOff": "Sin conexión",
-  "demoHint": "Los teléfonos de dos cuidadores, sincronizados con un servidor simulado. Desconectá uno y registrá la misma toma en los dos.",
+  "demoHint": "Dos teléfonos sincronizados con un servidor simulado. Para simular una toma registrada tarde: desconectá el de Martín, marcá la misma toma en los dos y volvé a conectarlo.",
   "careOf": "Cuidando a {name}",
   "yesterday": "Ayer",
   "notSyncedYet": "Aún no sincronizada",
@@ -78,5 +78,11 @@
   "review": "Revisar",
   "warningOffline": "Este teléfono está sin conexión: puede que alguien ya la haya dado.",
   "doseRecordedOffline": "{medication}: guardada en este teléfono. Se enviará al volver la conexión.",
-  "recordedByToday": "{name}, hoy a las {time}"
+  "recordedByToday": "{name}, hoy a las {time}",
+  "givenWhen": "¿Cuándo la diste?",
+  "givenNow": "Ahora",
+  "givenMinutesAgo": "Hace {minutes} min",
+  "givenHoursAgo": "{hours, plural, =1{Hace 1 hora} other{Hace {hours} horas}}",
+  "givenPickTime": "Elegir hora",
+  "givenAtTime": "A las {time}"
 }

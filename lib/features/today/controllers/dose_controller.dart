@@ -27,13 +27,15 @@ typedef DoseDetail = ({
 });
 
 /// The dose of [medicationId] scheduled at [slotAt] (null for as-needed
-/// doses), kept current while the sheet is open.
+/// doses), kept current while the sheet is open. Warnings are for
+/// recording it as given at [givenAt], or now when null.
 @riverpod
 AsyncValue<DoseDetail?> doseDetail(
   Ref ref,
   String medicationId,
-  DateTime? slotAt,
-) {
+  DateTime? slotAt, {
+  DateTime? givenAt,
+}) {
   final now = ref.watch(nowProvider);
   final status = ref.watch(syncStatusProvider).value;
   return ref.watch(careLogProvider).whenData((log) {
@@ -55,6 +57,7 @@ AsyncValue<DoseDetail?> doseDetail(
         now: now,
         lastSyncedAt: status?.lastSyncedAt,
         isConnected: status?.isConnected ?? true,
+        givenAt: givenAt,
       ),
       conflicts: [
         for (final conflict in log.conflicts.whereType<DoseConflict>())
@@ -76,6 +79,16 @@ DoseSlot? _slotAt(
     )
     .firstOrNull;
 
+/// The latest moment at [hour]:[minute] not after [now]: today, or
+/// yesterday when that time has not come yet today (a dose from last
+/// night recorded in the morning).
+DateTime latestAt(int hour, int minute, DateTime now) {
+  final today = DateTime(now.year, now.month, now.day, hour, minute);
+  return today.isAfter(now)
+      ? DateTime(now.year, now.month, now.day - 1, hour, minute)
+      : today;
+}
+
 /// Records what the current caregiver does with a dose. Each action
 /// appends one event; nothing is edited in place. Kept alive so an undo
 /// offered after the sheet closes still has a live notifier.
@@ -84,11 +97,13 @@ class DoseActions extends _$DoseActions {
   @override
   void build() {}
 
-  /// Records [medication] as given now. [knownDoseIds] are the doses the
-  /// caregiver was warned about and confirmed anyway.
+  /// Records [medication] as given at [givenAt], or now when null.
+  /// [knownDoseIds] are the doses the caregiver was warned about and
+  /// confirmed anyway.
   Future<Result<DoseGiven>> give(
     Medication medication, {
     required DateTime? slotAt,
+    DateTime? givenAt,
     List<String> knownDoseIds = const [],
   }) {
     final meta = _meta();
@@ -97,7 +112,7 @@ class DoseActions extends _$DoseActions {
             meta: meta,
             medicationId: medication.id,
             slotAt: slotAt,
-            givenAt: meta.occurredAt,
+            givenAt: givenAt ?? meta.occurredAt,
             units: medication.details.unitsPerDose,
             knownDoseIds: knownDoseIds,
           )

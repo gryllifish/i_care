@@ -178,7 +178,7 @@
   },
   "networkOn": "Connected",
   "networkOff": "Offline",
-  "demoHint": "Two caregivers' phones, synced through a simulated server. Turn one offline and record the same dose on both.",
+  "demoHint": "Two phones synced through a simulated server. To simulate a dose recorded late: turn Martín's phone off, mark the same dose on both and turn it back on.",
   "careOf": "Caring for {name}",
   "@careOf": {
     "placeholders": {
@@ -258,6 +258,33 @@
       "name": {
         "type": "String"
       },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "givenWhen": "When was it given?",
+  "givenNow": "Now",
+  "givenMinutesAgo": "{minutes} min ago",
+  "@givenMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "givenHoursAgo": "{hours, plural, =1{1 hour ago} other{{hours} hours ago}}",
+  "@givenHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "givenPickTime": "Pick a time",
+  "givenAtTime": "At {time}",
+  "@givenAtTime": {
+    "placeholders": {
       "time": {
         "type": "String"
       }

@@ -17,6 +17,7 @@ import 'package:i_care/features/care/domain/projections/dose_warnings.dart';
 import 'package:i_care/features/today/controllers/dose_controller.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_status_style.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
+import 'package:i_care/shared/providers/clock_provider.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 
@@ -51,11 +52,15 @@ class DoseSheet extends ConsumerStatefulWidget {
 class _DoseSheetState extends ConsumerState<DoseSheet> {
   var _choosingReason = false;
   var _busy = false;
+  _GivenAtChoice _givenAt = const _GivenNow();
 
   @override
   Widget build(BuildContext context) {
     final DoseDetail detail;
-    switch (ref.watch(doseDetailProvider(widget.medicationId, widget.slotAt))) {
+    final givenAt = _givenAt.resolve(ref.watch(nowProvider));
+    switch (ref.watch(
+      doseDetailProvider(widget.medicationId, widget.slotAt, givenAt: givenAt),
+    )) {
       case AsyncData(:final DoseDetail value):
         detail = value;
       case AsyncLoading():
@@ -171,6 +176,10 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
                     : (reason) => _skip(detail, slot, reason),
               )
             else ...[
+              _GivenAtPicker(
+                choice: _givenAt,
+                onChanged: (choice) => setState(() => _givenAt = choice),
+              ),
               FilledButton(
                 onPressed: _busy ? null : () => _give(detail),
                 child: Text(
@@ -209,6 +218,7 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     final result = await actions.give(
       detail.medication,
       slotAt: widget.slotAt,
+      givenAt: _givenAt.resolve(ref.read(clockProvider)()),
       knownDoseIds: knownDoseIdsOf(detail.warnings),
     );
     if (!mounted) return;
@@ -294,6 +304,109 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
 int _conflictDoseCount(DoseDetail detail) => detail.conflicts
     .map((conflict) => conflict.doses.length)
     .fold(0, (most, count) => count > most ? count : most);
+
+/// When the caregiver says the dose was given, relative to when they
+/// record it.
+sealed class _GivenAtChoice {
+  const _GivenAtChoice();
+
+  /// The moment it stands for at [now]; null means now.
+  DateTime? resolve(DateTime now);
+}
+
+final class _GivenNow extends _GivenAtChoice {
+  const _GivenNow();
+
+  @override
+  DateTime? resolve(DateTime now) => null;
+}
+
+final class _GivenAgo extends _GivenAtChoice {
+  const _GivenAgo(this.ago);
+
+  final Duration ago;
+
+  @override
+  DateTime resolve(DateTime now) => now.subtract(ago);
+}
+
+final class _GivenAt extends _GivenAtChoice {
+  const _GivenAt(this.at);
+
+  final DateTime at;
+
+  @override
+  DateTime resolve(DateTime now) => at;
+}
+
+/// "Now", a recent moment, or a picked time. A picked time later than now
+/// means yesterday: a dose from last night recorded in the morning.
+class _GivenAtPicker extends ConsumerWidget {
+  const _GivenAtPicker({required this.choice, required this.onChanged});
+
+  final _GivenAtChoice choice;
+  final ValueChanged<_GivenAtChoice> onChanged;
+
+  static const _recent = [Duration(minutes: 30), Duration(hours: 1)];
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+
+    String agoLabel(Duration ago) => ago.inMinutes < Duration.minutesPerHour
+        ? l10n.givenMinutesAgo(ago.inMinutes)
+        : l10n.givenHoursAgo(ago.inHours);
+
+    Future<void> pickTime() async {
+      final now = ref.read(clockProvider)();
+      final picked = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(now),
+      );
+      if (picked == null) return;
+      onChanged(_GivenAt(latestAt(picked.hour, picked.minute, now)));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: AppSpacing.sm,
+      children: [
+        Text(l10n.givenWhen, style: AppTextStyles.label),
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: [
+            ChoiceChip(
+              label: Text(l10n.givenNow),
+              selected: choice is _GivenNow,
+              onSelected: (_) => onChanged(const _GivenNow()),
+            ),
+            for (final ago in _recent)
+              ChoiceChip(
+                label: Text(agoLabel(ago)),
+                selected: switch (choice) {
+                  _GivenAgo(ago: final selected) => selected == ago,
+                  _ => false,
+                },
+                onSelected: (_) => onChanged(_GivenAgo(ago)),
+              ),
+            ChoiceChip(
+              label: Text(switch (choice) {
+                _GivenAt(:final at) => l10n.givenAtTime(
+                  Formatters.time(at, locale),
+                ),
+                _ => l10n.givenPickTime,
+              }),
+              selected: choice is _GivenAt,
+              onSelected: (_) => pickTime(),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
 
 /// Who recorded what for this dose.
 class _History extends ConsumerWidget {

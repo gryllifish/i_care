@@ -76,6 +76,7 @@ void main() {
     expect(find.text("Ana's phone"), findsOneWidget);
     expect(find.text("Martín's phone"), findsOneWidget);
 
+    await tester.ensureVisible(find.byType(Switch).last);
     await tester.tap(find.byType(Switch).last);
     await tester.pumpAndSettle();
 

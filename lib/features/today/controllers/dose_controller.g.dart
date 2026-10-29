@@ -9,13 +9,15 @@ part of 'dose_controller.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 /// The dose of [medicationId] scheduled at [slotAt] (null for as-needed
-/// doses), kept current while the sheet is open.
+/// doses), kept current while the sheet is open. Warnings are for
+/// recording it as given at [givenAt], or now when null.
 
 @ProviderFor(doseDetail)
 final doseDetailProvider = DoseDetailFamily._();
 
 /// The dose of [medicationId] scheduled at [slotAt] (null for as-needed
-/// doses), kept current while the sheet is open.
+/// doses), kept current while the sheet is open. Warnings are for
+/// recording it as given at [givenAt], or now when null.
 
 final class DoseDetailProvider
     extends
@@ -26,10 +28,11 @@ final class DoseDetailProvider
         >
     with $Provider<AsyncValue<DoseDetail?>> {
   /// The dose of [medicationId] scheduled at [slotAt] (null for as-needed
-  /// doses), kept current while the sheet is open.
+  /// doses), kept current while the sheet is open. Warnings are for
+  /// recording it as given at [givenAt], or now when null.
   DoseDetailProvider._({
     required DoseDetailFamily super.from,
-    required (String, DateTime?) super.argument,
+    required (String, DateTime?, {DateTime? givenAt}) super.argument,
   }) : super(
          retry: null,
          name: r'doseDetailProvider',
@@ -56,8 +59,8 @@ final class DoseDetailProvider
 
   @override
   AsyncValue<DoseDetail?> create(Ref ref) {
-    final argument = this.argument as (String, DateTime?);
-    return doseDetail(ref, argument.$1, argument.$2);
+    final argument = this.argument as (String, DateTime?, {DateTime? givenAt});
+    return doseDetail(ref, argument.$1, argument.$2, givenAt: argument.givenAt);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -79,16 +82,17 @@ final class DoseDetailProvider
   }
 }
 
-String _$doseDetailHash() => r'52ead28f0d14453072353c483a2aa7f93654fcad';
+String _$doseDetailHash() => r'9f0de64530ae124959cc10bc3000dadad5a9b9ca';
 
 /// The dose of [medicationId] scheduled at [slotAt] (null for as-needed
-/// doses), kept current while the sheet is open.
+/// doses), kept current while the sheet is open. Warnings are for
+/// recording it as given at [givenAt], or now when null.
 
 final class DoseDetailFamily extends $Family
     with
         $FunctionalFamilyOverride<
           AsyncValue<DoseDetail?>,
-          (String, DateTime?)
+          (String, DateTime?, {DateTime? givenAt})
         > {
   DoseDetailFamily._()
     : super(
@@ -100,10 +104,17 @@ final class DoseDetailFamily extends $Family
       );
 
   /// The dose of [medicationId] scheduled at [slotAt] (null for as-needed
-  /// doses), kept current while the sheet is open.
+  /// doses), kept current while the sheet is open. Warnings are for
+  /// recording it as given at [givenAt], or now when null.
 
-  DoseDetailProvider call(String medicationId, DateTime? slotAt) =>
-      DoseDetailProvider._(argument: (medicationId, slotAt), from: this);
+  DoseDetailProvider call(
+    String medicationId,
+    DateTime? slotAt, {
+    DateTime? givenAt,
+  }) => DoseDetailProvider._(
+    argument: (medicationId, slotAt, givenAt: givenAt),
+    from: this,
+  );
 
   @override
   String toString() => r'doseDetailProvider';
@@ -150,7 +161,7 @@ final class DoseActionsProvider extends $NotifierProvider<DoseActions, void> {
   }
 }
 
-String _$doseActionsHash() => r'3795f1844c47e51d8935e83a19a6dfec874b1408';
+String _$doseActionsHash() => r'f2e0edb3964263270177ce253337239c0b82284a';
 
 /// Records what the current caregiver does with a dose. Each action
 /// appends one event; nothing is edited in place. Kept alive so an undo

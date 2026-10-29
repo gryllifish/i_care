@@ -90,6 +90,24 @@ void main() {
     expect(find.text('Mark as given anyway'), findsOneWidget);
   });
 
+  testWidgets('a dose given earlier is recorded at that time', (
+    tester,
+  ) async {
+    final repository = circle();
+    await pumpApp(tester, repository: repository, now: now);
+
+    await openDose(tester, '08:00');
+    await tester.tap(find.text('1 hour ago'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Mark as given'));
+    await tester.pumpAndSettle();
+
+    final given = repository.recorded.single as DoseGiven;
+    expect(given.givenAt, DateTime(2026, 11, 2, 7, 10));
+    expect(given.meta.occurredAt, now);
+    expect(find.text('Given · Ana at 07:10'), findsOneWidget);
+  });
+
   testWidgets('a dose already given is confirmed knowingly', (tester) async {
     final martins = events.given('m1', at: eight, slotAt: eight, by: 'martin');
     final repository = circle([martins]);

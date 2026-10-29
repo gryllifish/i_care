@@ -82,7 +82,10 @@ family portal for residents' relatives is a possible later path.
 4. **Dose sheet**: big "Given" button, "Skip" with reason, history of the
    dose. Confirmation when it is already given or the minimum interval
    has not passed; warning when the last sync is older than N minutes.
-   Undo for a few seconds (as a `DoseUndone` event). An offline phone
+   "When was it given?": now, 30 min or 1 h ago, or a picked time (a
+   time later than now means yesterday), stored as `givenAt`; warnings
+   are checked against that time. Undo for a few seconds (as a
+   `DoseUndone` event). An offline phone
    always warns, and its confirmation says the record is saved on the
    phone until the connection is back.
    **Conflicts** (doses recorded twice unseen) interrupt when they arrive

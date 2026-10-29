@@ -18,6 +18,7 @@ void main() {
     DateTime? slotAt,
     DateTime? now,
     DateTime? lastSyncedAt,
+    DateTime? givenAt,
     bool isConnected = true,
   }) {
     final careLog = CareLog(log);
@@ -30,6 +31,7 @@ void main() {
       now: now ?? eight,
       lastSyncedAt: lastSyncedAt ?? justSynced,
       isConnected: isConnected,
+      givenAt: givenAt,
     );
   }
 
@@ -94,6 +96,26 @@ void main() {
       ),
       [isA<OutOfDate>()],
     );
+  });
+
+  test('a dose recorded late is checked against doses after it', () {
+    // Recording at 17:00 a dose given at 08:00, when someone already gave
+    // another at 10:00.
+    final later = events.given('m1', at: DateTime(2026, 11, 2, 10));
+    final log = [
+      events.created(
+        'm1',
+        schedule: const DoseSchedule.asNeeded(minInterval: Duration(hours: 6)),
+      ),
+      later,
+    ];
+    final fivePm = DateTime(2026, 11, 2, 17);
+
+    expect(
+      warn(log, now: fivePm, lastSyncedAt: fivePm, givenAt: eight),
+      [isA<TooSoon>().having((w) => w.lastDose, 'dose', later)],
+    );
+    expect(warn(log, now: fivePm, lastSyncedAt: fivePm), isEmpty);
   });
 
   test('warns when the device is offline, however recently it synced', () {

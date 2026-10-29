@@ -85,6 +85,10 @@ class CareLog {
     return last;
   }
 
+  /// Every dose of a medication recorded as given, in log order.
+  List<DoseGiven> dosesGiven(String medicationId) =>
+      _given(medicationId).toList();
+
   /// Doses of a medication given on [day], by `givenAt`.
   List<DoseGiven> givenOn(String medicationId, DateTime day) => [
     for (final dose in _given(medicationId))

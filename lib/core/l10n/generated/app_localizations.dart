@@ -473,7 +473,7 @@ abstract class AppLocalizations {
   /// No description provided for @demoHint.
   ///
   /// In en, this message translates to:
-  /// **'Two caregivers\' phones, synced through a simulated server. Turn one offline and record the same dose on both.'**
+  /// **'Two phones synced through a simulated server. To simulate a dose recorded late: turn Martín\'s phone off, mark the same dose on both and turn it back on.'**
   String get demoHint;
 
   /// No description provided for @careOf.
@@ -571,6 +571,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name}, today at {time}'**
   String recordedByToday(String name, String time);
+
+  /// No description provided for @givenWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When was it given?'**
+  String get givenWhen;
+
+  /// No description provided for @givenNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get givenNow;
+
+  /// No description provided for @givenMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min ago'**
+  String givenMinutesAgo(int minutes);
+
+  /// No description provided for @givenHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours, plural, =1{1 hour ago} other{{hours} hours ago}}'**
+  String givenHoursAgo(int hours);
+
+  /// No description provided for @givenPickTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a time'**
+  String get givenPickTime;
+
+  /// No description provided for @givenAtTime.
+  ///
+  /// In en, this message translates to:
+  /// **'At {time}'**
+  String givenAtTime(String time);
 }
 
 class _AppLocalizationsDelegate
