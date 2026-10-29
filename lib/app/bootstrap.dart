@@ -40,7 +40,10 @@ Future<void> bootstrap() async {
   );
   if (server.isEmpty) {
     await server.receive([
-      for (final event in SampleCircle.events(DateTime.now()))
+      for (final event in SampleCircle.events(
+        DateTime.now(),
+        language: PlatformDispatcher.instance.locale.languageCode,
+      ))
         CareEventCodec.encodeString(event),
     ]);
   }
