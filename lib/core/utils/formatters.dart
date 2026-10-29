@@ -15,6 +15,10 @@ abstract final class Formatters {
   static String fullDate(DateTime day, String locale) =>
       DateFormat.yMMMd(locale).format(day);
 
+  /// "Thu, Oct 29" / "jue, 29 oct".
+  static String weekdayAndDate(DateTime day, String locale) =>
+      DateFormat.MMMEd(locale).format(day);
+
   /// "Nov 2" / "2 nov".
   static String shortDate(DateTime day, String locale) =>
       DateFormat.MMMd(locale).format(day);

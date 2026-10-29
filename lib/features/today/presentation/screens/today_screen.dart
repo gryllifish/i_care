@@ -162,6 +162,8 @@ class _TodayContent extends StatelessWidget {
             ],
           ),
         const SizedBox(height: AppSpacing.xl),
+        const _HandoffCard(),
+        const SizedBox(height: AppSpacing.md),
         const _Disclaimer(),
       ],
     );
@@ -751,6 +753,36 @@ class _Section extends StatelessWidget {
             ),
           ),
           ...children,
+        ],
+      ),
+    );
+  }
+}
+
+/// Opens the handoff summary for whoever takes over next.
+class _HandoffCard extends StatelessWidget {
+  const _HandoffCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AppCard(
+      onTap: () => context.push(AppRoutes.handoff),
+      child: Row(
+        spacing: AppSpacing.md,
+        children: [
+          const Icon(Icons.forum_outlined, color: AppColors.teal),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: AppSpacing.xxs,
+              children: [
+                Text(l10n.handoffTitle, style: AppTextStyles.label),
+                Text(l10n.handoffSubtitle, style: AppTextStyles.bodyMuted),
+              ],
+            ),
+          ),
+          const Icon(Icons.chevron_right, color: AppColors.inkMuted),
         ],
       ),
     );

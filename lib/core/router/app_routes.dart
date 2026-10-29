@@ -41,6 +41,9 @@ abstract final class AppRoutes {
 
   static String editEmergencyPath() => '$emergency/$editEmergency';
 
+  /// Full screen too: the handoff text and a copy button.
+  static const handoff = '/handoff';
+
   /// Nested under [appointments], like medications.
   static const newAppointment = 'new';
   static const appointment = ':$idParam';

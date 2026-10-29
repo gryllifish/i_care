@@ -1022,4 +1022,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remove => 'Remove';
+
+  @override
+  String get handoffTitle => 'Handoff';
+
+  @override
+  String get handoffSubtitle => 'A summary for whoever takes over';
+
+  @override
+  String handoffHeader(String name, String day, String time) {
+    return 'Handoff for $name · $day, $time';
+  }
+
+  @override
+  String get handoffGiven => 'Given today:';
+
+  @override
+  String get handoffSkipped => 'Skipped today:';
+
+  @override
+  String get handoffPending => 'Still to give:';
+
+  @override
+  String get handoffNothingPending => 'Nothing left to give today.';
+
+  @override
+  String handoffConflicts(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count doses recorded twice: check them in ICare.',
+      one: '1 dose recorded twice: check it in ICare.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get handoffLowStock => 'Running low:';
+
+  @override
+  String get handoffNextAppointment => 'Next appointment:';
+
+  @override
+  String handoffLastNote(String title, String name) {
+    return 'Last visit note ($title, $name):';
+  }
+
+  @override
+  String get handoffCopied => 'Copied. Paste it in your family chat.';
+
+  @override
+  String get copy => 'Copy';
 }

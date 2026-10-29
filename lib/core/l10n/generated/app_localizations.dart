@@ -1686,6 +1686,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove'**
   String get remove;
+
+  /// No description provided for @handoffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Handoff'**
+  String get handoffTitle;
+
+  /// No description provided for @handoffSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A summary for whoever takes over'**
+  String get handoffSubtitle;
+
+  /// No description provided for @handoffHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Handoff for {name} · {day}, {time}'**
+  String handoffHeader(String name, String day, String time);
+
+  /// No description provided for @handoffGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'Given today:'**
+  String get handoffGiven;
+
+  /// No description provided for @handoffSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped today:'**
+  String get handoffSkipped;
+
+  /// No description provided for @handoffPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Still to give:'**
+  String get handoffPending;
+
+  /// No description provided for @handoffNothingPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing left to give today.'**
+  String get handoffNothingPending;
+
+  /// No description provided for @handoffConflicts.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 dose recorded twice: check it in ICare.} other{{count} doses recorded twice: check them in ICare.}}'**
+  String handoffConflicts(int count);
+
+  /// No description provided for @handoffLowStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Running low:'**
+  String get handoffLowStock;
+
+  /// No description provided for @handoffNextAppointment.
+  ///
+  /// In en, this message translates to:
+  /// **'Next appointment:'**
+  String get handoffNextAppointment;
+
+  /// No description provided for @handoffLastNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Last visit note ({title}, {name}):'**
+  String handoffLastNote(String title, String name);
+
+  /// No description provided for @handoffCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied. Paste it in your family chat.'**
+  String get handoffCopied;
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
 }
 
 class _AppLocalizationsDelegate

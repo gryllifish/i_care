@@ -263,5 +263,18 @@
   "fieldSpecialty": "Especialidad",
   "fieldRelationship": "Relación",
   "fieldPhone": "Teléfono",
-  "remove": "Quitar"
+  "remove": "Quitar",
+  "handoffTitle": "Te dejo dicho",
+  "handoffSubtitle": "Un resumen para quien sigue",
+  "handoffHeader": "Relevo de {name} · {day}, {time}",
+  "handoffGiven": "Dadas hoy:",
+  "handoffSkipped": "Omitidas hoy:",
+  "handoffPending": "Falta dar:",
+  "handoffNothingPending": "No queda nada por dar hoy.",
+  "handoffConflicts": "{count, plural, =1{1 toma registrada dos veces: revisala en ICare.} other{{count} tomas registradas dos veces: revisalas en ICare.}}",
+  "handoffLowStock": "Stock bajo:",
+  "handoffNextAppointment": "Próximo turno:",
+  "handoffLastNote": "Última nota de visita ({title}, {name}):",
+  "handoffCopied": "Copiado. Pegalo en el chat de la familia.",
+  "copy": "Copiar"
 }

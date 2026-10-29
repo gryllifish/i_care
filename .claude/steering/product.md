@@ -200,6 +200,11 @@ documented), nursing-home features.
   notes, and "Copy as text". Edited through a versioned
   `RecipientProfileUpdated`; sample phone numbers use the fictional 555
   range.
+- Phase 3, handoff ("te dejo dicho"): a card at the end of Today opens
+  the summary exactly as it will be pasted: doses given (who, when),
+  skipped, still to give (yesterday's too), doses to review, low stock,
+  next appointment within a week and the latest visit note; one button
+  copies it. Plain text, no emoji.
 - Visual refresh: navigation bar, read-only Medications (schedule,
   instructions, stock) and Activity (feed by day) tabs, redesigned Today,
   bundled font.

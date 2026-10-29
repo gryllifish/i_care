@@ -7,6 +7,7 @@ import 'package:i_care/features/appointments/presentation/screens/appointment_fo
 import 'package:i_care/features/appointments/presentation/screens/appointments_screen.dart';
 import 'package:i_care/features/emergency/presentation/screens/emergency_card_screen.dart';
 import 'package:i_care/features/emergency/presentation/screens/profile_form_screen.dart';
+import 'package:i_care/features/handoff/presentation/screens/handoff_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/medication_detail_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/medication_form_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/medications_screen.dart';
@@ -37,6 +38,10 @@ GoRouter appRouter(Ref ref) {
             builder: (context, state) => const ProfileFormScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: AppRoutes.handoff,
+        builder: (context, state) => const HandoffScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(shell: shell),

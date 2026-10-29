@@ -838,5 +838,48 @@
   "fieldSpecialty": "Specialty",
   "fieldRelationship": "Relationship",
   "fieldPhone": "Phone",
-  "remove": "Remove"
+  "remove": "Remove",
+  "handoffTitle": "Handoff",
+  "handoffSubtitle": "A summary for whoever takes over",
+  "handoffHeader": "Handoff for {name} · {day}, {time}",
+  "@handoffHeader": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "handoffGiven": "Given today:",
+  "handoffSkipped": "Skipped today:",
+  "handoffPending": "Still to give:",
+  "handoffNothingPending": "Nothing left to give today.",
+  "handoffConflicts": "{count, plural, =1{1 dose recorded twice: check it in ICare.} other{{count} doses recorded twice: check them in ICare.}}",
+  "@handoffConflicts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "handoffLowStock": "Running low:",
+  "handoffNextAppointment": "Next appointment:",
+  "handoffLastNote": "Last visit note ({title}, {name}):",
+  "@handoffLastNote": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "handoffCopied": "Copied. Paste it in your family chat.",
+  "copy": "Copy"
 }

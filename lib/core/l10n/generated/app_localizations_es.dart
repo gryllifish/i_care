@@ -1021,4 +1021,55 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get remove => 'Quitar';
+
+  @override
+  String get handoffTitle => 'Te dejo dicho';
+
+  @override
+  String get handoffSubtitle => 'Un resumen para quien sigue';
+
+  @override
+  String handoffHeader(String name, String day, String time) {
+    return 'Relevo de $name · $day, $time';
+  }
+
+  @override
+  String get handoffGiven => 'Dadas hoy:';
+
+  @override
+  String get handoffSkipped => 'Omitidas hoy:';
+
+  @override
+  String get handoffPending => 'Falta dar:';
+
+  @override
+  String get handoffNothingPending => 'No queda nada por dar hoy.';
+
+  @override
+  String handoffConflicts(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tomas registradas dos veces: revisalas en ICare.',
+      one: '1 toma registrada dos veces: revisala en ICare.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get handoffLowStock => 'Stock bajo:';
+
+  @override
+  String get handoffNextAppointment => 'Próximo turno:';
+
+  @override
+  String handoffLastNote(String title, String name) {
+    return 'Última nota de visita ($title, $name):';
+  }
+
+  @override
+  String get handoffCopied => 'Copiado. Pegalo en el chat de la familia.';
+
+  @override
+  String get copy => 'Copiar';
 }
