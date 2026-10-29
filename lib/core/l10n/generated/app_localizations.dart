@@ -810,6 +810,474 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{days, plural, =1{Lasts 1 day} other{Lasts {days} days}}'**
   String stockLasts(int days);
+
+  /// No description provided for @addMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addMedication;
+
+  /// No description provided for @newMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'New medication'**
+  String get newMedication;
+
+  /// No description provided for @editMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit medication'**
+  String get editMedication;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @fieldName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get fieldName;
+
+  /// No description provided for @fieldStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength'**
+  String get fieldStrength;
+
+  /// No description provided for @fieldStrengthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 500 mg'**
+  String get fieldStrengthHint;
+
+  /// No description provided for @fieldForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Form'**
+  String get fieldForm;
+
+  /// No description provided for @fieldInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions (optional)'**
+  String get fieldInstructions;
+
+  /// No description provided for @fieldInstructionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. With meals'**
+  String get fieldInstructionsHint;
+
+  /// No description provided for @fieldUnitsPerDose.
+  ///
+  /// In en, this message translates to:
+  /// **'Units per dose'**
+  String get fieldUnitsPerDose;
+
+  /// No description provided for @fieldLowStockDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Warn when stock lasts'**
+  String get fieldLowStockDays;
+
+  /// No description provided for @daysValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{1 day} other{{days} days}}'**
+  String daysValue(int days);
+
+  /// No description provided for @fieldInitialStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Units in stock (optional)'**
+  String get fieldInitialStock;
+
+  /// No description provided for @prescriptionNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the details as they appear on the prescription. ICare does not suggest doses.'**
+  String get prescriptionNote;
+
+  /// No description provided for @formTablet.
+  ///
+  /// In en, this message translates to:
+  /// **'Tablet'**
+  String get formTablet;
+
+  /// No description provided for @formCapsule.
+  ///
+  /// In en, this message translates to:
+  /// **'Capsule'**
+  String get formCapsule;
+
+  /// No description provided for @formLiquid.
+  ///
+  /// In en, this message translates to:
+  /// **'Liquid'**
+  String get formLiquid;
+
+  /// No description provided for @formDrops.
+  ///
+  /// In en, this message translates to:
+  /// **'Drops'**
+  String get formDrops;
+
+  /// No description provided for @formInjection.
+  ///
+  /// In en, this message translates to:
+  /// **'Injection'**
+  String get formInjection;
+
+  /// No description provided for @formPatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Patch'**
+  String get formPatch;
+
+  /// No description provided for @formInhaler.
+  ///
+  /// In en, this message translates to:
+  /// **'Inhaler'**
+  String get formInhaler;
+
+  /// No description provided for @formOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get formOther;
+
+  /// No description provided for @scheduleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get scheduleTitle;
+
+  /// No description provided for @scheduleFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'At set times'**
+  String get scheduleFixed;
+
+  /// No description provided for @scheduleAsNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'As needed'**
+  String get scheduleAsNeeded;
+
+  /// No description provided for @addTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Add time'**
+  String get addTime;
+
+  /// No description provided for @removeTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {time}'**
+  String removeTime(String time);
+
+  /// No description provided for @whichDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Which days'**
+  String get whichDays;
+
+  /// No description provided for @minIntervalOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum time between doses (optional)'**
+  String get minIntervalOptional;
+
+  /// No description provided for @minIntervalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum time between doses'**
+  String get minIntervalLabel;
+
+  /// No description provided for @maxPerDayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum per day (optional)'**
+  String get maxPerDayLabel;
+
+  /// No description provided for @hoursValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours, plural, =1{1 hour} other{{hours} hours}}'**
+  String hoursValue(int hours);
+
+  /// No description provided for @noLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit'**
+  String get noLimit;
+
+  /// No description provided for @issueNameMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the name'**
+  String get issueNameMissing;
+
+  /// No description provided for @issueUnitsPerDose.
+  ///
+  /// In en, this message translates to:
+  /// **'Units per dose must be more than 0'**
+  String get issueUnitsPerDose;
+
+  /// No description provided for @issueNoTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one time'**
+  String get issueNoTimes;
+
+  /// No description provided for @issueMinInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'The time between doses must be more than 0'**
+  String get issueMinInterval;
+
+  /// No description provided for @issueMaxPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'The maximum per day must be at least 1'**
+  String get issueMaxPerDay;
+
+  /// No description provided for @issueStockNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number'**
+  String get issueStockNumber;
+
+  /// No description provided for @changeSchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Change schedule'**
+  String get changeSchedule;
+
+  /// No description provided for @scheduleFromWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'From when?'**
+  String get scheduleFromWhen;
+
+  /// No description provided for @fromNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get fromNow;
+
+  /// No description provided for @fromTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get fromTomorrow;
+
+  /// No description provided for @fromPickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a date'**
+  String get fromPickDate;
+
+  /// No description provided for @fromDate.
+  ///
+  /// In en, this message translates to:
+  /// **'From {date}'**
+  String fromDate(String date);
+
+  /// No description provided for @earlierDosesUnchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier doses keep the schedule they had.'**
+  String get earlierDosesUnchanged;
+
+  /// No description provided for @previousSchedules.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier schedules'**
+  String get previousSchedules;
+
+  /// No description provided for @scheduleUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Until {date}'**
+  String scheduleUntil(String date);
+
+  /// No description provided for @stockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock'**
+  String get stockTitle;
+
+  /// No description provided for @recount.
+  ///
+  /// In en, this message translates to:
+  /// **'Recount'**
+  String get recount;
+
+  /// No description provided for @boughtMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought more'**
+  String get boughtMore;
+
+  /// No description provided for @howManyLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'How many are left?'**
+  String get howManyLeft;
+
+  /// No description provided for @howManyBought.
+  ///
+  /// In en, this message translates to:
+  /// **'How many did you buy?'**
+  String get howManyBought;
+
+  /// No description provided for @recentDoses.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent doses'**
+  String get recentDoses;
+
+  /// No description provided for @instructionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructions'**
+  String get instructionsTitle;
+
+  /// No description provided for @archive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get archive;
+
+  /// No description provided for @archiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive {medication}?'**
+  String archiveTitle(String medication);
+
+  /// No description provided for @archiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It will no longer appear in Today or in the list. Its history stays in Activity.'**
+  String get archiveBody;
+
+  /// No description provided for @archived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get archived;
+
+  /// No description provided for @medicationSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{medication} saved'**
+  String medicationSaved(String medication);
+
+  /// No description provided for @editConflictTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed by more than one person at the same time'**
+  String get editConflictTitle;
+
+  /// No description provided for @editConflictBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The last change received is the one in use. Choose which one to keep.'**
+  String get editConflictBody;
+
+  /// No description provided for @keepThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this one'**
+  String get keepThis;
+
+  /// No description provided for @useThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this one'**
+  String get useThis;
+
+  /// No description provided for @inUse.
+  ///
+  /// In en, this message translates to:
+  /// **'In use'**
+  String get inUse;
+
+  /// No description provided for @changeBy.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} at {time}'**
+  String changeBy(String name, String time);
+
+  /// No description provided for @changeArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived it'**
+  String get changeArchived;
+
+  /// No description provided for @medicationConflictBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs review'**
+  String get medicationConflictBadge;
+
+  /// No description provided for @more.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get more;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @issueNoWeekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least one day'**
+  String get issueNoWeekdays;
+
+  /// No description provided for @pickDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose days'**
+  String get pickDays;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @sectionMedication.
+  ///
+  /// In en, this message translates to:
+  /// **'Medication'**
+  String get sectionMedication;
+
+  /// No description provided for @sectionDoseAndStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Dose and stock'**
+  String get sectionDoseAndStock;
+
+  /// No description provided for @sectionFromWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'From when'**
+  String get sectionFromWhen;
 }
 
 class _AppLocalizationsDelegate

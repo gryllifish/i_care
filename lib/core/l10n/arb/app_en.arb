@@ -527,5 +527,142 @@
         "type": "int"
       }
     }
-  }
+  },
+  "addMedication": "Add",
+  "newMedication": "New medication",
+  "editMedication": "Edit medication",
+  "save": "Save",
+  "cancel": "Cancel",
+  "fieldName": "Name",
+  "fieldStrength": "Strength",
+  "fieldStrengthHint": "e.g. 500 mg",
+  "fieldForm": "Form",
+  "fieldInstructions": "Instructions (optional)",
+  "fieldInstructionsHint": "e.g. With meals",
+  "fieldUnitsPerDose": "Units per dose",
+  "fieldLowStockDays": "Warn when stock lasts",
+  "daysValue": "{days, plural, =1{1 day} other{{days} days}}",
+  "@daysValue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldInitialStock": "Units in stock (optional)",
+  "prescriptionNote": "Enter the details as they appear on the prescription. ICare does not suggest doses.",
+  "formTablet": "Tablet",
+  "formCapsule": "Capsule",
+  "formLiquid": "Liquid",
+  "formDrops": "Drops",
+  "formInjection": "Injection",
+  "formPatch": "Patch",
+  "formInhaler": "Inhaler",
+  "formOther": "Other",
+  "scheduleTitle": "Schedule",
+  "scheduleFixed": "At set times",
+  "scheduleAsNeeded": "As needed",
+  "addTime": "Add time",
+  "removeTime": "Remove {time}",
+  "@removeTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "whichDays": "Which days",
+  "minIntervalOptional": "Minimum time between doses (optional)",
+  "minIntervalLabel": "Minimum time between doses",
+  "maxPerDayLabel": "Maximum per day (optional)",
+  "hoursValue": "{hours, plural, =1{1 hour} other{{hours} hours}}",
+  "@hoursValue": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "noLimit": "No limit",
+  "issueNameMissing": "Enter the name",
+  "issueUnitsPerDose": "Units per dose must be more than 0",
+  "issueNoTimes": "Add at least one time",
+  "issueMinInterval": "The time between doses must be more than 0",
+  "issueMaxPerDay": "The maximum per day must be at least 1",
+  "issueStockNumber": "Enter a number",
+  "changeSchedule": "Change schedule",
+  "scheduleFromWhen": "From when?",
+  "fromNow": "Now",
+  "fromTomorrow": "Tomorrow",
+  "fromPickDate": "Pick a date",
+  "fromDate": "From {date}",
+  "@fromDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "earlierDosesUnchanged": "Earlier doses keep the schedule they had.",
+  "previousSchedules": "Earlier schedules",
+  "scheduleUntil": "Until {date}",
+  "@scheduleUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "stockTitle": "Stock",
+  "recount": "Recount",
+  "boughtMore": "Bought more",
+  "howManyLeft": "How many are left?",
+  "howManyBought": "How many did you buy?",
+  "recentDoses": "Recent doses",
+  "instructionsTitle": "Instructions",
+  "archive": "Archive",
+  "archiveTitle": "Archive {medication}?",
+  "@archiveTitle": {
+    "placeholders": {
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "archiveBody": "It will no longer appear in Today or in the list. Its history stays in Activity.",
+  "archived": "Archived",
+  "medicationSaved": "{medication} saved",
+  "@medicationSaved": {
+    "placeholders": {
+      "medication": {
+        "type": "String"
+      }
+    }
+  },
+  "editConflictTitle": "Changed by more than one person at the same time",
+  "editConflictBody": "The last change received is the one in use. Choose which one to keep.",
+  "keepThis": "Keep this one",
+  "useThis": "Use this one",
+  "inUse": "In use",
+  "changeBy": "{name} at {time}",
+  "@changeBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "changeArchived": "Archived it",
+  "medicationConflictBadge": "Needs review",
+  "more": "More",
+  "back": "Back",
+  "issueNoWeekdays": "Choose at least one day",
+  "pickDays": "Choose days",
+  "done": "Done",
+  "sectionMedication": "Medication",
+  "sectionDoseAndStock": "Dose and stock",
+  "sectionFromWhen": "From when"
 }

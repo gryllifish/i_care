@@ -159,6 +159,12 @@ documented), nursing-home features.
   warning), and a vertical timeline per part of the day with status
   pills.
 - Rounded surfaces (20–28 px), soft shadows, stadium buttons and chips.
+- Forms (inspired by DoseSync): white fields with the label above, on
+  the tinted background, grouped under small uppercase section titles;
+  Cupertino sliding segmented controls; "Save" as a pill in the app bar.
+- Times and dates are picked with Cupertino scroll wheels in a bottom
+  sheet, on Android too: 24 h in Spanish, 12 h in US English; dose
+  times in 5-minute steps.
 - Typography: Atkinson Hyperlegible Next, bundled (OFL), designed by the
   Braille Institute for low vision; its slashed zero is intentional.
 - Light theme first; dark theme (night doses) is a phase 4 candidate.
@@ -176,6 +182,12 @@ documented), nursing-home features.
   and per-dose "not synced yet" badge,
   "Who are you?"; sample circle seeded on first run; two-device demo
   shell with per-phone network switches.
+- Phase 2: add and edit medications (one-page form, prescription
+  note), schedule changes from now, tomorrow or a picked date with
+  earlier versions listed, stock recount and refill, archive with
+  confirmation, and review of concurrent edits ("keep this one" / "use
+  this one"). Validation is pure domain code; every flow has widget
+  tests, including 200 % text.
 - Visual refresh: navigation bar, read-only Medications (schedule,
   instructions, stock) and Activity (feed by day) tabs, redesigned Today,
   bundled font.
@@ -187,10 +199,9 @@ documented), nursing-home features.
 - The chosen identity ("Who are you?") resets on reload.
 
 ### Next steps, in order
-1. **Phase 2**: medications CRUD with schedule versions and stock events.
-2. **Phase 3**: appointments and visit notes (questions, post-visit
+1. **Phase 3**: appointments and visit notes (questions, post-visit
    prompt); emergency card; handoff summary; Activity; Settings.
-3. **Phase 4**: accessibility pass (large text, screen readers), dark
+2. **Phase 4**: accessibility pass (large text, screen readers), dark
    theme, app icon, screenshots, README.
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.

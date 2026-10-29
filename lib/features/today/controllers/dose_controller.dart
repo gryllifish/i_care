@@ -1,14 +1,12 @@
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
-import 'package:i_care/features/care/data/care_providers.dart';
+import 'package:i_care/features/care/controllers/care_recorder.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
 import 'package:i_care/features/care/domain/projections/dose_warnings.dart';
-import 'package:i_care/shared/providers/clock_provider.dart';
-import 'package:i_care/shared/providers/id_provider.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -146,15 +144,8 @@ class DoseActions extends _$DoseActions {
             as ConflictAcknowledged,
       );
 
-  EventMeta _meta() => EventMeta(
-    id: ref.read(newIdProvider)(),
-    caregiverId: ref.read(currentCaregiverProvider).id,
-    occurredAt: ref.read(clockProvider)(),
-  );
+  EventMeta _meta() => ref.read(careRecorderProvider).meta();
 
-  Future<Result<T>> _record<T extends CareEvent>(T event) async =>
-      switch (await ref.read(careRepositoryProvider).record(event)) {
-        Ok() => Ok(event),
-        Err(:final failure) => Err(failure),
-      };
+  Future<Result<T>> _record<T extends CareEvent>(T event) =>
+      ref.read(careRecorderProvider).record(event);
 }

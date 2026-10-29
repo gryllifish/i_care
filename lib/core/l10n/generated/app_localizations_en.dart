@@ -511,4 +511,271 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get addMedication => 'Add';
+
+  @override
+  String get newMedication => 'New medication';
+
+  @override
+  String get editMedication => 'Edit medication';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get fieldName => 'Name';
+
+  @override
+  String get fieldStrength => 'Strength';
+
+  @override
+  String get fieldStrengthHint => 'e.g. 500 mg';
+
+  @override
+  String get fieldForm => 'Form';
+
+  @override
+  String get fieldInstructions => 'Instructions (optional)';
+
+  @override
+  String get fieldInstructionsHint => 'e.g. With meals';
+
+  @override
+  String get fieldUnitsPerDose => 'Units per dose';
+
+  @override
+  String get fieldLowStockDays => 'Warn when stock lasts';
+
+  @override
+  String daysValue(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fieldInitialStock => 'Units in stock (optional)';
+
+  @override
+  String get prescriptionNote =>
+      'Enter the details as they appear on the prescription. ICare does not suggest doses.';
+
+  @override
+  String get formTablet => 'Tablet';
+
+  @override
+  String get formCapsule => 'Capsule';
+
+  @override
+  String get formLiquid => 'Liquid';
+
+  @override
+  String get formDrops => 'Drops';
+
+  @override
+  String get formInjection => 'Injection';
+
+  @override
+  String get formPatch => 'Patch';
+
+  @override
+  String get formInhaler => 'Inhaler';
+
+  @override
+  String get formOther => 'Other';
+
+  @override
+  String get scheduleTitle => 'Schedule';
+
+  @override
+  String get scheduleFixed => 'At set times';
+
+  @override
+  String get scheduleAsNeeded => 'As needed';
+
+  @override
+  String get addTime => 'Add time';
+
+  @override
+  String removeTime(String time) {
+    return 'Remove $time';
+  }
+
+  @override
+  String get whichDays => 'Which days';
+
+  @override
+  String get minIntervalOptional => 'Minimum time between doses (optional)';
+
+  @override
+  String get minIntervalLabel => 'Minimum time between doses';
+
+  @override
+  String get maxPerDayLabel => 'Maximum per day (optional)';
+
+  @override
+  String hoursValue(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours hours',
+      one: '1 hour',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noLimit => 'No limit';
+
+  @override
+  String get issueNameMissing => 'Enter the name';
+
+  @override
+  String get issueUnitsPerDose => 'Units per dose must be more than 0';
+
+  @override
+  String get issueNoTimes => 'Add at least one time';
+
+  @override
+  String get issueMinInterval => 'The time between doses must be more than 0';
+
+  @override
+  String get issueMaxPerDay => 'The maximum per day must be at least 1';
+
+  @override
+  String get issueStockNumber => 'Enter a number';
+
+  @override
+  String get changeSchedule => 'Change schedule';
+
+  @override
+  String get scheduleFromWhen => 'From when?';
+
+  @override
+  String get fromNow => 'Now';
+
+  @override
+  String get fromTomorrow => 'Tomorrow';
+
+  @override
+  String get fromPickDate => 'Pick a date';
+
+  @override
+  String fromDate(String date) {
+    return 'From $date';
+  }
+
+  @override
+  String get earlierDosesUnchanged =>
+      'Earlier doses keep the schedule they had.';
+
+  @override
+  String get previousSchedules => 'Earlier schedules';
+
+  @override
+  String scheduleUntil(String date) {
+    return 'Until $date';
+  }
+
+  @override
+  String get stockTitle => 'Stock';
+
+  @override
+  String get recount => 'Recount';
+
+  @override
+  String get boughtMore => 'Bought more';
+
+  @override
+  String get howManyLeft => 'How many are left?';
+
+  @override
+  String get howManyBought => 'How many did you buy?';
+
+  @override
+  String get recentDoses => 'Recent doses';
+
+  @override
+  String get instructionsTitle => 'Instructions';
+
+  @override
+  String get archive => 'Archive';
+
+  @override
+  String archiveTitle(String medication) {
+    return 'Archive $medication?';
+  }
+
+  @override
+  String get archiveBody =>
+      'It will no longer appear in Today or in the list. Its history stays in Activity.';
+
+  @override
+  String get archived => 'Archived';
+
+  @override
+  String medicationSaved(String medication) {
+    return '$medication saved';
+  }
+
+  @override
+  String get editConflictTitle =>
+      'Changed by more than one person at the same time';
+
+  @override
+  String get editConflictBody =>
+      'The last change received is the one in use. Choose which one to keep.';
+
+  @override
+  String get keepThis => 'Keep this one';
+
+  @override
+  String get useThis => 'Use this one';
+
+  @override
+  String get inUse => 'In use';
+
+  @override
+  String changeBy(String name, String time) {
+    return '$name at $time';
+  }
+
+  @override
+  String get changeArchived => 'Archived it';
+
+  @override
+  String get medicationConflictBadge => 'Needs review';
+
+  @override
+  String get more => 'More';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get issueNoWeekdays => 'Choose at least one day';
+
+  @override
+  String get pickDays => 'Choose days';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get sectionMedication => 'Medication';
+
+  @override
+  String get sectionDoseAndStock => 'Dose and stock';
+
+  @override
+  String get sectionFromWhen => 'From when';
 }

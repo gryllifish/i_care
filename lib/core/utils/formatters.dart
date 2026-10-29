@@ -11,6 +11,10 @@ abstract final class Formatters {
   static String longDay(DateTime day, String locale) =>
       DateFormat.MMMMEEEEd(locale).format(day);
 
+  /// "Nov 2" / "2 nov".
+  static String shortDate(DateTime day, String locale) =>
+      DateFormat.MMMd(locale).format(day);
+
   /// "Mon" / "lun" for a `DateTime.monday`..`DateTime.sunday` weekday.
   static String weekday(int weekday, String locale) =>
       // 2024-01-01 was a Monday.

@@ -511,4 +511,270 @@ class AppLocalizationsEs extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get addMedication => 'Agregar';
+
+  @override
+  String get newMedication => 'Nuevo medicamento';
+
+  @override
+  String get editMedication => 'Editar medicamento';
+
+  @override
+  String get save => 'Guardar';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get fieldName => 'Nombre';
+
+  @override
+  String get fieldStrength => 'Concentración';
+
+  @override
+  String get fieldStrengthHint => 'Ej.: 500 mg';
+
+  @override
+  String get fieldForm => 'Forma';
+
+  @override
+  String get fieldInstructions => 'Indicaciones (opcional)';
+
+  @override
+  String get fieldInstructionsHint => 'Ej.: Con las comidas';
+
+  @override
+  String get fieldUnitsPerDose => 'Unidades por toma';
+
+  @override
+  String get fieldLowStockDays => 'Avisar cuando el stock alcance para';
+
+  @override
+  String daysValue(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days días',
+      one: '1 día',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get fieldInitialStock => 'Unidades en stock (opcional)';
+
+  @override
+  String get prescriptionNote =>
+      'Cargá los datos tal como figuran en la receta. ICare no sugiere dosis.';
+
+  @override
+  String get formTablet => 'Comprimido';
+
+  @override
+  String get formCapsule => 'Cápsula';
+
+  @override
+  String get formLiquid => 'Líquido';
+
+  @override
+  String get formDrops => 'Gotas';
+
+  @override
+  String get formInjection => 'Inyección';
+
+  @override
+  String get formPatch => 'Parche';
+
+  @override
+  String get formInhaler => 'Inhalador';
+
+  @override
+  String get formOther => 'Otra';
+
+  @override
+  String get scheduleTitle => 'Horario';
+
+  @override
+  String get scheduleFixed => 'Horario fijo';
+
+  @override
+  String get scheduleAsNeeded => 'Si hace falta';
+
+  @override
+  String get addTime => 'Agregar hora';
+
+  @override
+  String removeTime(String time) {
+    return 'Quitar $time';
+  }
+
+  @override
+  String get whichDays => 'Qué días';
+
+  @override
+  String get minIntervalOptional => 'Tiempo mínimo entre dosis (opcional)';
+
+  @override
+  String get minIntervalLabel => 'Tiempo mínimo entre dosis';
+
+  @override
+  String get maxPerDayLabel => 'Máximo por día (opcional)';
+
+  @override
+  String hoursValue(int hours) {
+    String _temp0 = intl.Intl.pluralLogic(
+      hours,
+      locale: localeName,
+      other: '$hours horas',
+      one: '1 hora',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noLimit => 'Sin límite';
+
+  @override
+  String get issueNameMissing => 'Escribí el nombre';
+
+  @override
+  String get issueUnitsPerDose => 'Las unidades por toma deben ser más de 0';
+
+  @override
+  String get issueNoTimes => 'Agregá al menos una hora';
+
+  @override
+  String get issueMinInterval => 'El tiempo entre dosis debe ser más de 0';
+
+  @override
+  String get issueMaxPerDay => 'El máximo por día debe ser al menos 1';
+
+  @override
+  String get issueStockNumber => 'Escribí un número';
+
+  @override
+  String get changeSchedule => 'Cambiar horario';
+
+  @override
+  String get scheduleFromWhen => '¿Desde cuándo?';
+
+  @override
+  String get fromNow => 'Ahora';
+
+  @override
+  String get fromTomorrow => 'Mañana';
+
+  @override
+  String get fromPickDate => 'Elegir fecha';
+
+  @override
+  String fromDate(String date) {
+    return 'Desde el $date';
+  }
+
+  @override
+  String get earlierDosesUnchanged => 'Las tomas anteriores no cambian.';
+
+  @override
+  String get previousSchedules => 'Horarios anteriores';
+
+  @override
+  String scheduleUntil(String date) {
+    return 'Hasta el $date';
+  }
+
+  @override
+  String get stockTitle => 'Stock';
+
+  @override
+  String get recount => 'Recontar';
+
+  @override
+  String get boughtMore => 'Compré más';
+
+  @override
+  String get howManyLeft => '¿Cuántas quedan?';
+
+  @override
+  String get howManyBought => '¿Cuántas compraste?';
+
+  @override
+  String get recentDoses => 'Últimas tomas';
+
+  @override
+  String get instructionsTitle => 'Indicaciones';
+
+  @override
+  String get archive => 'Archivar';
+
+  @override
+  String archiveTitle(String medication) {
+    return '¿Archivar $medication?';
+  }
+
+  @override
+  String get archiveBody =>
+      'Deja de aparecer en Hoy y en la lista. Su historial queda en Actividad.';
+
+  @override
+  String get archived => 'Archivado';
+
+  @override
+  String medicationSaved(String medication) {
+    return '$medication: guardado';
+  }
+
+  @override
+  String get editConflictTitle =>
+      'Cambiado por más de una persona al mismo tiempo';
+
+  @override
+  String get editConflictBody =>
+      'Quedó el último cambio recibido. Elegí cuál mantener.';
+
+  @override
+  String get keepThis => 'Mantener este';
+
+  @override
+  String get useThis => 'Usar este';
+
+  @override
+  String get inUse => 'En uso';
+
+  @override
+  String changeBy(String name, String time) {
+    return '$name, a las $time';
+  }
+
+  @override
+  String get changeArchived => 'Lo archivó';
+
+  @override
+  String get medicationConflictBadge => 'Para revisar';
+
+  @override
+  String get more => 'Más';
+
+  @override
+  String get back => 'Volver';
+
+  @override
+  String get issueNoWeekdays => 'Elegí al menos un día';
+
+  @override
+  String get pickDays => 'Elegir días';
+
+  @override
+  String get done => 'Listo';
+
+  @override
+  String get sectionMedication => 'Medicamento';
+
+  @override
+  String get sectionDoseAndStock => 'Dosis y stock';
+
+  @override
+  String get sectionFromWhen => 'Desde cuándo';
 }

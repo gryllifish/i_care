@@ -2,7 +2,10 @@ import 'package:go_router/go_router.dart';
 import 'package:i_care/app/app_shell.dart';
 import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/features/activity/presentation/screens/activity_screen.dart';
+import 'package:i_care/features/medications/presentation/screens/medication_detail_screen.dart';
+import 'package:i_care/features/medications/presentation/screens/medication_form_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/medications_screen.dart';
+import 'package:i_care/features/medications/presentation/screens/schedule_change_screen.dart';
 import 'package:i_care/features/today/presentation/screens/today_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -35,6 +38,32 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: AppRoutes.medications,
                 builder: (context, state) => const MedicationsScreen(),
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.newMedication,
+                    builder: (context, state) => const MedicationFormScreen(),
+                  ),
+                  GoRoute(
+                    path: AppRoutes.medication,
+                    builder: (context, state) => MedicationDetailScreen(
+                      medicationId: _medicationIdOf(state),
+                    ),
+                    routes: [
+                      GoRoute(
+                        path: AppRoutes.editMedication,
+                        builder: (context, state) => MedicationFormScreen(
+                          medicationId: _medicationIdOf(state),
+                        ),
+                      ),
+                      GoRoute(
+                        path: AppRoutes.changeSchedule,
+                        builder: (context, state) => ScheduleChangeScreen(
+                          medicationId: _medicationIdOf(state),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
@@ -53,3 +82,7 @@ GoRouter appRouter(Ref ref) {
   ref.onDispose(router.dispose);
   return router;
 }
+
+/// The path only matches with a non-empty id, so it is always present.
+String _medicationIdOf(GoRouterState state) =>
+    state.pathParameters[AppRoutes.medicationIdParam] ?? '';

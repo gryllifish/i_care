@@ -21,6 +21,7 @@ import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
+import 'package:i_care/shared/widgets/wheel_pickers.dart';
 
 /// Opens the sheet to record the dose of [medicationId] scheduled at
 /// [slotAt], or an as-needed dose when [slotAt] is null.
@@ -379,9 +380,9 @@ class _GivenAtPicker extends ConsumerWidget {
 
     Future<void> pickTime() async {
       final now = ref.read(clockProvider)();
-      final picked = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(now),
+      final picked = await showTimeWheel(
+        context,
+        initial: TimeOfDay.fromDateTime(now),
       );
       if (picked == null) return;
       onChanged(_GivenAt(latestAt(picked.hour, picked.minute, now)));

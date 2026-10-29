@@ -9,4 +9,24 @@ abstract final class AppRoutes {
 
   /// Third tab: who did what, newest first.
   static const activity = '/activity';
+
+  /// Nested under [medications], so the tab bar stays and back returns to
+  /// the list.
+  static const newMedication = 'new';
+  static const medication = ':$medicationIdParam';
+  static const medicationIdParam = 'id';
+
+  /// Nested under [medication].
+  static const editMedication = 'edit';
+  static const changeSchedule = 'schedule';
+
+  static String newMedicationPath() => '$medications/$newMedication';
+
+  static String medicationPath(String id) => '$medications/$id';
+
+  static String editMedicationPath(String id) =>
+      '${medicationPath(id)}/$editMedication';
+
+  static String changeSchedulePath(String id) =>
+      '${medicationPath(id)}/$changeSchedule';
 }
