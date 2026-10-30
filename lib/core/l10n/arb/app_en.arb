@@ -76,6 +76,36 @@
   "doubleDoseBody": "Recorded as given more than once. If in doubt, ask the doctor or pharmacist.",
   "markGiven": "Mark as given",
   "markGivenAnyway": "Mark as given anyway",
+  "givenToo": "I gave it too",
+  "removeRecordOf": "Remove {name}'s record",
+  "@removeRecordOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "removeRecordTitle": "Remove this record?",
+  "removeGivenBody": "{name} recorded it as given at {time}. Remove it only if the dose was not given. The change shows in Activity.",
+  "@removeGivenBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "removeSkippedBody": "{name} recorded it as skipped. Remove it if the dose is still to be given. The change shows in Activity.",
+  "@removeSkippedBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recordRemoved": "Record removed",
   "skipDose": "Skip this dose",
   "skipReasonTitle": "Why is it skipped?",
   "skipRefused": "Refused it",

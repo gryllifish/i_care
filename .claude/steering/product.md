@@ -85,7 +85,11 @@ family portal for residents' relatives is a possible later path.
    "When was it given?": now, 30 min or 1 h ago, or a picked time (a
    time later than now means yesterday), stored as `givenAt`; warnings
    are checked against that time. Undo for a few seconds (as a
-   `DoseUndone` event). An offline phone
+   `DoseUndone` event), and afterwards "Remove" on each record of the
+   dose, with a confirmation; it appends the same event, so Activity
+   shows it. A dose already given is not offered "Mark as given" again:
+   "I gave it too" opens the form, with warnings, for a second dose
+   really given, which then knows every earlier record. An offline phone
    always warns, and its confirmation says the record is saved on the
    phone until the connection is back.
    **Conflicts** (doses recorded twice unseen) interrupt when they arrive

@@ -11,6 +11,7 @@ import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/caregiver.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/projections/dose_warnings.dart';
 import 'package:i_care/features/today/controllers/dose_controller.dart';
@@ -21,6 +22,7 @@ import 'package:i_care/shared/providers/clock_provider.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
+import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/wheel_pickers.dart';
 
 /// Opens the sheet to record the dose of [medicationId] scheduled at
@@ -92,6 +94,10 @@ class DoseSheet extends ConsumerStatefulWidget {
 class _DoseSheetState extends ConsumerState<DoseSheet> {
   var _choosingReason = false;
   var _busy = false;
+
+  /// Whether a dose someone already recorded is being recorded again,
+  /// because this caregiver gave it too.
+  var _givingToo = false;
   _GivenAtChoice _givenAt = const _GivenNow();
 
   @override
@@ -119,9 +125,8 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final details = detail.medication.details;
     final slot = detail.slot;
-    final isResolved =
-        slot != null &&
-        (slot.status == DoseStatus.given || slot.status == DoseStatus.skipped);
+    final isGiven = slot != null && slot.status == DoseStatus.given;
+    final isResolved = isGiven || slot?.status == DoseStatus.skipped;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(
@@ -198,51 +203,67 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
                 title: l10n.statusGivenTwice,
                 lines: [l10n.doubleDoseBody],
               ),
-            _History(detail: detail),
-            if (detail.warnings.isNotEmpty)
-              _Notice(
-                icon: Icons.warning_amber,
-                color: context.colors.due,
-                background: context.colors.dueSoft,
-                title: l10n.checkBeforeGiving,
-                lines: [
-                  for (final warning in detail.warnings)
-                    warning.text(
-                      l10n,
-                      locale: locale,
-                      caregivers: ref.watch(caregiversByIdProvider),
-                    ),
-                ],
-              ),
-            if (_choosingReason && slot != null)
-              _ReasonPicker(
-                onPicked: _busy
+            _History(detail: detail, onRemove: _remove),
+            // A dose already given is corrected from its records above;
+            // recording it again is only for a second dose really given.
+            if (isGiven && !_givingToo)
+              OutlinedButton(
+                onPressed: _busy
                     ? null
-                    : (reason) => _skip(detail, slot, reason),
+                    : () => setState(() => _givingToo = true),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(_secondaryButtonHeight),
+                ),
+                child: Text(l10n.givenToo),
               )
             else ...[
-              _GivenAtPicker(
-                choice: _givenAt,
-                onChanged: (choice) => setState(() => _givenAt = choice),
-              ),
-              FilledButton(
-                onPressed: _busy ? null : () => _give(detail),
-                child: Text(
-                  detail.warnings.isEmpty
-                      ? l10n.markGiven
-                      : l10n.markGivenAnyway,
+              if (detail.warnings.isNotEmpty)
+                _Notice(
+                  icon: Icons.warning_amber,
+                  color: context.colors.due,
+                  background: context.colors.dueSoft,
+                  title: l10n.checkBeforeGiving,
+                  lines: [
+                    for (final warning in detail.warnings)
+                      warning.text(
+                        l10n,
+                        locale: locale,
+                        caregivers: ref.watch(caregiversByIdProvider),
+                      ),
+                  ],
                 ),
-              ),
-              if (slot != null && !isResolved)
-                OutlinedButton(
-                  onPressed: _busy
+              if (_choosingReason && slot != null)
+                _ReasonPicker(
+                  onPicked: _busy
                       ? null
-                      : () => setState(() => _choosingReason = true),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(_secondaryButtonHeight),
-                  ),
-                  child: Text(l10n.skipDose),
+                      : (reason) => _skip(detail, slot, reason),
+                )
+              else ...[
+                _GivenAtPicker(
+                  choice: _givenAt,
+                  onChanged: (choice) => setState(() => _givenAt = choice),
                 ),
+                FilledButton(
+                  onPressed: _busy ? null : () => _give(detail),
+                  child: Text(
+                    detail.warnings.isEmpty
+                        ? l10n.markGiven
+                        : l10n.markGivenAnyway,
+                  ),
+                ),
+                if (slot != null && !isResolved)
+                  OutlinedButton(
+                    onPressed: _busy
+                        ? null
+                        : () => setState(() => _choosingReason = true),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(
+                        _secondaryButtonHeight,
+                      ),
+                    ),
+                    child: Text(l10n.skipDose),
+                  ),
+              ],
             ],
           ],
         ],
@@ -290,6 +311,49 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
             onPressed: () => actions.undo(value),
           ),
         );
+      case Err(:final failure):
+        messenger.showError(failure.message(l10n));
+    }
+  }
+
+  /// Takes back a record made by mistake, after confirming. It appends an
+  /// undo event, so Activity still shows both.
+  Future<void> _remove(CareEvent record) async {
+    if (_busy) return;
+    final l10n = context.l10n;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final messenger = ScaffoldMessenger.of(context);
+    final actions = ref.read(doseActionsProvider.notifier);
+    final caregiverId = record.meta.caregiverId;
+    final name =
+        ref.read(caregiversByIdProvider)[caregiverId]?.name ??
+        l10n.unknownCaregiver;
+
+    final confirmed = await showConfirmDialog(
+      context,
+      title: l10n.removeRecordTitle,
+      body: switch (record) {
+        DoseGiven(:final givenAt) => l10n.removeGivenBody(
+          name,
+          Formatters.time(givenAt, locale),
+        ),
+        _ => l10n.removeSkippedBody(name),
+      },
+      cancelLabel: l10n.cancel,
+      confirmLabel: l10n.remove,
+    );
+    if (!confirmed || !mounted) return;
+
+    setState(() => _busy = true);
+    final result = await actions.undo(record);
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      _givingToo = false;
+    });
+    switch (result) {
+      case Ok():
+        messenger.showMessage(l10n.recordRemoved);
       case Err(:final failure):
         messenger.showError(failure.message(l10n));
     }
@@ -433,11 +497,13 @@ class _GivenAtPicker extends ConsumerWidget {
   }
 }
 
-/// Who recorded what for this dose.
+/// Who recorded what for this dose, each record with a button to take it
+/// back when [onRemove] is set.
 class _History extends ConsumerWidget {
-  const _History({required this.detail});
+  const _History({required this.detail, this.onRemove});
 
   final DoseDetail detail;
+  final ValueChanged<CareEvent>? onRemove;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -449,15 +515,8 @@ class _History extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    Widget row(String caregiverId, String text) => Row(
-      spacing: AppSpacing.md,
-      children: [
-        if (caregivers[caregiverId] case final caregiver?)
-          CaregiverAvatar(caregiver: caregiver),
-        Expanded(child: Text(text, style: AppTextStyles.body)),
-      ],
-    );
     String nameOf(String id) => caregivers[id]?.name ?? l10n.unknownCaregiver;
+    final onRemove = this.onRemove;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -468,9 +527,10 @@ class _History extends ConsumerWidget {
           style: AppTextStyles.label,
         ),
         for (final dose in detail.history)
-          row(
-            dose.meta.caregiverId,
-            recordedByText(
+          _HistoryRow(
+            caregiver: caregivers[dose.meta.caregiverId],
+            name: nameOf(dose.meta.caregiverId),
+            text: recordedByText(
               l10n,
               name: nameOf(dose.meta.caregiverId),
               at: dose.givenAt,
@@ -478,13 +538,51 @@ class _History extends ConsumerWidget {
               today: ref.watch(nowProvider),
               locale: locale,
             ),
+            onRemove: onRemove == null ? null : () => onRemove(dose),
           ),
         for (final skip in skipped)
-          row(
-            skip.meta.caregiverId,
-            l10n.skippedBy(
+          _HistoryRow(
+            caregiver: caregivers[skip.meta.caregiverId],
+            name: nameOf(skip.meta.caregiverId),
+            text: l10n.skippedBy(
               nameOf(skip.meta.caregiverId),
               skip.reason.label(l10n),
+            ),
+            onRemove: onRemove == null ? null : () => onRemove(skip),
+          ),
+      ],
+    );
+  }
+}
+
+class _HistoryRow extends StatelessWidget {
+  const _HistoryRow({
+    required this.caregiver,
+    required this.name,
+    required this.text,
+    required this.onRemove,
+  });
+
+  final Caregiver? caregiver;
+  final String name;
+  final String text;
+  final VoidCallback? onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final caregiver = this.caregiver;
+    final onRemove = this.onRemove;
+    return Row(
+      spacing: AppSpacing.md,
+      children: [
+        if (caregiver != null) CaregiverAvatar(caregiver: caregiver),
+        Expanded(child: Text(text, style: AppTextStyles.body)),
+        if (onRemove != null)
+          TextButton(
+            onPressed: onRemove,
+            child: Text(
+              context.l10n.remove,
+              semanticsLabel: context.l10n.removeRecordOf(name),
             ),
           ),
       ],

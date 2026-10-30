@@ -141,6 +141,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markGivenAnyway => 'Marcar como dada igual';
 
   @override
+  String get givenToo => 'Yo también se la di';
+
+  @override
+  String removeRecordOf(String name) {
+    return 'Quitar el registro de $name';
+  }
+
+  @override
+  String get removeRecordTitle => '¿Quitar este registro?';
+
+  @override
+  String removeGivenBody(String name, String time) {
+    return '$name la registró como dada a las $time. Quitalo solo si la toma no se dio. El cambio queda en Actividad.';
+  }
+
+  @override
+  String removeSkippedBody(String name) {
+    return '$name la registró como omitida. Quitalo si la toma sigue pendiente. El cambio queda en Actividad.';
+  }
+
+  @override
+  String get recordRemoved => 'Registro quitado';
+
+  @override
   String get skipDose => 'Omitir esta toma';
 
   @override

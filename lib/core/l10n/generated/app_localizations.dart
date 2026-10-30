@@ -308,6 +308,42 @@ abstract class AppLocalizations {
   /// **'Mark as given anyway'**
   String get markGivenAnyway;
 
+  /// No description provided for @givenToo.
+  ///
+  /// In en, this message translates to:
+  /// **'I gave it too'**
+  String get givenToo;
+
+  /// No description provided for @removeRecordOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}\'s record'**
+  String removeRecordOf(String name);
+
+  /// No description provided for @removeRecordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this record?'**
+  String get removeRecordTitle;
+
+  /// No description provided for @removeGivenBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} recorded it as given at {time}. Remove it only if the dose was not given. The change shows in Activity.'**
+  String removeGivenBody(String name, String time);
+
+  /// No description provided for @removeSkippedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} recorded it as skipped. Remove it if the dose is still to be given. The change shows in Activity.'**
+  String removeSkippedBody(String name);
+
+  /// No description provided for @recordRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Record removed'**
+  String get recordRemoved;
+
   /// No description provided for @skipDose.
   ///
   /// In en, this message translates to:

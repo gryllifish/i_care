@@ -141,6 +141,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markGivenAnyway => 'Mark as given anyway';
 
   @override
+  String get givenToo => 'I gave it too';
+
+  @override
+  String removeRecordOf(String name) {
+    return 'Remove $name\'s record';
+  }
+
+  @override
+  String get removeRecordTitle => 'Remove this record?';
+
+  @override
+  String removeGivenBody(String name, String time) {
+    return '$name recorded it as given at $time. Remove it only if the dose was not given. The change shows in Activity.';
+  }
+
+  @override
+  String removeSkippedBody(String name) {
+    return '$name recorded it as skipped. Remove it if the dose is still to be given. The change shows in Activity.';
+  }
+
+  @override
+  String get recordRemoved => 'Record removed';
+
+  @override
   String get skipDose => 'Skip this dose';
 
   @override

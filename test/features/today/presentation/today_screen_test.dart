@@ -137,12 +137,29 @@ void main() {
     expect(find.text('Ana at 07:10'), findsOneWidget);
   });
 
-  testWidgets('a dose already given is confirmed knowingly', (tester) async {
+  testWidgets('a dose already given offers removing it, not giving it '
+      'again', (tester) async {
+    final martins = events.given('m1', at: eight, slotAt: eight, by: 'martin');
+    await pumpApp(tester, repository: circle([martins]), now: now);
+
+    await openDose(tester, '08:00');
+
+    expect(inSheet('Mark as given'), findsNothing);
+    expect(find.text('Mark as given anyway'), findsNothing);
+    expect(find.bySemanticsLabel("Remove Martín's record"), findsOneWidget);
+    expect(find.text('I gave it too'), findsOneWidget);
+  });
+
+  testWidgets('a second dose really given is recorded knowingly', (
+    tester,
+  ) async {
     final martins = events.given('m1', at: eight, slotAt: eight, by: 'martin');
     final repository = circle([martins]);
     await pumpApp(tester, repository: repository, now: now);
 
     await openDose(tester, '08:00');
+    await tester.tap(find.text('I gave it too'));
+    await tester.pumpAndSettle();
 
     expect(find.text('Check before giving it'), findsOneWidget);
     expect(find.text('Martín already recorded it at 08:00.'), findsOneWidget);
@@ -154,6 +171,79 @@ void main() {
     expect(given.knownDoseIds, [martins.meta.id]);
     expect(find.text('Martín at 08:00 · Ana at 08:10'), findsOneWidget);
     expect(find.text('Given twice'), findsOneWidget);
+  });
+
+  testWidgets('a third dose given knowingly is not a conflict', (
+    tester,
+  ) async {
+    final anas = events.given('m1', at: eight, slotAt: eight);
+    final martins = events.given(
+      'm1',
+      at: eight.add(const Duration(minutes: 1)),
+      slotAt: eight,
+      by: 'martin',
+      knowing: [anas],
+    );
+    final repository = circle([anas, martins]);
+    await pumpApp(tester, repository: repository, now: now);
+
+    await openDose(tester, '08:00');
+    await tester.tap(find.text('I gave it too'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Mark as given anyway'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Mark as given anyway'));
+    await tester.pumpAndSettle();
+
+    final given = repository.recorded.single as DoseGiven;
+    expect(
+      given.knownDoseIds,
+      unorderedEquals([anas.meta.id, martins.meta.id]),
+    );
+    expect(find.text('Enalapril at 08:00 was recorded 3 times'), findsNothing);
+    expect(find.text('Review'), findsNothing);
+  });
+
+  testWidgets('a dose recorded by mistake is removed after confirming', (
+    tester,
+  ) async {
+    final anas = events.given('m1', at: eight, slotAt: eight);
+    final repository = circle([anas]);
+    await pumpApp(tester, repository: repository, now: now);
+
+    await openDose(tester, '08:00');
+    await tester.tap(find.bySemanticsLabel("Remove Ana's record"));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Remove this record?'), findsOneWidget);
+    expect(
+      find.text(
+        'Ana recorded it as given at 08:00. Remove it only if the dose was '
+        'not given. The change shows in Activity.',
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Remove'));
+    await tester.pumpAndSettle();
+
+    final undone = repository.recorded.single as DoseUndone;
+    expect(undone.targetEventId, anas.meta.id);
+    expect(inSheet('Mark as given'), findsOneWidget);
+    expect(inSheet('Skip this dose'), findsOneWidget);
+  });
+
+  testWidgets('cancelling the confirmation keeps the record', (tester) async {
+    final repository = circle([events.given('m1', at: eight, slotAt: eight)]);
+    await pumpApp(tester, repository: repository, now: now);
+
+    await openDose(tester, '08:00');
+    await tester.tap(find.bySemanticsLabel("Remove Ana's record"));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    expect(repository.recorded, isEmpty);
+    expect(find.text('I gave it too'), findsOneWidget);
   });
 
   group('doses given twice without seeing each other', () {
