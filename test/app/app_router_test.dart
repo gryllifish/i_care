@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/features/activity/presentation/screens/activity_screen.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/medications/presentation/screens/medications_screen.dart';
+import 'package:i_care/features/settings/presentation/screens/settings_screen.dart';
 import 'package:i_care/features/tasks/presentation/screens/tasks_screen.dart';
 import 'package:i_care/features/today/presentation/screens/today_screen.dart';
 
@@ -62,6 +63,27 @@ void main() {
     await tester.tap(tab('Today'));
     await tester.pumpAndSettle();
     expect(find.byType(TodayScreen), findsOneWidget);
+  });
+
+  testWidgets('a screen opens over the tabs after visiting every one', (
+    tester,
+  ) async {
+    await pump(tester);
+
+    for (final label in ['Meds', 'Tasks', 'Visits', 'Today']) {
+      await tester.tap(
+        find.descendant(
+          of: find.byType(NavigationBar),
+          matching: find.text(label),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(SettingsScreen), findsOneWidget);
   });
 
   testWidgets('every tab fits at 200 % text size', (tester) async {

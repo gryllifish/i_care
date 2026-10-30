@@ -25,6 +25,8 @@ class TasksScreen extends ConsumerWidget {
     final l10n = context.l10n;
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
+        // Tabs stay alive side by side: each button needs its own tag.
+        heroTag: AppRoutes.tasks,
         onPressed: () => context.push(AppRoutes.newTaskPath()),
         icon: const Icon(Icons.add),
         label: Text(l10n.add),

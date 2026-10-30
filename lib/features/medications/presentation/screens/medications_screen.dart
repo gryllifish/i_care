@@ -31,6 +31,8 @@ class MedicationsScreen extends ConsumerWidget {
     final conflicts = ref.watch(medicationConflictsProvider).value ?? const {};
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
+        // Tabs stay alive side by side: each button needs its own tag.
+        heroTag: AppRoutes.medications,
         onPressed: () => context.push(AppRoutes.newMedicationPath()),
         icon: const Icon(Icons.add),
         label: Text(l10n.add),
