@@ -229,7 +229,7 @@ documented), nursing-home features.
 
 ### Next steps, in order
 1. **Phase 4**: accessibility pass, dark theme, app icon, launch screens
-   and web manifest done; screenshots and README remain.
+   and web manifest, screenshots and README done.
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.
 
