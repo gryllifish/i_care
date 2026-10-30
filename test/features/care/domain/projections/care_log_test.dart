@@ -1,7 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
+import 'package:i_care/features/care/domain/entities/task_slot.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
 
 import '../../helpers/care_events.dart';
@@ -482,5 +484,147 @@ void main() {
     expect(backward.events, forward.events);
     expect(backward.stockOf('m1'), forward.stockOf('m1'));
     expect(backward.conflicts, forward.conflicts);
+  });
+
+  group('care tasks', () {
+    final ten = DateTime(2026, 11, 2, 10);
+
+    test('are created, updated and archived through events', () {
+      final created = events.task('t1');
+      final log = CareLog([
+        created,
+        events.taskUpdated(
+          't1',
+          baseVersion: 0,
+          name: 'Shower',
+          schedule: const TaskSchedule(),
+        ),
+      ]);
+
+      final task = log.task('t1');
+      expect(task?.details.name, 'Shower');
+      expect(task?.schedule.isAnyTime, isTrue);
+      expect(task?.version, 1);
+      expect(log.tasks, [task]);
+
+      final archived = CareLog([
+        created,
+        events.taskArchived('t1', baseVersion: 0),
+      ]);
+      expect(archived.tasks, isEmpty);
+      expect(archived.task('t1')?.isArchived, isTrue);
+    });
+
+    test('are due on their weekdays, untimed ones first', () {
+      final log = CareLog([
+        events.task(
+          't1',
+          schedule: const TaskSchedule(
+            minutesOfDay: [10 * 60],
+            weekdays: {DateTime.monday, DateTime.thursday},
+          ),
+        ),
+        events.task(
+          't2',
+          name: 'Check her skin',
+          schedule: const TaskSchedule(),
+        ),
+        events.task(
+          't3',
+          name: 'Walk',
+          schedule: const TaskSchedule(weekdays: {DateTime.tuesday}),
+        ),
+      ]);
+
+      // 2026-11-02 is a Monday.
+      final slots = log.taskSlotsOn(day, now: day);
+      expect(
+        [for (final slot in slots) (slot.task.id, slot.slotAt)],
+        [('t2', day), ('t1', ten)],
+      );
+      expect(slots.first.isAnyTime, isTrue);
+      expect(
+        [
+          for (final slot in log.taskSlotsOn(DateTime(2026, 11, 3), now: day))
+            slot.task.id,
+        ],
+        ['t2', 't3'],
+      );
+    });
+
+    test('are upcoming, due or late by their time; untimed ones are due '
+        'all day', () {
+      final log = CareLog([
+        events.task('t1'),
+        events.task(
+          't2',
+          name: 'Check her skin',
+          schedule: const TaskSchedule(),
+        ),
+      ]);
+      TaskStatus statusAt(DateTime now, String id) => log
+          .taskSlotsOn(day, now: now)
+          .firstWhere((slot) => slot.task.id == id)
+          .status;
+
+      expect(statusAt(eight, 't1'), TaskStatus.upcoming);
+      expect(statusAt(ten, 't1'), TaskStatus.due);
+      expect(statusAt(DateTime(2026, 11, 2, 11), 't1'), TaskStatus.late);
+      expect(statusAt(DateTime(2026, 11, 2, 23), 't2'), TaskStatus.due);
+    });
+
+    test('are done or skipped by whoever recorded it, and undone records '
+        'are left out', () {
+      final done = events.taskDone('t1', slotAt: ten, by: 'martin');
+      final log = CareLog([
+        events.task('t1'),
+        events.task(
+          't2',
+          name: 'Check her skin',
+          schedule: const TaskSchedule(),
+        ),
+        done,
+        events.taskSkipped('t2', slotAt: day),
+      ]);
+      final slots = log.taskSlotsOn(day, now: ten);
+
+      expect(slots.last.status, TaskStatus.done);
+      expect(slots.last.isDoneBy('martin'), isTrue);
+      expect(slots.last.isDoneBy('ana'), isFalse);
+      expect(slots.first.status, TaskStatus.skipped);
+
+      final undone = CareLog([events.task('t1'), done, events.undone(done)]);
+      expect(undone.taskSlotsOn(day, now: ten).single.status, TaskStatus.due);
+    });
+
+    test('done twice shows both records and is never a conflict', () {
+      final log = CareLog([
+        events.task('t1'),
+        events.taskDone('t1', slotAt: ten),
+        events.taskDone('t1', slotAt: ten, by: 'martin'),
+      ]);
+
+      expect(log.taskSlotsOn(day, now: ten).single.done, hasLength(2));
+      expect(log.conflicts, isEmpty);
+    });
+
+    test('concurrent edits are flagged for review', () {
+      final log = CareLog([
+        events.task('t1'),
+        events.taskUpdated('t1', baseVersion: 0, name: 'Shower'),
+        events.taskUpdated(
+          't1',
+          baseVersion: 0,
+          name: 'Bed bath',
+          by: 'martin',
+        ),
+      ]);
+
+      expect(log.task('t1')?.details.name, 'Bed bath');
+      expect(
+        log.conflicts.single,
+        isA<EditConflict>().having((c) => c.entityId, 'entityId', 't1'),
+      );
+    });
   });
 }

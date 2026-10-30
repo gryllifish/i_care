@@ -19,7 +19,7 @@ lib/
 │   └── widgets/              # Reusable widgets without business logic
 └── features/
     ├── care/                 # Shared care domain: events, entities, projections, sync
-    └── <feature>/            # today, medications, appointments, activity, settings
+    └── <feature>/            # today, medications, tasks, appointments, activity, ...
     ├── data/
     │   ├── datasources/      # Talk to assets/APIs/storage; throw AppException
     │   ├── mappers/          # DTO -> entity extensions

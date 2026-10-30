@@ -1,5 +1,6 @@
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
@@ -215,6 +216,72 @@ class EventFactory {
             profile: profile,
           )
           as RecipientProfileUpdated;
+
+  TaskCreated task(
+    String taskId, {
+    String name = 'Bath',
+    TaskSchedule schedule = const TaskSchedule(minutesOfDay: [10 * 60]),
+    DateTime? at,
+  }) =>
+      CareEvent.taskCreated(
+            meta: meta(at: at ?? DateTime(2026)),
+            taskId: taskId,
+            details: TaskDetails(name: name),
+            schedule: schedule,
+          )
+          as TaskCreated;
+
+  TaskUpdated taskUpdated(
+    String taskId, {
+    required int baseVersion,
+    String name = 'Bath',
+    TaskSchedule schedule = const TaskSchedule(minutesOfDay: [10 * 60]),
+    String by = 'ana',
+    DateTime? at,
+  }) =>
+      CareEvent.taskUpdated(
+            meta: meta(at: at ?? DateTime(2026, 1, 2), by: by),
+            taskId: taskId,
+            baseVersion: baseVersion,
+            details: TaskDetails(name: name),
+            schedule: schedule,
+          )
+          as TaskUpdated;
+
+  TaskArchived taskArchived(String taskId, {required int baseVersion}) =>
+      CareEvent.taskArchived(
+            meta: meta(at: DateTime(2026, 1, 2)),
+            taskId: taskId,
+            baseVersion: baseVersion,
+          )
+          as TaskArchived;
+
+  TaskDone taskDone(
+    String taskId, {
+    required DateTime slotAt,
+    String by = 'ana',
+    DateTime? at,
+  }) =>
+      CareEvent.taskDone(
+            meta: meta(at: at ?? slotAt, by: by),
+            taskId: taskId,
+            slotAt: slotAt,
+          )
+          as TaskDone;
+
+  TaskSkipped taskSkipped(
+    String taskId, {
+    required DateTime slotAt,
+    SkipReason reason = SkipReason.refused,
+    String by = 'ana',
+  }) =>
+      CareEvent.taskSkipped(
+            meta: meta(at: slotAt, by: by),
+            taskId: taskId,
+            slotAt: slotAt,
+            reason: reason,
+          )
+          as TaskSkipped;
 
   ConflictAcknowledged acknowledged(String key) =>
       CareEvent.conflictAcknowledged(

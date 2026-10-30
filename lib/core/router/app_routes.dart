@@ -7,10 +7,13 @@ abstract final class AppRoutes {
   /// Second tab: every medication with its schedule and stock.
   static const medications = '/medications';
 
-  /// Third tab: medical appointments and visit notes.
+  /// Third tab: care tasks that are not medications.
+  static const tasks = '/tasks';
+
+  /// Fourth tab: medical appointments and visit notes.
   static const appointments = '/appointments';
 
-  /// Fourth tab: who did what, newest first.
+  /// Fifth tab: who did what, newest first.
   static const activity = '/activity';
 
   /// Nested under [medications], so the tab bar stays and back returns to
@@ -18,7 +21,7 @@ abstract final class AppRoutes {
   static const newMedication = 'new';
   static const medication = ':$idParam';
 
-  /// The id in medication and appointment paths.
+  /// The id in medication, task and appointment paths.
   static const idParam = 'id';
 
   /// Nested under [medication].
@@ -60,4 +63,12 @@ abstract final class AppRoutes {
 
   static String editAppointmentPath(String id) =>
       '${appointmentPath(id)}/$editAppointment';
+
+  /// Nested under [tasks]; a task opens straight into its form.
+  static const newTask = 'new';
+  static const editTask = ':$idParam';
+
+  static String newTaskPath() => '$tasks/$newTask';
+
+  static String editTaskPath(String id) => '$tasks/$id';
 }

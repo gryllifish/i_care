@@ -6,6 +6,7 @@ import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
+import 'package:i_care/features/care/domain/entities/task_slot.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -36,6 +37,11 @@ abstract class Handoff with _$Handoff {
     /// Doses still to give: unresolved from yesterday, then today's.
     @Default(<DoseSlot>[]) List<DoseSlot> pending,
     @Default(0) int conflicts,
+
+    /// Today's care tasks by what happened to them, in day order.
+    @Default(<TaskSlot>[]) List<TaskSlot> tasksDone,
+    @Default(<TaskSlot>[]) List<TaskSlot> tasksSkipped,
+    @Default(<TaskSlot>[]) List<TaskSlot> tasksPending,
     @Default(<LowStock>[]) List<LowStock> lowStock,
     Appointment? nextAppointment,
 
@@ -47,6 +53,11 @@ abstract class Handoff with _$Handoff {
 Handoff buildHandoff(CareLog log, DateTime now) {
   final today = DateTime(now.year, now.month, now.day);
   final slots = log.slotsOn(today, now: now);
+  final tasks = log.taskSlotsOn(today, now: now);
+  List<TaskSlot> tasksWith(Set<TaskStatus> statuses) => [
+    for (final slot in tasks)
+      if (statuses.contains(slot.status)) slot,
+  ];
   final given = [
     for (final medication in log.medications)
       for (final dose in log.givenOn(medication.id, today))
@@ -77,6 +88,13 @@ Handoff buildHandoff(CareLog log, DateTime now) {
       ...slots.where(isPending),
     ],
     conflicts: log.conflicts.whereType<DoseConflict>().length,
+    tasksDone: tasksWith({TaskStatus.done}),
+    tasksSkipped: tasksWith({TaskStatus.skipped}),
+    tasksPending: tasksWith({
+      TaskStatus.upcoming,
+      TaskStatus.due,
+      TaskStatus.late,
+    }),
     lowStock: [
       for (final medication in log.medications)
         if (log.stockOf(medication.id) case final StockLevel stock

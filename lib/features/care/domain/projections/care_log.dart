@@ -1,11 +1,13 @@
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
+import 'package:i_care/features/care/domain/entities/task_slot.dart';
 
 /// Current state of the care circle, projected from its event log.
 ///
@@ -23,6 +25,8 @@ class CareLog {
     required this.events,
     required this._medications,
     required this._appointments,
+    required this._tasks,
+    required this._taskRecords,
     required this.profile,
     required this.profileVersion,
     required this._doses,
@@ -38,6 +42,10 @@ class CareLog {
 
   final Map<String, Medication> _medications;
   final Map<String, Appointment> _appointments;
+  final Map<String, CareTask> _tasks;
+
+  /// [TaskDone] and [TaskSkipped] events per task, undone ones left out.
+  final Map<String, List<CareEvent>> _taskRecords;
 
   /// The emergency card's profile; null until someone fills it in.
   final RecipientProfile? profile;
@@ -68,6 +76,29 @@ class CareLog {
         ..sort((a, b) => a.startsAt.compareTo(b.startsAt));
 
   Appointment? appointment(String id) => _appointments[id];
+
+  /// Care tasks that are not archived, by name.
+  List<CareTask> get tasks =>
+      _tasks.values.where((task) => !task.isArchived).toList()
+        ..sort((a, b) => a.details.name.compareTo(b.details.name));
+
+  CareTask? task(String id) => _tasks[id];
+
+  /// Active tasks due on [day], by time and name; tasks with no set time
+  /// sort first, at the start of the day.
+  List<TaskSlot> taskSlotsOn(DateTime day, {required DateTime now}) {
+    final slots = [
+      for (final task in tasks)
+        for (final slotAt in task.schedule.slotsOn(day))
+          _taskSlot(task, slotAt, now),
+    ];
+    return slots..sort(
+      (a, b) => switch (a.slotAt.compareTo(b.slotAt)) {
+        0 => a.task.details.name.compareTo(b.task.details.name),
+        final order => order,
+      },
+    );
+  }
 
   /// Scheduled doses on [day] for active medications, by time and name.
   List<DoseSlot> slotsOn(DateTime day, {required DateTime now}) {
@@ -185,6 +216,31 @@ class CareLog {
     );
   }
 
+  TaskSlot _taskSlot(CareTask task, DateTime slotAt, DateTime now) {
+    final records = [
+      for (final record in _taskRecords[task.id] ?? const <CareEvent>[])
+        if (_taskSlotOf(record) == slotAt) record,
+    ];
+    final done = records.whereType<TaskDone>().toList();
+    final skipped = records.whereType<TaskSkipped>().toList();
+
+    return TaskSlot(
+      task: task,
+      slotAt: slotAt,
+      status: switch ((done, skipped)) {
+        ([_, ...], _) => TaskStatus.done,
+        (_, [_, ...]) => TaskStatus.skipped,
+        _ when task.schedule.isAnyTime => TaskStatus.due,
+        _ when now.isBefore(slotAt.subtract(DoseTiming.window)) =>
+          TaskStatus.upcoming,
+        _ when now.isAfter(slotAt.add(DoseTiming.window)) => TaskStatus.late,
+        _ => TaskStatus.due,
+      },
+      done: done,
+      skipped: skipped,
+    );
+  }
+
   /// Key of the conflict for two doses at the same scheduled time.
   static String doseConflictKey(String medicationId, DateTime slotAt) =>
       'dose:$medicationId:${slotAt.toIso8601String()}';
@@ -200,6 +256,12 @@ class CareLog {
 DateTime? _slotOf(CareEvent record) => switch (record) {
   DoseGiven(:final slotAt) => slotAt,
   DoseSkipped(:final slotAt) => slotAt,
+  _ => null,
+};
+
+DateTime? _taskSlotOf(CareEvent record) => switch (record) {
+  TaskDone(:final slotAt) => slotAt,
+  TaskSkipped(:final slotAt) => slotAt,
   _ => null,
 };
 
@@ -219,13 +281,15 @@ class _Projector {
 
   final _medications = <String, Medication>{};
   final _appointments = <String, Appointment>{};
+  final _tasks = <String, CareTask>{};
   RecipientProfile? _profile;
   var _profileVersion = 0;
 
-  /// Changes applied to each medication or appointment; the one at index
+  /// Changes applied to each medication, appointment or task; the one at index
   /// `i` produced version `i + 1`.
   final _changes = <String, List<CareEvent>>{};
   final _doses = <String, List<CareEvent>>{};
+  final _taskRecords = <String, List<CareEvent>>{};
   final _stock = <String, double>{};
   final _conflicts = <Conflict>[];
   final _acknowledged = <String>{};
@@ -237,6 +301,8 @@ class _Projector {
       events: List.unmodifiable(_events),
       medications: _medications,
       appointments: _appointments,
+      tasks: _tasks,
+      taskRecords: _taskRecords,
       profile: _profile,
       profileVersion: _profileVersion,
       doses: _doses,
@@ -331,9 +397,37 @@ class _Projector {
         _recordChange(event, CareLog.profileId, baseVersion);
         _profile = profile;
         _profileVersion++;
+      case TaskCreated(:final taskId) when !_tasks.containsKey(taskId):
+        _tasks[taskId] = CareTask(
+          id: taskId,
+          details: event.details,
+          schedule: event.schedule,
+        );
+        _changes[taskId] = [];
+      case TaskCreated():
+        // A repeated id: the first creation stands.
+        break;
+      case TaskUpdated(:final taskId, :final baseVersion):
+        _changeTask(event, taskId, baseVersion, (task) {
+          return task.copyWith(
+            details: event.details,
+            schedule: event.schedule,
+          );
+        });
+      case TaskArchived(:final taskId, :final baseVersion):
+        _changeTask(event, taskId, baseVersion, (task) {
+          return task.copyWith(isArchived: true);
+        });
+      case TaskDone(:final taskId) || TaskSkipped(:final taskId)
+          when !_undone.contains(event.meta.id):
+        (_taskRecords[taskId] ??= []).add(event);
       case ConflictAcknowledged(:final conflictKey):
         _acknowledged.add(conflictKey);
-      case DoseGiven() || DoseSkipped() || DoseUndone():
+      case DoseGiven() ||
+          DoseSkipped() ||
+          TaskDone() ||
+          TaskSkipped() ||
+          DoseUndone():
         // Undone records, and the undo events themselves, change nothing.
         break;
     }
@@ -367,6 +461,18 @@ class _Projector {
     ).copyWith(version: appointment.version + 1);
   }
 
+  void _changeTask(
+    CareEvent event,
+    String taskId,
+    int baseVersion,
+    CareTask Function(CareTask) update,
+  ) {
+    final task = _tasks[taskId];
+    if (task == null) return;
+    _recordChange(event, taskId, baseVersion);
+    _tasks[taskId] = update(task).copyWith(version: task.version + 1);
+  }
+
   /// Records a change to an existing entity. The change wins in log
   /// order, but if it was made on an older version and overlaps a change
   /// applied since, it is flagged with every change it raced against.
@@ -392,11 +498,15 @@ class _Projector {
   /// A medication's details and schedule are independent; archiving or
   /// cancelling overlaps everything.
   static bool _overlap(CareEvent a, CareEvent b) => switch ((a, b)) {
-    (MedicationArchived() || AppointmentCancelled(), _) ||
-    (_, MedicationArchived() || AppointmentCancelled()) => true,
+    (MedicationArchived() || AppointmentCancelled() || TaskArchived(), _) ||
+    (
+      _,
+      MedicationArchived() || AppointmentCancelled() || TaskArchived(),
+    ) => true,
     (MedicationUpdated(), MedicationUpdated()) => true,
     (ScheduleChanged(), ScheduleChanged()) => true,
     (AppointmentUpdated(), AppointmentUpdated()) => true,
+    (TaskUpdated(), TaskUpdated()) => true,
     (RecipientProfileUpdated(), RecipientProfileUpdated()) => true,
     _ => false,
   };

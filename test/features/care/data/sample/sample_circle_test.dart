@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
+import 'package:i_care/features/care/domain/entities/task_slot.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
 
 void main() {
@@ -43,5 +44,27 @@ void main() {
 
     expect(log.stockOf('levothyroxine')?.isLow, isTrue);
     expect(log.stockOf('enalapril')?.isLow, isFalse);
+  });
+
+  test('has care tasks: done before now, untimed ones still to do', () {
+    final log = circleIn('en');
+
+    expect(log.tasks.map((task) => task.details.name), [
+      'Bath',
+      'Change the bedding',
+      'Check the skin',
+      'Short walk',
+    ]);
+    // 2026-11-02 is a Monday: bath day, not bedding day.
+    final statuses = {
+      for (final slot in log.taskSlotsOn(today, now: now))
+        slot.task.details.name: slot.status,
+    };
+    expect(statuses, {
+      'Check the skin': TaskStatus.due,
+      'Bath': TaskStatus.done,
+      'Short walk': TaskStatus.upcoming,
+    });
+    expect(log.conflicts, isEmpty);
   });
 }

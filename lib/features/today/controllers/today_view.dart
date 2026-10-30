@@ -7,6 +7,7 @@ import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
+import 'package:i_care/features/care/domain/entities/task_slot.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -37,6 +38,22 @@ abstract class ConflictItem with _$ConflictItem {
   }) = _ConflictItem;
 }
 
+/// Something due at a time on the day's timeline.
+@freezed
+sealed class TimelineEntry with _$TimelineEntry {
+  const factory TimelineEntry.dose(DoseSlot slot) = DoseEntry;
+  const factory TimelineEntry.task(TaskSlot slot) = TaskEntry;
+
+  const TimelineEntry._();
+
+  DateTime get slotAt => switch (this) {
+    DoseEntry(:final slot) => slot.slotAt,
+    TaskEntry(:final slot) => slot.slotAt,
+  };
+
+  DayPart get dayPart => DayPart.of(slotAt);
+}
+
 /// Everything the Today screen shows.
 @freezed
 abstract class TodayView with _$TodayView {
@@ -54,10 +71,13 @@ abstract class TodayView with _$TodayView {
     /// Yesterday's doses still unresolved, or resolved today.
     @Default(<DoseSlot>[]) List<DoseSlot> fromYesterday,
 
-    /// Today's doses by part of the day, in day order; empty parts left
-    /// out.
-    @Default(<DayPart, List<DoseSlot>>{})
-    Map<DayPart, List<DoseSlot>> byDayPart,
+    /// Today's doses and timed tasks by part of the day, in day order;
+    /// empty parts left out. At the same time, doses come first.
+    @Default(<DayPart, List<TimelineEntry>>{})
+    Map<DayPart, List<TimelineEntry>> byDayPart,
+
+    /// Today's tasks with no set time.
+    @Default(<TaskSlot>[]) List<TaskSlot> anyTimeTasks,
     @Default(<AsNeededItem>[]) List<AsNeededItem> asNeeded,
 
     /// The next appointment if it is within [upcomingAppointmentWindow].
@@ -79,6 +99,12 @@ const upcomingAppointmentWindow = Duration(hours: 48);
 TodayView buildTodayView(CareLog log, DateTime now) {
   final day = DateTime(now.year, now.month, now.day);
   final slots = log.slotsOn(day, now: now);
+  final tasks = log.taskSlotsOn(day, now: now);
+  final timeline = [
+    for (final slot in slots) TimelineEntry.dose(slot),
+    for (final slot in tasks)
+      if (!slot.isAnyTime) TimelineEntry.task(slot),
+  ]..sort(_byTimeDosesFirst);
   final fromYesterday = log.fromYesterday(day, now: now);
   final pending = [
     ...[...fromYesterday, ...slots].where(
@@ -103,10 +129,14 @@ TodayView buildTodayView(CareLog log, DateTime now) {
     fromYesterday: fromYesterday,
     byDayPart: {
       for (final part in DayPart.values)
-        if (slots.where((slot) => slot.dayPart == part).toList()
-            case final List<DoseSlot> inPart when inPart.isNotEmpty)
+        if (timeline.where((entry) => entry.dayPart == part).toList()
+            case final List<TimelineEntry> inPart when inPart.isNotEmpty)
           part: inPart,
     },
+    anyTimeTasks: [
+      for (final slot in tasks)
+        if (slot.isAnyTime) slot,
+    ],
     asNeeded: [
       for (final medication in log.medications)
         if (medication.schedule is AsNeededSchedule)
@@ -138,6 +168,20 @@ TodayView buildTodayView(CareLog log, DateTime now) {
           ),
     ],
   );
+}
+
+/// By time; at the same time doses first, then by name. Explicit all the
+/// way down, since `List.sort` is not stable.
+int _byTimeDosesFirst(TimelineEntry a, TimelineEntry b) {
+  int kind(TimelineEntry entry) => entry is DoseEntry ? 0 : 1;
+  String name(TimelineEntry entry) => switch (entry) {
+    DoseEntry(:final slot) => slot.medication.details.name,
+    TaskEntry(:final slot) => slot.task.details.name,
+  };
+  final byTime = a.slotAt.compareTo(b.slotAt);
+  if (byTime != 0) return byTime;
+  final byKind = kind(a) - kind(b);
+  return byKind != 0 ? byKind : name(a).compareTo(name(b));
 }
 
 /// The scheduled time every dose in [conflict] was for, if they share one.

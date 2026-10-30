@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 
 import 'package:i_care/features/today/presentation/widgets/dose_tile.dart';
+import 'package:i_care/features/today/presentation/widgets/task_tile.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 
 import '../../../helpers/pump_app.dart';
@@ -445,5 +447,116 @@ void main() {
 
     expect(find.text("We couldn't read the saved data."), findsOneWidget);
     expect(find.byType(SnackBarAction), findsNothing);
+  });
+
+  group('care tasks', () {
+    final day = DateTime(2026, 11, 2);
+
+    /// Opens the sheet of the task named [name].
+    Future<void> openTask(WidgetTester tester, String name) async {
+      final card = find.ancestor(
+        of: find.text(name),
+        matching: find.byType(TaskCard),
+      );
+      await centerInList(tester, card, list: find.byType(Scrollable).first);
+      await tester.tap(card);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('show on the timeline by time, untimed ones during the day', (
+      tester,
+    ) async {
+      await pumpApp(
+        tester,
+        repository: circle([
+          events.task('t1', name: 'Walk'),
+          events.task(
+            't2',
+            name: 'Check her skin',
+            schedule: const TaskSchedule(),
+          ),
+        ]),
+        now: now,
+      );
+
+      await scrollTo(tester, find.text('Walk'));
+      expect(
+        find.ancestor(of: find.text('10:00'), matching: find.byType(TaskTile)),
+        findsOneWidget,
+      );
+      await scrollTo(tester, find.text('During the day'));
+      expect(find.text('Check her skin'), findsOneWidget);
+      expect(find.text('To do today'), findsOneWidget);
+    });
+
+    testWidgets('are marked done, with undo', (tester) async {
+      final repository = circle([
+        events.task(
+          't1',
+          name: 'Check her skin',
+          schedule: const TaskSchedule(),
+        ),
+      ]);
+      await pumpApp(tester, repository: repository, now: now);
+
+      await openTask(tester, 'Check her skin');
+      await tester.tap(find.text('Mark as done'));
+      await tester.pumpAndSettle();
+
+      final done = repository.recorded.single as TaskDone;
+      expect(done.slotAt, day);
+      expect(find.text('Check her skin: done'), findsOneWidget);
+      expect(find.text('Ana at 08:10'), findsOneWidget);
+
+      await tester.tap(find.text('Undo'));
+      await tester.pumpAndSettle();
+      expect(repository.recorded.last, isA<DoseUndone>());
+    });
+
+    testWidgets('are marked not done with a reason that fits a task', (
+      tester,
+    ) async {
+      final repository = circle([events.task('t1', name: 'Walk')]);
+      await pumpApp(tester, repository: repository, now: now);
+
+      await openTask(tester, 'Walk');
+      await tester.tap(find.text('Not done'));
+      await tester.pumpAndSettle();
+
+      expect(find.text("Why wasn't it done?"), findsOneWidget);
+      expect(find.text("Doctor's advice"), findsNothing);
+      await tester.tap(find.text('Refused it'));
+      await tester.pumpAndSettle();
+
+      final skipped = repository.recorded.single as TaskSkipped;
+      expect(skipped.reason, SkipReason.refused);
+      expect(skipped.slotAt, DateTime(2026, 11, 2, 10));
+    });
+
+    testWidgets('a record made by mistake is removed after confirming', (
+      tester,
+    ) async {
+      final done = events.taskDone('t1', slotAt: day, by: 'martin');
+      final repository = circle([
+        events.task(
+          't1',
+          name: 'Check her skin',
+          schedule: const TaskSchedule(),
+        ),
+        done,
+      ]);
+      await pumpApp(tester, repository: repository, now: now);
+
+      await openTask(tester, 'Check her skin');
+      expect(find.text('Mark as done'), findsNothing);
+      await tester.tap(find.bySemanticsLabel("Remove Martín's record"));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(FilledButton, 'Remove'));
+      await tester.pumpAndSettle();
+
+      final undone = repository.recorded.single as DoseUndone;
+      expect(undone.targetEventId, done.meta.id);
+      expect(find.text('Mark as done'), findsOneWidget);
+    });
   });
 }

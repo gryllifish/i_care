@@ -41,4 +41,24 @@ void main() {
 
     expect(days.single.entries.single.subject, isNull);
   });
+
+  test('names the task, through the cancelled record for undos', () {
+    final done = events.taskDone(
+      't1',
+      slotAt: DateTime(2026, 11, 2, 10),
+      at: DateTime(2026, 11, 2, 10, 5),
+    );
+    final days = buildActivity(
+      CareLog([
+        events.task('t1', at: DateTime(2026, 11)),
+        done,
+        events.undone(done, at: DateTime(2026, 11, 2, 11)),
+      ]),
+    );
+
+    expect(
+      days.expand((d) => d.entries).map((e) => e.subject),
+      everyElement('Bath'),
+    );
+  });
 }

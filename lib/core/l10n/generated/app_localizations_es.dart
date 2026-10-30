@@ -1163,4 +1163,127 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get welcomeStart => 'Entendido';
+
+  @override
+  String get unknownTask => 'una tarea';
+
+  @override
+  String activityTaskCreated(String name, String task) {
+    return '$name agregó la tarea $task';
+  }
+
+  @override
+  String activityTaskUpdated(String name, String task) {
+    return '$name cambió la tarea $task';
+  }
+
+  @override
+  String activityTaskArchived(String name, String task) {
+    return '$name archivó la tarea $task';
+  }
+
+  @override
+  String activityTaskDone(String name, String task) {
+    return '$name hizo: $task';
+  }
+
+  @override
+  String activityTaskSkipped(String name, String task, String reason) {
+    return '$name omitió $task: $reason';
+  }
+
+  @override
+  String get statusToDoToday => 'Para hoy';
+
+  @override
+  String get statusDone => 'Hecha';
+
+  @override
+  String get duringTheDay => 'Durante el día';
+
+  @override
+  String get markDone => 'Marcar como hecha';
+
+  @override
+  String get markNotDone => 'No se hizo';
+
+  @override
+  String get taskSkipReasonTitle => '¿Por qué no se hizo?';
+
+  @override
+  String taskRecordedDone(String task) {
+    return '$task: hecha';
+  }
+
+  @override
+  String taskRecordedSkipped(String task) {
+    return '$task: no se hizo';
+  }
+
+  @override
+  String get taskRecords => 'Registros';
+
+  @override
+  String removeDoneBody(String name, String time) {
+    return '$name la marcó como hecha a las $time. Quitalo solo si no se hizo. El cambio queda en Actividad.';
+  }
+
+  @override
+  String removeTaskSkippedBody(String name) {
+    return '$name la marcó como no hecha. Quitalo si sigue pendiente. El cambio queda en Actividad.';
+  }
+
+  @override
+  String get navTasks => 'Tareas';
+
+  @override
+  String tasksCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tareas',
+      one: '1 tarea',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tasksEmpty =>
+      'Todavía no hay tareas. Agregá cuidados que no son medicamentos, como el baño, una caminata o revisar la piel.';
+
+  @override
+  String get newTask => 'Nueva tarea';
+
+  @override
+  String get editTask => 'Editar tarea';
+
+  @override
+  String get sectionTask => 'Tarea';
+
+  @override
+  String get fieldTaskNameHint => 'Ej.: Baño';
+
+  @override
+  String get fieldTaskNoteHint => 'Ej.: usar la silla de ducha';
+
+  @override
+  String get sectionWhen => 'Cuándo';
+
+  @override
+  String get taskAtSetTimes => 'A horas fijas';
+
+  @override
+  String get handoffTasksDone => 'Tareas hechas hoy:';
+
+  @override
+  String get handoffTasksSkipped => 'Tareas que no se hicieron hoy:';
+
+  @override
+  String get handoffTasksPending => 'Tareas que faltan:';
+
+  @override
+  String get tabMedications => 'Remedios';
+
+  @override
+  String get tabAppointments => 'Turnos';
 }

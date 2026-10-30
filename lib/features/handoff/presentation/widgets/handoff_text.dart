@@ -5,6 +5,7 @@ import 'package:i_care/features/care/domain/entities/caregiver.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
+import 'package:i_care/features/care/domain/entities/task_slot.dart';
 import 'package:i_care/features/handoff/controllers/handoff.dart';
 import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/l10n/date_texts.dart';
@@ -47,6 +48,18 @@ String handoffText(
         '$reason';
   }
 
+  String taskWhen(TaskSlot slot) =>
+      slot.isAnyTime ? l10n.duringTheDay.toLowerCase() : time(slot.slotAt);
+
+  String taskDoneLine(TaskSlot slot) {
+    final record = slot.done.first;
+    return '- ${slot.task.details.name}, ${time(record.meta.occurredAt)} '
+        '(${nameOf(record.meta.caregiverId)})';
+  }
+
+  String taskSkippedLine(TaskSlot slot) =>
+      '- ${slot.task.details.name}: ${slot.skipped.first.reason.label(l10n)}';
+
   final next = handoff.nextAppointment;
   final note = handoff.latestNote;
 
@@ -78,6 +91,22 @@ String handoffText(
           '- ${medicationName(slot.medication)}, ${slotTime(slot)}',
       ],
     if (handoff.conflicts > 0) [l10n.handoffConflicts(handoff.conflicts)],
+    if (handoff.tasksDone.isNotEmpty)
+      [
+        l10n.handoffTasksDone,
+        for (final slot in handoff.tasksDone) taskDoneLine(slot),
+      ],
+    if (handoff.tasksSkipped.isNotEmpty)
+      [
+        l10n.handoffTasksSkipped,
+        for (final slot in handoff.tasksSkipped) taskSkippedLine(slot),
+      ],
+    if (handoff.tasksPending.isNotEmpty)
+      [
+        l10n.handoffTasksPending,
+        for (final slot in handoff.tasksPending)
+          '- ${slot.task.details.name}, ${taskWhen(slot)}',
+      ],
     if (handoff.lowStock.isNotEmpty)
       [
         l10n.handoffLowStock,

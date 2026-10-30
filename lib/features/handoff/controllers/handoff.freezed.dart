@@ -16,7 +16,8 @@ mixin _$Handoff {
 
  DateTime get at;/// Doses given today, in the order they were given.
  List<GivenDose> get given; List<DoseSlot> get skipped;/// Doses still to give: unresolved from yesterday, then today's.
- List<DoseSlot> get pending; int get conflicts; List<LowStock> get lowStock; Appointment? get nextAppointment;/// The latest visit note within [handoffHorizon], and its appointment.
+ List<DoseSlot> get pending; int get conflicts;/// Today's care tasks by what happened to them, in day order.
+ List<TaskSlot> get tasksDone; List<TaskSlot> get tasksSkipped; List<TaskSlot> get tasksPending; List<LowStock> get lowStock; Appointment? get nextAppointment;/// The latest visit note within [handoffHorizon], and its appointment.
  ({Appointment appointment, VisitNoteAdded note})? get latestNote;
 /// Create a copy of Handoff
 /// with the given fields replaced by the non-null parameter values.
@@ -28,16 +29,16 @@ $HandoffCopyWith<Handoff> get copyWith => _$HandoffCopyWithImpl<Handoff>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Handoff&&(identical(other.at, at) || other.at == at)&&const DeepCollectionEquality().equals(other.given, given)&&const DeepCollectionEquality().equals(other.skipped, skipped)&&const DeepCollectionEquality().equals(other.pending, pending)&&(identical(other.conflicts, conflicts) || other.conflicts == conflicts)&&const DeepCollectionEquality().equals(other.lowStock, lowStock)&&(identical(other.nextAppointment, nextAppointment) || other.nextAppointment == nextAppointment)&&(identical(other.latestNote, latestNote) || other.latestNote == latestNote));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Handoff&&(identical(other.at, at) || other.at == at)&&const DeepCollectionEquality().equals(other.given, given)&&const DeepCollectionEquality().equals(other.skipped, skipped)&&const DeepCollectionEquality().equals(other.pending, pending)&&(identical(other.conflicts, conflicts) || other.conflicts == conflicts)&&const DeepCollectionEquality().equals(other.tasksDone, tasksDone)&&const DeepCollectionEquality().equals(other.tasksSkipped, tasksSkipped)&&const DeepCollectionEquality().equals(other.tasksPending, tasksPending)&&const DeepCollectionEquality().equals(other.lowStock, lowStock)&&(identical(other.nextAppointment, nextAppointment) || other.nextAppointment == nextAppointment)&&(identical(other.latestNote, latestNote) || other.latestNote == latestNote));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,at,const DeepCollectionEquality().hash(given),const DeepCollectionEquality().hash(skipped),const DeepCollectionEquality().hash(pending),conflicts,const DeepCollectionEquality().hash(lowStock),nextAppointment,latestNote);
+int get hashCode => Object.hash(runtimeType,at,const DeepCollectionEquality().hash(given),const DeepCollectionEquality().hash(skipped),const DeepCollectionEquality().hash(pending),conflicts,const DeepCollectionEquality().hash(tasksDone),const DeepCollectionEquality().hash(tasksSkipped),const DeepCollectionEquality().hash(tasksPending),const DeepCollectionEquality().hash(lowStock),nextAppointment,latestNote);
 
 @override
 String toString() {
-  return 'Handoff(at: $at, given: $given, skipped: $skipped, pending: $pending, conflicts: $conflicts, lowStock: $lowStock, nextAppointment: $nextAppointment, latestNote: $latestNote)';
+  return 'Handoff(at: $at, given: $given, skipped: $skipped, pending: $pending, conflicts: $conflicts, tasksDone: $tasksDone, tasksSkipped: $tasksSkipped, tasksPending: $tasksPending, lowStock: $lowStock, nextAppointment: $nextAppointment, latestNote: $latestNote)';
 }
 
 
@@ -48,7 +49,7 @@ abstract mixin class $HandoffCopyWith<$Res>  {
   factory $HandoffCopyWith(Handoff value, $Res Function(Handoff) _then) = _$HandoffCopyWithImpl;
 @useResult
 $Res call({
- DateTime at, List<GivenDose> given, List<DoseSlot> skipped, List<DoseSlot> pending, int conflicts, List<LowStock> lowStock, Appointment? nextAppointment, ({Appointment appointment, VisitNoteAdded note})? latestNote
+ DateTime at, List<GivenDose> given, List<DoseSlot> skipped, List<DoseSlot> pending, int conflicts, List<TaskSlot> tasksDone, List<TaskSlot> tasksSkipped, List<TaskSlot> tasksPending, List<LowStock> lowStock, Appointment? nextAppointment, ({Appointment appointment, VisitNoteAdded note})? latestNote
 });
 
 
@@ -65,14 +66,17 @@ class _$HandoffCopyWithImpl<$Res>
 
 /// Create a copy of Handoff
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? at = null,Object? given = null,Object? skipped = null,Object? pending = null,Object? conflicts = null,Object? lowStock = null,Object? nextAppointment = freezed,Object? latestNote = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? at = null,Object? given = null,Object? skipped = null,Object? pending = null,Object? conflicts = null,Object? tasksDone = null,Object? tasksSkipped = null,Object? tasksPending = null,Object? lowStock = null,Object? nextAppointment = freezed,Object? latestNote = freezed,}) {
   return _then(_self.copyWith(
 at: null == at ? _self.at : at // ignore: cast_nullable_to_non_nullable
 as DateTime,given: null == given ? _self.given : given // ignore: cast_nullable_to_non_nullable
 as List<GivenDose>,skipped: null == skipped ? _self.skipped : skipped // ignore: cast_nullable_to_non_nullable
 as List<DoseSlot>,pending: null == pending ? _self.pending : pending // ignore: cast_nullable_to_non_nullable
 as List<DoseSlot>,conflicts: null == conflicts ? _self.conflicts : conflicts // ignore: cast_nullable_to_non_nullable
-as int,lowStock: null == lowStock ? _self.lowStock : lowStock // ignore: cast_nullable_to_non_nullable
+as int,tasksDone: null == tasksDone ? _self.tasksDone : tasksDone // ignore: cast_nullable_to_non_nullable
+as List<TaskSlot>,tasksSkipped: null == tasksSkipped ? _self.tasksSkipped : tasksSkipped // ignore: cast_nullable_to_non_nullable
+as List<TaskSlot>,tasksPending: null == tasksPending ? _self.tasksPending : tasksPending // ignore: cast_nullable_to_non_nullable
+as List<TaskSlot>,lowStock: null == lowStock ? _self.lowStock : lowStock // ignore: cast_nullable_to_non_nullable
 as List<LowStock>,nextAppointment: freezed == nextAppointment ? _self.nextAppointment : nextAppointment // ignore: cast_nullable_to_non_nullable
 as Appointment?,latestNote: freezed == latestNote ? _self.latestNote : latestNote // ignore: cast_nullable_to_non_nullable
 as ({Appointment appointment, VisitNoteAdded note})?,
@@ -172,10 +176,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DateTime at,  List<GivenDose> given,  List<DoseSlot> skipped,  List<DoseSlot> pending,  int conflicts,  List<LowStock> lowStock,  Appointment? nextAppointment,  ({Appointment appointment, VisitNoteAdded note})? latestNote)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DateTime at,  List<GivenDose> given,  List<DoseSlot> skipped,  List<DoseSlot> pending,  int conflicts,  List<TaskSlot> tasksDone,  List<TaskSlot> tasksSkipped,  List<TaskSlot> tasksPending,  List<LowStock> lowStock,  Appointment? nextAppointment,  ({Appointment appointment, VisitNoteAdded note})? latestNote)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Handoff() when $default != null:
-return $default(_that.at,_that.given,_that.skipped,_that.pending,_that.conflicts,_that.lowStock,_that.nextAppointment,_that.latestNote);case _:
+return $default(_that.at,_that.given,_that.skipped,_that.pending,_that.conflicts,_that.tasksDone,_that.tasksSkipped,_that.tasksPending,_that.lowStock,_that.nextAppointment,_that.latestNote);case _:
   return orElse();
 
 }
@@ -193,10 +197,10 @@ return $default(_that.at,_that.given,_that.skipped,_that.pending,_that.conflicts
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DateTime at,  List<GivenDose> given,  List<DoseSlot> skipped,  List<DoseSlot> pending,  int conflicts,  List<LowStock> lowStock,  Appointment? nextAppointment,  ({Appointment appointment, VisitNoteAdded note})? latestNote)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DateTime at,  List<GivenDose> given,  List<DoseSlot> skipped,  List<DoseSlot> pending,  int conflicts,  List<TaskSlot> tasksDone,  List<TaskSlot> tasksSkipped,  List<TaskSlot> tasksPending,  List<LowStock> lowStock,  Appointment? nextAppointment,  ({Appointment appointment, VisitNoteAdded note})? latestNote)  $default,) {final _that = this;
 switch (_that) {
 case _Handoff():
-return $default(_that.at,_that.given,_that.skipped,_that.pending,_that.conflicts,_that.lowStock,_that.nextAppointment,_that.latestNote);case _:
+return $default(_that.at,_that.given,_that.skipped,_that.pending,_that.conflicts,_that.tasksDone,_that.tasksSkipped,_that.tasksPending,_that.lowStock,_that.nextAppointment,_that.latestNote);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -213,10 +217,10 @@ return $default(_that.at,_that.given,_that.skipped,_that.pending,_that.conflicts
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DateTime at,  List<GivenDose> given,  List<DoseSlot> skipped,  List<DoseSlot> pending,  int conflicts,  List<LowStock> lowStock,  Appointment? nextAppointment,  ({Appointment appointment, VisitNoteAdded note})? latestNote)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DateTime at,  List<GivenDose> given,  List<DoseSlot> skipped,  List<DoseSlot> pending,  int conflicts,  List<TaskSlot> tasksDone,  List<TaskSlot> tasksSkipped,  List<TaskSlot> tasksPending,  List<LowStock> lowStock,  Appointment? nextAppointment,  ({Appointment appointment, VisitNoteAdded note})? latestNote)?  $default,) {final _that = this;
 switch (_that) {
 case _Handoff() when $default != null:
-return $default(_that.at,_that.given,_that.skipped,_that.pending,_that.conflicts,_that.lowStock,_that.nextAppointment,_that.latestNote);case _:
+return $default(_that.at,_that.given,_that.skipped,_that.pending,_that.conflicts,_that.tasksDone,_that.tasksSkipped,_that.tasksPending,_that.lowStock,_that.nextAppointment,_that.latestNote);case _:
   return null;
 
 }
@@ -228,7 +232,7 @@ return $default(_that.at,_that.given,_that.skipped,_that.pending,_that.conflicts
 
 
 class _Handoff implements Handoff {
-  const _Handoff({required this.at, final  List<GivenDose> given = const <GivenDose>[], final  List<DoseSlot> skipped = const <DoseSlot>[], final  List<DoseSlot> pending = const <DoseSlot>[], this.conflicts = 0, final  List<LowStock> lowStock = const <LowStock>[], this.nextAppointment, this.latestNote}): _given = given,_skipped = skipped,_pending = pending,_lowStock = lowStock;
+  const _Handoff({required this.at, final  List<GivenDose> given = const <GivenDose>[], final  List<DoseSlot> skipped = const <DoseSlot>[], final  List<DoseSlot> pending = const <DoseSlot>[], this.conflicts = 0, final  List<TaskSlot> tasksDone = const <TaskSlot>[], final  List<TaskSlot> tasksSkipped = const <TaskSlot>[], final  List<TaskSlot> tasksPending = const <TaskSlot>[], final  List<LowStock> lowStock = const <LowStock>[], this.nextAppointment, this.latestNote}): _given = given,_skipped = skipped,_pending = pending,_tasksDone = tasksDone,_tasksSkipped = tasksSkipped,_tasksPending = tasksPending,_lowStock = lowStock;
   
 
 @override final  DateTime at;
@@ -258,6 +262,29 @@ class _Handoff implements Handoff {
 }
 
 @override@JsonKey() final  int conflicts;
+/// Today's care tasks by what happened to them, in day order.
+ final  List<TaskSlot> _tasksDone;
+/// Today's care tasks by what happened to them, in day order.
+@override@JsonKey() List<TaskSlot> get tasksDone {
+  if (_tasksDone is EqualUnmodifiableListView) return _tasksDone;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_tasksDone);
+}
+
+ final  List<TaskSlot> _tasksSkipped;
+@override@JsonKey() List<TaskSlot> get tasksSkipped {
+  if (_tasksSkipped is EqualUnmodifiableListView) return _tasksSkipped;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_tasksSkipped);
+}
+
+ final  List<TaskSlot> _tasksPending;
+@override@JsonKey() List<TaskSlot> get tasksPending {
+  if (_tasksPending is EqualUnmodifiableListView) return _tasksPending;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_tasksPending);
+}
+
  final  List<LowStock> _lowStock;
 @override@JsonKey() List<LowStock> get lowStock {
   if (_lowStock is EqualUnmodifiableListView) return _lowStock;
@@ -279,16 +306,16 @@ _$HandoffCopyWith<_Handoff> get copyWith => __$HandoffCopyWithImpl<_Handoff>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Handoff&&(identical(other.at, at) || other.at == at)&&const DeepCollectionEquality().equals(other._given, _given)&&const DeepCollectionEquality().equals(other._skipped, _skipped)&&const DeepCollectionEquality().equals(other._pending, _pending)&&(identical(other.conflicts, conflicts) || other.conflicts == conflicts)&&const DeepCollectionEquality().equals(other._lowStock, _lowStock)&&(identical(other.nextAppointment, nextAppointment) || other.nextAppointment == nextAppointment)&&(identical(other.latestNote, latestNote) || other.latestNote == latestNote));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Handoff&&(identical(other.at, at) || other.at == at)&&const DeepCollectionEquality().equals(other._given, _given)&&const DeepCollectionEquality().equals(other._skipped, _skipped)&&const DeepCollectionEquality().equals(other._pending, _pending)&&(identical(other.conflicts, conflicts) || other.conflicts == conflicts)&&const DeepCollectionEquality().equals(other._tasksDone, _tasksDone)&&const DeepCollectionEquality().equals(other._tasksSkipped, _tasksSkipped)&&const DeepCollectionEquality().equals(other._tasksPending, _tasksPending)&&const DeepCollectionEquality().equals(other._lowStock, _lowStock)&&(identical(other.nextAppointment, nextAppointment) || other.nextAppointment == nextAppointment)&&(identical(other.latestNote, latestNote) || other.latestNote == latestNote));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,at,const DeepCollectionEquality().hash(_given),const DeepCollectionEquality().hash(_skipped),const DeepCollectionEquality().hash(_pending),conflicts,const DeepCollectionEquality().hash(_lowStock),nextAppointment,latestNote);
+int get hashCode => Object.hash(runtimeType,at,const DeepCollectionEquality().hash(_given),const DeepCollectionEquality().hash(_skipped),const DeepCollectionEquality().hash(_pending),conflicts,const DeepCollectionEquality().hash(_tasksDone),const DeepCollectionEquality().hash(_tasksSkipped),const DeepCollectionEquality().hash(_tasksPending),const DeepCollectionEquality().hash(_lowStock),nextAppointment,latestNote);
 
 @override
 String toString() {
-  return 'Handoff(at: $at, given: $given, skipped: $skipped, pending: $pending, conflicts: $conflicts, lowStock: $lowStock, nextAppointment: $nextAppointment, latestNote: $latestNote)';
+  return 'Handoff(at: $at, given: $given, skipped: $skipped, pending: $pending, conflicts: $conflicts, tasksDone: $tasksDone, tasksSkipped: $tasksSkipped, tasksPending: $tasksPending, lowStock: $lowStock, nextAppointment: $nextAppointment, latestNote: $latestNote)';
 }
 
 
@@ -299,7 +326,7 @@ abstract mixin class _$HandoffCopyWith<$Res> implements $HandoffCopyWith<$Res> {
   factory _$HandoffCopyWith(_Handoff value, $Res Function(_Handoff) _then) = __$HandoffCopyWithImpl;
 @override @useResult
 $Res call({
- DateTime at, List<GivenDose> given, List<DoseSlot> skipped, List<DoseSlot> pending, int conflicts, List<LowStock> lowStock, Appointment? nextAppointment, ({Appointment appointment, VisitNoteAdded note})? latestNote
+ DateTime at, List<GivenDose> given, List<DoseSlot> skipped, List<DoseSlot> pending, int conflicts, List<TaskSlot> tasksDone, List<TaskSlot> tasksSkipped, List<TaskSlot> tasksPending, List<LowStock> lowStock, Appointment? nextAppointment, ({Appointment appointment, VisitNoteAdded note})? latestNote
 });
 
 
@@ -316,14 +343,17 @@ class __$HandoffCopyWithImpl<$Res>
 
 /// Create a copy of Handoff
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? at = null,Object? given = null,Object? skipped = null,Object? pending = null,Object? conflicts = null,Object? lowStock = null,Object? nextAppointment = freezed,Object? latestNote = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? at = null,Object? given = null,Object? skipped = null,Object? pending = null,Object? conflicts = null,Object? tasksDone = null,Object? tasksSkipped = null,Object? tasksPending = null,Object? lowStock = null,Object? nextAppointment = freezed,Object? latestNote = freezed,}) {
   return _then(_Handoff(
 at: null == at ? _self.at : at // ignore: cast_nullable_to_non_nullable
 as DateTime,given: null == given ? _self._given : given // ignore: cast_nullable_to_non_nullable
 as List<GivenDose>,skipped: null == skipped ? _self._skipped : skipped // ignore: cast_nullable_to_non_nullable
 as List<DoseSlot>,pending: null == pending ? _self._pending : pending // ignore: cast_nullable_to_non_nullable
 as List<DoseSlot>,conflicts: null == conflicts ? _self.conflicts : conflicts // ignore: cast_nullable_to_non_nullable
-as int,lowStock: null == lowStock ? _self._lowStock : lowStock // ignore: cast_nullable_to_non_nullable
+as int,tasksDone: null == tasksDone ? _self._tasksDone : tasksDone // ignore: cast_nullable_to_non_nullable
+as List<TaskSlot>,tasksSkipped: null == tasksSkipped ? _self._tasksSkipped : tasksSkipped // ignore: cast_nullable_to_non_nullable
+as List<TaskSlot>,tasksPending: null == tasksPending ? _self._tasksPending : tasksPending // ignore: cast_nullable_to_non_nullable
+as List<TaskSlot>,lowStock: null == lowStock ? _self._lowStock : lowStock // ignore: cast_nullable_to_non_nullable
 as List<LowStock>,nextAppointment: freezed == nextAppointment ? _self.nextAppointment : nextAppointment // ignore: cast_nullable_to_non_nullable
 as Appointment?,latestNote: freezed == latestNote ? _self.latestNote : latestNote // ignore: cast_nullable_to_non_nullable
 as ({Appointment appointment, VisitNoteAdded note})?,

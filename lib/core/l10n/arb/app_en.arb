@@ -939,5 +939,128 @@
   },
   "welcomeSample": "Everything here is sample data. Try it freely.",
   "welcomeWho": "Who's using this phone?",
-  "welcomeStart": "Got it"
+  "welcomeStart": "Got it",
+  "unknownTask": "a task",
+  "activityTaskCreated": "{name} added the task {task}",
+  "@activityTaskCreated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "activityTaskUpdated": "{name} changed the task {task}",
+  "@activityTaskUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "activityTaskArchived": "{name} archived the task {task}",
+  "@activityTaskArchived": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "activityTaskDone": "{name} did: {task}",
+  "@activityTaskDone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "activityTaskSkipped": "{name} skipped {task}: {reason}",
+  "@activityTaskSkipped": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "statusToDoToday": "To do today",
+  "statusDone": "Done",
+  "duringTheDay": "During the day",
+  "markDone": "Mark as done",
+  "markNotDone": "Not done",
+  "taskSkipReasonTitle": "Why wasn't it done?",
+  "taskRecordedDone": "{task}: done",
+  "@taskRecordedDone": {
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "taskRecordedSkipped": "{task}: not done",
+  "@taskRecordedSkipped": {
+    "placeholders": {
+      "task": {
+        "type": "String"
+      }
+    }
+  },
+  "taskRecords": "Recorded",
+  "removeDoneBody": "{name} marked it as done at {time}. Remove it only if it wasn't done. The change shows in Activity.",
+  "@removeDoneBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "removeTaskSkippedBody": "{name} marked it as not done. Remove it if it is still to do. The change shows in Activity.",
+  "@removeTaskSkippedBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "navTasks": "Tasks",
+  "tasksCount": "{count, plural, =1{1 task} other{{count} tasks}}",
+  "@tasksCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksEmpty": "No tasks yet. Add care that isn't a medication, like a bath, a walk or a skin check.",
+  "newTask": "New task",
+  "editTask": "Edit task",
+  "sectionTask": "Task",
+  "fieldTaskNameHint": "e.g. Bath",
+  "fieldTaskNoteHint": "e.g. Use the shower chair",
+  "sectionWhen": "When",
+  "taskAtSetTimes": "At set times",
+  "handoffTasksDone": "Tasks done today:",
+  "handoffTasksSkipped": "Tasks not done today:",
+  "handoffTasksPending": "Tasks still to do:",
+  "tabMedications": "Meds",
+  "tabAppointments": "Visits"
 }

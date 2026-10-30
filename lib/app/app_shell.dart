@@ -30,12 +30,17 @@ class AppShell extends StatelessWidget {
           NavigationDestination(
             icon: const Icon(Icons.medication_outlined),
             selectedIcon: const Icon(Icons.medication),
-            label: l10n.navMedications,
+            label: l10n.tabMedications,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.volunteer_activism_outlined),
+            selectedIcon: const Icon(Icons.volunteer_activism),
+            label: l10n.navTasks,
           ),
           NavigationDestination(
             icon: const Icon(Icons.event_outlined),
             selectedIcon: const Icon(Icons.event),
-            label: l10n.navAppointments,
+            label: l10n.tabAppointments,
           ),
           NavigationDestination(
             icon: const Icon(Icons.history_outlined),

@@ -1163,4 +1163,127 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcomeStart => 'Got it';
+
+  @override
+  String get unknownTask => 'a task';
+
+  @override
+  String activityTaskCreated(String name, String task) {
+    return '$name added the task $task';
+  }
+
+  @override
+  String activityTaskUpdated(String name, String task) {
+    return '$name changed the task $task';
+  }
+
+  @override
+  String activityTaskArchived(String name, String task) {
+    return '$name archived the task $task';
+  }
+
+  @override
+  String activityTaskDone(String name, String task) {
+    return '$name did: $task';
+  }
+
+  @override
+  String activityTaskSkipped(String name, String task, String reason) {
+    return '$name skipped $task: $reason';
+  }
+
+  @override
+  String get statusToDoToday => 'To do today';
+
+  @override
+  String get statusDone => 'Done';
+
+  @override
+  String get duringTheDay => 'During the day';
+
+  @override
+  String get markDone => 'Mark as done';
+
+  @override
+  String get markNotDone => 'Not done';
+
+  @override
+  String get taskSkipReasonTitle => 'Why wasn\'t it done?';
+
+  @override
+  String taskRecordedDone(String task) {
+    return '$task: done';
+  }
+
+  @override
+  String taskRecordedSkipped(String task) {
+    return '$task: not done';
+  }
+
+  @override
+  String get taskRecords => 'Recorded';
+
+  @override
+  String removeDoneBody(String name, String time) {
+    return '$name marked it as done at $time. Remove it only if it wasn\'t done. The change shows in Activity.';
+  }
+
+  @override
+  String removeTaskSkippedBody(String name) {
+    return '$name marked it as not done. Remove it if it is still to do. The change shows in Activity.';
+  }
+
+  @override
+  String get navTasks => 'Tasks';
+
+  @override
+  String tasksCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks',
+      one: '1 task',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get tasksEmpty =>
+      'No tasks yet. Add care that isn\'t a medication, like a bath, a walk or a skin check.';
+
+  @override
+  String get newTask => 'New task';
+
+  @override
+  String get editTask => 'Edit task';
+
+  @override
+  String get sectionTask => 'Task';
+
+  @override
+  String get fieldTaskNameHint => 'e.g. Bath';
+
+  @override
+  String get fieldTaskNoteHint => 'e.g. Use the shower chair';
+
+  @override
+  String get sectionWhen => 'When';
+
+  @override
+  String get taskAtSetTimes => 'At set times';
+
+  @override
+  String get handoffTasksDone => 'Tasks done today:';
+
+  @override
+  String get handoffTasksSkipped => 'Tasks not done today:';
+
+  @override
+  String get handoffTasksPending => 'Tasks still to do:';
+
+  @override
+  String get tabMedications => 'Meds';
+
+  @override
+  String get tabAppointments => 'Visits';
 }

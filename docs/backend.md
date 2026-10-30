@@ -18,11 +18,14 @@ feed, the latest version of a medication) is a projection of the log.
 | `ScheduleChanged` | `medicationId`, new schedule, `effectiveFrom` |
 | `DoseGiven` | `medicationId`, `slotAt` (null when as needed), `givenAt` (stated by the caregiver), `units`, `knownDoseIds`, note |
 | `DoseSkipped` | `medicationId`, `slotAt`, reason |
-| `DoseUndone` | `targetEventId` |
+| `DoseUndone` | `targetEventId` (a dose or task record; the name predates tasks) |
 | `StockCounted` / `StockRefilled` | `medicationId`, units |
 | `AppointmentCreated` / `AppointmentUpdated` | snapshot (title, `startsAt`, doctor, place, questions), `baseVersion` on updates |
 | `AppointmentCancelled` | `appointmentId`, `baseVersion` |
 | `VisitNoteAdded` | `appointmentId`, text |
+| `TaskCreated` / `TaskUpdated` | details (name, note) and schedule (times, or none for "during the day"; weekdays), `baseVersion` on updates |
+| `TaskArchived` | `taskId`, `baseVersion` |
+| `TaskDone` / `TaskSkipped` | `taskId`, `slotAt` (start of the day when untimed), reason when skipped |
 | `RecipientProfileUpdated` | profile snapshot (allergies, conditions, doctors, contacts), `baseVersion` |
 
 Every event carries `id` (UUID v4, generated on the device), `circleId`,

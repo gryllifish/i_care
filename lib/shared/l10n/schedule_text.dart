@@ -1,6 +1,7 @@
 import 'package:i_care/core/l10n/duration_text.dart';
 import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/core/utils/formatters.dart';
+import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 
 extension DoseScheduleText on DoseSchedule {
@@ -25,4 +26,22 @@ extension DoseScheduleText on DoseSchedule {
       if (maxPerDay != null) l10n.maxPerDayText(maxPerDay),
     ].join(' · '),
   };
+}
+
+extension TaskScheduleText on TaskSchedule {
+  /// "10:00 · 17:00 · Every day" or "During the day · Mon, Thu".
+  String describe(AppLocalizations l10n, String locale) => [
+    if (isAnyTime)
+      l10n.duringTheDay
+    else
+      for (final minutes in minutesOfDay)
+        Formatters.time(DateTime(2024, 1, 1, 0, minutes), locale),
+    if (weekdays.isEmpty)
+      l10n.everyDay
+    else
+      [
+        for (final weekday in weekdays.toList()..sort())
+          Formatters.weekday(weekday, locale),
+      ].join(', '),
+  ].join(' · ');
 }

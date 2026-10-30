@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
+import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
@@ -27,7 +28,7 @@ abstract class EventMeta with _$EventMeta {
   bool get isSynced => receivedAt != null;
 }
 
-/// Why a dose was not given.
+/// Why a dose was not given, or a task not done.
 enum SkipReason { refused, asleep, unwell, doctorAdvice, other }
 
 /// Something a caregiver did. The log of events is the source of truth;
@@ -96,7 +97,9 @@ sealed class CareEvent with _$CareEvent {
     String? note,
   }) = DoseSkipped;
 
-  /// Cancels a [DoseGiven] or [DoseSkipped] recorded by mistake.
+  /// Cancels a [DoseGiven], [DoseSkipped], [TaskDone] or [TaskSkipped]
+  /// recorded by mistake. Its name predates tasks; the wire format keeps
+  /// it.
   const factory CareEvent.doseUndone({
     required EventMeta meta,
     required String targetEventId,
@@ -148,6 +151,45 @@ sealed class CareEvent with _$CareEvent {
     required int baseVersion,
     required RecipientProfile profile,
   }) = RecipientProfileUpdated;
+
+  const factory CareEvent.taskCreated({
+    required EventMeta meta,
+    required String taskId,
+    required TaskDetails details,
+    required TaskSchedule schedule,
+  }) = TaskCreated;
+
+  /// Replaces a task's details and schedule. Unlike a medication's, a
+  /// task's schedule has no history: past records keep their own times.
+  const factory CareEvent.taskUpdated({
+    required EventMeta meta,
+    required String taskId,
+    required int baseVersion,
+    required TaskDetails details,
+    required TaskSchedule schedule,
+  }) = TaskUpdated;
+
+  const factory CareEvent.taskArchived({
+    required EventMeta meta,
+    required String taskId,
+    required int baseVersion,
+  }) = TaskArchived;
+
+  const factory CareEvent.taskDone({
+    required EventMeta meta,
+    required String taskId,
+
+    /// The time it was due; the start of the day for a task with no set
+    /// time.
+    required DateTime slotAt,
+  }) = TaskDone;
+
+  const factory CareEvent.taskSkipped({
+    required EventMeta meta,
+    required String taskId,
+    required DateTime slotAt,
+    required SkipReason reason,
+  }) = TaskSkipped;
 
   /// A caregiver reviewed a conflict; it stops being shown as pending.
   const factory CareEvent.conflictAcknowledged({

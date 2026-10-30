@@ -16,6 +16,8 @@ import 'package:i_care/features/medications/presentation/screens/schedule_change
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/features/settings/presentation/screens/settings_screen.dart';
 import 'package:i_care/features/settings/presentation/screens/welcome_screen.dart';
+import 'package:i_care/features/tasks/presentation/screens/task_form_screen.dart';
+import 'package:i_care/features/tasks/presentation/screens/tasks_screen.dart';
 import 'package:i_care/features/today/presentation/screens/today_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -108,6 +110,25 @@ GoRouter appRouter(Ref ref) {
                         ),
                       ),
                     ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.tasks,
+                builder: (context, state) => const TasksScreen(),
+                routes: [
+                  GoRoute(
+                    path: AppRoutes.newTask,
+                    builder: (context, state) => const TaskFormScreen(),
+                  ),
+                  GoRoute(
+                    path: AppRoutes.editTask,
+                    builder: (context, state) =>
+                        TaskFormScreen(taskId: _idOf(state)),
                   ),
                 ],
               ),

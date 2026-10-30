@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:i_care/core/error/app_exception.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
@@ -124,6 +125,35 @@ abstract final class CareEventCodec {
         'base_version': event.baseVersion,
         'profile': _encodeProfile(event.profile),
       },
+      TaskCreated() => {
+        'type': 'task_created',
+        'task_id': event.taskId,
+        'details': _encodeTask(event.details),
+        'schedule': _encodeTaskSchedule(event.schedule),
+      },
+      TaskUpdated() => {
+        'type': 'task_updated',
+        'task_id': event.taskId,
+        'base_version': event.baseVersion,
+        'details': _encodeTask(event.details),
+        'schedule': _encodeTaskSchedule(event.schedule),
+      },
+      TaskArchived() => {
+        'type': 'task_archived',
+        'task_id': event.taskId,
+        'base_version': event.baseVersion,
+      },
+      TaskDone() => {
+        'type': 'task_done',
+        'task_id': event.taskId,
+        'slot_at': _date(event.slotAt),
+      },
+      TaskSkipped() => {
+        'type': 'task_skipped',
+        'task_id': event.taskId,
+        'slot_at': _date(event.slotAt),
+        'reason': _skipReasons.inverse[event.reason],
+      },
       ConflictAcknowledged() => {
         'type': 'conflict_acknowledged',
         'conflict_key': event.conflictKey,
@@ -234,6 +264,35 @@ abstract final class CareEventCodec {
         baseVersion: json.integer('base_version'),
         profile: _decodeProfile(json.object('profile')),
       ),
+      'task_created' => CareEvent.taskCreated(
+        meta: meta,
+        taskId: json.string('task_id'),
+        details: _decodeTask(json.object('details')),
+        schedule: _decodeTaskSchedule(json.object('schedule')),
+      ),
+      'task_updated' => CareEvent.taskUpdated(
+        meta: meta,
+        taskId: json.string('task_id'),
+        baseVersion: json.integer('base_version'),
+        details: _decodeTask(json.object('details')),
+        schedule: _decodeTaskSchedule(json.object('schedule')),
+      ),
+      'task_archived' => CareEvent.taskArchived(
+        meta: meta,
+        taskId: json.string('task_id'),
+        baseVersion: json.integer('base_version'),
+      ),
+      'task_done' => CareEvent.taskDone(
+        meta: meta,
+        taskId: json.string('task_id'),
+        slotAt: json.date('slot_at'),
+      ),
+      'task_skipped' => CareEvent.taskSkipped(
+        meta: meta,
+        taskId: json.string('task_id'),
+        slotAt: json.date('slot_at'),
+        reason: json.oneOf('reason', _skipReasons),
+      ),
       'conflict_acknowledged' => CareEvent.conflictAcknowledged(
         meta: meta,
         conflictKey: json.string('conflict_key'),
@@ -277,6 +336,24 @@ abstract final class CareEventCodec {
         location: json.string('location'),
         questions: json.string('questions'),
       );
+
+  static Map<String, Object?> _encodeTask(TaskDetails details) => {
+    'name': details.name,
+    'note': details.note,
+  };
+
+  static TaskDetails _decodeTask(_Reader json) =>
+      TaskDetails(name: json.string('name'), note: json.string('note'));
+
+  static Map<String, Object?> _encodeTaskSchedule(TaskSchedule schedule) => {
+    'minutes_of_day': schedule.minutesOfDay,
+    'weekdays': schedule.weekdays.toList()..sort(),
+  };
+
+  static TaskSchedule _decodeTaskSchedule(_Reader json) => TaskSchedule(
+    minutesOfDay: json.integers('minutes_of_day'),
+    weekdays: json.integers('weekdays').toSet(),
+  );
 
   static Map<String, Object?> _encodeProfile(RecipientProfile profile) => {
     'name': profile.name,

@@ -1926,6 +1926,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Got it'**
   String get welcomeStart;
+
+  /// No description provided for @unknownTask.
+  ///
+  /// In en, this message translates to:
+  /// **'a task'**
+  String get unknownTask;
+
+  /// No description provided for @activityTaskCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added the task {task}'**
+  String activityTaskCreated(String name, String task);
+
+  /// No description provided for @activityTaskUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} changed the task {task}'**
+  String activityTaskUpdated(String name, String task);
+
+  /// No description provided for @activityTaskArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} archived the task {task}'**
+  String activityTaskArchived(String name, String task);
+
+  /// No description provided for @activityTaskDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} did: {task}'**
+  String activityTaskDone(String name, String task);
+
+  /// No description provided for @activityTaskSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} skipped {task}: {reason}'**
+  String activityTaskSkipped(String name, String task, String reason);
+
+  /// No description provided for @statusToDoToday.
+  ///
+  /// In en, this message translates to:
+  /// **'To do today'**
+  String get statusToDoToday;
+
+  /// No description provided for @statusDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get statusDone;
+
+  /// No description provided for @duringTheDay.
+  ///
+  /// In en, this message translates to:
+  /// **'During the day'**
+  String get duringTheDay;
+
+  /// No description provided for @markDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as done'**
+  String get markDone;
+
+  /// No description provided for @markNotDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Not done'**
+  String get markNotDone;
+
+  /// No description provided for @taskSkipReasonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Why wasn\'t it done?'**
+  String get taskSkipReasonTitle;
+
+  /// No description provided for @taskRecordedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{task}: done'**
+  String taskRecordedDone(String task);
+
+  /// No description provided for @taskRecordedSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'{task}: not done'**
+  String taskRecordedSkipped(String task);
+
+  /// No description provided for @taskRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded'**
+  String get taskRecords;
+
+  /// No description provided for @removeDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} marked it as done at {time}. Remove it only if it wasn\'t done. The change shows in Activity.'**
+  String removeDoneBody(String name, String time);
+
+  /// No description provided for @removeTaskSkippedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} marked it as not done. Remove it if it is still to do. The change shows in Activity.'**
+  String removeTaskSkippedBody(String name);
+
+  /// No description provided for @navTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get navTasks;
+
+  /// No description provided for @tasksCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 task} other{{count} tasks}}'**
+  String tasksCount(int count);
+
+  /// No description provided for @tasksEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks yet. Add care that isn\'t a medication, like a bath, a walk or a skin check.'**
+  String get tasksEmpty;
+
+  /// No description provided for @newTask.
+  ///
+  /// In en, this message translates to:
+  /// **'New task'**
+  String get newTask;
+
+  /// No description provided for @editTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit task'**
+  String get editTask;
+
+  /// No description provided for @sectionTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Task'**
+  String get sectionTask;
+
+  /// No description provided for @fieldTaskNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Bath'**
+  String get fieldTaskNameHint;
+
+  /// No description provided for @fieldTaskNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Use the shower chair'**
+  String get fieldTaskNoteHint;
+
+  /// No description provided for @sectionWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get sectionWhen;
+
+  /// No description provided for @taskAtSetTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'At set times'**
+  String get taskAtSetTimes;
+
+  /// No description provided for @handoffTasksDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks done today:'**
+  String get handoffTasksDone;
+
+  /// No description provided for @handoffTasksSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks not done today:'**
+  String get handoffTasksSkipped;
+
+  /// No description provided for @handoffTasksPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks still to do:'**
+  String get handoffTasksPending;
+
+  /// No description provided for @tabMedications.
+  ///
+  /// In en, this message translates to:
+  /// **'Meds'**
+  String get tabMedications;
+
+  /// No description provided for @tabAppointments.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits'**
+  String get tabAppointments;
 }
 
 class _AppLocalizationsDelegate

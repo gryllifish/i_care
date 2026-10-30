@@ -3,6 +3,7 @@ import 'package:i_care/core/error/app_exception.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
@@ -117,6 +118,30 @@ void main() {
         ],
         contacts: const [CareContact(name: 'Ana')],
       ),
+    ),
+    CareEvent.taskCreated(
+      meta: meta,
+      taskId: 't1',
+      details: const TaskDetails(name: 'Bath', note: 'Shower chair'),
+      schedule: const TaskSchedule(
+        minutesOfDay: [10 * 60],
+        weekdays: {DateTime.monday, DateTime.thursday},
+      ),
+    ),
+    CareEvent.taskUpdated(
+      meta: meta,
+      taskId: 't1',
+      baseVersion: 1,
+      details: const TaskDetails(name: 'Check her skin'),
+      schedule: const TaskSchedule(),
+    ),
+    CareEvent.taskArchived(meta: meta, taskId: 't1', baseVersion: 2),
+    CareEvent.taskDone(meta: meta, taskId: 't1', slotAt: at),
+    CareEvent.taskSkipped(
+      meta: meta,
+      taskId: 't1',
+      slotAt: at,
+      reason: SkipReason.refused,
     ),
     CareEvent.conflictAcknowledged(meta: meta, conflictKey: 'dose:m1:x'),
   ];

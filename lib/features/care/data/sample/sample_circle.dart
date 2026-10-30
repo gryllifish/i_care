@@ -1,5 +1,6 @@
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/caregiver.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
@@ -19,9 +20,10 @@ abstract final class SampleCircle {
   static const List<Caregiver> caregivers = [ana, martin, rosa];
 
   /// Events of the last few days, as if caregivers had recorded them in
-  /// [language] (the device's, on first run). Doses of today before [now]
-  /// are recorded too, except one from yesterday evening, left unresolved
-  /// on purpose.
+  /// [language] (the device's, on first run). Doses and tasks of today
+  /// before [now] are recorded too, except one dose from yesterday
+  /// evening, left unresolved on purpose, and today's tasks with no set
+  /// time, still to do.
   static List<CareEvent> events(DateTime now, {required String language}) =>
       _SampleHistory(now, language).build();
 }
@@ -66,6 +68,7 @@ class _SampleHistory {
     }
     _addScheduledDoses();
     _addAsNeededDose();
+    _addTasks();
     _addAppointments();
     _addProfile();
     return _events;
@@ -122,6 +125,99 @@ class _SampleHistory {
 
   /// A blood test with a note, a check-up yesterday nobody wrote notes
   /// for yet, and a cardiology visit in two days with questions.
+  /// Care that is not medication: two tasks at set times, two during the
+  /// day. Past ones are done, except a walk Elena was too unwell for.
+  void _addTasks() {
+    final spanish = language == 'es';
+    final tasks = [
+      (
+        id: 'task-bath',
+        details: TaskDetails(
+          name: spanish ? 'Baño' : 'Bath',
+          note: spanish ? 'Usar la silla de ducha' : 'Use the shower chair',
+        ),
+        schedule: const TaskSchedule(
+          minutesOfDay: [10 * 60],
+          weekdays: {DateTime.monday, DateTime.thursday},
+        ),
+      ),
+      (
+        id: 'task-walk',
+        details: TaskDetails(name: spanish ? 'Caminata corta' : 'Short walk'),
+        schedule: const TaskSchedule(minutesOfDay: [17 * 60]),
+      ),
+      (
+        id: 'task-skin',
+        details: TaskDetails(
+          name: spanish ? 'Revisar la piel' : 'Check the skin',
+          note: spanish
+              ? 'Talones, caderas y espalda: avisar si hay zonas rojas'
+              : 'Heels, hips and back: tell the others about red areas',
+        ),
+        schedule: const TaskSchedule(),
+      ),
+      (
+        id: 'task-bedding',
+        details: TaskDetails(
+          name: spanish ? 'Cambiar la ropa de cama' : 'Change the bedding',
+        ),
+        schedule: const TaskSchedule(
+          weekdays: {DateTime.wednesday, DateTime.saturday},
+        ),
+      ),
+    ];
+    for (final task in tasks) {
+      _add(
+        (meta) => CareEvent.taskCreated(
+          meta: meta,
+          taskId: task.id,
+          details: task.details,
+          schedule: task.schedule,
+        ),
+        at: start,
+        by: SampleCircle.ana.id,
+      );
+    }
+
+    final yesterday = DateTime(today.year, today.month, today.day - 1);
+    for (var offset = _days; offset >= 0; offset--) {
+      final day = DateTime(today.year, today.month, today.day - offset);
+      for (final task in tasks) {
+        for (final slotAt in task.schedule.slotsOn(day)) {
+          // Untimed tasks are done in the evening, so today's still wait.
+          final doneAt = task.schedule.isAnyTime
+              ? DateTime(day.year, day.month, day.day, 19)
+              : slotAt.add(const Duration(minutes: 10));
+          if (!doneAt.isBefore(now)) continue;
+
+          final caregiver = _caregiverAt(doneAt);
+          if (day == yesterday && task.id == 'task-walk') {
+            _add(
+              (meta) => CareEvent.taskSkipped(
+                meta: meta,
+                taskId: task.id,
+                slotAt: slotAt,
+                reason: SkipReason.unwell,
+              ),
+              at: doneAt,
+              by: caregiver,
+            );
+            continue;
+          }
+          _add(
+            (meta) => CareEvent.taskDone(
+              meta: meta,
+              taskId: task.id,
+              slotAt: slotAt,
+            ),
+            at: doneAt,
+            by: caregiver,
+          );
+        }
+      }
+    }
+  }
+
   void _addAppointments() {
     final spanish = language == 'es';
     DateTime dayAt(int offset, int hour, [int minute = 0]) =>

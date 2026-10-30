@@ -7,6 +7,7 @@ import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_sheet.dart';
+import 'package:i_care/features/today/presentation/widgets/task_sheet.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:i_care/shared/widgets/wheel_pickers.dart';
 
@@ -32,6 +33,9 @@ void main() {
     'medication detail': '${AppRoutes.medications}/enalapril',
     'medication form': '${AppRoutes.medications}/${AppRoutes.newMedication}',
     'schedule change': '${AppRoutes.medications}/enalapril/schedule',
+    'tasks': AppRoutes.tasks,
+    'task form': '${AppRoutes.tasks}/${AppRoutes.newTask}',
+    'task edit form': '${AppRoutes.tasks}/task-bath',
     'appointments': AppRoutes.appointments,
     'appointment detail': '${AppRoutes.appointments}/appointment-cardiology',
     'appointment form': '${AppRoutes.appointments}/${AppRoutes.newAppointment}',
@@ -151,6 +155,22 @@ void main() {
           screen(tester),
           medicationId: 'paracetamol',
           slotAt: null,
+        ),
+      ),
+    ),
+    'task sheet of a pending task': (
+      AppRoutes.today,
+      (tester) async => unawaited(
+        showTaskSheet(screen(tester), taskId: 'task-skin', slotAt: today),
+      ),
+    ),
+    'task sheet of a task done': (
+      AppRoutes.today,
+      (tester) async => unawaited(
+        showTaskSheet(
+          screen(tester),
+          taskId: 'task-skin',
+          slotAt: today.subtract(const Duration(days: 1)),
         ),
       ),
     ),

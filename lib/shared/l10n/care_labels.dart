@@ -2,6 +2,7 @@ import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/medication_validation.dart';
+import 'package:i_care/features/care/domain/entities/task_validation.dart';
 
 extension SkipReasonLabel on SkipReason {
   String label(AppLocalizations l10n) => switch (this) {
@@ -35,5 +36,13 @@ extension MedicationIssueMessage on MedicationIssue {
     MedicationIssue.noWeekdays => l10n.issueNoWeekdays,
     MedicationIssue.minIntervalNotPositive => l10n.issueMinInterval,
     MedicationIssue.maxPerDayNotPositive => l10n.issueMaxPerDay,
+  };
+}
+
+extension TaskIssueMessage on TaskIssue {
+  String message(AppLocalizations l10n) => switch (this) {
+    TaskIssue.nameMissing => l10n.issueNameMissing,
+    TaskIssue.noTimes => l10n.issueNoTimes,
+    TaskIssue.noWeekdays => l10n.issueNoWeekdays,
   };
 }

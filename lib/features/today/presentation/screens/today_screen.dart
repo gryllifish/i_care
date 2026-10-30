@@ -16,12 +16,15 @@ import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
+import 'package:i_care/features/care/domain/entities/task_slot.dart';
 import 'package:i_care/features/today/controllers/dose_controller.dart';
 import 'package:i_care/features/today/controllers/today_view.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_sheet.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_tile.dart';
 import 'package:i_care/features/today/presentation/widgets/sync_banner.dart';
+import 'package:i_care/features/today/presentation/widgets/task_sheet.dart';
+import 'package:i_care/features/today/presentation/widgets/task_tile.dart';
 import 'package:i_care/shared/l10n/date_texts.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
@@ -80,6 +83,9 @@ void _announceConflict(BuildContext context, ConflictItem item) {
     );
 }
 
+Future<void> _openTask(BuildContext context, TaskSlot slot) =>
+    showTaskSheet(context, taskId: slot.task.id, slotAt: slot.slotAt);
+
 Future<void> _openConflict(BuildContext context, ConflictItem item) =>
     showDoseSheet(
       context,
@@ -133,14 +139,25 @@ class _TodayContent extends StatelessWidget {
         if (view.fromYesterday.isNotEmpty)
           _Timeline(
             title: l10n.fromYesterday,
-            slots: view.fromYesterday,
+            entries: [
+              for (final slot in view.fromYesterday) TimelineEntry.dose(slot),
+            ],
             stock: view.stock,
             onOpen: open,
           ),
-        for (final MapEntry(key: part, value: slots) in view.byDayPart.entries)
+        if (view.anyTimeTasks.isNotEmpty)
+          _Section(
+            title: l10n.duringTheDay,
+            children: [
+              for (final slot in view.anyTimeTasks)
+                TaskCard(slot: slot, onTap: () => _openTask(context, slot)),
+            ],
+          ),
+        for (final MapEntry(key: part, value: entries)
+            in view.byDayPart.entries)
           _Timeline(
             title: part.label(l10n),
-            slots: slots,
+            entries: entries,
             stock: view.stock,
             onOpen: open,
           ),
@@ -695,17 +712,18 @@ class _ConflictCard extends ConsumerWidget {
   }
 }
 
-/// A part of the day as a section of the timeline.
+/// A part of the day as a section of the timeline: doses and tasks by
+/// time.
 class _Timeline extends StatelessWidget {
   const _Timeline({
     required this.title,
-    required this.slots,
+    required this.entries,
     required this.stock,
     required this.onOpen,
   });
 
   final String title;
-  final List<DoseSlot> slots;
+  final List<TimelineEntry> entries;
   final Map<String, StockLevel> stock;
   final ValueChanged<DoseSlot> onOpen;
 
@@ -715,14 +733,22 @@ class _Timeline extends StatelessWidget {
       title: title,
       spacing: 0,
       children: [
-        for (final (index, slot) in slots.indexed)
-          DoseTile(
-            slot: slot,
-            stock: stock[slot.medication.id],
-            isFirst: index == 0,
-            isLast: index == slots.length - 1,
-            onTap: () => onOpen(slot),
-          ),
+        for (final (index, entry) in entries.indexed)
+          switch (entry) {
+            DoseEntry(:final slot) => DoseTile(
+              slot: slot,
+              stock: stock[slot.medication.id],
+              isFirst: index == 0,
+              isLast: index == entries.length - 1,
+              onTap: () => onOpen(slot),
+            ),
+            TaskEntry(:final slot) => TaskTile(
+              slot: slot,
+              isFirst: index == 0,
+              isLast: index == entries.length - 1,
+              onTap: () => _openTask(context, slot),
+            ),
+          },
       ],
     );
   }

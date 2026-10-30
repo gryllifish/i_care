@@ -13,7 +13,7 @@ abstract class ActivityEntry with _$ActivityEntry {
   const factory ActivityEntry({
     required CareEvent event,
 
-    /// Name of the medication or title of the appointment involved,
+    /// Name of the medication or task, or title of the appointment involved,
     /// looked up through the cancelled record for undos; null when none
     /// applies or it is unknown.
     String? subject,
@@ -32,6 +32,7 @@ List<ActivityDay> buildActivity(CareLog log) {
       log.medication(medicationId)?.details.name;
   String? titleOf(String appointmentId) =>
       log.appointment(appointmentId)?.details.title;
+  String? taskNameOf(String taskId) => log.task(taskId)?.details.name;
   String? subjectOf(CareEvent event) => switch (event) {
     MedicationCreated(:final medicationId) ||
     MedicationUpdated(:final medicationId) ||
@@ -49,6 +50,11 @@ List<ActivityDay> buildActivity(CareLog log) {
     AppointmentUpdated(:final appointmentId) ||
     AppointmentCancelled(:final appointmentId) ||
     VisitNoteAdded(:final appointmentId) => titleOf(appointmentId),
+    TaskCreated(:final taskId) ||
+    TaskUpdated(:final taskId) ||
+    TaskArchived(:final taskId) ||
+    TaskDone(:final taskId) ||
+    TaskSkipped(:final taskId) => taskNameOf(taskId),
     RecipientProfileUpdated() || ConflictAcknowledged() => null,
   };
 

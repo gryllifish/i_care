@@ -52,7 +52,7 @@ void main() {
 
   Future<void> openTab(WidgetTester tester) async {
     await pumpApp(tester, repository: repository, now: now);
-    await tapAndSettle(tester, tab('Appointments'));
+    await tapAndSettle(tester, tab('Visits'));
   }
 
   testWidgets('lists upcoming and past, asking for missing notes', (

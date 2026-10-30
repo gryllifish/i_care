@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
@@ -97,6 +98,62 @@ void main() {
       '\n'
       'Last visit note (Cardiology, Ana):\n'
       'Bring the blood test',
+    );
+  });
+
+  test('lists care tasks done, not done and still to do', () {
+    final text = handoffText(
+      buildHandoff(
+        CareLog([
+          ...circle(),
+          events.task('t1', at: DateTime(2026, 10)),
+          events.task(
+            't2',
+            name: 'Short walk',
+            schedule: const TaskSchedule(minutesOfDay: [17 * 60]),
+            at: DateTime(2026, 10),
+          ),
+          events.task(
+            't3',
+            name: 'Check the skin',
+            schedule: const TaskSchedule(),
+            at: DateTime(2026, 10),
+          ),
+          events.taskDone(
+            't1',
+            slotAt: DateTime(2026, 10, 29, 10),
+            at: DateTime(2026, 10, 29, 10, 10),
+            by: 'rosa',
+          ),
+          events.taskSkipped(
+            't2',
+            slotAt: DateTime(2026, 10, 29, 17),
+            reason: SkipReason.unwell,
+          ),
+        ]),
+        now,
+      ),
+      l10n,
+      recipientName: 'Elena',
+      caregivers: {
+        for (final caregiver in SampleCircle.caregivers)
+          caregiver.id: caregiver,
+      },
+      locale: 'en',
+    );
+
+    expect(
+      text,
+      contains(
+        'Tasks done today:\n'
+        '- Bath, 10:10 (Rosa)\n'
+        '\n'
+        'Tasks not done today:\n'
+        '- Short walk: Felt unwell\n'
+        '\n'
+        'Tasks still to do:\n'
+        '- Check the skin, during the day\n',
+      ),
     );
   });
 

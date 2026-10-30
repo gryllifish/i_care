@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/features/activity/presentation/screens/activity_screen.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/medications/presentation/screens/medications_screen.dart';
+import 'package:i_care/features/tasks/presentation/screens/tasks_screen.dart';
 import 'package:i_care/features/today/presentation/screens/today_screen.dart';
 
 import '../features/care/helpers/care_events.dart';
@@ -42,12 +43,16 @@ void main() {
       matching: find.text(label),
     );
 
-    await tester.tap(tab('Medications'));
+    await tester.tap(tab('Meds'));
     await tester.pumpAndSettle();
     expect(find.byType(MedicationsScreen), findsOneWidget);
     expect(find.text('1 active medication · Sample data'), findsOneWidget);
     expect(find.text('08:00 · 20:00 · Every day'), findsOneWidget);
     expect(find.text('29 units'), findsOneWidget);
+
+    await tester.tap(tab('Tasks'));
+    await tester.pumpAndSettle();
+    expect(find.byType(TasksScreen), findsOneWidget);
 
     await tester.tap(tab('Activity'));
     await tester.pumpAndSettle();
@@ -64,7 +69,7 @@ void main() {
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     await pump(tester);
 
-    for (final label in ['Medications', 'Activity', 'Today']) {
+    for (final label in ['Meds', 'Tasks', 'Visits', 'Activity', 'Today']) {
       await tester.tap(
         find.descendant(
           of: find.byType(NavigationBar),

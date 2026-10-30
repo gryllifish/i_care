@@ -122,6 +122,17 @@ family portal for residents' relatives is a possible later path.
 12. **Settings**: language (en/es), identity, simulation controls, medical
     disclaimer, reset demo data.
 
+13. **Care tasks** (phase 5): things to do that are not medications
+    ("Bath", "Change the bedding", "Check her skin"). A name, an optional
+    note, and a schedule: times on chosen weekdays, or "during the day"
+    with no set time. Marked done or skipped (with a reason) by whoever
+    did it, removable like dose records, and listed with the doses on
+    Today by time; "during the day" tasks get their own group. A Tasks
+    tab lists them, with add, edit and archive. No stock, warnings or
+    conflicts: a task done twice shows both records but is harmless.
+    A task missed yesterday does not carry over. Concurrent edits are
+    reviewed like medications. The handoff summary includes them.
+
 ### Later candidates (after the MVP)
 - Shift rotation: who is on duty and when (strongest differentiator
   candidate).
@@ -226,6 +237,17 @@ documented), nursing-home features.
 - Visual refresh: navigation bar, read-only Medications (schedule,
   instructions, stock) and Activity (feed by day) tabs, redesigned Today,
   bundled font.
+- Phase 4: accessibility pass (guideline tests in both themes, screen
+  reader order), dark theme with a System / Light / Dark setting, app
+  icon and launch screens, web manifest, screenshots and README.
+
+- Phase 5, care tasks: `TaskCreated`/`TaskUpdated`/`TaskArchived`/
+  `TaskDone`/`TaskSkipped` events, projected into task slots; Today
+  mixes timed tasks with doses by time and groups untimed ones under
+  "During the day"; a task sheet (done, not done with a reason, remove
+  a record); a Tasks tab with add, edit, archive and conflict review;
+  sample tasks; Activity and handoff entries. Five tabs, so the bar uses
+  short labels (Meds, Visits / Remedios, Turnos).
 
 ### Known gaps
 - Routers use `routerNeglect`, so the browser back button never moves
@@ -233,8 +255,8 @@ documented), nursing-home features.
   either (two apps on one page). Acceptable for the demo.
 
 ### Next steps, in order
-1. **Phase 4**: accessibility pass, dark theme, app icon, launch screens
-   and web manifest, screenshots and README done.
+1. Review design details with the user; update README screenshots to
+   show tasks.
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.
 

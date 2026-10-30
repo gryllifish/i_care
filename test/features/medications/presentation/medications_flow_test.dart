@@ -28,7 +28,7 @@ void main() {
     await tester.tap(
       find.descendant(
         of: find.byType(NavigationBar),
-        matching: find.text('Medications'),
+        matching: find.text('Meds'),
       ),
     );
     await tester.pumpAndSettle();

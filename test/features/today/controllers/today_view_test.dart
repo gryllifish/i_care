@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
@@ -63,5 +64,37 @@ void main() {
 
     expect(view.asNeeded.single.medication.id, 'm2');
     expect(view.asNeeded.single.lastDose, dose);
+  });
+
+  test('timed tasks join the doses by time, doses first; untimed ones '
+      'stand apart', () {
+    final view = viewAt(DateTime(2026, 11, 2, 9), [
+      events.task(
+        't1',
+        name: 'Walk',
+        schedule: const TaskSchedule(
+          minutesOfDay: [8 * 60, 17 * 60],
+        ),
+      ),
+      events.task('t2', name: 'Check her skin', schedule: const TaskSchedule()),
+    ]);
+
+    expect(
+      [
+        for (final entry in view.byDayPart[DayPart.morning]!)
+          switch (entry) {
+            DoseEntry(:final slot) => slot.medication.id,
+            TaskEntry(:final slot) => slot.task.id,
+          },
+      ],
+      ['m1', 't1'],
+    );
+    expect(view.byDayPart.keys, [
+      DayPart.morning,
+      DayPart.afternoon,
+      DayPart.night,
+    ]);
+    expect(view.anyTimeTasks.single.task.id, 't2');
+    expect(view.totalToday, 2, reason: 'progress counts doses only');
   });
 }

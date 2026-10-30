@@ -37,6 +37,10 @@ of the treating doctor or pharmacist.
   interval, maximum per day). Schedule changes apply from a date and
   keep earlier versions. Stock is counted, refilled and consumed by
   doses, with a low-stock alert by days left.
+- **Care tasks:** what isn't medication, like a bath, a walk or a skin
+  check, at set times or during the day, on chosen weekdays. They join
+  the doses on Today and are marked done or not done (with a reason).
+  Unlike doses, a task done twice is never flagged.
 - **Appointments:** questions to ask beforehand, visit notes from several
   caregivers afterwards, and a nudge when a past visit has no notes.
 - **Emergency card:** allergies, conditions, medications, doctors and
@@ -108,7 +112,7 @@ lib/
 ├── shared/     cross-feature providers, l10n helpers and widgets
 └── features/
     ├── care/          events, projections, event store, sync, simulated server
-    ├── today/ medications/ appointments/ activity/
+    ├── today/ medications/ tasks/ appointments/ activity/
     └── emergency/ handoff/ settings/
 ```
 
