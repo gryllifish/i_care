@@ -38,19 +38,26 @@ class ScreenHeader extends StatelessWidget {
           children: [
             ?leading,
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: AppSpacing.xxs,
-                children: [
-                  if (overline != null)
-                    Text(overline.toUpperCase(), style: AppTextStyles.overline),
-                  Semantics(
-                    header: true,
-                    child: Text(title, style: AppTextStyles.headline),
-                  ),
-                  if (subtitle != null)
-                    Text(subtitle, style: AppTextStyles.bodyMuted),
-                ],
+              // Read as one heading: "Caring for Elena, Monday, November 2".
+              child: MergeSemantics(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: AppSpacing.xxs,
+                  children: [
+                    if (overline != null)
+                      Text(
+                        overline.toUpperCase(),
+                        semanticsLabel: overline,
+                        style: AppTextStyles.overline,
+                      ),
+                    Semantics(
+                      header: true,
+                      child: Text(title, style: AppTextStyles.headline),
+                    ),
+                    if (subtitle != null)
+                      Text(subtitle, style: AppTextStyles.bodyMuted),
+                  ],
+                ),
               ),
             ),
             ?trailing,

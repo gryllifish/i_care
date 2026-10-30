@@ -36,8 +36,10 @@ class AppCard extends StatelessWidget {
         color: color,
         borderRadius: radius,
         clipBehavior: Clip.antiAlias,
+        // Each card is its own node for screen readers, never merged with
+        // the cards around it.
         child: onTap == null
-            ? content
+            ? Semantics(container: true, child: content)
             : Semantics(
                 button: true,
                 child: InkWell(onTap: onTap, child: content),

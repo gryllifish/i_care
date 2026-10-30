@@ -66,57 +66,64 @@ class DoseTile extends ConsumerWidget {
       ...slot.skipped,
     ].any((record) => !record.meta.isSynced);
 
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            width: _timeWidth,
-            child: Padding(
-              padding: const EdgeInsets.only(top: AppSpacing.lg),
-              child: Text(
-                Formatters.time(slot.slotAt, locale),
-                style: AppTextStyles.label,
-              ),
-            ),
-          ),
-          _Rail(color: style.color, isFirst: isFirst, isLast: isLast),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.md),
-              child: AppCard(
-                onTap: onTap,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: AppSpacing.sm,
-                  children: [
-                    Text(
-                      '${details.name} ${details.strength}',
-                      style: AppTextStyles.label,
-                    ),
-                    Wrap(
-                      spacing: AppSpacing.sm,
-                      runSpacing: AppSpacing.xs,
-                      children: [
-                        StatusPill(
-                          icon: style.icon,
-                          label: style.label,
-                          color: style.color,
-                          background: style.background,
-                        ),
-                        if (stock case final StockLevel level when level.isLow)
-                          LowStockPill(level: level),
-                        if (isPending) const PendingPill(),
-                      ],
-                    ),
-                    if (records.isNotEmpty)
-                      Text(records.join(' · '), style: AppTextStyles.bodyMuted),
-                  ],
+    // One node for the screen reader: the time, then the card.
+    return MergeSemantics(
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              width: _timeWidth,
+              child: Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.lg),
+                child: Text(
+                  Formatters.time(slot.slotAt, locale),
+                  style: AppTextStyles.label,
                 ),
               ),
             ),
-          ),
-        ],
+            _Rail(color: style.color, isFirst: isFirst, isLast: isLast),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                child: AppCard(
+                  onTap: onTap,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: AppSpacing.sm,
+                    children: [
+                      Text(
+                        '${details.name} ${details.strength}',
+                        style: AppTextStyles.label,
+                      ),
+                      Wrap(
+                        spacing: AppSpacing.sm,
+                        runSpacing: AppSpacing.xs,
+                        children: [
+                          StatusPill(
+                            icon: style.icon,
+                            label: style.label,
+                            color: style.color,
+                            background: style.background,
+                          ),
+                          if (stock case final StockLevel level
+                              when level.isLow)
+                            LowStockPill(level: level),
+                          if (isPending) const PendingPill(),
+                        ],
+                      ),
+                      if (records.isNotEmpty)
+                        Text(
+                          records.join(' · '),
+                          style: AppTextStyles.bodyMuted,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

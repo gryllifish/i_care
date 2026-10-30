@@ -19,6 +19,7 @@ import 'package:i_care/shared/l10n/date_texts.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
+import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/date_badge.dart';
 import 'package:i_care/shared/widgets/edit_conflict_card.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
@@ -98,28 +99,14 @@ class _Menu extends ConsumerWidget {
   Future<void> _cancel(BuildContext context, WidgetRef ref) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.cancelAppointmentTitle(appointment.details.title)),
-        content: Text(l10n.cancelAppointmentBody, style: AppTextStyles.body),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.keepAppointment),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.overdue,
-              minimumSize: Size.zero,
-            ),
-            child: Text(l10n.cancelAppointment),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmDialog(
+      context,
+      title: l10n.cancelAppointmentTitle(appointment.details.title),
+      body: l10n.cancelAppointmentBody,
+      cancelLabel: l10n.keepAppointment,
+      confirmLabel: l10n.cancelAppointment,
     );
-    if (confirmed != true || !context.mounted) return;
+    if (!confirmed || !context.mounted) return;
     final result = await ref
         .read(appointmentActionsProvider.notifier)
         .cancel(appointment);

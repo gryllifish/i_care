@@ -19,8 +19,13 @@ class FormSection extends StatelessWidget {
         spacing: AppSpacing.md,
         children: [
           Semantics(
+            container: true,
             header: true,
-            child: Text(title.toUpperCase(), style: AppTextStyles.overline),
+            child: Text(
+              title.toUpperCase(),
+              semanticsLabel: title,
+              style: AppTextStyles.overline,
+            ),
           ),
           ...children,
         ],

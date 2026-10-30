@@ -146,27 +146,29 @@ class _CardContent extends ConsumerWidget {
                   spacing: AppSpacing.md,
                   children: [
                     for (final medication in card.medications)
-                      Row(
-                        spacing: AppSpacing.md,
-                        children: [
-                          MedicationIcon(form: medication.details.form),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${medication.details.name} '
-                                  '${medication.details.strength}',
-                                  style: AppTextStyles.label,
-                                ),
-                                Text(
-                                  medication.schedule.describe(l10n, locale),
-                                  style: AppTextStyles.bodyMuted,
-                                ),
-                              ],
+                      MergeSemantics(
+                        child: Row(
+                          spacing: AppSpacing.md,
+                          children: [
+                            MedicationIcon(form: medication.details.form),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${medication.details.name} '
+                                    '${medication.details.strength}',
+                                    style: AppTextStyles.label,
+                                  ),
+                                  Text(
+                                    medication.schedule.describe(l10n, locale),
+                                    style: AppTextStyles.bodyMuted,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                   ],
                 ),
@@ -251,6 +253,7 @@ class _Allergies extends StatelessWidget {
                 ),
                 Text(
                   l10n.allergiesTitle.toUpperCase(),
+                  semanticsLabel: l10n.allergiesTitle,
                   style: AppTextStyles.overline.copyWith(
                     color: hasAllergies
                         ? AppColors.overdue

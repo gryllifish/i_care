@@ -7,6 +7,7 @@ import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/caregiver_choices.dart';
+import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
 import 'package:i_care/shared/widgets/segmented_control.dart';
 
@@ -95,28 +96,14 @@ class SettingsScreen extends ConsumerWidget {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     final reset = ref.read(demoResetProvider);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.resetDemo),
-        content: Text(l10n.resetDemoBody, style: AppTextStyles.body),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.overdue,
-              minimumSize: Size.zero,
-            ),
-            child: Text(l10n.resetDemoConfirm),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmDialog(
+      context,
+      title: l10n.resetDemo,
+      body: l10n.resetDemoBody,
+      cancelLabel: l10n.cancel,
+      confirmLabel: l10n.resetDemoConfirm,
     );
-    if (confirmed != true) return;
+    if (!confirmed) return;
     await reset();
     messenger.showSnackBar(SnackBar(content: Text(l10n.resetDone)));
   }

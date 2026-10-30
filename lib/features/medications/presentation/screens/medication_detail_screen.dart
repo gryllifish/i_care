@@ -21,6 +21,7 @@ import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/l10n/schedule_text.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
+import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/edit_conflict_card.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
 import 'package:i_care/shared/widgets/low_stock_pill.dart';
@@ -96,28 +97,14 @@ class _Menu extends ConsumerWidget {
   Future<void> _archive(BuildContext context, WidgetRef ref) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.archiveTitle(medication.details.name)),
-        content: Text(l10n.archiveBody, style: AppTextStyles.body),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.overdue,
-              minimumSize: Size.zero,
-            ),
-            child: Text(l10n.archive),
-          ),
-        ],
-      ),
+    final confirmed = await showConfirmDialog(
+      context,
+      title: l10n.archiveTitle(medication.details.name),
+      body: l10n.archiveBody,
+      cancelLabel: l10n.cancel,
+      confirmLabel: l10n.archive,
     );
-    if (confirmed != true || !context.mounted) return;
+    if (!confirmed || !context.mounted) return;
     final result = await ref
         .read(medicationActionsProvider.notifier)
         .archive(medication);
@@ -272,9 +259,11 @@ class _Section extends StatelessWidget {
               alignment: MainAxisAlignment.spaceBetween,
               children: [
                 Semantics(
+                  container: true,
                   header: true,
                   child: Text(
                     title.toUpperCase(),
+                    semanticsLabel: title,
                     style: AppTextStyles.overline,
                   ),
                 ),
@@ -365,26 +354,28 @@ class _RecentDoses extends ConsumerWidget {
       spacing: AppSpacing.sm,
       children: [
         for (final dose in doses)
-          Row(
-            spacing: AppSpacing.md,
-            children: [
-              if (caregivers[dose.meta.caregiverId] case final caregiver?)
-                CaregiverAvatar(caregiver: caregiver),
-              Expanded(
-                child: Text(
-                  l10n.recordedBy(
-                    caregivers[dose.meta.caregiverId]?.name ??
-                        l10n.unknownCaregiver,
-                    Formatters.time(dose.givenAt, locale),
+          MergeSemantics(
+            child: Row(
+              spacing: AppSpacing.md,
+              children: [
+                if (caregivers[dose.meta.caregiverId] case final caregiver?)
+                  CaregiverAvatar(caregiver: caregiver),
+                Expanded(
+                  child: Text(
+                    l10n.recordedBy(
+                      caregivers[dose.meta.caregiverId]?.name ??
+                          l10n.unknownCaregiver,
+                      Formatters.time(dose.givenAt, locale),
+                    ),
+                    style: AppTextStyles.body,
                   ),
-                  style: AppTextStyles.body,
                 ),
-              ),
-              Text(
-                Formatters.shortDate(dose.givenAt, locale),
-                style: AppTextStyles.bodyMuted,
-              ),
-            ],
+                Text(
+                  Formatters.shortDate(dose.givenAt, locale),
+                  style: AppTextStyles.bodyMuted,
+                ),
+              ],
+            ),
           ),
       ],
     );

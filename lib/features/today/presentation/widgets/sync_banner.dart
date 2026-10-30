@@ -39,6 +39,7 @@ class SyncBanner extends ConsumerWidget {
     };
 
     return Semantics(
+      container: true,
       liveRegion: true,
       child: StatusPill(
         icon: icon,

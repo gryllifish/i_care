@@ -72,7 +72,8 @@ class ActivityScreen extends ConsumerWidget {
                                 height: 1,
                                 indent: AppSpacing.xxxl + AppSpacing.xl,
                               ),
-                            _EntryRow(entry: entry),
+                            // One node per entry, read entry by entry.
+                            MergeSemantics(child: _EntryRow(entry: entry)),
                           ],
                         ],
                       ),
@@ -106,6 +107,7 @@ class _DayTitle extends ConsumerWidget {
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = DateTime(now.year, now.month, now.day - 1);
     return Semantics(
+      container: true,
       header: true,
       child: Text(switch (day) {
         _ when day == today => l10n.today,

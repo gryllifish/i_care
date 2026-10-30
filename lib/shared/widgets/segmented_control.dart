@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show kMinInteractiveDimension;
 import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
@@ -32,15 +33,23 @@ class SegmentedControl<T extends Object> extends StatelessWidget {
         },
         children: {
           for (final MapEntry(key: value, value: label) in options.entries)
-            value: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: AppSpacing.sm + AppSpacing.xxs,
+            // Every segment is a full 48 dp tap target.
+            value: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minHeight: kMinInteractiveDimension,
               ),
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.label.copyWith(
-                  color: value == selected ? AppColors.ink : AppColors.inkMuted,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.label.copyWith(
+                      color: value == selected
+                          ? AppColors.ink
+                          : AppColors.inkMuted,
+                    ),
+                  ),
                 ),
               ),
             ),

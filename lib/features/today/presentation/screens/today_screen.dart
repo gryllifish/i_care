@@ -206,6 +206,7 @@ class _Header extends StatelessWidget {
         ],
       ),
       footer: const Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
         spacing: AppSpacing.sm,
         runSpacing: AppSpacing.sm,
         children: [_EmergencyCardButton(), SyncBanner(), _SampleDataPill()],
@@ -251,29 +252,31 @@ class _EmergencyCardButton extends StatelessWidget {
         child: InkWell(
           customBorder: const StadiumBorder(),
           onTap: () => context.push(AppRoutes.emergency),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.xs + AppSpacing.xxs,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              minHeight: kMinInteractiveDimension,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: AppSpacing.xs,
-              children: [
-                const Icon(
-                  Icons.medical_information,
-                  size: _iconSize,
-                  color: AppColors.overdue,
-                ),
-                Flexible(
-                  child: Text(
-                    context.l10n.emergencyCard,
-                    style: AppTextStyles.pill.copyWith(
-                      color: AppColors.overdue,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: AppSpacing.xs,
+                children: [
+                  const Icon(
+                    Icons.medical_information,
+                    size: _iconSize,
+                    color: AppColors.overdue,
+                  ),
+                  Flexible(
+                    child: Text(
+                      context.l10n.emergencyCard,
+                      style: AppTextStyles.pill.copyWith(
+                        color: AppColors.overdue,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -287,19 +290,22 @@ class _SampleDataPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColors.surfaceMuted,
-        borderRadius: AppRadius.pillBorder,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.xs + AppSpacing.xxs,
+    return Semantics(
+      container: true,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: AppColors.surfaceMuted,
+          borderRadius: AppRadius.pillBorder,
         ),
-        child: Text(
-          context.l10n.sampleData,
-          style: AppTextStyles.pill.copyWith(color: AppColors.inkMuted),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.xs + AppSpacing.xxs,
+          ),
+          child: Text(
+            context.l10n.sampleData,
+            style: AppTextStyles.pill.copyWith(color: AppColors.inkMuted),
+          ),
         ),
       ),
     );
@@ -332,6 +338,8 @@ class _TeamButton extends ConsumerWidget {
         customBorder: const StadiumBorder(),
         onTap: () => showModalBottomSheet<void>(
           context: context,
+          isScrollControlled: true,
+          useSafeArea: true,
           builder: (_) => const _CaregiverPicker(),
         ),
         child: Padding(
@@ -372,16 +380,16 @@ class _CaregiverPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.lg,
-          0,
-          AppSpacing.lg,
-          AppSpacing.lg,
-        ),
+    // Scrolls when large text makes the list taller than the screen.
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        0,
+        AppSpacing.lg,
+        AppSpacing.lg,
+      ),
+      child: SafeArea(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: AppSpacing.sm,
           children: [
@@ -516,6 +524,7 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
                 Expanded(
                   child: Text(
                     overline.toUpperCase(),
+                    semanticsLabel: overline,
                     style: AppTextStyles.overline.copyWith(
                       color: AppColors.onAccentMuted,
                     ),
@@ -601,6 +610,7 @@ class _NextAppointmentCard extends ConsumerWidget {
               children: [
                 Text(
                   l10n.nextAppointment.toUpperCase(),
+                  semanticsLabel: l10n.nextAppointment,
                   style: AppTextStyles.overline,
                 ),
                 Text(details.title, style: AppTextStyles.title),
@@ -638,6 +648,7 @@ class _ConflictCard extends ConsumerWidget {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
     return Semantics(
+      container: true,
       liveRegion: true,
       child: AppCard(
         color: AppColors.overdueSoft,
@@ -737,6 +748,7 @@ class _Section extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),
             child: Semantics(
+              container: true,
               header: true,
               child: Text(title, style: AppTextStyles.title),
             ),

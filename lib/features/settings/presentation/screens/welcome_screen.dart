@@ -48,6 +48,7 @@ class WelcomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   Semantics(
+                    container: true,
                     header: true,
                     child: Text(
                       l10n.welcomeTitle,
