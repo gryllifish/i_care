@@ -20,29 +20,39 @@ abstract final class AppTheme {
   static const _navigationBarHeight = 76.0;
   static const _segmentHeight = 48.0;
 
-  static ThemeData light() {
+  static ThemeData light() => _build(AppColors.light, Brightness.light);
+
+  static ThemeData dark() => _build(AppColors.dark, Brightness.dark);
+
+  static ThemeData _build(AppColors colors, Brightness brightness) {
     final base = ThemeData(
       fontFamily: AppTextStyles.fontFamily,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.teal,
-        primary: AppColors.teal,
-        surface: AppColors.surface,
-        error: AppColors.overdue,
+        seedColor: colors.teal,
+        brightness: brightness,
+        primary: colors.teal,
+        onPrimary: colors.onAccent,
+        surface: colors.surface,
+        onSurface: colors.ink,
+        onSurfaceVariant: colors.inkMuted,
+        error: colors.overdue,
+        onError: colors.onAccent,
       ),
-      scaffoldBackgroundColor: AppColors.background,
+      scaffoldBackgroundColor: colors.background,
+      extensions: [colors],
     );
     const stadium = StadiumBorder();
 
     return base.copyWith(
       textTheme: base.textTheme.apply(
-        bodyColor: AppColors.ink,
-        displayColor: AppColors.ink,
+        bodyColor: colors.ink,
+        displayColor: colors.ink,
       ),
-      dividerColor: AppColors.divider,
+      dividerColor: colors.divider,
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: AppColors.teal,
-          foregroundColor: AppColors.onAccent,
+          backgroundColor: colors.teal,
+          foregroundColor: colors.onAccent,
           minimumSize: const Size.fromHeight(_buttonHeight),
           textStyle: AppTextStyles.label,
           shape: stadium,
@@ -51,99 +61,99 @@ abstract final class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.teal,
+          foregroundColor: colors.teal,
           minimumSize: const Size.fromHeight(_buttonHeight),
           textStyle: AppTextStyles.label,
           shape: stadium,
-          side: const BorderSide(color: AppColors.divider, width: 1.5),
+          side: BorderSide(color: colors.divider, width: 1.5),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.teal,
+          foregroundColor: colors.teal,
           textStyle: AppTextStyles.label,
           shape: stadium,
         ),
       ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.background,
-        foregroundColor: AppColors.ink,
+      appBarTheme: AppBarTheme(
+        backgroundColor: colors.background,
+        foregroundColor: colors.ink,
         surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0,
-        titleTextStyle: AppTextStyles.title,
+        titleTextStyle: AppTextStyles.title.copyWith(color: colors.ink),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         // Fields sit on the tinted background, never inside cards.
-        fillColor: AppColors.surface,
-        hintStyle: AppTextStyles.body.copyWith(color: AppColors.inkMuted),
-        errorStyle: AppTextStyles.bodyMuted.copyWith(color: AppColors.overdue),
+        fillColor: colors.surface,
+        hintStyle: AppTextStyles.body.copyWith(color: colors.inkMuted),
+        errorStyle: AppTextStyles.bodyMuted.copyWith(color: colors.overdue),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.lg,
         ),
         border: _fieldBorder(Colors.transparent),
         enabledBorder: _fieldBorder(Colors.transparent),
-        focusedBorder: _fieldBorder(AppColors.teal),
-        errorBorder: _fieldBorder(AppColors.overdue),
-        focusedErrorBorder: _fieldBorder(AppColors.overdue),
+        focusedBorder: _fieldBorder(colors.teal),
+        errorBorder: _fieldBorder(colors.overdue),
+        focusedErrorBorder: _fieldBorder(colors.overdue),
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: SegmentedButton.styleFrom(
-          selectedBackgroundColor: AppColors.tealSoft,
-          selectedForegroundColor: AppColors.tealDark,
+          selectedBackgroundColor: colors.tealSoft,
+          selectedForegroundColor: colors.tealDark,
           textStyle: AppTextStyles.label,
           minimumSize: const Size.fromHeight(_segmentHeight),
         ),
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: AppColors.teal,
-        foregroundColor: AppColors.onAccent,
-        shape: StadiumBorder(),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: colors.teal,
+        foregroundColor: colors.onAccent,
+        shape: const StadiumBorder(),
       ),
       chipTheme: base.chipTheme.copyWith(
         shape: stadium,
         side: BorderSide.none,
-        backgroundColor: AppColors.surface,
-        selectedColor: AppColors.tealSoft,
-        labelStyle: AppTextStyles.label,
+        backgroundColor: colors.surface,
+        selectedColor: colors.tealSoft,
+        labelStyle: AppTextStyles.label.copyWith(color: colors.ink),
       ),
       navigationBarTheme: NavigationBarThemeData(
         height: _navigationBarHeight,
-        backgroundColor: AppColors.surface,
+        backgroundColor: colors.surface,
         surfaceTintColor: Colors.transparent,
-        indicatorColor: AppColors.tealSoft,
+        indicatorColor: colors.tealSoft,
         indicatorShape: stadium,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => AppTextStyles.pill.copyWith(
             color: states.contains(WidgetState.selected)
-                ? AppColors.ink
-                : AppColors.inkMuted,
+                ? colors.ink
+                : colors.inkMuted,
           ),
         ),
         iconTheme: WidgetStateProperty.resolveWith(
           (states) => IconThemeData(
             color: states.contains(WidgetState.selected)
-                ? AppColors.tealDark
-                : AppColors.inkMuted,
+                ? colors.tealDark
+                : colors.inkMuted,
           ),
         ),
       ),
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: AppColors.background,
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: colors.background,
         surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.sheetTop),
+        shape: const RoundedRectangleBorder(borderRadius: AppRadius.sheetTop),
         showDragHandle: true,
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: AppColors.ink,
-        actionTextColor: AppColors.tealSoft,
+        backgroundColor: colors.ink,
+        actionTextColor: colors.tealSoft,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.sm),
         ),
         contentTextStyle: AppTextStyles.body.copyWith(
-          color: AppColors.onAccent,
+          color: colors.onAccent,
         ),
       ),
     );

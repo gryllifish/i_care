@@ -33,7 +33,7 @@ class NumberStepper extends StatelessWidget {
         Text(label, style: AppTextStyles.label),
         DecoratedBox(
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: context.colors.surface,
             borderRadius: AppRadius.pillBorder,
           ),
           child: Row(

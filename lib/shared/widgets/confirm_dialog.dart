@@ -24,7 +24,7 @@ Future<bool> showConfirmDialog(
         FilledButton(
           onPressed: () => Navigator.of(context).pop(true),
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.overdue,
+            backgroundColor: context.colors.overdue,
             // Sized to its label, not to the full width of form buttons.
             minimumSize: const Size.square(kMinInteractiveDimension),
           ),

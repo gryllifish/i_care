@@ -26,9 +26,13 @@
 - Lists: `ListView.builder` / slivers for unbounded or long content.
 - Never use a `BuildContext` after an `await` without `if (!context.mounted)
   return;`.
-- Theme: Material 3, colors from `AppColors`, text from `AppTextStyles`,
+- Theme: Material 3, colors from `context.colors` (the `AppColors` theme
+  extension, light and dark palettes), text from `AppTextStyles`,
   spacing from `AppSpacing`, radii from `AppRadius`, motion from
   `AppDurations`. Nothing hardcoded in widgets.
+- Text styles carry no color: main text inherits `ink` from the theme;
+  muted styles add `.copyWith(color: context.colors.inkMuted)`. Styles
+  the theme applies directly (app bar title, chips, wheels) set it there.
 - i18n: every user-visible string comes from `context.l10n`. Add each key
   to **both** `app_en.arb` and `app_es.arb`.
 - Accessibility: `Semantics` on custom tappables (button, selected, label),

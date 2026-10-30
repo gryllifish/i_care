@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:i_care/core/l10n/l10n.dart';
+import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 
@@ -63,9 +64,11 @@ Future<DateTime?> _showWheel(
             SizedBox(
               height: _wheelHeight,
               child: CupertinoTheme(
-                data: const CupertinoThemeData(
+                data: CupertinoThemeData(
                   textTheme: CupertinoTextThemeData(
-                    dateTimePickerTextStyle: AppTextStyles.headline,
+                    dateTimePickerTextStyle: AppTextStyles.headline.copyWith(
+                      color: context.colors.ink,
+                    ),
                   ),
                 ),
                 child: CupertinoDatePicker(

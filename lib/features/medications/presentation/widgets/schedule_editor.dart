@@ -197,7 +197,7 @@ class _TimePill extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: AppRadius.pillBorder,
       ),
       child: Padding(
@@ -209,10 +209,10 @@ class _TimePill extends StatelessWidget {
             IconButton(
               onPressed: onRemove,
               tooltip: removeTooltip,
-              icon: const Icon(
+              icon: Icon(
                 Icons.close,
                 size: _removeIconSize,
-                color: AppColors.inkMuted,
+                color: context.colors.inkMuted,
               ),
             ),
           ],
@@ -293,7 +293,7 @@ class _DayButton extends StatelessWidget {
       button: true,
       selected: selected,
       child: Material(
-        color: selected ? AppColors.teal : AppColors.surface,
+        color: selected ? context.colors.teal : context.colors.surface,
         shape: const StadiumBorder(),
         child: InkWell(
           onTap: onTap,
@@ -307,7 +307,9 @@ class _DayButton extends StatelessWidget {
                 child: Text(
                   label,
                   style: AppTextStyles.label.copyWith(
-                    color: selected ? AppColors.onAccent : AppColors.ink,
+                    color: selected
+                        ? context.colors.onAccent
+                        : context.colors.ink,
                   ),
                 ),
               ),
@@ -327,7 +329,7 @@ class _IssueText extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
     issue.message(context.l10n),
-    style: AppTextStyles.bodyMuted.copyWith(color: AppColors.overdue),
+    style: AppTextStyles.bodyMuted.copyWith(color: context.colors.overdue),
   );
 }
 

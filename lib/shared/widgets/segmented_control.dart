@@ -25,8 +25,8 @@ class SegmentedControl<T extends Object> extends StatelessWidget {
       width: double.infinity,
       child: CupertinoSlidingSegmentedControl<T>(
         groupValue: selected,
-        backgroundColor: AppColors.divider,
-        thumbColor: AppColors.surface,
+        backgroundColor: context.colors.divider,
+        thumbColor: context.colors.surface,
         padding: const EdgeInsets.all(AppSpacing.xs),
         onValueChanged: (value) {
           if (value != null) onChanged(value);
@@ -46,8 +46,8 @@ class SegmentedControl<T extends Object> extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: AppTextStyles.label.copyWith(
                       color: value == selected
-                          ? AppColors.ink
-                          : AppColors.inkMuted,
+                          ? context.colors.ink
+                          : context.colors.inkMuted,
                     ),
                   ),
                 ),

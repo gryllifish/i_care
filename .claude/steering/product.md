@@ -163,12 +163,18 @@ documented), nursing-home features.
   the tinted background, grouped under small uppercase section titles;
   Cupertino sliding segmented controls; "Save" as a pill in the app bar.
 - Times and dates are picked with Cupertino scroll wheels in a bottom
-  sheet, on Android too: 24 h in Spanish, 12 h in US English; dose
-  times in 5-minute steps.
+  sheet, on Android too: always 24 h, like every time the app shows;
+  dose times in 5-minute steps. Day and time are separate fields (a
+  combined wheel with AM/PM does not fit a phone).
 - Typography: Atkinson Hyperlegible Next, bundled (OFL), designed by the
   Braille Institute for low vision; its slashed zero is intentional.
-- Light theme first; dark theme (night doses) is a phase 4 candidate.
-- A widget test walks every tab at 200 % text size; overflows fail CI.
+- Light and dark themes (for night doses), following the system unless
+  chosen in Settings. Both palettes keep text at 4.5:1; the next-dose
+  card stays deep in dark, so it never glares.
+- `test/app/accessibility_test.dart` checks every screen, sheet and
+  dialog against Flutter's tap target, label and contrast guidelines in
+  both themes, and at 200 % text in both languages; failures fail CI.
+- Screen readers read each dose, row and card as one node, in order.
 
 ## Status
 ### Done
@@ -222,8 +228,8 @@ documented), nursing-home features.
   either (two apps on one page). Acceptable for the demo.
 
 ### Next steps, in order
-1. **Phase 4**: accessibility pass (large text, screen readers), dark
-   theme, app icon, screenshots, README.
+1. **Phase 4**: accessibility pass and dark theme done; app icon and
+   web manifest, screenshots, README remain.
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.
 

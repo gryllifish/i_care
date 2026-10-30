@@ -9,7 +9,7 @@ class AppCard extends StatelessWidget {
   const AppCard({
     required this.child,
     this.onTap,
-    this.color = AppColors.surface,
+    this.color,
     this.padding = const EdgeInsets.all(AppSpacing.lg),
     this.raised = true,
     super.key,
@@ -17,7 +17,9 @@ class AppCard extends StatelessWidget {
 
   final Widget child;
   final VoidCallback? onTap;
-  final Color color;
+
+  /// Defaults to the palette's surface.
+  final Color? color;
   final EdgeInsetsGeometry padding;
 
   /// Whether it casts a shadow; flat cards sit on tinted backgrounds.
@@ -30,10 +32,10 @@ class AppCard extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: radius,
-        boxShadow: raised ? AppShadows.card : null,
+        boxShadow: raised ? AppShadows.card(context.colors) : null,
       ),
       child: Material(
-        color: color,
+        color: color ?? context.colors.surface,
         borderRadius: radius,
         clipBehavior: Clip.antiAlias,
         // Each card is its own node for screen readers, never merged with

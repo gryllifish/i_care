@@ -20,20 +20,20 @@ class SyncBanner extends ConsumerWidget {
     final (icon, color, background, text) = switch (status) {
       SyncStatus(isConnected: false) => (
         Icons.cloud_off,
-        AppColors.due,
-        AppColors.dueSoft,
+        context.colors.due,
+        context.colors.dueSoft,
         l10n.syncOffline,
       ),
       SyncStatus(lastSyncedAt: final DateTime at) => (
         Icons.cloud_done,
-        AppColors.given,
-        AppColors.givenSoft,
+        context.colors.given,
+        context.colors.givenSoft,
         l10n.syncedAt(Formatters.time(at, locale)),
       ),
       SyncStatus(lastSyncedAt: null) => (
         Icons.cloud_queue,
-        AppColors.inkMuted,
-        AppColors.surfaceMuted,
+        context.colors.inkMuted,
+        context.colors.surfaceMuted,
         l10n.syncNever,
       ),
     };

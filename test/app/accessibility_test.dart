@@ -13,7 +13,8 @@ import 'package:i_care/shared/widgets/wheel_pickers.dart';
 import '../helpers/pump_app.dart';
 
 /// Flutter's accessibility guidelines (tap targets of at least 48 dp, a
-/// label on everything tappable, readable text contrast) and text at 200%
+/// label on everything tappable, readable text contrast in the light and
+/// the dark theme) and text at 200%
 /// on every screen, sheet and dialog, filled with the sample circle.
 void main() {
   final now = DateTime(2026, 11, 2, 9, 30);
@@ -22,6 +23,8 @@ void main() {
   // The guidelines only check what is on screen: a tall phone fits each
   // screen whole.
   const tallPhone = Size(393, 3000);
+
+  const themes = ['light', 'dark'];
 
   const routes = {
     'today': AppRoutes.today,
@@ -45,6 +48,7 @@ void main() {
     WidgetTester tester,
     String path, {
     String language = 'en',
+    String theme = 'light',
     Size size = phoneSize,
   }) async {
     await pumpApp(
@@ -58,6 +62,7 @@ void main() {
         // Until the welcome is seen, every route leads to it.
         if (path != AppRoutes.welcome) PrefKeys.welcomeSeen: 'true',
         PrefKeys.language: language,
+        PrefKeys.themeMode: theme,
       }),
     );
     if (path == AppRoutes.welcome) return;
@@ -83,6 +88,7 @@ void main() {
 
   Future<void> tapText(WidgetTester tester, String text) async {
     await tester.ensureVisible(find.text(text));
+    await tester.pumpAndSettle();
     await tester.tap(find.text(text));
     await tester.pumpAndSettle();
   }
@@ -95,13 +101,15 @@ void main() {
 
   group('screens', () {
     for (final MapEntry(key: name, value: path) in routes.entries) {
-      testWidgets('$name meets the guidelines', (tester) async {
-        final handle = tester.ensureSemantics();
-        await pumpAt(tester, path, size: tallPhone);
+      for (final theme in themes) {
+        testWidgets('$name meets the guidelines in $theme', (tester) async {
+          final handle = tester.ensureSemantics();
+          await pumpAt(tester, path, theme: theme, size: tallPhone);
 
-        await expectGuidelines(tester);
-        handle.dispose();
-      });
+          await expectGuidelines(tester);
+          handle.dispose();
+        });
+      }
 
       for (final language in ['en', 'es']) {
         testWidgets('$name fits text at 200% in $language', (tester) async {
@@ -196,15 +204,17 @@ void main() {
 
   group('sheets and dialogs', () {
     for (final MapEntry(key: name, value: (path, open)) in overlays.entries) {
-      testWidgets('$name meets the guidelines', (tester) async {
-        final handle = tester.ensureSemantics();
-        await pumpAt(tester, path);
-        await open(tester);
-        await tester.pumpAndSettle();
+      for (final theme in themes) {
+        testWidgets('$name meets the guidelines in $theme', (tester) async {
+          final handle = tester.ensureSemantics();
+          await pumpAt(tester, path, theme: theme);
+          await open(tester);
+          await tester.pumpAndSettle();
 
-        await expectGuidelines(tester);
-        handle.dispose();
-      });
+          await expectGuidelines(tester);
+          handle.dispose();
+        });
+      }
 
       testWidgets('$name fits text at 200%', (tester) async {
         final handle = tester.ensureSemantics();

@@ -20,8 +20,8 @@ class LowStockPill extends StatelessWidget {
         StockLevel(daysLeft: final int days) => l10n.stockDays(days),
         _ => l10n.stockOut,
       },
-      color: AppColors.due,
-      background: AppColors.dueSoft,
+      color: context.colors.due,
+      background: context.colors.dueSoft,
     );
   }
 }

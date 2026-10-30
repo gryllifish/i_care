@@ -15,8 +15,8 @@ class MedicationIcon extends StatelessWidget {
       child: Container(
         width: size,
         height: size,
-        decoration: const BoxDecoration(
-          color: AppColors.tealSoft,
+        decoration: BoxDecoration(
+          color: context.colors.tealSoft,
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -29,7 +29,7 @@ class MedicationIcon extends StatelessWidget {
             MedicationForm.inhaler => Icons.air,
             MedicationForm.other => Icons.local_pharmacy_outlined,
           },
-          color: AppColors.tealDark,
+          color: context.colors.tealDark,
           size: size / 2,
         ),
       ),

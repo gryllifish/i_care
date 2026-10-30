@@ -12,8 +12,9 @@ class CaregiverAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        AppColors.avatars[caregiver.colorIndex % AppColors.avatars.length];
+    final color = context
+        .colors
+        .avatars[caregiver.colorIndex % context.colors.avatars.length];
     return ExcludeSemantics(
       child: CircleAvatar(
         radius: size / 2,
@@ -21,7 +22,7 @@ class CaregiverAvatar extends StatelessWidget {
         child: Text(
           caregiver.name.characters.first,
           style: AppTextStyles.label.copyWith(
-            color: AppColors.onAccent,
+            color: context.colors.onAccent,
             fontSize: size * 0.45,
           ),
         ),

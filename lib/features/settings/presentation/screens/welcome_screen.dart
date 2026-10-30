@@ -34,14 +34,14 @@ class WelcomeScreen extends ConsumerWidget {
                   AppSpacing.lg,
                 ),
                 children: [
-                  const Align(
+                  Align(
                     alignment: Alignment.centerLeft,
                     child: CircleAvatar(
                       radius: _logoSize / 2,
-                      backgroundColor: AppColors.teal,
+                      backgroundColor: context.colors.teal,
                       child: Icon(
                         Icons.volunteer_activism,
-                        color: AppColors.onAccent,
+                        color: context.colors.onAccent,
                         size: _logoSize / 2,
                       ),
                     ),
@@ -63,7 +63,7 @@ class WelcomeScreen extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.lg),
                   AppCard(
                     raised: false,
-                    color: AppColors.surfaceMuted,
+                    color: context.colors.surfaceMuted,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: AppSpacing.sm,
@@ -71,7 +71,9 @@ class WelcomeScreen extends ConsumerWidget {
                         Text(l10n.welcomeSample, style: AppTextStyles.label),
                         Text(
                           l10n.medicalDisclaimer,
-                          style: AppTextStyles.bodyMuted,
+                          style: AppTextStyles.bodyMuted.copyWith(
+                            color: context.colors.inkMuted,
+                          ),
                         ),
                       ],
                     ),

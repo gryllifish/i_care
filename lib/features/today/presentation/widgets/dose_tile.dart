@@ -46,7 +46,7 @@ class DoseTile extends ConsumerWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final names = ref.watch(caregiversByIdProvider);
     final today = ref.watch(nowProvider);
-    final style = slot.style(l10n);
+    final style = slot.style(l10n, context.colors);
     final details = slot.medication.details;
 
     String record(CareEvent event, DateTime at) => recordedByText(
@@ -115,7 +115,9 @@ class DoseTile extends ConsumerWidget {
                       if (records.isNotEmpty)
                         Text(
                           records.join(' · '),
-                          style: AppTextStyles.bodyMuted,
+                          style: AppTextStyles.bodyMuted.copyWith(
+                            color: context.colors.inkMuted,
+                          ),
                         ),
                     ],
                   ),
@@ -158,9 +160,9 @@ class _Rail extends StatelessWidget {
               top: isFirst ? _dotTop : 0,
               bottom: isLast ? null : 0,
               height: isLast ? _dotTop : null,
-              child: const SizedBox(
+              child: SizedBox(
                 width: _lineWidth,
-                child: ColoredBox(color: AppColors.divider),
+                child: ColoredBox(color: context.colors.divider),
               ),
             ),
           Positioned(
@@ -171,7 +173,7 @@ class _Rail extends StatelessWidget {
               decoration: BoxDecoration(
                 color: color,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.background, width: 3),
+                border: Border.all(color: context.colors.background, width: 3),
               ),
             ),
           ),
@@ -219,7 +221,9 @@ class AsNeededTile extends ConsumerWidget {
                           names[last.meta.caregiverId]?.name ??
                               l10n.unknownCaregiver,
                         ),
-                  style: AppTextStyles.bodyMuted,
+                  style: AppTextStyles.bodyMuted.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
                 ),
                 if (item.stock case final StockLevel level when level.isLow)
                   LowStockPill(level: level),
@@ -227,7 +231,7 @@ class AsNeededTile extends ConsumerWidget {
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, color: AppColors.inkMuted),
+          Icon(Icons.chevron_right, color: context.colors.inkMuted),
         ],
       ),
     );
@@ -242,7 +246,7 @@ class PendingPill extends StatelessWidget {
   Widget build(BuildContext context) => StatusPill(
     icon: Icons.cloud_upload_outlined,
     label: context.l10n.notSyncedYet,
-    color: AppColors.inkMuted,
-    background: AppColors.surfaceMuted,
+    color: context.colors.inkMuted,
+    background: context.colors.surfaceMuted,
   );
 }

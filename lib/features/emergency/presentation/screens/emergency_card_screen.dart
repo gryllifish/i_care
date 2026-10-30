@@ -162,7 +162,9 @@ class _CardContent extends ConsumerWidget {
                                   ),
                                   Text(
                                     medication.schedule.describe(l10n, locale),
-                                    style: AppTextStyles.bodyMuted,
+                                    style: AppTextStyles.bodyMuted.copyWith(
+                                      color: context.colors.inkMuted,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -239,7 +241,9 @@ class _Allergies extends StatelessWidget {
       container: true,
       child: AppCard(
         raised: false,
-        color: hasAllergies ? AppColors.overdueSoft : AppColors.surfaceMuted,
+        color: hasAllergies
+            ? context.colors.overdueSoft
+            : context.colors.surfaceMuted,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: AppSpacing.sm,
@@ -249,15 +253,17 @@ class _Allergies extends StatelessWidget {
               children: [
                 Icon(
                   Icons.warning_amber,
-                  color: hasAllergies ? AppColors.overdue : AppColors.inkMuted,
+                  color: hasAllergies
+                      ? context.colors.overdue
+                      : context.colors.inkMuted,
                 ),
                 Text(
                   l10n.allergiesTitle.toUpperCase(),
                   semanticsLabel: l10n.allergiesTitle,
                   style: AppTextStyles.overline.copyWith(
                     color: hasAllergies
-                        ? AppColors.overdue
-                        : AppColors.inkMuted,
+                        ? context.colors.overdue
+                        : context.colors.inkMuted,
                   ),
                 ),
               ],
@@ -265,7 +271,9 @@ class _Allergies extends StatelessWidget {
             Text(
               hasAllergies ? allergies.join('\n') : l10n.noAllergies,
               style: AppTextStyles.headline.copyWith(
-                color: hasAllergies ? AppColors.overdueDark : AppColors.ink,
+                color: hasAllergies
+                    ? context.colors.overdueDark
+                    : context.colors.ink,
               ),
             ),
           ],
@@ -295,7 +303,12 @@ class _ContactCard extends ConsumerWidget {
               children: [
                 Text(contact.name, style: AppTextStyles.title),
                 if (contact.role.isNotEmpty)
-                  Text(contact.role, style: AppTextStyles.bodyMuted),
+                  Text(
+                    contact.role,
+                    style: AppTextStyles.bodyMuted.copyWith(
+                      color: context.colors.inkMuted,
+                    ),
+                  ),
                 if (contact.phone.isNotEmpty)
                   Text(contact.phone, style: AppTextStyles.body),
               ],
@@ -306,8 +319,8 @@ class _ContactCard extends ConsumerWidget {
               tooltip: l10n.callName(contact.name),
               onPressed: () => _call(context, ref),
               style: IconButton.styleFrom(
-                backgroundColor: AppColors.given,
-                foregroundColor: AppColors.onAccent,
+                backgroundColor: context.colors.given,
+                foregroundColor: context.colors.onAccent,
               ),
               icon: const Icon(Icons.call),
             ),

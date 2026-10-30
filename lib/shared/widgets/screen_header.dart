@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 
@@ -48,14 +49,21 @@ class ScreenHeader extends StatelessWidget {
                       Text(
                         overline.toUpperCase(),
                         semanticsLabel: overline,
-                        style: AppTextStyles.overline,
+                        style: AppTextStyles.overline.copyWith(
+                          color: context.colors.inkMuted,
+                        ),
                       ),
                     Semantics(
                       header: true,
                       child: Text(title, style: AppTextStyles.headline),
                     ),
                     if (subtitle != null)
-                      Text(subtitle, style: AppTextStyles.bodyMuted),
+                      Text(
+                        subtitle,
+                        style: AppTextStyles.bodyMuted.copyWith(
+                          color: context.colors.inkMuted,
+                        ),
+                      ),
                   ],
                 ),
               ),

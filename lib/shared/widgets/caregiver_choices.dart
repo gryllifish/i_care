@@ -29,8 +29,8 @@ class CaregiverChoices extends ConsumerWidget {
             child: AppCard(
               raised: false,
               color: caregiver == current
-                  ? AppColors.tealSoft
-                  : AppColors.surface,
+                  ? context.colors.tealSoft
+                  : context.colors.surface,
               onTap: () => _choose(ref, caregiver),
               child: Row(
                 spacing: AppSpacing.md,
@@ -40,7 +40,7 @@ class CaregiverChoices extends ConsumerWidget {
                     child: Text(caregiver.name, style: AppTextStyles.label),
                   ),
                   if (caregiver == current)
-                    const Icon(Icons.check_circle, color: AppColors.teal),
+                    Icon(Icons.check_circle, color: context.colors.teal),
                 ],
               ),
             ),

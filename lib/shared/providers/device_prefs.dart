@@ -15,6 +15,7 @@ abstract interface class DevicePrefs {
 abstract final class PrefKeys {
   static const caregiverId = 'caregiver_id';
   static const language = 'language';
+  static const themeMode = 'theme_mode';
   static const welcomeSeen = 'welcome_seen';
 }
 

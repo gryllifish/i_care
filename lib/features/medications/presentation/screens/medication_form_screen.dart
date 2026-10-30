@@ -212,11 +212,13 @@ class _MedicationFormState extends ConsumerState<_MedicationForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: AppSpacing.sm,
             children: [
-              const Icon(Icons.info_outline, color: AppColors.inkMuted),
+              Icon(Icons.info_outline, color: context.colors.inkMuted),
               Expanded(
                 child: Text(
                   l10n.prescriptionNote,
-                  style: AppTextStyles.bodyMuted,
+                  style: AppTextStyles.bodyMuted.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
                 ),
               ),
             ],

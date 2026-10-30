@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
+import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
@@ -61,7 +62,12 @@ class _HandoffContent extends StatelessWidget {
               AppSpacing.lg,
             ),
             children: [
-              Text(l10n.handoffSubtitle, style: AppTextStyles.bodyMuted),
+              Text(
+                l10n.handoffSubtitle,
+                style: AppTextStyles.bodyMuted.copyWith(
+                  color: context.colors.inkMuted,
+                ),
+              ),
               const SizedBox(height: AppSpacing.md),
               AppCard(child: SelectableText(text, style: AppTextStyles.body)),
             ],

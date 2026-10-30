@@ -17,11 +17,8 @@ class PhoneFrame extends StatelessWidget {
   static const width = 390.0;
   static const _maxFrameHeight = 844.0;
   static const _minFrameHeight = 600.0;
-  static const _shadow = BoxShadow(
-    color: AppColors.frameShadow,
-    blurRadius: 60,
-    offset: Offset(0, 20),
-  );
+  static const _shadowBlur = 60.0;
+  static const _shadowOffset = Offset(0, 20);
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +33,15 @@ class PhoneFrame extends StatelessWidget {
       height: size.height,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: context.colors.background,
         borderRadius: BorderRadius.circular(AppRadius.device),
-        boxShadow: const [_shadow],
+        boxShadow: [
+          BoxShadow(
+            color: context.colors.frameShadow,
+            blurRadius: _shadowBlur,
+            offset: _shadowOffset,
+          ),
+        ],
       ),
       // Screens read their size from MediaQuery, so give them the frame's.
       child: MediaQuery(

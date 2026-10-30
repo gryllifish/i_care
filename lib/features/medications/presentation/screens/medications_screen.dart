@@ -108,19 +108,24 @@ class _MedicationCard extends StatelessWidget {
                   spacing: AppSpacing.xxs,
                   children: [
                     Text(details.name, style: AppTextStyles.title),
-                    Text(details.strength, style: AppTextStyles.bodyMuted),
+                    Text(
+                      details.strength,
+                      style: AppTextStyles.bodyMuted.copyWith(
+                        color: context.colors.inkMuted,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: AppColors.inkMuted),
+              Icon(Icons.chevron_right, color: context.colors.inkMuted),
             ],
           ),
           if (needsReview)
             StatusPill(
               icon: Icons.error,
               label: l10n.medicationConflictBadge,
-              color: AppColors.overdue,
-              background: AppColors.overdueSoft,
+              color: context.colors.overdue,
+              background: context.colors.overdueSoft,
             ),
           _InfoRow(
             icon: Icons.schedule,
@@ -149,7 +154,7 @@ class _InfoRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: AppSpacing.sm,
       children: [
-        Icon(icon, size: _iconSize, color: AppColors.inkMuted),
+        Icon(icon, size: _iconSize, color: context.colors.inkMuted),
         Expanded(child: Text(text, style: AppTextStyles.body)),
       ],
     );
@@ -175,16 +180,16 @@ class _StockRow extends StatelessWidget {
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surfaceMuted,
+        color: context.colors.surfaceMuted,
         borderRadius: BorderRadius.circular(AppRadius.sm),
       ),
       child: Row(
         spacing: AppSpacing.sm,
         children: [
-          const Icon(
+          Icon(
             Icons.inventory_2_outlined,
             size: _iconSize,
-            color: AppColors.inkMuted,
+            color: context.colors.inkMuted,
           ),
           Expanded(
             child: Wrap(
@@ -203,7 +208,12 @@ class _StockRow extends StatelessWidget {
                 if (stock case final StockLevel level when level.isLow)
                   LowStockPill(level: level)
                 else if (stock?.daysLeft case final int days)
-                  Text(l10n.stockLasts(days), style: AppTextStyles.bodyMuted),
+                  Text(
+                    l10n.stockLasts(days),
+                    style: AppTextStyles.bodyMuted.copyWith(
+                      color: context.colors.inkMuted,
+                    ),
+                  ),
               ],
             ),
           ),

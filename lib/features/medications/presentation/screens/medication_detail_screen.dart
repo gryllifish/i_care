@@ -152,14 +152,16 @@ class _DetailContent extends StatelessWidget {
                       if (details.strength.isNotEmpty) details.strength,
                       details.form.label(l10n),
                     ].join(' · '),
-                    style: AppTextStyles.bodyMuted,
+                    style: AppTextStyles.bodyMuted.copyWith(
+                      color: context.colors.inkMuted,
+                    ),
                   ),
                   if (medication.isArchived)
                     StatusPill(
                       icon: Icons.archive_outlined,
                       label: l10n.archived,
-                      color: AppColors.inkMuted,
-                      background: AppColors.surfaceMuted,
+                      color: context.colors.inkMuted,
+                      background: context.colors.surfaceMuted,
                     ),
                 ],
               ),
@@ -264,7 +266,9 @@ class _Section extends StatelessWidget {
                   child: Text(
                     title.toUpperCase(),
                     semanticsLabel: title,
-                    style: AppTextStyles.overline,
+                    style: AppTextStyles.overline.copyWith(
+                      color: context.colors.inkMuted,
+                    ),
                   ),
                 ),
                 ?action,
@@ -303,7 +307,9 @@ class _PreviousSchedules extends StatelessWidget {
                 Formatters.shortDate(versions[index + 1].effectiveFrom, locale),
               ),
             ].join(' · '),
-            style: AppTextStyles.bodyMuted,
+            style: AppTextStyles.bodyMuted.copyWith(
+              color: context.colors.inkMuted,
+            ),
           ),
       ],
     );
@@ -334,7 +340,12 @@ class _StockSummary extends StatelessWidget {
         if (stock case final StockLevel level when level.isLow)
           LowStockPill(level: level)
         else if (stock?.daysLeft case final int days)
-          Text(l10n.stockLasts(days), style: AppTextStyles.bodyMuted),
+          Text(
+            l10n.stockLasts(days),
+            style: AppTextStyles.bodyMuted.copyWith(
+              color: context.colors.inkMuted,
+            ),
+          ),
       ],
     );
   }
@@ -372,7 +383,9 @@ class _RecentDoses extends ConsumerWidget {
                 ),
                 Text(
                   Formatters.shortDate(dose.givenAt, locale),
-                  style: AppTextStyles.bodyMuted,
+                  style: AppTextStyles.bodyMuted.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
                 ),
               ],
             ),

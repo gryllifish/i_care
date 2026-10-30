@@ -128,11 +128,13 @@ class _ScheduleChangeFormState extends ConsumerState<_ScheduleChangeForm> {
               Row(
                 spacing: AppSpacing.sm,
                 children: [
-                  const Icon(Icons.history, color: AppColors.inkMuted),
+                  Icon(Icons.history, color: context.colors.inkMuted),
                   Expanded(
                     child: Text(
                       l10n.earlierDosesUnchanged,
-                      style: AppTextStyles.bodyMuted,
+                      style: AppTextStyles.bodyMuted.copyWith(
+                        color: context.colors.inkMuted,
+                      ),
                     ),
                   ),
                 ],

@@ -19,14 +19,14 @@ class DateBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final color = muted ? AppColors.inkMuted : AppColors.tealDark;
+    final color = muted ? context.colors.inkMuted : context.colors.tealDark;
     return ExcludeSemantics(
       // A minimum, not a fixed size: it grows with large text.
       child: Container(
         constraints: const BoxConstraints(minWidth: _size, minHeight: _size),
         padding: const EdgeInsets.all(AppSpacing.xs),
         decoration: BoxDecoration(
-          color: muted ? AppColors.surfaceMuted : AppColors.tealSoft,
+          color: muted ? context.colors.surfaceMuted : context.colors.tealSoft,
           borderRadius: BorderRadius.circular(AppRadius.sm),
         ),
         child: Column(

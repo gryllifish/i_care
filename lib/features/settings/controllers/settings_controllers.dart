@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:flutter/material.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,6 +22,28 @@ class AppLanguage extends _$AppLanguage {
     await ref
         .read(devicePrefsProvider)
         .write(PrefKeys.language, locale?.languageCode);
+  }
+}
+
+/// Light, dark, or following the system (the default) on this phone.
+@Riverpod(keepAlive: true)
+class AppThemeMode extends _$AppThemeMode {
+  @override
+  ThemeMode build() =>
+      switch (ref.watch(devicePrefsProvider).read(PrefKeys.themeMode)) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        _ => ThemeMode.system,
+      };
+
+  Future<void> choose(ThemeMode mode) async {
+    state = mode;
+    await ref
+        .read(devicePrefsProvider)
+        .write(
+          PrefKeys.themeMode,
+          mode == ThemeMode.system ? null : mode.name,
+        );
   }
 }
 

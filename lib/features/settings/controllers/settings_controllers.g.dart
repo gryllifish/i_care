@@ -66,6 +66,64 @@ abstract class _$AppLanguage extends $Notifier<Locale?> {
   }
 }
 
+/// Light, dark, or following the system (the default) on this phone.
+
+@ProviderFor(AppThemeMode)
+final appThemeModeProvider = AppThemeModeProvider._();
+
+/// Light, dark, or following the system (the default) on this phone.
+final class AppThemeModeProvider
+    extends $NotifierProvider<AppThemeMode, ThemeMode> {
+  /// Light, dark, or following the system (the default) on this phone.
+  AppThemeModeProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appThemeModeProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$appThemeModeHash();
+
+  @$internal
+  @override
+  AppThemeMode create() => AppThemeMode();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ThemeMode value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ThemeMode>(value),
+    );
+  }
+}
+
+String _$appThemeModeHash() => r'2bd6e510efd0e458953fe5cd05021430f61060ff';
+
+/// Light, dark, or following the system (the default) on this phone.
+
+abstract class _$AppThemeMode extends $Notifier<ThemeMode> {
+  ThemeMode build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<ThemeMode, ThemeMode>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<ThemeMode, ThemeMode>,
+              ThemeMode,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
 /// Whether this phone already showed the welcome.
 
 @ProviderFor(WelcomeSeen)

@@ -52,13 +52,32 @@ class SettingsScreen extends ConsumerWidget {
             ],
           ),
           FormSection(
+            title: l10n.sectionAppearance,
+            children: [
+              SegmentedControl<ThemeMode>(
+                options: {
+                  ThemeMode.system: l10n.themeSystem,
+                  ThemeMode.light: l10n.themeLight,
+                  ThemeMode.dark: l10n.themeDark,
+                },
+                selected: ref.watch(appThemeModeProvider),
+                onChanged: ref.read(appThemeModeProvider.notifier).choose,
+              ),
+            ],
+          ),
+          FormSection(
             title: l10n.sectionDemo,
             children: [
-              Text(l10n.resetDemoBody, style: AppTextStyles.bodyMuted),
+              Text(
+                l10n.resetDemoBody,
+                style: AppTextStyles.bodyMuted.copyWith(
+                  color: context.colors.inkMuted,
+                ),
+              ),
               OutlinedButton.icon(
                 onPressed: () => _reset(context, ref),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.overdue,
+                  foregroundColor: context.colors.overdue,
                 ),
                 icon: const Icon(Icons.restart_alt),
                 label: Text(l10n.resetDemo),
@@ -70,10 +89,12 @@ class SettingsScreen extends ConsumerWidget {
             children: [
               AppCard(
                 raised: false,
-                color: AppColors.surfaceMuted,
+                color: context.colors.surfaceMuted,
                 child: Text(
                   l10n.medicalDisclaimer,
-                  style: AppTextStyles.bodyMuted,
+                  style: AppTextStyles.bodyMuted.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
                 ),
               ),
               TextButton(

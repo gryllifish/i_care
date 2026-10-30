@@ -169,8 +169,8 @@ class _DetailContent extends ConsumerWidget {
                     StatusPill(
                       icon: Icons.event_busy,
                       label: l10n.cancelled,
-                      color: AppColors.inkMuted,
-                      background: AppColors.surfaceMuted,
+                      color: context.colors.inkMuted,
+                      background: context.colors.surfaceMuted,
                     ),
                 ],
               ),
@@ -248,7 +248,7 @@ class _InfoRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: AppSpacing.sm,
       children: [
-        Icon(icon, size: _iconSize, color: AppColors.inkMuted),
+        Icon(icon, size: _iconSize, color: context.colors.inkMuted),
         Expanded(child: Text(text, style: AppTextStyles.body)),
       ],
     );
@@ -284,7 +284,9 @@ class _NoteCard extends ConsumerWidget {
                     '${Formatters.shortDate(at, locale)} '
                     '${Formatters.time(at, locale)}',
                   ),
-                  style: AppTextStyles.bodyMuted,
+                  style: AppTextStyles.bodyMuted.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
                 ),
               ],
             ),

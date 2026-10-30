@@ -140,7 +140,12 @@ class _AppointmentCard extends ConsumerWidget {
                   style: AppTextStyles.body,
                 ),
                 if (details.location.isNotEmpty)
-                  Text(details.location, style: AppTextStyles.bodyMuted),
+                  Text(
+                    details.location,
+                    style: AppTextStyles.bodyMuted.copyWith(
+                      color: context.colors.inkMuted,
+                    ),
+                  ),
                 Wrap(
                   spacing: AppSpacing.sm,
                   runSpacing: AppSpacing.xs,
@@ -149,29 +154,29 @@ class _AppointmentCard extends ConsumerWidget {
                       StatusPill(
                         icon: Icons.error,
                         label: l10n.medicationConflictBadge,
-                        color: AppColors.overdue,
-                        background: AppColors.overdueSoft,
+                        color: context.colors.overdue,
+                        background: context.colors.overdueSoft,
                       ),
                     if (missingNotes)
                       StatusPill(
                         icon: Icons.edit_note,
                         label: l10n.noNotesPrompt,
-                        color: AppColors.due,
-                        background: AppColors.dueSoft,
+                        color: context.colors.due,
+                        background: context.colors.dueSoft,
                       )
                     else if (appointment.notes.isNotEmpty)
                       StatusPill(
                         icon: Icons.notes,
                         label: l10n.notesCount(appointment.notes.length),
-                        color: AppColors.inkMuted,
-                        background: AppColors.surfaceMuted,
+                        color: context.colors.inkMuted,
+                        background: context.colors.surfaceMuted,
                       ),
                     if (!isPast && questions > 0)
                       StatusPill(
                         icon: Icons.help_outline,
                         label: l10n.questionsCount(questions),
-                        color: AppColors.tealDark,
-                        background: AppColors.tealSoft,
+                        color: context.colors.tealDark,
+                        background: context.colors.tealSoft,
                       ),
                   ],
                 ),

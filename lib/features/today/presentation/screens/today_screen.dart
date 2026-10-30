@@ -225,10 +225,12 @@ class _RecipientAvatar extends StatelessWidget {
     return ExcludeSemantics(
       child: CircleAvatar(
         radius: _size / 2,
-        backgroundColor: AppColors.recipient,
+        backgroundColor: context.colors.recipient,
         child: Text(
           SampleCircle.recipientName.characters.first,
-          style: AppTextStyles.headline.copyWith(color: AppColors.onAccent),
+          style: AppTextStyles.headline.copyWith(
+            color: context.colors.onAccent,
+          ),
         ),
       ),
     );
@@ -247,7 +249,7 @@ class _EmergencyCardButton extends StatelessWidget {
     return Semantics(
       button: true,
       child: Material(
-        color: AppColors.overdueSoft,
+        color: context.colors.overdueSoft,
         shape: const StadiumBorder(),
         child: InkWell(
           customBorder: const StadiumBorder(),
@@ -262,16 +264,16 @@ class _EmergencyCardButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 spacing: AppSpacing.xs,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.medical_information,
                     size: _iconSize,
-                    color: AppColors.overdue,
+                    color: context.colors.overdue,
                   ),
                   Flexible(
                     child: Text(
                       context.l10n.emergencyCard,
                       style: AppTextStyles.pill.copyWith(
-                        color: AppColors.overdue,
+                        color: context.colors.overdue,
                       ),
                     ),
                   ),
@@ -294,7 +296,7 @@ class _SampleDataPill extends StatelessWidget {
       container: true,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.surfaceMuted,
+          color: context.colors.surfaceMuted,
           borderRadius: AppRadius.pillBorder,
         ),
         child: Padding(
@@ -304,7 +306,7 @@ class _SampleDataPill extends StatelessWidget {
           ),
           child: Text(
             context.l10n.sampleData,
-            style: AppTextStyles.pill.copyWith(color: AppColors.inkMuted),
+            style: AppTextStyles.pill.copyWith(color: context.colors.inkMuted),
           ),
         ),
       ),
@@ -356,9 +358,9 @@ class _TeamButton extends ConsumerWidget {
                     left: index * step,
                     child: Container(
                       padding: const EdgeInsets.all(AppSpacing.xxs),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.background,
+                        color: context.colors.background,
                       ),
                       child: CaregiverAvatar(
                         caregiver: caregiver,
@@ -414,7 +416,7 @@ class _DayProgress extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final isDone = total > 0 && done >= total;
-    final color = isDone ? AppColors.given : AppColors.teal;
+    final color = isDone ? context.colors.given : context.colors.teal;
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,7 +443,7 @@ class _DayProgress extends StatelessWidget {
               value: total == 0 ? 0 : done / total,
               minHeight: _barHeight,
               color: color,
-              backgroundColor: AppColors.surfaceMuted,
+              backgroundColor: context.colors.surfaceMuted,
             ),
           ),
         ],
@@ -469,12 +471,6 @@ class _NextDoseCard extends ConsumerStatefulWidget {
 class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
   var _busy = false;
 
-  static const List<Color> _lateGradient = [
-    AppColors.overdue,
-    AppColors.overdueDark,
-  ];
-  static const List<Color> _gradient = [AppColors.teal, AppColors.tealDark];
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -483,6 +479,7 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
     final slot = widget.slot;
     final details = slot.medication.details;
     final isLate = slot.status == DoseStatus.overdue;
+    final colors = context.colors;
 
     final overline = switch (slot.status) {
       _ when widget.isFromYesterday => l10n.nextFromYesterday,
@@ -499,9 +496,9 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: isLate ? _lateGradient : _gradient,
+          colors: isLate ? colors.heroLate : colors.hero,
         ),
-        boxShadow: AppShadows.hero,
+        boxShadow: AppShadows.hero(colors),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
@@ -519,14 +516,14 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
               children: [
                 Icon(
                   isLate ? Icons.warning_amber : Icons.schedule,
-                  color: AppColors.onAccent,
+                  color: colors.onHero,
                 ),
                 Expanded(
                   child: Text(
                     overline.toUpperCase(),
                     semanticsLabel: overline,
                     style: AppTextStyles.overline.copyWith(
-                      color: AppColors.onAccentMuted,
+                      color: colors.onHeroMuted,
                     ),
                   ),
                 ),
@@ -534,7 +531,9 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
             ),
             Text(
               '${Formatters.time(slot.slotAt, locale)} · ${details.name}',
-              style: AppTextStyles.headline.copyWith(color: AppColors.onAccent),
+              style: AppTextStyles.headline.copyWith(
+                color: colors.onHero,
+              ),
             ),
             Text(
               [
@@ -542,24 +541,24 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
                 if (details.instructions.isNotEmpty) details.instructions,
               ].join(' · '),
               style: AppTextStyles.body.copyWith(
-                color: AppColors.onAccentMuted,
+                color: colors.onHeroMuted,
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
             FilledButton.icon(
               onPressed: _busy ? null : _give,
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.surface,
-                foregroundColor: isLate
-                    ? AppColors.overdue
-                    : AppColors.tealDark,
+                backgroundColor: colors.onHero,
+                foregroundColor: (isLate ? colors.heroLate : colors.hero).first,
               ),
               icon: const Icon(Icons.check),
               label: Text(l10n.markGiven),
             ),
             TextButton(
               onPressed: widget.onOpen,
-              style: TextButton.styleFrom(foregroundColor: AppColors.onAccent),
+              style: TextButton.styleFrom(
+                foregroundColor: colors.onHero,
+              ),
               child: Text(l10n.moreOptions),
             ),
           ],
@@ -611,7 +610,9 @@ class _NextAppointmentCard extends ConsumerWidget {
                 Text(
                   l10n.nextAppointment.toUpperCase(),
                   semanticsLabel: l10n.nextAppointment,
-                  style: AppTextStyles.overline,
+                  style: AppTextStyles.overline.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
                 ),
                 Text(details.title, style: AppTextStyles.title),
                 Text(
@@ -624,12 +625,14 @@ class _NextAppointmentCard extends ConsumerWidget {
                     ),
                     if (questions > 0) l10n.questionsCount(questions),
                   ].join(' · '),
-                  style: AppTextStyles.bodyMuted,
+                  style: AppTextStyles.bodyMuted.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, color: AppColors.inkMuted),
+          Icon(Icons.chevron_right, color: context.colors.inkMuted),
         ],
       ),
     );
@@ -651,13 +654,13 @@ class _ConflictCard extends ConsumerWidget {
       container: true,
       liveRegion: true,
       child: AppCard(
-        color: AppColors.overdueSoft,
+        color: context.colors.overdueSoft,
         raised: false,
         onTap: onTap,
         child: Row(
           spacing: AppSpacing.md,
           children: [
-            const Icon(Icons.error, color: AppColors.overdue),
+            Icon(Icons.error, color: context.colors.overdue),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -666,7 +669,7 @@ class _ConflictCard extends ConsumerWidget {
                   Text(
                     item.title(l10n, locale),
                     style: AppTextStyles.label.copyWith(
-                      color: AppColors.overdue,
+                      color: context.colors.overdue,
                     ),
                   ),
                   Text(
@@ -684,7 +687,9 @@ class _ConflictCard extends ConsumerWidget {
             ),
             Text(
               l10n.review,
-              style: AppTextStyles.label.copyWith(color: AppColors.overdue),
+              style: AppTextStyles.label.copyWith(
+                color: context.colors.overdue,
+              ),
             ),
           ],
         ),
@@ -772,18 +777,23 @@ class _HandoffCard extends StatelessWidget {
       child: Row(
         spacing: AppSpacing.md,
         children: [
-          const Icon(Icons.forum_outlined, color: AppColors.teal),
+          Icon(Icons.forum_outlined, color: context.colors.teal),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: AppSpacing.xxs,
               children: [
                 Text(l10n.handoffTitle, style: AppTextStyles.label),
-                Text(l10n.handoffSubtitle, style: AppTextStyles.bodyMuted),
+                Text(
+                  l10n.handoffSubtitle,
+                  style: AppTextStyles.bodyMuted.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
+                ),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, color: AppColors.inkMuted),
+          Icon(Icons.chevron_right, color: context.colors.inkMuted),
         ],
       ),
     );
@@ -797,16 +807,18 @@ class _Disclaimer extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppCard(
       raised: false,
-      color: AppColors.surfaceMuted,
+      color: context.colors.surfaceMuted,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: AppSpacing.md,
         children: [
-          const Icon(Icons.info_outline, color: AppColors.inkMuted),
+          Icon(Icons.info_outline, color: context.colors.inkMuted),
           Expanded(
             child: Text(
               context.l10n.medicalDisclaimer,
-              style: AppTextStyles.bodyMuted,
+              style: AppTextStyles.bodyMuted.copyWith(
+                color: context.colors.inkMuted,
+              ),
             ),
           ),
         ],

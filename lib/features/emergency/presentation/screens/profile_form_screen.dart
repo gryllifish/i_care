@@ -272,7 +272,7 @@ class _ContactEditor extends StatelessWidget {
     final l10n = context.l10n;
     return AppCard(
       raised: false,
-      color: AppColors.surfaceMuted,
+      color: context.colors.surfaceMuted,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.md,
@@ -296,7 +296,9 @@ class _ContactEditor extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: TextButton.icon(
               onPressed: onRemove,
-              style: TextButton.styleFrom(foregroundColor: AppColors.overdue),
+              style: TextButton.styleFrom(
+                foregroundColor: context.colors.overdue,
+              ),
               icon: const Icon(Icons.delete_outline),
               label: Text(l10n.remove),
             ),
@@ -344,7 +346,7 @@ class _DateField extends StatelessWidget {
       children: [
         Text(label, style: AppTextStyles.label),
         Material(
-          color: AppColors.surface,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.sm),
           child: InkWell(
             onTap: onTap,
@@ -354,9 +356,9 @@ class _DateField extends StatelessWidget {
               child: Row(
                 spacing: AppSpacing.md,
                 children: [
-                  const Icon(Icons.cake_outlined, color: AppColors.teal),
+                  Icon(Icons.cake_outlined, color: context.colors.teal),
                   Expanded(child: Text(text, style: AppTextStyles.body)),
-                  const Icon(Icons.expand_more, color: AppColors.inkMuted),
+                  Icon(Icons.expand_more, color: context.colors.inkMuted),
                 ],
               ),
             ),

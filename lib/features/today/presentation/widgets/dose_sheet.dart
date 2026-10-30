@@ -145,17 +145,22 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
                 l10n.scheduledAt(Formatters.time(slot.slotAt, locale))
               else
                 l10n.asNeeded,
-              if (slot != null) slot.style(l10n).label,
+              if (slot != null) slot.style(l10n, context.colors).label,
             ].join(' · '),
             style: AppTextStyles.body,
           ),
           if (details.instructions.isNotEmpty)
-            Text(details.instructions, style: AppTextStyles.bodyMuted),
+            Text(
+              details.instructions,
+              style: AppTextStyles.bodyMuted.copyWith(
+                color: context.colors.inkMuted,
+              ),
+            ),
           if (detail.conflicts.isNotEmpty) ...[
             _Notice(
               icon: Icons.error,
-              color: AppColors.overdue,
-              background: AppColors.overdueSoft,
+              color: context.colors.overdue,
+              background: context.colors.overdueSoft,
               title: l10n.statusGivenTwice,
               lines: [l10n.conflictExplanation],
             ),
@@ -189,8 +194,8 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
             if (slot?.isDouble ?? false)
               _Notice(
                 icon: Icons.info_outline,
-                color: AppColors.inkMuted,
-                background: AppColors.skippedSoft,
+                color: context.colors.inkMuted,
+                background: context.colors.skippedSoft,
                 title: l10n.statusGivenTwice,
                 lines: [l10n.doubleDoseBody],
               ),
@@ -198,8 +203,8 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
             if (detail.warnings.isNotEmpty)
               _Notice(
                 icon: Icons.warning_amber,
-                color: AppColors.due,
-                background: AppColors.dueSoft,
+                color: context.colors.due,
+                background: context.colors.dueSoft,
                 title: l10n.checkBeforeGiving,
                 lines: [
                   for (final warning in detail.warnings)

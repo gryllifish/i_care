@@ -63,6 +63,45 @@ void main() {
     expect(prefs.read(PrefKeys.language), 'es');
   });
 
+  testWidgets('settings switch the theme and remember it', (tester) async {
+    final prefs = MemoryDevicePrefs({PrefKeys.welcomeSeen: 'true'});
+    await pumpApp(
+      tester,
+      repository: circle(),
+      now: now,
+      prefs: prefs,
+    );
+
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Dark'), warnIfMissed: false);
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.text('Settings').first);
+    expect(Theme.of(context).brightness, Brightness.dark);
+    expect(prefs.read(PrefKeys.themeMode), 'dark');
+
+    // The language has a System option too, above.
+    await tester.tap(find.text('System').last, warnIfMissed: false);
+    await tester.pumpAndSettle();
+    expect(prefs.read(PrefKeys.themeMode), isNull);
+  });
+
+  testWidgets('a saved theme is restored', (tester) async {
+    await pumpApp(
+      tester,
+      repository: circle(),
+      now: now,
+      prefs: MemoryDevicePrefs({
+        PrefKeys.welcomeSeen: 'true',
+        PrefKeys.themeMode: 'dark',
+      }),
+    );
+
+    final context = tester.element(find.byType(TodayScreen));
+    expect(Theme.of(context).brightness, Brightness.dark);
+  });
+
   testWidgets('resetting the demo asks first', (tester) async {
     var resets = 0;
     await pumpApp(

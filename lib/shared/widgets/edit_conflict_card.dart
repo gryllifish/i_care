@@ -46,7 +46,7 @@ class _EditConflictCardState extends ConsumerState<EditConflictCard> {
     final changes = widget.conflict.changes;
 
     return AppCard(
-      color: AppColors.overdueSoft,
+      color: context.colors.overdueSoft,
       raised: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -55,12 +55,12 @@ class _EditConflictCardState extends ConsumerState<EditConflictCard> {
           Row(
             spacing: AppSpacing.sm,
             children: [
-              const Icon(Icons.error, color: AppColors.overdue),
+              Icon(Icons.error, color: context.colors.overdue),
               Expanded(
                 child: Text(
                   l10n.editConflictTitle,
                   style: AppTextStyles.label.copyWith(
-                    color: AppColors.overdue,
+                    color: context.colors.overdue,
                   ),
                 ),
               ),
@@ -81,7 +81,9 @@ class _EditConflictCardState extends ConsumerState<EditConflictCard> {
                           l10n.unknownCaregiver,
                       Formatters.time(change.meta.occurredAt, locale),
                     ),
-                    style: AppTextStyles.bodyMuted,
+                    style: AppTextStyles.bodyMuted.copyWith(
+                      color: context.colors.inkMuted,
+                    ),
                   ),
                   Text(widget.summarize(change), style: AppTextStyles.body),
                   OverflowBar(
@@ -93,8 +95,8 @@ class _EditConflictCardState extends ConsumerState<EditConflictCard> {
                         StatusPill(
                           icon: Icons.check,
                           label: l10n.inUse,
-                          color: AppColors.given,
-                          background: AppColors.givenSoft,
+                          color: context.colors.given,
+                          background: context.colors.givenSoft,
                         )
                       else
                         const SizedBox.shrink(),

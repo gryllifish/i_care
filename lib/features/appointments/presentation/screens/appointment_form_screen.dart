@@ -277,7 +277,7 @@ class _PickerField extends StatelessWidget {
           value: text,
           excludeSemantics: true,
           child: Material(
-            color: AppColors.surface,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(AppRadius.sm),
             child: InkWell(
               onTap: onTap,
@@ -291,7 +291,7 @@ class _PickerField extends StatelessWidget {
                 child: Row(
                   spacing: AppSpacing.sm,
                   children: [
-                    Icon(icon, color: AppColors.teal),
+                    Icon(icon, color: context.colors.teal),
                     Expanded(child: Text(text, style: AppTextStyles.body)),
                   ],
                 ),

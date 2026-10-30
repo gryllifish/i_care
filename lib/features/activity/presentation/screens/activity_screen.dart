@@ -157,15 +157,22 @@ class _EntryRow extends ConsumerWidget {
                   children: [
                     Text(
                       Formatters.time(event.meta.occurredAt, locale),
-                      style: AppTextStyles.bodyMuted,
+                      style: AppTextStyles.bodyMuted.copyWith(
+                        color: context.colors.inkMuted,
+                      ),
                     ),
                     if (!event.meta.isSynced) ...[
-                      const Icon(
+                      Icon(
                         Icons.cloud_upload_outlined,
                         size: _iconSize,
-                        color: AppColors.inkMuted,
+                        color: context.colors.inkMuted,
                       ),
-                      Text(l10n.notSyncedYet, style: AppTextStyles.bodyMuted),
+                      Text(
+                        l10n.notSyncedYet,
+                        style: AppTextStyles.bodyMuted.copyWith(
+                          color: context.colors.inkMuted,
+                        ),
+                      ),
                     ],
                   ],
                 ),
