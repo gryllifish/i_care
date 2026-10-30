@@ -150,6 +150,19 @@ void main() {
     expect(find.text('I gave it too'), findsOneWidget);
   });
 
+  testWidgets('a dose this caregiver recorded is only offered removing', (
+    tester,
+  ) async {
+    final anas = events.given('m1', at: eight, slotAt: eight);
+    await pumpApp(tester, repository: circle([anas]), now: now);
+
+    await openDose(tester, '08:00');
+
+    expect(find.bySemanticsLabel("Remove Ana's record"), findsOneWidget);
+    expect(find.text('I gave it too'), findsNothing);
+    expect(inSheet('Mark as given'), findsNothing);
+  });
+
   testWidgets('a second dose really given is recorded knowingly', (
     tester,
   ) async {
@@ -176,15 +189,15 @@ void main() {
   testWidgets('a third dose given knowingly is not a conflict', (
     tester,
   ) async {
-    final anas = events.given('m1', at: eight, slotAt: eight);
-    final martins = events.given(
+    final martins = events.given('m1', at: eight, slotAt: eight, by: 'martin');
+    final rosas = events.given(
       'm1',
       at: eight.add(const Duration(minutes: 1)),
       slotAt: eight,
-      by: 'martin',
-      knowing: [anas],
+      by: 'rosa',
+      knowing: [martins],
     );
-    final repository = circle([anas, martins]);
+    final repository = circle([martins, rosas]);
     await pumpApp(tester, repository: repository, now: now);
 
     await openDose(tester, '08:00');
@@ -198,7 +211,7 @@ void main() {
     final given = repository.recorded.single as DoseGiven;
     expect(
       given.knownDoseIds,
-      unorderedEquals([anas.meta.id, martins.meta.id]),
+      unorderedEquals([martins.meta.id, rosas.meta.id]),
     );
     expect(find.text('Enalapril at 08:00 was recorded 3 times'), findsNothing);
     expect(find.text('Review'), findsNothing);
@@ -243,7 +256,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(repository.recorded, isEmpty);
-    expect(find.text('I gave it too'), findsOneWidget);
+    expect(find.bySemanticsLabel("Remove Ana's record"), findsOneWidget);
   });
 
   group('doses given twice without seeing each other', () {

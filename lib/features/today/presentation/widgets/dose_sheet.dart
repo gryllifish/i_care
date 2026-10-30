@@ -126,6 +126,8 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     final details = detail.medication.details;
     final slot = detail.slot;
     final isGiven = slot != null && slot.status == DoseStatus.given;
+    final givenByMe =
+        isGiven && slot.isGivenBy(ref.watch(currentCaregiverProvider).id);
     final isResolved = isGiven || slot?.status == DoseStatus.skipped;
 
     return SingleChildScrollView(
@@ -205,18 +207,20 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
               ),
             _History(detail: detail, onRemove: _remove),
             // A dose already given is corrected from its records above;
-            // recording it again is only for a second dose really given.
-            if (isGiven && !_givingToo)
-              OutlinedButton(
-                onPressed: _busy
-                    ? null
-                    : () => setState(() => _givingToo = true),
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(_secondaryButtonHeight),
+            // recording it again is only for a second dose someone else
+            // really gave.
+            if (isGiven && !_givingToo) ...[
+              if (!givenByMe)
+                OutlinedButton(
+                  onPressed: _busy
+                      ? null
+                      : () => setState(() => _givingToo = true),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(_secondaryButtonHeight),
+                  ),
+                  child: Text(l10n.givenToo),
                 ),
-                child: Text(l10n.givenToo),
-              )
-            else ...[
+            ] else ...[
               if (detail.warnings.isNotEmpty)
                 _Notice(
                   icon: Icons.warning_amber,

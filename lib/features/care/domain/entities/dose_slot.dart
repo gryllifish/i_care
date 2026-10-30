@@ -67,4 +67,9 @@ abstract class DoseSlot with _$DoseSlot {
   /// Given more than once, knowingly or not; shown even without a
   /// conflict, since the patient did get both doses.
   bool get isDouble => given.length > 1;
+
+  /// Whether [caregiverId] already recorded it as given: they would fix
+  /// that record rather than give it again.
+  bool isGivenBy(String caregiverId) =>
+      given.any((dose) => dose.meta.caregiverId == caregiverId);
 }
