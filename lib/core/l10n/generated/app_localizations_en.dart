@@ -861,7 +861,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldLocation => 'Place (optional)';
 
   @override
-  String get fieldWhen => 'Date and time';
+  String get fieldDay => 'Day';
+
+  @override
+  String get fieldTime => 'Time';
 
   @override
   String get sectionQuestions => 'Questions for the doctor';

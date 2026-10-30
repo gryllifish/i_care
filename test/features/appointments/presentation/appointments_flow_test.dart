@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
@@ -96,6 +97,33 @@ void main() {
     expect(created.details.doctor, 'Dr. Ruiz');
     expect(created.details.startsAt, DateTime(2026, 11, 3, 10));
     expect(find.text('Dentist'), findsOneWidget);
+  });
+
+  testWidgets('day and time are picked apart, each keeping the other', (
+    tester,
+  ) async {
+    await openTab(tester);
+    await tapAndSettle(tester, find.text('Add'));
+    await tester.enterText(field('Specialty or reason'), 'Dentist');
+
+    /// Turns the open wheel to [value] and confirms it.
+    Future<void> pick(DateTime value) async {
+      tester
+          .widget<CupertinoDatePicker>(find.byType(CupertinoDatePicker))
+          .onDateTimeChanged(value);
+      await tapAndSettle(tester, find.text('Done'));
+    }
+
+    await tapAndSettle(tester, find.text('10:00'));
+    await pick(DateTime(2024, 1, 1, 15, 30));
+    await tapAndSettle(tester, find.text('Tue, Nov 3'));
+    await pick(DateTime(2026, 11, 10));
+    expect(find.text('Tue, Nov 10'), findsOneWidget);
+    expect(find.text('15:30'), findsOneWidget);
+
+    await tapAndSettle(tester, find.text('Save'));
+    final created = repository.recorded.whereType<AppointmentCreated>().single;
+    expect(created.details.startsAt, DateTime(2026, 11, 10, 15, 30));
   });
 
   testWidgets('notes are added after a visit', (tester) async {

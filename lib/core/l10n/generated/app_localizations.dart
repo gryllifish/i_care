@@ -1393,11 +1393,17 @@ abstract class AppLocalizations {
   /// **'Place (optional)'**
   String get fieldLocation;
 
-  /// No description provided for @fieldWhen.
+  /// No description provided for @fieldDay.
   ///
   /// In en, this message translates to:
-  /// **'Date and time'**
-  String get fieldWhen;
+  /// **'Day'**
+  String get fieldDay;
+
+  /// No description provided for @fieldTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get fieldTime;
 
   /// No description provided for @sectionQuestions.
   ///

@@ -8,13 +8,12 @@ import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_radius.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
+import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/appointments/controllers/appointment_actions.dart';
 import 'package:i_care/features/appointments/controllers/appointments_view.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/appointment_validation.dart';
-import 'package:i_care/shared/l10n/date_texts.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
-import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
 import 'package:i_care/shared/widgets/save_button.dart';
@@ -69,6 +68,8 @@ class _AppointmentFormState extends ConsumerState<_AppointmentForm> {
 
   /// New appointments default to tomorrow at this hour.
   static const _defaultHour = 10;
+  static const int _maxDaysAhead = 2 * 365;
+  static const _minuteStep = 5;
 
   @override
   void initState() {
@@ -124,15 +125,31 @@ class _AppointmentFormState extends ConsumerState<_AppointmentForm> {
                     ? l10n.issueTitleMissing
                     : null,
               ),
-              _WhenField(
-                label: l10n.fieldWhen,
-                text: appointmentWhen(
-                  l10n,
-                  _startsAt,
-                  now: ref.watch(nowProvider),
-                  locale: locale,
-                ),
-                onTap: _pickWhen,
+              // Day and time apart: a single date-and-time wheel does not
+              // fit a phone with a 12-hour clock.
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                spacing: AppSpacing.md,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: _PickerField(
+                      label: l10n.fieldDay,
+                      icon: Icons.event,
+                      text: Formatters.weekdayAndDate(_startsAt, locale),
+                      onTap: _pickDay,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: _PickerField(
+                      label: l10n.fieldTime,
+                      icon: Icons.schedule,
+                      text: Formatters.time(_startsAt, locale),
+                      onTap: _pickTime,
+                    ),
+                  ),
+                ],
               ),
               LabeledField(
                 label: l10n.fieldDoctor,
@@ -163,9 +180,40 @@ class _AppointmentFormState extends ConsumerState<_AppointmentForm> {
     );
   }
 
-  Future<void> _pickWhen() async {
-    final picked = await showDateTimeWheel(context, initial: _startsAt);
-    if (picked != null) setState(() => _startsAt = picked);
+  Future<void> _pickDay() async {
+    final now = ref.read(clockProvider)();
+    final today = DateTime(now.year, now.month, now.day);
+    final day = DateTime(_startsAt.year, _startsAt.month, _startsAt.day);
+    final picked = await showDateWheel(
+      context,
+      initial: day,
+      // An appointment being edited may already be in the past.
+      first: day.isBefore(today) ? day : today,
+      last: today.add(const Duration(days: _maxDaysAhead)),
+    );
+    if (picked == null) return;
+    setState(
+      () => _startsAt = _startsAt.copyWith(
+        year: picked.year,
+        month: picked.month,
+        day: picked.day,
+      ),
+    );
+  }
+
+  Future<void> _pickTime() async {
+    final picked = await showTimeWheel(
+      context,
+      initial: TimeOfDay.fromDateTime(_startsAt),
+      minuteInterval: _minuteStep,
+    );
+    if (picked == null) return;
+    setState(
+      () => _startsAt = _startsAt.copyWith(
+        hour: picked.hour,
+        minute: picked.minute,
+      ),
+    );
   }
 
   Future<void> _save() async {
@@ -202,15 +250,17 @@ class _AppointmentFormState extends ConsumerState<_AppointmentForm> {
   }
 }
 
-/// A field-shaped button showing the chosen date and time.
-class _WhenField extends StatelessWidget {
-  const _WhenField({
+/// A field-shaped button showing a picked value, with its label above.
+class _PickerField extends StatelessWidget {
+  const _PickerField({
     required this.label,
+    required this.icon,
     required this.text,
     required this.onTap,
   });
 
   final String label;
+  final IconData icon;
   final String text;
   final VoidCallback onTap;
 
@@ -221,21 +271,30 @@ class _WhenField extends StatelessWidget {
       spacing: AppSpacing.sm,
       children: [
         Text(label, style: AppTextStyles.label),
-        Material(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.sm),
-          child: InkWell(
-            onTap: onTap,
+        Semantics(
+          button: true,
+          label: label,
+          value: text,
+          excludeSemantics: true,
+          child: Material(
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(AppRadius.sm),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Row(
-                spacing: AppSpacing.md,
-                children: [
-                  const Icon(Icons.event, color: AppColors.teal),
-                  Expanded(child: Text(text, style: AppTextStyles.body)),
-                  const Icon(Icons.expand_more, color: AppColors.inkMuted),
-                ],
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+              child: Padding(
+                // As tall as the text fields around it.
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.md,
+                ),
+                child: Row(
+                  spacing: AppSpacing.sm,
+                  children: [
+                    Icon(icon, color: AppColors.teal),
+                    Expanded(child: Text(text, style: AppTextStyles.body)),
+                  ],
+                ),
               ),
             ),
           ),
