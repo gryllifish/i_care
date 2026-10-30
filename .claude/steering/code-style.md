@@ -33,6 +33,10 @@
 - Text styles carry no color: main text inherits `ink` from the theme;
   muted styles add `.copyWith(color: context.colors.inkMuted)`. Styles
   the theme applies directly (app bar title, chips, wheels) set it there.
+- Snack bars only through `messenger.showMessage` (5 s, closable, keeps
+  an action such as "Undo") and `messenger.showError` (stays until
+  closed), never `SnackBar` directly: Flutter keeps a snack bar with an
+  action up forever by default.
 - i18n: every user-visible string comes from `context.l10n`. Add each key
   to **both** `app_en.arb` and `app_es.arb`.
 - Accessibility: `Semantics` on custom tappables (button, selected, label),

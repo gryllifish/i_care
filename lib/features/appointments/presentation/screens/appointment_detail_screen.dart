@@ -18,6 +18,7 @@ import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/shared/l10n/date_texts.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/date_badge.dart';
@@ -111,7 +112,7 @@ class _Menu extends ConsumerWidget {
         .read(appointmentActionsProvider.notifier)
         .cancel(appointment);
     if (result case Err(:final failure)) {
-      messenger.showSnackBar(SnackBar(content: Text(failure.message(l10n))));
+      messenger.showError(failure.message(l10n));
       return;
     }
     if (context.mounted) context.pop();
@@ -358,7 +359,7 @@ class _AddNoteState extends ConsumerState<_AddNote> {
         _text.clear();
         FocusScope.of(context).unfocus();
       case Err(:final failure):
-        messenger.showSnackBar(SnackBar(content: Text(failure.message(l10n))));
+        messenger.showError(failure.message(l10n));
     }
   }
 }

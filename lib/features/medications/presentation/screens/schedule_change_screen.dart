@@ -14,6 +14,7 @@ import 'package:i_care/features/medications/controllers/medication_detail.dart';
 import 'package:i_care/features/medications/controllers/schedule_draft.dart';
 import 'package:i_care/features/medications/presentation/widgets/schedule_editor.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
 import 'package:i_care/shared/widgets/save_button.dart';
 import 'package:i_care/shared/widgets/segmented_control.dart';
@@ -188,12 +189,10 @@ class _ScheduleChangeFormState extends ConsumerState<_ScheduleChangeForm> {
     switch (result) {
       case Ok():
         final name = medication.details.name;
-        messenger.showSnackBar(
-          SnackBar(content: Text(l10n.medicationSaved(name))),
-        );
+        messenger.showMessage(l10n.medicationSaved(name));
         context.pop();
       case Err(:final failure):
-        messenger.showSnackBar(SnackBar(content: Text(failure.message(l10n))));
+        messenger.showError(failure.message(l10n));
     }
   }
 }

@@ -20,6 +20,7 @@ import 'package:i_care/features/medications/presentation/widgets/stock_input.dar
 import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/l10n/schedule_text.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/edit_conflict_card.dart';
@@ -109,7 +110,7 @@ class _Menu extends ConsumerWidget {
         .read(medicationActionsProvider.notifier)
         .archive(medication);
     if (result case Err(:final failure)) {
-      messenger.showSnackBar(SnackBar(content: Text(failure.message(l10n))));
+      messenger.showError(failure.message(l10n));
       return;
     }
     if (context.mounted) context.pop();

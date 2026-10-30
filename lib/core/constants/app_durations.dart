@@ -11,12 +11,9 @@ abstract final class AppDurations {
   /// Page transitions.
   static const page = Duration(milliseconds: 400);
 
-  /// How long "Undo" stays offered after recording a dose.
-  static const undoWindow = Duration(seconds: 8);
-
-  /// How long the notice of a conflict that just arrived stays up; the
-  /// conflict itself stays on Today until reviewed.
-  static const conflictNotice = Duration(seconds: 12);
+  /// How long a confirmation message stays up, "Undo" included. Errors
+  /// stay until closed.
+  static const message = Duration(seconds: 5);
 }
 
 /// Shared easing curves.

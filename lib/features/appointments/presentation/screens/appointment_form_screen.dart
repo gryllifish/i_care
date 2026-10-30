@@ -14,6 +14,7 @@ import 'package:i_care/features/appointments/controllers/appointments_view.dart'
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/appointment_validation.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
 import 'package:i_care/shared/widgets/save_button.dart';
@@ -240,12 +241,10 @@ class _AppointmentFormState extends ConsumerState<_AppointmentForm> {
     setState(() => _busy = false);
     switch (result) {
       case Ok():
-        messenger.showSnackBar(
-          SnackBar(content: Text(l10n.medicationSaved(details.title))),
-        );
+        messenger.showMessage(l10n.medicationSaved(details.title));
         context.pop();
       case Err(:final failure):
-        messenger.showSnackBar(SnackBar(content: Text(failure.message(l10n))));
+        messenger.showError(failure.message(l10n));
     }
   }
 }

@@ -11,6 +11,7 @@ import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/handoff/controllers/handoff.dart';
 import 'package:i_care/features/handoff/presentation/widgets/handoff_text.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
 
 /// The handoff exactly as it will be pasted, and a button to copy it.
@@ -79,9 +80,7 @@ class _HandoffContent extends StatelessWidget {
             onPressed: () async {
               final messenger = ScaffoldMessenger.of(context);
               await Clipboard.setData(ClipboardData(text: text));
-              messenger.showSnackBar(
-                SnackBar(content: Text(l10n.handoffCopied)),
-              );
+              messenger.showMessage(l10n.handoffCopied);
             },
             icon: const Icon(Icons.copy),
             label: Text(l10n.copy),

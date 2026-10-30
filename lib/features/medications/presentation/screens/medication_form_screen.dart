@@ -17,6 +17,7 @@ import 'package:i_care/features/medications/controllers/schedule_draft.dart';
 import 'package:i_care/features/medications/presentation/widgets/schedule_editor.dart';
 import 'package:i_care/features/medications/presentation/widgets/stock_input.dart';
 import 'package:i_care/shared/l10n/care_labels.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
 import 'package:i_care/shared/widgets/number_stepper.dart';
@@ -267,14 +268,10 @@ class _MedicationFormState extends ConsumerState<_MedicationForm> {
     setState(() => _busy = false);
     switch (result) {
       case Ok():
-        messenger.showSnackBar(
-          SnackBar(content: Text(l10n.medicationSaved(details.name))),
-        );
+        messenger.showMessage(l10n.medicationSaved(details.name));
         context.pop();
       case Err(:final failure):
-        messenger.showSnackBar(
-          SnackBar(content: Text(failure.message(l10n))),
-        );
+        messenger.showError(failure.message(l10n));
     }
   }
 }

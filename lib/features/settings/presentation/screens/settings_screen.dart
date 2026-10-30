@@ -6,6 +6,7 @@ import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/caregiver_choices.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
@@ -126,6 +127,6 @@ class SettingsScreen extends ConsumerWidget {
     );
     if (!confirmed) return;
     await reset();
-    messenger.showSnackBar(SnackBar(content: Text(l10n.resetDone)));
+    messenger.showMessage(l10n.resetDone);
   }
 }

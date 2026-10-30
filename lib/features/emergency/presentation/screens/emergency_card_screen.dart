@@ -17,6 +17,7 @@ import 'package:i_care/shared/l10n/schedule_text.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/providers/phone_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/edit_conflict_card.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
@@ -223,7 +224,7 @@ class _CardContent extends ConsumerWidget {
         ),
       ),
     );
-    messenger.showSnackBar(SnackBar(content: Text(l10n.copied)));
+    messenger.showMessage(l10n.copied);
   }
 }
 
@@ -334,7 +335,7 @@ class _ContactCard extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
     final called = await ref.read(phoneCallerProvider)(contact.phone);
     if (!called) {
-      messenger.showSnackBar(SnackBar(content: Text(l10n.callFailed)));
+      messenger.showError(l10n.callFailed);
     }
   }
 }

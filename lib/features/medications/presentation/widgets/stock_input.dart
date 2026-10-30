@@ -9,6 +9,7 @@ import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/parsers.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/medications/controllers/medication_actions.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
 
 /// A number field for units of a medication; accepts "1,5" and "1.5".
@@ -139,7 +140,7 @@ class _StockSheetState extends ConsumerState<_StockSheet> {
     };
     if (!mounted) return;
     if (result case Err(:final failure)) {
-      messenger.showSnackBar(SnackBar(content: Text(failure.message(l10n))));
+      messenger.showError(failure.message(l10n));
     }
     Navigator.of(context).pop();
   }

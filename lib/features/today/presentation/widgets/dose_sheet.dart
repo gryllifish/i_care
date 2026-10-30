@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:i_care/core/constants/app_durations.dart';
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
@@ -20,6 +19,7 @@ import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
 import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 import 'package:i_care/shared/widgets/wheel_pickers.dart';
 
@@ -59,21 +59,20 @@ Future<void> recordDoseGiven(
     givenAt: givenAt,
     knownDoseIds: knownDoseIdsOf(detail.warnings),
   );
-  messenger.showSnackBar(switch (result) {
-    Ok(:final value) => SnackBar(
-      content: Text(
+  switch (result) {
+    case Ok(:final value):
+      messenger.showMessage(
         isConnected
             ? l10n.doseRecordedGiven(name)
             : l10n.doseRecordedOffline(name),
-      ),
-      duration: AppDurations.undoWindow,
-      action: SnackBarAction(
-        label: l10n.undo,
-        onPressed: () => actions.undo(value),
-      ),
-    ),
-    Err(:final failure) => SnackBar(content: Text(failure.message(l10n))),
-  });
+        action: SnackBarAction(
+          label: l10n.undo,
+          onPressed: () => actions.undo(value),
+        ),
+      );
+    case Err(:final failure):
+      messenger.showError(failure.message(l10n));
+  }
 }
 
 class DoseSheet extends ConsumerStatefulWidget {
@@ -282,17 +281,18 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     );
     if (!mounted) return;
     Navigator.of(context).pop();
-    messenger.showSnackBar(switch (result) {
-      Ok(:final value) => SnackBar(
-        content: Text(l10n.doseRecordedSkipped(detail.medication.details.name)),
-        duration: AppDurations.undoWindow,
-        action: SnackBarAction(
-          label: l10n.undo,
-          onPressed: () => actions.undo(value),
-        ),
-      ),
-      Err(:final failure) => SnackBar(content: Text(failure.message(l10n))),
-    });
+    switch (result) {
+      case Ok(:final value):
+        messenger.showMessage(
+          l10n.doseRecordedSkipped(detail.medication.details.name),
+          action: SnackBarAction(
+            label: l10n.undo,
+            onPressed: () => actions.undo(value),
+          ),
+        );
+      case Err(:final failure):
+        messenger.showError(failure.message(l10n));
+    }
   }
 
   /// The doses were one and the same: cancels every record after the
@@ -311,7 +311,7 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     }
     if (!mounted) return;
     Navigator.of(context).pop();
-    messenger.showSnackBar(SnackBar(content: Text(l10n.conflictResolvedOne)));
+    messenger.showMessage(l10n.conflictResolvedOne);
   }
 
   /// Every dose was really given: the conflict is reviewed and the dose

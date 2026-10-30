@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:i_care/core/constants/app_durations.dart';
 import 'package:i_care/core/l10n/duration_text.dart';
 import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
@@ -26,6 +25,7 @@ import 'package:i_care/features/today/presentation/widgets/sync_banner.dart';
 import 'package:i_care/shared/l10n/date_texts.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 import 'package:i_care/shared/widgets/caregiver_choices.dart';
 import 'package:i_care/shared/widgets/date_badge.dart';
@@ -71,14 +71,11 @@ void _announceConflict(BuildContext context, ConflictItem item) {
   final l10n = context.l10n;
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
-    ..showSnackBar(
-      SnackBar(
-        content: Text(l10n.conflictArrived(item.medication.details.name)),
-        duration: AppDurations.conflictNotice,
-        action: SnackBarAction(
-          label: l10n.review,
-          onPressed: () => _openConflict(context, item),
-        ),
+    ..showMessage(
+      l10n.conflictArrived(item.medication.details.name),
+      action: SnackBarAction(
+        label: l10n.review,
+        onPressed: () => _openConflict(context, item),
       ),
     );
 }

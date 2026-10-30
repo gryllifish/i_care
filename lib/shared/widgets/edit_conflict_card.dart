@@ -11,6 +11,7 @@ import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/status_pill.dart';
 
 /// Changes made at the same time by different people, side by side, to
@@ -122,7 +123,7 @@ class _EditConflictCardState extends ConsumerState<EditConflictCard> {
     setState(() => _busy = true);
     final result = await widget.onChoose(change);
     if (result case Err(:final failure)) {
-      messenger.showSnackBar(SnackBar(content: Text(failure.message(l10n))));
+      messenger.showError(failure.message(l10n));
     }
     if (mounted) setState(() => _busy = false);
   }

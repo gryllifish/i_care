@@ -149,6 +149,7 @@ abstract final class AppTheme {
         behavior: SnackBarBehavior.floating,
         backgroundColor: colors.ink,
         actionTextColor: colors.tealSoft,
+        closeIconColor: colors.onAccent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.sm),
         ),

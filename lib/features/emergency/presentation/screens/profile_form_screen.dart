@@ -13,6 +13,7 @@ import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 import 'package:i_care/features/emergency/controllers/emergency_card.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
 import 'package:i_care/shared/widgets/save_button.dart';
@@ -219,12 +220,10 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
     setState(() => _busy = false);
     switch (result) {
       case Ok():
-        messenger.showSnackBar(
-          SnackBar(content: Text(l10n.medicationSaved(profile.name))),
-        );
+        messenger.showMessage(l10n.medicationSaved(profile.name));
         context.pop();
       case Err(:final failure):
-        messenger.showSnackBar(SnackBar(content: Text(failure.message(l10n))));
+        messenger.showError(failure.message(l10n));
     }
   }
 }
