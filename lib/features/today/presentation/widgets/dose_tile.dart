@@ -12,6 +12,7 @@ import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/today/controllers/today_view.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_status_style.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
+import 'package:i_care/features/today/presentation/widgets/timeline_rail.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/low_stock_pill.dart';
@@ -82,7 +83,11 @@ class DoseTile extends ConsumerWidget {
                 ),
               ),
             ),
-            _Rail(color: style.color, isFirst: isFirst, isLast: isLast),
+            TimelineRail(
+              color: style.color,
+              isFirst: isFirst,
+              isLast: isLast,
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -126,58 +131,6 @@ class DoseTile extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-/// The vertical line joining the day's doses, with a dot for each.
-class _Rail extends StatelessWidget {
-  const _Rail({
-    required this.color,
-    required this.isFirst,
-    required this.isLast,
-  });
-
-  final Color color;
-  final bool isFirst;
-  final bool isLast;
-
-  static const _width = 28.0;
-  static const _lineWidth = 2.0;
-  static const _dotSize = 14.0;
-  static const double _dotTop = AppSpacing.lg + 3;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: _width,
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          if (!(isFirst && isLast))
-            Positioned(
-              top: isFirst ? _dotTop : 0,
-              bottom: isLast ? null : 0,
-              height: isLast ? _dotTop : null,
-              child: SizedBox(
-                width: _lineWidth,
-                child: ColoredBox(color: context.colors.divider),
-              ),
-            ),
-          Positioned(
-            top: _dotTop,
-            child: Container(
-              width: _dotSize,
-              height: _dotSize,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-                border: Border.all(color: context.colors.background, width: 3),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

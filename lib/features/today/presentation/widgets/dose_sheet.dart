@@ -11,17 +11,17 @@ import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
-import 'package:i_care/features/care/domain/entities/caregiver.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/projections/dose_warnings.dart';
 import 'package:i_care/features/today/controllers/dose_controller.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_status_style.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
+import 'package:i_care/features/today/presentation/widgets/record_row.dart';
+import 'package:i_care/features/today/presentation/widgets/skip_reason_picker.dart';
 import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
-import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/wheel_pickers.dart';
 
@@ -237,7 +237,9 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
                   ],
                 ),
               if (_choosingReason && slot != null)
-                _ReasonPicker(
+                SkipReasonPicker(
+                  title: l10n.skipReasonTitle,
+                  reasons: SkipReason.values,
                   onPicked: _busy
                       ? null
                       : (reason) => _skip(detail, slot, reason),
@@ -531,7 +533,7 @@ class _History extends ConsumerWidget {
           style: AppTextStyles.label,
         ),
         for (final dose in detail.history)
-          _HistoryRow(
+          RecordRow(
             caregiver: caregivers[dose.meta.caregiverId],
             name: nameOf(dose.meta.caregiverId),
             text: recordedByText(
@@ -545,7 +547,7 @@ class _History extends ConsumerWidget {
             onRemove: onRemove == null ? null : () => onRemove(dose),
           ),
         for (final skip in skipped)
-          _HistoryRow(
+          RecordRow(
             caregiver: caregivers[skip.meta.caregiverId],
             name: nameOf(skip.meta.caregiverId),
             text: l10n.skippedBy(
@@ -553,70 +555,6 @@ class _History extends ConsumerWidget {
               skip.reason.label(l10n),
             ),
             onRemove: onRemove == null ? null : () => onRemove(skip),
-          ),
-      ],
-    );
-  }
-}
-
-class _HistoryRow extends StatelessWidget {
-  const _HistoryRow({
-    required this.caregiver,
-    required this.name,
-    required this.text,
-    required this.onRemove,
-  });
-
-  final Caregiver? caregiver;
-  final String name;
-  final String text;
-  final VoidCallback? onRemove;
-
-  @override
-  Widget build(BuildContext context) {
-    final caregiver = this.caregiver;
-    final onRemove = this.onRemove;
-    return Row(
-      spacing: AppSpacing.md,
-      children: [
-        if (caregiver != null) CaregiverAvatar(caregiver: caregiver),
-        Expanded(child: Text(text, style: AppTextStyles.body)),
-        if (onRemove != null)
-          TextButton(
-            onPressed: onRemove,
-            child: Text(
-              context.l10n.remove,
-              semanticsLabel: context.l10n.removeRecordOf(name),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _ReasonPicker extends StatelessWidget {
-  const _ReasonPicker({required this.onPicked});
-
-  final ValueChanged<SkipReason>? onPicked;
-
-  static const _buttonHeight = 48.0;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final onPicked = this.onPicked;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: AppSpacing.sm,
-      children: [
-        Text(l10n.skipReasonTitle, style: AppTextStyles.label),
-        for (final reason in SkipReason.values)
-          OutlinedButton(
-            onPressed: onPicked == null ? null : () => onPicked(reason),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size.fromHeight(_buttonHeight),
-            ),
-            child: Text(reason.label(l10n)),
           ),
       ],
     );
