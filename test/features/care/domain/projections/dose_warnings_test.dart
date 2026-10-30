@@ -43,8 +43,17 @@ void main() {
     final given = events.given('m1', at: eight, slotAt: eight, by: 'martin');
 
     expect(warn([events.created('m1'), given], slotAt: eight), [
-      isA<AlreadyGiven>().having((w) => w.dose, 'dose', given),
+      isA<AlreadyGiven>().having((w) => w.doses, 'doses', [given]),
     ]);
+  });
+
+  test('knows every record of a dose given more than once', () {
+    final first = events.given('m1', at: eight, slotAt: eight);
+    final second = events.given('m1', at: eight, slotAt: eight, by: 'martin');
+
+    final warnings = warn([events.created('m1'), first, second], slotAt: eight);
+
+    expect(knownDoseIdsOf(warnings), [first.meta.id, second.meta.id]);
   });
 
   test('warns before the entered minimum interval has passed', () {

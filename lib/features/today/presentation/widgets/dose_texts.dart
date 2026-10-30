@@ -68,9 +68,10 @@ extension DoseWarningText on DoseWarning {
     String nameOf(String id) => caregivers[id]?.name ?? l10n.unknownCaregiver;
 
     return switch (this) {
-      AlreadyGiven(:final dose) => l10n.warningAlreadyGiven(
-        nameOf(dose.meta.caregiverId),
-        time(dose.givenAt),
+      // The latest record; the sheet lists every one above.
+      AlreadyGiven(:final doses) => l10n.warningAlreadyGiven(
+        nameOf(doses.last.meta.caregiverId),
+        time(doses.last.givenAt),
       ),
       TooSoon(:final lastDose, :final allowedFrom) => l10n.warningTooSoon(
         time(lastDose.givenAt),

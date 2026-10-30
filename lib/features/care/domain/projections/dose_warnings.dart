@@ -11,9 +11,10 @@ sealed class DoseWarning {
 
 /// Someone already recorded this scheduled dose.
 final class AlreadyGiven extends DoseWarning {
-  const AlreadyGiven(this.dose);
+  const AlreadyGiven(this.doses);
 
-  final DoseGiven dose;
+  /// Every record of it, in log order: confirming anyway knows them all.
+  final List<DoseGiven> doses;
 }
 
 /// Another dose is closer than the entered minimum interval: usually the
@@ -53,7 +54,7 @@ final class OutOfDate extends DoseWarning {
 List<String> knownDoseIdsOf(List<DoseWarning> warnings) => [
   for (final warning in warnings)
     ...switch (warning) {
-      AlreadyGiven(:final dose) => [dose.meta.id],
+      AlreadyGiven(:final doses) => [for (final dose in doses) dose.meta.id],
       TooSoon(:final lastDose) => [lastDose.meta.id],
       DailyLimitReached() || Offline() || OutOfDate() => const <String>[],
     },
@@ -77,8 +78,8 @@ List<DoseWarning> doseWarnings(
   final at = givenAt ?? now;
   final schedule = medication.scheduleAt(at) ?? medication.schedule;
   final alreadyGiven = slotAt == null
-      ? null
-      : log.givenFor(medication.id, slotAt).firstOrNull;
+      ? const <DoseGiven>[]
+      : log.givenFor(medication.id, slotAt);
   final minInterval = switch (schedule) {
     FixedSchedule(:final minInterval) => minInterval,
     AsNeededSchedule(:final minInterval) => minInterval,
@@ -93,7 +94,7 @@ List<DoseWarning> doseWarnings(
       : _closestWithin(log.dosesGiven(medication.id), at, minInterval);
 
   return [
-    if (alreadyGiven != null) AlreadyGiven(alreadyGiven),
+    if (alreadyGiven.isNotEmpty) AlreadyGiven(alreadyGiven),
     if ((minInterval, closest) case (
       final Duration interval,
       final DoseGiven other,
