@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- A hand holding a heart, white on the app's teal. render.sh draws the
+       launcher, adaptive and launch images from this file. -->
+  <rect id="bg" width="1024" height="1024" fill="#1E6A64"/>
+  <g id="mark" transform="translate(512 459) scale(1) translate(-512 -512)" fill="#FFFFFF">
+    <!-- Heart, resting on the palm. -->
+    <path d="M512 590 C 412 520 338 458 338 380 C 338 322 382 280 436 280 C 470 280 498 298 512 326 C 526 298 554 280 588 280 C 642 280 686 322 686 380 C 686 458 612 520 512 590 Z"/>
+    <!-- Cupped hand: palm and fingers reaching right, thumb curling up. -->
+    <path d="M300 640 C 300 618 318 604 340 610 L 470 646 C 500 654 520 680 512 706 L 640 670 L 760 610 C 790 595 826 606 834 636 C 840 658 830 680 810 692 L 640 790 C 600 812 556 822 512 822 L 300 822 Z"/>
+    <!-- Sleeve. -->
+    <rect x="190" y="610" width="88" height="240" rx="24"/>
+  </g>
+</svg>

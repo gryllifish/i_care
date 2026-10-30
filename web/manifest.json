@@ -1,11 +1,11 @@
 {
-    "name": "i_care",
-    "short_name": "i_care",
+    "name": "ICare",
+    "short_name": "ICare",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "Shared care coordination for an older relative: medications, doses, stock and appointments.",
+    "background_color": "#DDE5E2",
+    "theme_color": "#1E6A64",
+    "description": "ICare: shared care of an older relative between several caregivers, with medications, who gave each dose, stock and appointments, offline first.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

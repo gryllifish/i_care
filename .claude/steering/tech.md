@@ -18,12 +18,13 @@
 | `fake_async` (dev) | Deterministic time for sync latency and undo windows. |
 | `very_good_analysis` (dev) | Strict lint set. |
 | `build_runner` (dev) | Runs the generators. |
+| `flutter_launcher_icons` (dev) | Platform icons from `tool/icon/icare.svg`, drawn by `tool/icon/render.sh`. |
 
 ### Deliberately not added yet (YAGNI)
 - **Firebase** (`firebase_core`, `firebase_auth`, `cloud_firestore`):
   stage 2, as a second `SyncGateway` implementation (`docs/backend.md`).
-- **`google_fonts`** / bundled fonts: platform font until phase 4 picks a
-  legibility-focused font.
+- **`google_fonts`**: Atkinson Hyperlegible Next is bundled in
+  `assets/fonts/` instead, so text never waits on a font server.
 - **Notifications**: out of the MVP; server-side alerts come with stage 3.
 - **Native flavors**: `--dart-define-from-file` covers dev/staging/prod
   until per-flavor app ids or icons are needed.
