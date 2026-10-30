@@ -232,15 +232,18 @@ final class DeviceOwnerIdProvider
 
 String _$deviceOwnerIdHash() => r'e5798ca577b965c557ae931d7f862e9cc9cd52c9';
 
-/// Who is recording on this device; "Who are you?" switches it.
+/// Who is recording on this device; "Who are you?" switches it, and the
+/// choice is remembered on this device.
 
 @ProviderFor(CurrentCaregiver)
 final currentCaregiverProvider = CurrentCaregiverProvider._();
 
-/// Who is recording on this device; "Who are you?" switches it.
+/// Who is recording on this device; "Who are you?" switches it, and the
+/// choice is remembered on this device.
 final class CurrentCaregiverProvider
     extends $NotifierProvider<CurrentCaregiver, Caregiver> {
-  /// Who is recording on this device; "Who are you?" switches it.
+  /// Who is recording on this device; "Who are you?" switches it, and the
+  /// choice is remembered on this device.
   CurrentCaregiverProvider._()
     : super(
         from: null,
@@ -268,9 +271,10 @@ final class CurrentCaregiverProvider
   }
 }
 
-String _$currentCaregiverHash() => r'a4ea8101c5de673a67f7f797a8186ce23461ea0b';
+String _$currentCaregiverHash() => r'36e1a2de43989acb85cf71ada2426503bc77f777';
 
-/// Who is recording on this device; "Who are you?" switches it.
+/// Who is recording on this device; "Who are you?" switches it, and the
+/// choice is remembered on this device.
 
 abstract class _$CurrentCaregiver extends $Notifier<Caregiver> {
   Caregiver build();

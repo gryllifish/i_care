@@ -1073,4 +1073,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get copy => 'Copy';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get sectionWho => 'Who you are';
+
+  @override
+  String get sectionLanguage => 'Language';
+
+  @override
+  String get languageSystem => 'System';
+
+  @override
+  String get sectionDemo => 'Demo';
+
+  @override
+  String get resetDemo => 'Reset sample data';
+
+  @override
+  String get resetDemoBody =>
+      'Deletes everything recorded on both phones and loads the sample data again.';
+
+  @override
+  String get resetDemoConfirm => 'Reset';
+
+  @override
+  String get resetDone => 'Sample data loaded again';
+
+  @override
+  String get sectionAbout => 'About';
+
+  @override
+  String get licenses => 'Open-source licenses';
+
+  @override
+  String get welcomeTitle => 'Welcome to ICare';
+
+  @override
+  String welcomeBody(String name) {
+    return 'Keep track of $name\'s care together: who gave each dose and when, stock, appointments and notes.';
+  }
+
+  @override
+  String get welcomeSample => 'Everything here is sample data. Try it freely.';
+
+  @override
+  String get welcomeWho => 'Who\'s using this phone?';
+
+  @override
+  String get welcomeStart => 'Got it';
 }

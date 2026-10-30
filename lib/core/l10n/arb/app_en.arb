@@ -881,5 +881,28 @@
     }
   },
   "handoffCopied": "Copied. Paste it in your family chat.",
-  "copy": "Copy"
+  "copy": "Copy",
+  "settingsTitle": "Settings",
+  "sectionWho": "Who you are",
+  "sectionLanguage": "Language",
+  "languageSystem": "System",
+  "sectionDemo": "Demo",
+  "resetDemo": "Reset sample data",
+  "resetDemoBody": "Deletes everything recorded on both phones and loads the sample data again.",
+  "resetDemoConfirm": "Reset",
+  "resetDone": "Sample data loaded again",
+  "sectionAbout": "About",
+  "licenses": "Open-source licenses",
+  "welcomeTitle": "Welcome to ICare",
+  "welcomeBody": "Keep track of {name}'s care together: who gave each dose and when, stock, appointments and notes.",
+  "@welcomeBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeSample": "Everything here is sample data. Try it freely.",
+  "welcomeWho": "Who's using this phone?",
+  "welcomeStart": "Got it"
 }

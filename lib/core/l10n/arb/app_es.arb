@@ -276,5 +276,21 @@
   "handoffNextAppointment": "Próximo turno:",
   "handoffLastNote": "Última nota de visita ({title}, {name}):",
   "handoffCopied": "Copiado. Pegalo en el chat de la familia.",
-  "copy": "Copiar"
+  "copy": "Copiar",
+  "settingsTitle": "Ajustes",
+  "sectionWho": "Quién sos",
+  "sectionLanguage": "Idioma",
+  "languageSystem": "Sistema",
+  "sectionDemo": "Demo",
+  "resetDemo": "Reiniciar datos de ejemplo",
+  "resetDemoBody": "Borra todo lo registrado en los dos teléfonos y vuelve a cargar los datos de ejemplo.",
+  "resetDemoConfirm": "Reiniciar",
+  "resetDone": "Datos de ejemplo cargados de nuevo",
+  "sectionAbout": "Acerca de",
+  "licenses": "Licencias de código abierto",
+  "welcomeTitle": "Te damos la bienvenida a ICare",
+  "welcomeBody": "Coordiná el cuidado de {name} entre todos: quién dio cada toma y cuándo, el stock, los turnos y las notas.",
+  "welcomeSample": "Todo lo que ves son datos de ejemplo. Probá con libertad.",
+  "welcomeWho": "¿Quién usa este teléfono?",
+  "welcomeStart": "Entendido"
 }

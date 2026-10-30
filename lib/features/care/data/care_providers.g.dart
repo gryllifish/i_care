@@ -247,6 +247,59 @@ final class SyncGatewayProvider
 
 String _$syncGatewayHash() => r'74690cd6230652fcbd3ba57dc4032a9f6db3131b';
 
+/// The repository with its sync controls, for the demo's reset.
+
+@ProviderFor(careRepositoryImpl)
+final careRepositoryImplProvider = CareRepositoryImplProvider._();
+
+/// The repository with its sync controls, for the demo's reset.
+
+final class CareRepositoryImplProvider
+    extends
+        $FunctionalProvider<
+          CareRepositoryImpl,
+          CareRepositoryImpl,
+          CareRepositoryImpl
+        >
+    with $Provider<CareRepositoryImpl> {
+  /// The repository with its sync controls, for the demo's reset.
+  CareRepositoryImplProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'careRepositoryImplProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$careRepositoryImplHash();
+
+  @$internal
+  @override
+  $ProviderElement<CareRepositoryImpl> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  CareRepositoryImpl create(Ref ref) {
+    return careRepositoryImpl(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CareRepositoryImpl value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CareRepositoryImpl>(value),
+    );
+  }
+}
+
+String _$careRepositoryImplHash() =>
+    r'e87e337a9c3b1063fe19ca58ab996000b6ce00a0';
+
 @ProviderFor(careRepository)
 final careRepositoryProvider = CareRepositoryProvider._();
 
@@ -286,4 +339,4 @@ final class CareRepositoryProvider
   }
 }
 
-String _$careRepositoryHash() => r'c00925ffebb8a495808de725d63b1069bd2dac49';
+String _$careRepositoryHash() => r'02c1a84b680ae14d3c507bb0ea0202e4f454e64e';

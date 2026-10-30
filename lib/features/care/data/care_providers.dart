@@ -49,8 +49,9 @@ SimulatedConnection simulatedConnection(Ref ref) {
 @Riverpod(keepAlive: true)
 SyncGateway syncGateway(Ref ref) => ref.watch(simulatedConnectionProvider);
 
+/// The repository with its sync controls, for the demo's reset.
 @Riverpod(keepAlive: true)
-CareRepository careRepository(Ref ref) {
+CareRepositoryImpl careRepositoryImpl(Ref ref) {
   final repository = CareRepositoryImpl(
     events: EventStore(ref.watch(eventBoxProvider)),
     syncState: SyncStateStore(ref.watch(syncStateBoxProvider)),
@@ -60,3 +61,6 @@ CareRepository careRepository(Ref ref) {
   ref.onDispose(repository.dispose);
   return repository;
 }
+
+@Riverpod(keepAlive: true)
+CareRepository careRepository(Ref ref) => ref.watch(careRepositoryImplProvider);

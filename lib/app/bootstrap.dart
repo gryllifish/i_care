@@ -16,6 +16,8 @@ import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
 import 'package:i_care/features/care/domain/entities/caregiver.dart';
+import 'package:i_care/features/settings/controllers/settings_controllers.dart';
+import 'package:i_care/shared/providers/device_prefs.dart';
 
 /// Sets up error reporting and storage, seeds the simulated server with
 /// sample data on first run, and starts one container per simulated
@@ -38,45 +40,90 @@ Future<void> bootstrap() async {
     await _openBox(SimulatedServer.boxName),
     clock: DateTime.now,
   );
-  if (server.isEmpty) {
-    await server.receive([
-      for (final event in SampleCircle.events(
-        DateTime.now(),
-        language: PlatformDispatcher.instance.locale.languageCode,
-      ))
-        CareEventCodec.encodeString(event),
-    ]);
-  }
+  if (server.isEmpty) await _seed(server);
 
-  final devices = [
+  final phones = [
     for (final owner in [SampleCircle.ana, SampleCircle.martin])
-      await _device(owner, server),
+      await _openPhone(owner),
   ];
+  Future<void> resetDemo() => _reset(server, phones);
+  final devices = [
+    for (final phone in phones)
+      SimulatedDevice(
+        owner: phone.owner,
+        container: ProviderContainer(
+          retry: retryPolicy,
+          overrides: [
+            eventBoxProvider.overrideWithValue(phone.events),
+            syncStateBoxProvider.overrideWithValue(phone.syncState),
+            devicePrefsProvider.overrideWithValue(
+              HiveDevicePrefs(phone.prefs),
+            ),
+            simulatedServerProvider.overrideWithValue(server),
+            deviceOwnerIdProvider.overrideWithValue(phone.owner.id),
+            demoResetProvider.overrideWithValue(resetDemo),
+          ],
+        ),
+      ),
+  ];
+  for (final (index, device) in devices.indexed) {
+    phones[index].container = device.container;
+  }
 
   AppLogger.info('Starting app (${Env.environment.name})');
   runApp(DemoShell(devices: devices));
 }
 
-Future<SimulatedDevice> _device(
-  Caregiver owner,
-  SimulatedServer server,
-) async {
-  final (events, syncState) = await (
+/// One simulated phone's storage, and its container once created.
+class _Phone {
+  _Phone(this.owner, this.events, this.syncState, this.prefs);
+
+  final Caregiver owner;
+  final Box<String> events;
+  final Box<String> syncState;
+  final Box<String> prefs;
+  ProviderContainer? container;
+}
+
+Future<_Phone> _openPhone(Caregiver owner) async {
+  final (events, syncState, prefs) = await (
     _openBox(EventStore.boxName(owner.id)),
     _openBox(SyncStateStore.boxName(owner.id)),
+    _openBox(HiveDevicePrefs.boxName(owner.id)),
   ).wait;
-  return SimulatedDevice(
-    owner: owner,
-    container: ProviderContainer(
-      retry: retryPolicy,
-      overrides: [
-        eventBoxProvider.overrideWithValue(events),
-        syncStateBoxProvider.overrideWithValue(syncState),
-        simulatedServerProvider.overrideWithValue(server),
-        deviceOwnerIdProvider.overrideWithValue(owner.id),
-      ],
-    ),
-  );
+  return _Phone(owner, events, syncState, prefs);
+}
+
+/// Loads the sample circle into the server, in the device's language.
+Future<void> _seed(SimulatedServer server) => server.receive([
+  for (final event in SampleCircle.events(
+    DateTime.now(),
+    language: PlatformDispatcher.instance.locale.languageCode,
+  ))
+    CareEventCodec.encodeString(event),
+]);
+
+/// Clears every phone and the server, then seeds again. Each phone stops
+/// syncing first and restarts afterwards from an empty cursor, so none
+/// keeps a position from the old log.
+Future<void> _reset(SimulatedServer server, List<_Phone> phones) async {
+  final repositories = [
+    for (final phone in phones)
+      if (phone.container case final container?)
+        container.read(careRepositoryImplProvider),
+  ];
+  for (final repository in repositories) {
+    await repository.stop();
+  }
+  await server.clear();
+  for (final phone in phones) {
+    await EventStore(phone.events).clear();
+    await SyncStateStore(phone.syncState).clear();
+  }
+  await _seed(server);
+  for (final repository in repositories) {
+    repository.start();
+  }
 }
 
 /// Initializes Hive; a failure is logged, and [_openBox] then falls back.

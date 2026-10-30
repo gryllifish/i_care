@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_care/app/app_shell.dart';
 import 'package:i_care/core/router/app_routes.dart';
@@ -12,6 +13,9 @@ import 'package:i_care/features/medications/presentation/screens/medication_deta
 import 'package:i_care/features/medications/presentation/screens/medication_form_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/medications_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/schedule_change_screen.dart';
+import 'package:i_care/features/settings/controllers/settings_controllers.dart';
+import 'package:i_care/features/settings/presentation/screens/settings_screen.dart';
+import 'package:i_care/features/settings/presentation/screens/welcome_screen.dart';
 import 'package:i_care/features/today/presentation/screens/today_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -25,9 +29,30 @@ part 'app_router.g.dart';
 /// browser's back button must not move both at once.
 @Riverpod(keepAlive: true)
 GoRouter appRouter(Ref ref) {
+  // The router lives as long as the app, so it follows the welcome flag
+  // through a listenable instead of being rebuilt.
+  final welcomeSeen = ValueNotifier(ref.read(welcomeSeenProvider));
+  ref
+    ..listen(welcomeSeenProvider, (_, seen) => welcomeSeen.value = seen)
+    ..onDispose(welcomeSeen.dispose);
+
   final router = GoRouter(
     routerNeglect: true,
+    refreshListenable: welcomeSeen,
+    redirect: (context, state) {
+      final atWelcome = state.matchedLocation == AppRoutes.welcome;
+      if (!welcomeSeen.value) return atWelcome ? null : AppRoutes.welcome;
+      return atWelcome ? AppRoutes.today : null;
+    },
     routes: [
+      GoRoute(
+        path: AppRoutes.welcome,
+        builder: (context, state) => const WelcomeScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        builder: (context, state) => const SettingsScreen(),
+      ),
       // Outside the shell, so they cover the tab bar.
       GoRoute(
         path: AppRoutes.emergency,

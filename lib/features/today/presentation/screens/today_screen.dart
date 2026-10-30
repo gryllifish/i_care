@@ -27,6 +27,7 @@ import 'package:i_care/shared/l10n/date_texts.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/caregiver_avatar.dart';
+import 'package:i_care/shared/widgets/caregiver_choices.dart';
 import 'package:i_care/shared/widgets/date_badge.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
 import 'package:i_care/shared/widgets/screen_header.dart';
@@ -193,7 +194,17 @@ class _Header extends StatelessWidget {
       overline: l10n.caringFor,
       title: SampleCircle.recipientName,
       subtitle: Formatters.longDay(day, locale),
-      trailing: const _TeamButton(),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const _TeamButton(),
+          IconButton(
+            tooltip: l10n.settingsTitle,
+            onPressed: () => context.push(AppRoutes.settings),
+            icon: const Icon(Icons.settings_outlined),
+          ),
+        ],
+      ),
       footer: const Wrap(
         spacing: AppSpacing.sm,
         runSpacing: AppSpacing.sm,
@@ -356,12 +367,11 @@ class _TeamButton extends ConsumerWidget {
   }
 }
 
-class _CaregiverPicker extends ConsumerWidget {
+class _CaregiverPicker extends StatelessWidget {
   const _CaregiverPicker();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final current = ref.watch(currentCaregiverProvider);
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
@@ -376,28 +386,7 @@ class _CaregiverPicker extends ConsumerWidget {
           spacing: AppSpacing.sm,
           children: [
             Text(context.l10n.whoAreYou, style: AppTextStyles.headline),
-            for (final caregiver in ref.watch(caregiversProvider))
-              AppCard(
-                raised: false,
-                color: caregiver == current
-                    ? AppColors.tealSoft
-                    : AppColors.surface,
-                onTap: () {
-                  ref.read(currentCaregiverProvider.notifier).select(caregiver);
-                  Navigator.of(context).pop();
-                },
-                child: Row(
-                  spacing: AppSpacing.md,
-                  children: [
-                    CaregiverAvatar(caregiver: caregiver),
-                    Expanded(
-                      child: Text(caregiver.name, style: AppTextStyles.label),
-                    ),
-                    if (caregiver == current)
-                      const Icon(Icons.check_circle, color: AppColors.teal),
-                  ],
-                ),
-              ),
+            CaregiverChoices(onChosen: () => Navigator.of(context).pop()),
           ],
         ),
       ),

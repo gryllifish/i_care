@@ -12,6 +12,7 @@ import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/care/domain/repositories/care_repository.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
+import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:i_care/shared/providers/id_provider.dart';
 
 /// An in-memory log; recorded events stay pending, as on a phone that
@@ -69,6 +70,9 @@ Future<void> pumpApp(
   required DateTime now,
   Size size = phoneSize,
   List<Override> overrides = const [],
+
+  /// This phone's preferences; by default, past the welcome.
+  DevicePrefs? prefs,
 }) async {
   tester.view
     ..physicalSize = size * 3
@@ -82,6 +86,9 @@ Future<void> pumpApp(
         careRepositoryProvider.overrideWithValue(repository),
         clockProvider.overrideWithValue(() => now),
         newIdProvider.overrideWithValue(() => 'new-${nextId++}'),
+        devicePrefsProvider.overrideWithValue(
+          prefs ?? MemoryDevicePrefs({PrefKeys.welcomeSeen: 'true'}),
+        ),
         ...overrides,
       ],
       // Riverpod retries failed providers by default; tests want the raw

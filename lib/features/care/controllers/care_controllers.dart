@@ -3,6 +3,7 @@ import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/caregiver.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
+import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'care_controllers.g.dart';
@@ -32,20 +33,28 @@ Map<String, Caregiver> caregiversById(Ref ref) => {
 @Riverpod(keepAlive: true)
 String deviceOwnerId(Ref ref) => SampleCircle.ana.id;
 
-/// Who is recording on this device; "Who are you?" switches it.
+/// Who is recording on this device; "Who are you?" switches it, and the
+/// choice is remembered on this device.
 @Riverpod(keepAlive: true)
 class CurrentCaregiver extends _$CurrentCaregiver {
   @override
   Caregiver build() {
-    final ownerId = ref.watch(deviceOwnerIdProvider);
+    final chosenId =
+        ref.watch(devicePrefsProvider).read(PrefKeys.caregiverId) ??
+        ref.watch(deviceOwnerIdProvider);
     final members = ref.watch(caregiversProvider);
     return members.firstWhere(
-      (caregiver) => caregiver.id == ownerId,
+      (caregiver) => caregiver.id == chosenId,
       orElse: () => members.first,
     );
   }
 
-  void select(Caregiver caregiver) => state = caregiver;
+  Future<void> select(Caregiver caregiver) async {
+    state = caregiver;
+    await ref
+        .read(devicePrefsProvider)
+        .write(PrefKeys.caregiverId, caregiver.id);
+  }
 }
 
 /// Whether this simulated phone has network. Demo control only.

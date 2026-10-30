@@ -205,6 +205,13 @@ documented), nursing-home features.
   skipped, still to give (yesterday's too), doses to review, low stock,
   next appointment within a week and the latest visit note; one button
   copies it. Plain text, no emoji.
+- Phase 3, settings and welcome: per-phone preferences in Hive (who
+  you are, language, welcome seen); a first-run welcome with the
+  medical disclaimer and "Who's using this phone?"; Settings (gear on
+  Today) with identity, language (System / Español / English), demo
+  reset across both phones (repositories stop, stores and server are
+  cleared, the sample is seeded again, syncing restarts from an empty
+  cursor), disclaimer and licenses.
 - Visual refresh: navigation bar, read-only Medications (schedule,
   instructions, stock) and Activity (feed by day) tabs, redesigned Today,
   bundled font.
@@ -213,12 +220,9 @@ documented), nursing-home features.
 - Routers use `routerNeglect`, so the browser back button never moves
   both demo phones; on the web a deep link to a tab is not honored
   either (two apps on one page). Acceptable for the demo.
-- The chosen identity ("Who are you?") resets on reload.
 
 ### Next steps, in order
-1. **Phase 3**: appointments and visit notes (questions, post-visit
-   prompt); emergency card; handoff summary; Activity; Settings.
-2. **Phase 4**: accessibility pass (large text, screen readers), dark
+1. **Phase 4**: accessibility pass (large text, screen readers), dark
    theme, app icon, screenshots, README.
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.

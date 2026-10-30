@@ -1072,4 +1072,56 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get copy => 'Copiar';
+
+  @override
+  String get settingsTitle => 'Ajustes';
+
+  @override
+  String get sectionWho => 'Quién sos';
+
+  @override
+  String get sectionLanguage => 'Idioma';
+
+  @override
+  String get languageSystem => 'Sistema';
+
+  @override
+  String get sectionDemo => 'Demo';
+
+  @override
+  String get resetDemo => 'Reiniciar datos de ejemplo';
+
+  @override
+  String get resetDemoBody =>
+      'Borra todo lo registrado en los dos teléfonos y vuelve a cargar los datos de ejemplo.';
+
+  @override
+  String get resetDemoConfirm => 'Reiniciar';
+
+  @override
+  String get resetDone => 'Datos de ejemplo cargados de nuevo';
+
+  @override
+  String get sectionAbout => 'Acerca de';
+
+  @override
+  String get licenses => 'Licencias de código abierto';
+
+  @override
+  String get welcomeTitle => 'Te damos la bienvenida a ICare';
+
+  @override
+  String welcomeBody(String name) {
+    return 'Coordiná el cuidado de $name entre todos: quién dio cada toma y cuándo, el stock, los turnos y las notas.';
+  }
+
+  @override
+  String get welcomeSample =>
+      'Todo lo que ves son datos de ejemplo. Probá con libertad.';
+
+  @override
+  String get welcomeWho => '¿Quién usa este teléfono?';
+
+  @override
+  String get welcomeStart => 'Entendido';
 }

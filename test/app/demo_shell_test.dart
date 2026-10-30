@@ -13,6 +13,7 @@ import 'package:i_care/features/care/data/sync/simulated_server.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/today/presentation/screens/today_screen.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
+import 'package:i_care/shared/providers/device_prefs.dart';
 
 import '../helpers/pump_app.dart';
 
@@ -40,6 +41,9 @@ void main() {
                 connections[owner.id] = SimulatedConnection(server),
               ),
               deviceOwnerIdProvider.overrideWithValue(owner.id),
+              devicePrefsProvider.overrideWithValue(
+                MemoryDevicePrefs({PrefKeys.welcomeSeen: 'true'}),
+              ),
               clockProvider.overrideWithValue(() => now),
             ],
           ),

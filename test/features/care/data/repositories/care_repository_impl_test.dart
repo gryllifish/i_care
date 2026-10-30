@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/features/care/data/datasources/event_store.dart';
 import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
+import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/data/repositories/care_repository_impl.dart';
 import 'package:i_care/features/care/data/sync/simulated_connection.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
@@ -87,6 +88,25 @@ void main() {
 
     await logWhere(repository, allSynced);
     expect(server.eventsAfter(null).events, hasLength(1));
+  });
+
+  test('after a stop and a reset, syncing restarts from the new log', () async {
+    final (repository, _) = await device('a');
+    await repository.record(events.given('m1', at: eight));
+    await logWhere(repository, allSynced);
+
+    await repository.stop();
+    await server.clear();
+    final eventsBox = await openBox(EventStore.boxName('a'));
+    final syncBox = await openBox(SyncStateStore.boxName('a'));
+    await EventStore(eventsBox).clear();
+    await SyncStateStore(syncBox).clear();
+    final fresh = events.given('m2', at: eight);
+    await server.receive([CareEventCodec.encodeString(fresh)]);
+    repository.start();
+
+    final [received] = await logWhere(repository, (log) => log.isNotEmpty);
+    expect(received.meta.id, fresh.meta.id);
   });
 
   test('two offline devices converge on the same log', () async {

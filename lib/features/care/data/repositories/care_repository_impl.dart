@@ -51,10 +51,17 @@ class CareRepositoryImpl implements CareRepository {
     unawaited(_push());
   }
 
-  Future<void> dispose() async {
+  /// Stops syncing and waits for work in flight, so the stores can be
+  /// cleared safely; [start] resumes from whatever cursor is stored then.
+  Future<void> stop() async {
     await _subscription?.cancel();
+    _subscription = null;
     await _applying;
     await _pushing;
+  }
+
+  Future<void> dispose() async {
+    await stop();
     await _statusChanges.close();
   }
 

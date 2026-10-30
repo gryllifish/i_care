@@ -44,6 +44,11 @@ abstract final class AppRoutes {
   /// Full screen too: the handoff text and a copy button.
   static const handoff = '/handoff';
 
+  static const settings = '/settings';
+
+  /// Shown instead of everything else until the welcome was seen.
+  static const welcome = '/welcome';
+
   /// Nested under [appointments], like medications.
   static const newAppointment = 'new';
   static const appointment = ':$idParam';

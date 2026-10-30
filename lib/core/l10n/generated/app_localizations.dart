@@ -1764,6 +1764,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copy'**
   String get copy;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @sectionWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who you are'**
+  String get sectionWho;
+
+  /// No description provided for @sectionLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get sectionLanguage;
+
+  /// No description provided for @languageSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get languageSystem;
+
+  /// No description provided for @sectionDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Demo'**
+  String get sectionDemo;
+
+  /// No description provided for @resetDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset sample data'**
+  String get resetDemo;
+
+  /// No description provided for @resetDemoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletes everything recorded on both phones and loads the sample data again.'**
+  String get resetDemoBody;
+
+  /// No description provided for @resetDemoConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get resetDemoConfirm;
+
+  /// No description provided for @resetDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Sample data loaded again'**
+  String get resetDone;
+
+  /// No description provided for @sectionAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get sectionAbout;
+
+  /// No description provided for @licenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source licenses'**
+  String get licenses;
+
+  /// No description provided for @welcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to ICare'**
+  String get welcomeTitle;
+
+  /// No description provided for @welcomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep track of {name}\'s care together: who gave each dose and when, stock, appointments and notes.'**
+  String welcomeBody(String name);
+
+  /// No description provided for @welcomeSample.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything here is sample data. Try it freely.'**
+  String get welcomeSample;
+
+  /// No description provided for @welcomeWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who\'s using this phone?'**
+  String get welcomeWho;
+
+  /// No description provided for @welcomeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get welcomeStart;
 }
 
 class _AppLocalizationsDelegate
