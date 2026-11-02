@@ -42,8 +42,8 @@ Future<void> showDoseSheet(
 
 /// Records the dose in [detail] as given at [givenAt] (now when null),
 /// counting the doses its warnings showed as known, and confirms it with
-/// an undo option.
-Future<void> recordDoseGiven(
+/// an undo option. Resolves to whether it was recorded.
+Future<bool> recordDoseGiven(
   BuildContext context,
   WidgetRef ref, {
   required DoseDetail detail,
@@ -73,8 +73,10 @@ Future<void> recordDoseGiven(
           onPressed: () => actions.undo(value),
         ),
       );
+      return true;
     case Err(:final failure):
       messenger.showError(failure.message(l10n));
+      return false;
   }
 }
 

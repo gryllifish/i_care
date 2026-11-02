@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_care/core/constants/app_durations.dart';
@@ -473,54 +476,57 @@ class _DayProgress extends StatelessWidget {
   }
 }
 
-/// Shows that the next dose changed, after one is given or skipped: the
-/// old card rises and fades while the new one comes up from below, like
-/// a queue moving on; when none is left, the space closes. Instant when
-/// the system asks to reduce motion.
+/// Shows that the next dose changed, as Material's "fade through": the
+/// old card fades out where it is, then the new one fades in while
+/// growing slightly into place. One after the other, never overlapping,
+/// so two cards are never seen at once; when none is left, the space
+/// closes. Instant when the system asks to reduce motion.
 class _NextDoseSwitcher extends StatelessWidget {
   const _NextDoseSwitcher({required this.child});
 
   /// Keyed by dose; null when the day is done.
   final Widget? child;
 
-  /// How far the cards travel, as a share of their height.
-  static const _travel = 0.15;
+  /// Out over the first part, in over the rest, with no gap between.
+  static const _handover = 0.4;
+  static const _duration = Duration(milliseconds: 500);
+  static const _enterScale = 0.94;
 
   @override
   Widget build(BuildContext context) {
     final child = this.child;
     // AnimatedSize cannot run for zero time, and nothing needs to move.
     if (context.reduceMotion) return child ?? const SizedBox.shrink();
-    const duration = AppDurations.medium;
     final current = child?.key;
     return AnimatedSize(
-      duration: duration,
+      duration: _duration,
       curve: AppCurves.emphasized,
       alignment: Alignment.topCenter,
       child: AnimatedSwitcher(
-        duration: duration,
-        switchInCurve: AppCurves.emphasized,
-        switchOutCurve: Curves.easeIn,
-        // The new card on top, the old one under it while it leaves.
+        duration: _duration,
+        switchInCurve: const Interval(
+          _handover,
+          1,
+          curve: AppCurves.emphasized,
+        ),
+        // Runs backwards for the leaving card: done by the handover.
+        switchOutCurve: const Interval(1 - _handover, 1, curve: Curves.easeIn),
         layoutBuilder: (current, previous) => Stack(
           alignment: Alignment.topCenter,
           children: [...previous, ?current],
         ),
-        transitionBuilder: (card, animation) {
-          // Entering: from below. Leaving (the animation runs backwards):
-          // towards the top.
-          final entering = card.key == current;
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween(
-                begin: Offset(0, entering ? _travel : -_travel),
-                end: Offset.zero,
-              ).animate(animation),
-              child: card,
-            ),
-          );
-        },
+        // The same widgets whether a card enters or leaves: the switcher
+        // rebuilds transitions on every build, and a different shape would
+        // recreate the leaving card and lose its "Given".
+        transitionBuilder: (card, animation) => FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: card.key == current
+                ? Tween<double>(begin: _enterScale, end: 1).animate(animation)
+                : const AlwaysStoppedAnimation(1),
+            child: card,
+          ),
+        ),
         child: child ?? const SizedBox(width: double.infinity),
       ),
     );
@@ -545,6 +551,9 @@ class _NextDoseCard extends ConsumerStatefulWidget {
 
 class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
   var _busy = false;
+
+  /// Recorded from this card: it says so while it fades out.
+  var _given = false;
 
   @override
   Widget build(BuildContext context) {
@@ -621,13 +630,17 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
             ),
             const SizedBox(height: AppSpacing.sm),
             FilledButton.icon(
-              onPressed: _busy ? null : _give,
+              onPressed: _busy || _given ? null : _give,
               style: FilledButton.styleFrom(
                 backgroundColor: colors.onHero,
                 foregroundColor: (isLate ? colors.heroLate : colors.hero).first,
+                // Given stays as legible as before, not greyed out.
+                disabledBackgroundColor: colors.onHero,
+                disabledForegroundColor:
+                    (isLate ? colors.heroLate : colors.hero).first,
               ),
-              icon: const Icon(Icons.check),
-              label: Text(l10n.markGiven),
+              icon: Icon(_given ? Icons.check_circle : Icons.check),
+              label: Text(_given ? l10n.statusGiven : l10n.markGiven),
             ),
             TextButton(
               onPressed: widget.onOpen,
@@ -654,8 +667,19 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
       return;
     }
     setState(() => _busy = true);
-    await recordDoseGiven(context, ref, detail: detail, slotAt: slot.slotAt);
-    if (mounted) setState(() => _busy = false);
+    final given = await recordDoseGiven(
+      context,
+      ref,
+      detail: detail,
+      slotAt: slot.slotAt,
+    );
+    if (given) unawaited(HapticFeedback.lightImpact());
+    if (mounted) {
+      setState(() {
+        _busy = false;
+        _given = given;
+      });
+    }
   }
 }
 

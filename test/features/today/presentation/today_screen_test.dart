@@ -106,23 +106,51 @@ void main() {
   group('the next dose card', () {
     Future<void> giveFromCard(WidgetTester tester) async {
       await tester.tap(find.text('Mark as given').first);
-      // The record lands, the log changes, the card starts to switch.
+      // The record lands, the log changes, the card starts to switch and
+      // the given one learns it was recorded.
+      await tester.pump();
       await tester.pump();
       await tester.pump();
     }
 
-    testWidgets('moves on to the next dose with a visible transition', (
+    /// How visible the card with [title] is, as its fade sets it.
+    double opacityOf(WidgetTester tester, String title) => tester
+        .widget<FadeTransition>(
+          find
+              .ancestor(
+                of: find.text(title),
+                matching: find.byType(FadeTransition),
+              )
+              .first,
+        )
+        .opacity
+        .value;
+
+    testWidgets('says the dose was given, then fades through to the next', (
       tester,
     ) async {
       await pumpApp(tester, repository: circle(), now: now);
       expect(find.text('08:00 · Enalapril'), findsOneWidget);
 
       await giveFromCard(tester);
-      await tester.pump(const Duration(milliseconds: 150));
+      expect(
+        find.ancestor(
+          of: find.text('Given'),
+          matching: find.byWidgetPredicate((widget) => widget is FilledButton),
+        ),
+        findsOneWidget,
+      );
 
-      // Halfway: the given dose leaves while the next one arrives.
-      expect(find.text('08:00 · Enalapril'), findsOneWidget);
-      expect(find.text('20:00 · Enalapril'), findsOneWidget);
+      // Early on: the given card is still fading; the next one has not
+      // appeared, so two cards are never seen at once.
+      await tester.pump(const Duration(milliseconds: 120));
+      expect(opacityOf(tester, '08:00 · Enalapril'), greaterThan(0));
+      expect(opacityOf(tester, '20:00 · Enalapril'), 0);
+
+      // Later: the given card is gone, the next one is coming in.
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(opacityOf(tester, '08:00 · Enalapril'), 0);
+      expect(opacityOf(tester, '20:00 · Enalapril'), greaterThan(0));
 
       await tester.pumpAndSettle();
       expect(find.text('08:00 · Enalapril'), findsNothing);
