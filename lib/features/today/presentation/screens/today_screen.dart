@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:i_care/core/constants/app_durations.dart';
 import 'package:i_care/core/l10n/duration_text.dart';
 import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
@@ -124,14 +125,20 @@ class _TodayContent extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           _ConflictCard(item: item, onTap: () => _openConflict(context, item)),
         ],
-        if (next != null) ...[
-          const SizedBox(height: AppSpacing.lg),
-          _NextDoseCard(
-            slot: next,
-            isFromYesterday: next.slotAt.isBefore(view.day),
-            onOpen: () => open(next),
-          ),
-        ],
+        _NextDoseSwitcher(
+          child: next == null
+              ? null
+              : Padding(
+                  // One card per dose: a new one animates in.
+                  key: ValueKey((next.medication.id, next.slotAt)),
+                  padding: const EdgeInsets.only(top: AppSpacing.lg),
+                  child: _NextDoseCard(
+                    slot: next,
+                    isFromYesterday: next.slotAt.isBefore(view.day),
+                    onOpen: () => open(next),
+                  ),
+                ),
+        ),
         if (view.nextAppointment case final appointment?) ...[
           const SizedBox(height: AppSpacing.lg),
           _NextAppointmentCard(appointment: appointment),
@@ -461,6 +468,60 @@ class _DayProgress extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Shows that the next dose changed, after one is given or skipped: the
+/// old card rises and fades while the new one comes up from below, like
+/// a queue moving on; when none is left, the space closes. Instant when
+/// the system asks to reduce motion.
+class _NextDoseSwitcher extends StatelessWidget {
+  const _NextDoseSwitcher({required this.child});
+
+  /// Keyed by dose; null when the day is done.
+  final Widget? child;
+
+  /// How far the cards travel, as a share of their height.
+  static const _travel = 0.15;
+
+  @override
+  Widget build(BuildContext context) {
+    final child = this.child;
+    // AnimatedSize cannot run for zero time, and nothing needs to move.
+    if (context.reduceMotion) return child ?? const SizedBox.shrink();
+    const duration = AppDurations.medium;
+    final current = child?.key;
+    return AnimatedSize(
+      duration: duration,
+      curve: AppCurves.emphasized,
+      alignment: Alignment.topCenter,
+      child: AnimatedSwitcher(
+        duration: duration,
+        switchInCurve: AppCurves.emphasized,
+        switchOutCurve: Curves.easeIn,
+        // The new card on top, the old one under it while it leaves.
+        layoutBuilder: (current, previous) => Stack(
+          alignment: Alignment.topCenter,
+          children: [...previous, ?current],
+        ),
+        transitionBuilder: (card, animation) {
+          // Entering: from below. Leaving (the animation runs backwards):
+          // towards the top.
+          final entering = card.key == current;
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: Tween(
+                begin: Offset(0, entering ? _travel : -_travel),
+                end: Offset.zero,
+              ).animate(animation),
+              child: card,
+            ),
+          );
+        },
+        child: child ?? const SizedBox(width: double.infinity),
       ),
     );
   }

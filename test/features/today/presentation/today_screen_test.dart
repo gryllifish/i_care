@@ -103,6 +103,50 @@ void main() {
     expect(find.text('Ana at 08:10'), findsNothing);
   });
 
+  group('the next dose card', () {
+    Future<void> giveFromCard(WidgetTester tester) async {
+      await tester.tap(find.text('Mark as given').first);
+      // The record lands, the log changes, the card starts to switch.
+      await tester.pump();
+      await tester.pump();
+    }
+
+    testWidgets('moves on to the next dose with a visible transition', (
+      tester,
+    ) async {
+      await pumpApp(tester, repository: circle(), now: now);
+      expect(find.text('08:00 · Enalapril'), findsOneWidget);
+
+      await giveFromCard(tester);
+      await tester.pump(const Duration(milliseconds: 150));
+
+      // Halfway: the given dose leaves while the next one arrives.
+      expect(find.text('08:00 · Enalapril'), findsOneWidget);
+      expect(find.text('20:00 · Enalapril'), findsOneWidget);
+
+      await tester.pumpAndSettle();
+      expect(find.text('08:00 · Enalapril'), findsNothing);
+      expect(find.text('20:00 · Enalapril'), findsOneWidget);
+    });
+
+    testWidgets('changes at once when the system reduces motion', (
+      tester,
+    ) async {
+      tester.platformDispatcher.accessibilityFeaturesTestValue =
+          const FakeAccessibilityFeatures(disableAnimations: true);
+      addTearDown(
+        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
+      );
+      await pumpApp(tester, repository: circle(), now: now);
+
+      await giveFromCard(tester);
+      await tester.pump();
+
+      expect(find.text('08:00 · Enalapril'), findsNothing);
+      expect(find.text('20:00 · Enalapril'), findsOneWidget);
+    });
+  });
+
   testWidgets('warns when this phone has not synced for a while', (
     tester,
   ) async {
