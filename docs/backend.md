@@ -99,7 +99,7 @@ against the Firestore emulator in stage 2.
 ```
 circles/{circleId}
   name, recipientName, createdAt
-  members/{uid}          role (family | carer | viewer), caregiverId, joinedAt
+  members/{uid}          role, memberId, status (see roles.md)
   events/{eventId}       the CareEvent as JSON, receivedAt = serverTimestamp()
 ```
 - Event ids are the client UUIDs, so a retried write is the same document

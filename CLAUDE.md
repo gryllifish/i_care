@@ -50,6 +50,7 @@ messages in English.
 | Creating files or folders, naming things | `.claude/steering/structure.md` |
 | Writing controllers, repositories, error handling | `.claude/steering/architecture.md` |
 | Touching events, projections, sync or the backend | `docs/backend.md` |
+| Touching members, roles, permissions or joining | `docs/roles.md` |
 | Unsure about a style rule, writing tests, finishing a task | `.claude/steering/code-style.md` |
 | Committing, branching, PRs | `.claude/steering/git-workflow.md` |
 

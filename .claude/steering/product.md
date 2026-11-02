@@ -139,6 +139,12 @@ family portal for residents' relatives is a possible later path.
     with confirmation, and listed in the handoff for the next
     appointment. ICare stores links only, never files.
 
+15. **Roles and membership** (designed, not built): admin, caregiver,
+    helper and view-only members with their own permissions and data,
+    phones joined by one-time invitation codes instead of "Who are you?",
+    and the server checking every event. Design and phases:
+    [`docs/roles.md`](../../docs/roles.md).
+
 ### Later candidates (after the MVP)
 - Uploaded files (PDFs, photos) for appointment documents: with the
   stage 2 backend and file storage, and only once local data is
@@ -269,8 +275,11 @@ documented), nursing-home features.
   either (two apps on one page). Acceptable for the demo.
 
 ### Next steps, in order
-1. Review design details with the user; update README screenshots to
-   show tasks.
+1. Roles, phase 1: members, roles and authorization
+   ([`docs/roles.md`](../../docs/roles.md)); then phases 2 and 3.
+2. Shifts (who is responsible when), designed after roles.
+3. Review design details with the user; update README screenshots.
+4. Dependabot PRs #1 and #2 (very_good_analysis 11).
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.
 
