@@ -53,6 +53,7 @@ Future<void> bootstrap() async {
     await _clearAll(server, phones);
     await _seed(server, phones);
   }
+  await _restoreMembers(server, phones);
   Future<void> resetDemo() => _reset(server, phones);
   final devices = [
     for (final phone in phones)
@@ -120,6 +121,22 @@ Future<void> _seed(SimulatedServer server, List<_Phone> phones) async {
   for (final phone in phones) {
     await server.bind(phone.deviceId, phone.owner.id);
     await HiveDevicePrefs(phone.prefs).write(PrefKeys.memberId, phone.owner.id);
+  }
+}
+
+/// Tells each phone whose it is when only the server knows: phones saved
+/// before they kept it themselves. A phone that left keeps asking for a
+/// code: the server has no current member for it.
+Future<void> _restoreMembers(
+  SimulatedServer server,
+  List<_Phone> phones,
+) async {
+  for (final phone in phones) {
+    final prefs = HiveDevicePrefs(phone.prefs);
+    if (prefs.read(PrefKeys.memberId) != null) continue;
+    if (server.activeMemberOf(phone.deviceId) case final String memberId) {
+      await prefs.write(PrefKeys.memberId, memberId);
+    }
   }
 }
 

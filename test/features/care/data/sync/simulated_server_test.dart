@@ -201,6 +201,9 @@ void main() {
       expect(server.isActive('phone-martin'), isFalse);
       expect(server.isActive('phone-rosa'), isFalse);
       expect(server.isActive('phone-ana'), isTrue);
+      expect(server.activeMemberOf('phone-ana'), 'ana');
+      expect(server.activeMemberOf('phone-martin'), isNull);
+      expect(server.activeMemberOf('phone-unknown'), isNull);
     },
   );
 }

@@ -173,6 +173,11 @@ class SimulatedServer {
     _ => false,
   };
 
+  /// The current member [deviceId] belongs to; null when it never joined,
+  /// left, or its member was removed.
+  String? activeMemberOf(String deviceId) =>
+      isActive(deviceId) ? _bindings[deviceId]?.memberId : null;
+
   /// A new one-time code for [memberId], asked by an admin on [deviceId].
   /// Any unused code for the same member stops working: one live code per
   /// person.
