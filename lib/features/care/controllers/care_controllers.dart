@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/features/care/data/care_providers.dart';
+import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
@@ -45,6 +46,19 @@ List<Member> members(Ref ref) =>
 @Riverpod(keepAlive: true)
 Map<String, Member> membersById(Ref ref) =>
     ref.watch(careLogProvider).value?.membersById ?? const {};
+
+/// The circle's own skip reasons by id, to say why a dose or task was
+/// skipped.
+@Riverpod(keepAlive: true)
+Map<String, String> customReasons(Ref ref) =>
+    ref.watch(careLogProvider).value?.customReasonLabels ?? const {};
+
+/// The reasons offered when a dose is not given, or with [forTask] a
+/// task not done, by id (`CareLog.reasonChoices`).
+@riverpod
+List<String> reasonChoices(Ref ref, {required bool forTask}) =>
+    ref.watch(careLogProvider).value?.reasonChoices(forTask: forTask) ??
+    [SkipReason.other.id];
 
 /// The member this device joined the circle as; null until it joins
 /// with a code, and again after it leaves (`docs/roles.md`). Remembered

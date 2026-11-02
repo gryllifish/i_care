@@ -692,4 +692,65 @@ void main() {
       );
     });
   });
+
+  group('skip reasons', () {
+    CareEvent added(String id, String label) => CareEvent.skipReasonAdded(
+      meta: events.meta(at: DateTime(2026, 1, 2)),
+      reasonId: id,
+      label: label,
+    );
+    CareEvent hidden(String id) => CareEvent.skipReasonHidden(
+      meta: events.meta(at: DateTime(2026, 1, 3)),
+      reasonId: id,
+    );
+
+    test("offer the standard ones, the circle's, then Other", () {
+      final log = CareLog([
+        added('custom-1', 'At the day center'),
+        hidden('asleep'),
+        hidden('other'),
+      ]);
+
+      expect(log.reasonChoices(forTask: false), [
+        'refused',
+        'unwell',
+        'doctor_advice',
+        'custom-1',
+        'other',
+      ]);
+      expect(log.reasonChoices(forTask: true), [
+        'refused',
+        'unwell',
+        'custom-1',
+        'other',
+      ]);
+    });
+
+    test('a hidden one still names old records, and can come back', () {
+      final log = CareLog([
+        added('custom-1', 'At the day center'),
+        hidden('custom-1'),
+      ]);
+
+      expect(log.reasonChoices(forTask: false), isNot(contains('custom-1')));
+      expect(log.customReasonLabels['custom-1'], 'At the day center');
+
+      final back = CareLog([
+        ...log.events,
+        CareEvent.skipReasonShown(
+          meta: events.meta(at: DateTime(2026, 1, 4)),
+          reasonId: 'custom-1',
+        ),
+      ]);
+      expect(back.reasonChoices(forTask: false), contains('custom-1'));
+    });
+
+    test('a new label is not blank and not already there', () {
+      final log = CareLog([added('custom-1', 'At the day center')]);
+
+      expect(log.isNewReasonLabel('  '), isFalse);
+      expect(log.isNewReasonLabel(' at the DAY center '), isFalse);
+      expect(log.isNewReasonLabel('Visiting family'), isTrue);
+    });
+  });
 }

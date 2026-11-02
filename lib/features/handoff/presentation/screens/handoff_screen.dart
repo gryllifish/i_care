@@ -31,6 +31,7 @@ class HandoffScreen extends ConsumerWidget {
             recipientName: SampleCircle.recipientName,
             caregivers: ref.watch(membersByIdProvider),
             locale: Localizations.localeOf(context).toLanguageTag(),
+            customReasons: ref.watch(customReasonsProvider),
           ),
         ),
         AsyncError(:final error) => ErrorView(

@@ -248,10 +248,12 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
               if (_choosingReason && slot != null)
                 SkipReasonPicker(
                   title: l10n.skipReasonTitle,
-                  reasons: SkipReason.values,
+                  reasonIds: ref.watch(
+                    reasonChoicesProvider(forTask: false),
+                  ),
                   onPicked: _busy
                       ? null
-                      : (reason) => _skip(detail, slot, reason),
+                      : (reasonId, note) => _skip(detail, slot, reasonId, note),
                 )
               else ...[
                 _GivenAtPicker(
@@ -303,7 +305,8 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
   Future<void> _skip(
     DoseDetail detail,
     DoseSlot slot,
-    SkipReason reason,
+    String reasonId,
+    String? note,
   ) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
@@ -313,7 +316,8 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     final result = await actions.skip(
       detail.medication,
       slotAt: slot.slotAt,
-      reason: reason,
+      reasonId: reasonId,
+      note: note,
     );
     if (!mounted) return;
     Navigator.of(context).pop();
@@ -567,7 +571,12 @@ class _History extends ConsumerWidget {
             name: nameOf(skip.meta.caregiverId),
             text: l10n.skippedBy(
               nameOf(skip.meta.caregiverId),
-              skip.reason.label(l10n),
+              skipText(
+                l10n,
+                reasonId: skip.reasonId,
+                note: skip.note,
+                customReasons: ref.watch(customReasonsProvider),
+              ),
             ),
             onRemove: removable(skip) ? () => onRemove?.call(skip) : null,
           ),

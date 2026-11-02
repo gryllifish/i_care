@@ -19,6 +19,7 @@ String handoffText(
   required String recipientName,
   required Map<String, Member> caregivers,
   required String locale,
+  required Map<String, String> customReasons,
 }) {
   final at = handoff.at;
   final today = DateTime(at.year, at.month, at.day);
@@ -42,8 +43,19 @@ String handoffText(
     return '- ${medicationName(medication)}, ${time(dose.givenAt)} ($who)';
   }
 
+  String skipOf(CareEvent skip) => switch (skip) {
+    DoseSkipped(:final reasonId, :final note) ||
+    TaskSkipped(:final reasonId, :final note) => skipText(
+      l10n,
+      reasonId: reasonId,
+      note: note,
+      customReasons: customReasons,
+    ),
+    _ => '',
+  };
+
   String skippedLine(DoseSlot slot) {
-    final reason = slot.skipped.first.reason.label(l10n);
+    final reason = skipOf(slot.skipped.first);
     return '- ${medicationName(slot.medication)}, ${time(slot.slotAt)}: '
         '$reason';
   }
@@ -58,7 +70,7 @@ String handoffText(
   }
 
   String taskSkippedLine(TaskSlot slot) =>
-      '- ${slot.task.details.name}: ${slot.skipped.first.reason.label(l10n)}';
+      '- ${slot.task.details.name}: ${skipOf(slot.skipped.first)}';
 
   final next = handoff.nextAppointment;
   final note = handoff.latestNote;

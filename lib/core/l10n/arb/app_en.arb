@@ -1324,5 +1324,48 @@
       }
     }
   },
-  "summaryNothingYet": "Nothing recorded today yet."
+  "summaryNothingYet": "Nothing recorded today yet.",
+  "activityReasonAdded": "{name} added the reason \"{reason}\"",
+  "@activityReasonAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "activityReasonHidden": "{name} stopped offering \"{reason}\"",
+  "@activityReasonHidden": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "activityReasonShown": "{name} offered \"{reason}\" again",
+  "@activityReasonShown": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "skipOtherField": "What happened?",
+  "skipOtherSave": "Save",
+  "sectionReasons": "Reasons for not giving or doing",
+  "reasonsNote": "Offered when a dose is not given or a task not done. \"Other\" is always there, to write what happened.",
+  "reasonMedicationsOnly": "Medications only",
+  "reasonOwn": "Added by the circle",
+  "fieldNewReason": "New reason",
+  "fieldNewReasonHint": "e.g. At the hospital",
+  "addReason": "Add reason",
+  "reasonExists": "Enter a reason that is not on the list."
 }

@@ -153,6 +153,7 @@ class _EntryRow extends ConsumerWidget {
                     author: caregiver?.name ?? l10n.unknownCaregiver,
                     subject: entry.subject,
                     locale: locale,
+                    customReasons: ref.watch(customReasonsProvider),
                   ),
                   style: AppTextStyles.body,
                 ),

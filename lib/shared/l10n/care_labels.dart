@@ -6,6 +6,31 @@ import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/task_validation.dart';
 
+/// A skip reason by id: a standard one translated, the circle's as it
+/// was written ([customReasons]); "Other" when unknown.
+String reasonLabel(
+  AppLocalizations l10n,
+  String reasonId, {
+  required Map<String, String> customReasons,
+}) =>
+    SkipReason.byId(reasonId)?.label(l10n) ??
+    customReasons[reasonId] ??
+    l10n.skipOther;
+
+/// Why a dose was not given or a task not done, as people read it: the
+/// reason, and what the caregiver wrote. A note on "Other" says it all.
+String skipText(
+  AppLocalizations l10n, {
+  required String reasonId,
+  required String? note,
+  required Map<String, String> customReasons,
+}) {
+  final label = reasonLabel(l10n, reasonId, customReasons: customReasons);
+  final said = note?.trim() ?? '';
+  if (said.isEmpty) return label;
+  return reasonId == SkipReason.other.id ? said : '$label ($said)';
+}
+
 extension SkipReasonLabel on SkipReason {
   String label(AppLocalizations l10n) => switch (this) {
     SkipReason.refused => l10n.skipRefused,

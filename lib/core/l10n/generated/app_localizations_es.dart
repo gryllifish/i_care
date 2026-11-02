@@ -1627,4 +1627,50 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get summaryNothingYet => 'Todavía no hay registros hoy.';
+
+  @override
+  String activityReasonAdded(String name, String reason) {
+    return '$name agregó el motivo \"$reason\"';
+  }
+
+  @override
+  String activityReasonHidden(String name, String reason) {
+    return '$name dejó de ofrecer \"$reason\"';
+  }
+
+  @override
+  String activityReasonShown(String name, String reason) {
+    return '$name volvió a ofrecer \"$reason\"';
+  }
+
+  @override
+  String get skipOtherField => '¿Qué pasó?';
+
+  @override
+  String get skipOtherSave => 'Guardar';
+
+  @override
+  String get sectionReasons => 'Motivos para no dar o no hacer';
+
+  @override
+  String get reasonsNote =>
+      'Se ofrecen cuando una toma no se da o una tarea no se hace. \"Otro\" siempre está, para escribir qué pasó.';
+
+  @override
+  String get reasonMedicationsOnly => 'Solo para remedios';
+
+  @override
+  String get reasonOwn => 'Agregado por el círculo';
+
+  @override
+  String get fieldNewReason => 'Motivo nuevo';
+
+  @override
+  String get fieldNewReasonHint => 'Ej.: En el hospital';
+
+  @override
+  String get addReason => 'Agregar motivo';
+
+  @override
+  String get reasonExists => 'Escribí un motivo que no esté en la lista.';
 }

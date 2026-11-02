@@ -69,7 +69,13 @@ void main() {
     await openSettings(tester);
 
     await tapInSettings(tester, find.text('Invite someone'));
-    await tester.enterText(find.byType(TextField), 'Lucía');
+    await tester.enterText(
+      find.descendant(
+        of: find.byType(BottomSheet),
+        matching: find.byType(TextField),
+      ),
+      'Lucía',
+    );
     await tester.tap(find.text('Helper').last);
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.widgetWithText(FilledButton, 'Invite'));

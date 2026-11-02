@@ -145,6 +145,12 @@ family portal for residents' relatives is a possible later path.
     and the server checking every event. Design and phases:
     [`docs/roles.md`](../../docs/roles.md).
 
+16. **Skip reasons the circle sets**: the standard reasons (translated)
+    can be hidden, the circle adds its own (kept as written), and
+    "Other" is always offered with room to write what happened. Events
+    store reasons by id, so old records keep theirs. Managed in Settings
+    by admins and caregivers.
+
 ### Later candidates (after the MVP)
 - Uploaded files (PDFs, photos) for appointment documents: with the
   stage 2 backend and file storage, and only once local data is
@@ -281,6 +287,7 @@ documented), nursing-home features.
   a resync when a role change alters that, actions offered by role, the
   helper's Today-only app, read-only viewers, a day summary for admins,
   and the demo with Ana (admin) and Rosa (helper).
+- Skip reasons the circle sets (scope item 16), and a note with "Other".
 
 ### Known gaps
 - Routers use `routerNeglect`, so the browser back button never moves

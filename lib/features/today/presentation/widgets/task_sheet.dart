@@ -49,12 +49,6 @@ class _TaskSheetState extends ConsumerState<TaskSheet> {
   var _choosingReason = false;
   var _busy = false;
 
-  /// Reasons that fit a task; "doctor's advice" is about medications.
-  static final List<SkipReason> _reasons = [
-    for (final reason in SkipReason.values)
-      if (reason != SkipReason.doctorAdvice) reason,
-  ];
-
   static const _secondaryButtonHeight = 48.0;
 
   @override
@@ -115,8 +109,10 @@ class _TaskSheetState extends ConsumerState<TaskSheet> {
             if (_choosingReason)
               SkipReasonPicker(
                 title: l10n.taskSkipReasonTitle,
-                reasons: _reasons,
-                onPicked: _busy ? null : (reason) => _skip(slot, reason),
+                reasonIds: ref.watch(reasonChoicesProvider(forTask: true)),
+                onPicked: _busy
+                    ? null
+                    : (reasonId, note) => _skip(slot, reasonId, note),
               )
             else ...[
               FilledButton(
@@ -161,13 +157,13 @@ class _TaskSheetState extends ConsumerState<TaskSheet> {
     }
   }
 
-  Future<void> _skip(TaskSlot slot, SkipReason reason) async {
+  Future<void> _skip(TaskSlot slot, String reasonId, String? note) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     final actions = ref.read(taskActionsProvider.notifier);
     setState(() => _busy = true);
 
-    final result = await actions.skip(slot, reason);
+    final result = await actions.skip(slot, reasonId: reasonId, note: note);
     if (!mounted) return;
     Navigator.of(context).pop();
     switch (result) {
@@ -274,7 +270,12 @@ class _Records extends ConsumerWidget {
             name: nameOf(record.meta.caregiverId),
             text: l10n.skippedBy(
               nameOf(record.meta.caregiverId),
-              record.reason.label(l10n),
+              skipText(
+                l10n,
+                reasonId: record.reasonId,
+                note: record.note,
+                customReasons: ref.watch(customReasonsProvider),
+              ),
             ),
             onRemove: removeOf(record),
           ),

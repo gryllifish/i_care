@@ -84,7 +84,7 @@ abstract final class CareEventCodec {
         'type': 'dose_skipped',
         'medication_id': event.medicationId,
         'slot_at': _date(event.slotAt),
-        'reason': _skipReasons.inverse[event.reason],
+        'reason': event.reasonId,
         'note': event.note,
       },
       DoseUndone() => {
@@ -166,7 +166,21 @@ abstract final class CareEventCodec {
         'type': 'task_skipped',
         'task_id': event.taskId,
         'slot_at': _date(event.slotAt),
-        'reason': _skipReasons.inverse[event.reason],
+        'reason': event.reasonId,
+        if (event.note case final String note) 'note': note,
+      },
+      SkipReasonAdded() => {
+        'type': 'skip_reason_added',
+        'reason_id': event.reasonId,
+        'label': event.label,
+      },
+      SkipReasonHidden() => {
+        'type': 'skip_reason_hidden',
+        'reason_id': event.reasonId,
+      },
+      SkipReasonShown() => {
+        'type': 'skip_reason_shown',
+        'reason_id': event.reasonId,
       },
       MemberInvited() => {
         'type': 'member_invited',
@@ -261,7 +275,7 @@ abstract final class CareEventCodec {
         meta: meta,
         medicationId: json.string('medication_id'),
         slotAt: json.date('slot_at'),
-        reason: json.oneOf('reason', _skipReasons),
+        reasonId: json.string('reason'),
         note: json.optionalString('note'),
       ),
       'dose_undone' => CareEvent.doseUndone(
@@ -343,7 +357,21 @@ abstract final class CareEventCodec {
         meta: meta,
         taskId: json.string('task_id'),
         slotAt: json.date('slot_at'),
-        reason: json.oneOf('reason', _skipReasons),
+        reasonId: json.string('reason'),
+        note: json.optionalString('note'),
+      ),
+      'skip_reason_added' => CareEvent.skipReasonAdded(
+        meta: meta,
+        reasonId: json.string('reason_id'),
+        label: json.string('label'),
+      ),
+      'skip_reason_hidden' => CareEvent.skipReasonHidden(
+        meta: meta,
+        reasonId: json.string('reason_id'),
+      ),
+      'skip_reason_shown' => CareEvent.skipReasonShown(
+        meta: meta,
+        reasonId: json.string('reason_id'),
       ),
       'member_invited' => CareEvent.memberInvited(
         meta: meta,
@@ -518,14 +546,6 @@ abstract final class CareEventCodec {
     'caregiver': MemberRole.caregiver,
     'helper': MemberRole.helper,
     'viewer': MemberRole.viewer,
-  };
-
-  static const Map<String, SkipReason> _skipReasons = {
-    'refused': SkipReason.refused,
-    'asleep': SkipReason.asleep,
-    'unwell': SkipReason.unwell,
-    'doctor_advice': SkipReason.doctorAdvice,
-    'other': SkipReason.other,
   };
 }
 

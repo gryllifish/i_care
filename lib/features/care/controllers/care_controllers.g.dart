@@ -286,6 +286,152 @@ final class MembersByIdProvider
 
 String _$membersByIdHash() => r'183825e4ef4eebb38704a5b74430901c47d016b3';
 
+/// The circle's own skip reasons by id, to say why a dose or task was
+/// skipped.
+
+@ProviderFor(customReasons)
+final customReasonsProvider = CustomReasonsProvider._();
+
+/// The circle's own skip reasons by id, to say why a dose or task was
+/// skipped.
+
+final class CustomReasonsProvider
+    extends
+        $FunctionalProvider<
+          Map<String, String>,
+          Map<String, String>,
+          Map<String, String>
+        >
+    with $Provider<Map<String, String>> {
+  /// The circle's own skip reasons by id, to say why a dose or task was
+  /// skipped.
+  CustomReasonsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'customReasonsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$customReasonsHash();
+
+  @$internal
+  @override
+  $ProviderElement<Map<String, String>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  Map<String, String> create(Ref ref) {
+    return customReasons(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Map<String, String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Map<String, String>>(value),
+    );
+  }
+}
+
+String _$customReasonsHash() => r'8b51f4bb7cf71303fffa2c99860d7be8d056f26d';
+
+/// The reasons offered when a dose is not given, or with [forTask] a
+/// task not done, by id (`CareLog.reasonChoices`).
+
+@ProviderFor(reasonChoices)
+final reasonChoicesProvider = ReasonChoicesFamily._();
+
+/// The reasons offered when a dose is not given, or with [forTask] a
+/// task not done, by id (`CareLog.reasonChoices`).
+
+final class ReasonChoicesProvider
+    extends $FunctionalProvider<List<String>, List<String>, List<String>>
+    with $Provider<List<String>> {
+  /// The reasons offered when a dose is not given, or with [forTask] a
+  /// task not done, by id (`CareLog.reasonChoices`).
+  ReasonChoicesProvider._({
+    required ReasonChoicesFamily super.from,
+    required bool super.argument,
+  }) : super(
+         retry: null,
+         name: r'reasonChoicesProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$reasonChoicesHash();
+
+  @override
+  String toString() {
+    return r'reasonChoicesProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<List<String>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<String> create(Ref ref) {
+    final argument = this.argument as bool;
+    return reasonChoices(ref, forTask: argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<String>>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ReasonChoicesProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$reasonChoicesHash() => r'55f8a981f36b93bbb14c5f4d979d06365c6ac471';
+
+/// The reasons offered when a dose is not given, or with [forTask] a
+/// task not done, by id (`CareLog.reasonChoices`).
+
+final class ReasonChoicesFamily extends $Family
+    with $FunctionalFamilyOverride<List<String>, bool> {
+  ReasonChoicesFamily._()
+    : super(
+        retry: null,
+        name: r'reasonChoicesProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// The reasons offered when a dose is not given, or with [forTask] a
+  /// task not done, by id (`CareLog.reasonChoices`).
+
+  ReasonChoicesProvider call({required bool forTask}) =>
+      ReasonChoicesProvider._(argument: forTask, from: this);
+
+  @override
+  String toString() => r'reasonChoicesProvider';
+}
+
 /// The member this device joined the circle as; null until it joins
 /// with a code, and again after it leaves (`docs/roles.md`). Remembered
 /// on the device.

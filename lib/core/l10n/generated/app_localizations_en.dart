@@ -1625,4 +1625,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get summaryNothingYet => 'Nothing recorded today yet.';
+
+  @override
+  String activityReasonAdded(String name, String reason) {
+    return '$name added the reason \"$reason\"';
+  }
+
+  @override
+  String activityReasonHidden(String name, String reason) {
+    return '$name stopped offering \"$reason\"';
+  }
+
+  @override
+  String activityReasonShown(String name, String reason) {
+    return '$name offered \"$reason\" again';
+  }
+
+  @override
+  String get skipOtherField => 'What happened?';
+
+  @override
+  String get skipOtherSave => 'Save';
+
+  @override
+  String get sectionReasons => 'Reasons for not giving or doing';
+
+  @override
+  String get reasonsNote =>
+      'Offered when a dose is not given or a task not done. \"Other\" is always there, to write what happened.';
+
+  @override
+  String get reasonMedicationsOnly => 'Medications only';
+
+  @override
+  String get reasonOwn => 'Added by the circle';
+
+  @override
+  String get fieldNewReason => 'New reason';
+
+  @override
+  String get fieldNewReasonHint => 'e.g. At the hospital';
+
+  @override
+  String get addReason => 'Add reason';
+
+  @override
+  String get reasonExists => 'Enter a reason that is not on the list.';
 }

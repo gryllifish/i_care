@@ -530,7 +530,7 @@ void main() {
 
     expect(
       repository.recorded.single,
-      isA<DoseSkipped>().having((e) => e.reason, 'reason', SkipReason.asleep),
+      isA<DoseSkipped>().having((e) => e.reasonId, 'reason', 'asleep'),
     );
     expect(find.text('Ana at 08:10'), findsOneWidget);
     expect(find.text('Skipped'), findsOneWidget);
@@ -652,7 +652,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final skipped = repository.recorded.single as TaskSkipped;
-      expect(skipped.reason, SkipReason.refused);
+      expect(skipped.reasonId, SkipReason.refused.id);
       expect(skipped.slotAt, DateTime(2026, 11, 2, 10));
     });
 

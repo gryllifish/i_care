@@ -43,6 +43,7 @@ Labels describe what a person does and carry no grammatical gender.
 | Care tasks: add, edit, archive | ✓ | ✓ | | |
 | Appointments, visit notes, documents | ✓ | ✓ | | |
 | Edit the emergency card | ✓ | ✓ | | |
+| Reasons for not giving or doing | ✓ | ✓ | | |
 | Members, roles, invitations, devices | ✓ | | | |
 | Reset the demo | ✓ | | | |
 

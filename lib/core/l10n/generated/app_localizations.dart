@@ -2652,6 +2652,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nothing recorded today yet.'**
   String get summaryNothingYet;
+
+  /// No description provided for @activityReasonAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added the reason \"{reason}\"'**
+  String activityReasonAdded(String name, String reason);
+
+  /// No description provided for @activityReasonHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} stopped offering \"{reason}\"'**
+  String activityReasonHidden(String name, String reason);
+
+  /// No description provided for @activityReasonShown.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} offered \"{reason}\" again'**
+  String activityReasonShown(String name, String reason);
+
+  /// No description provided for @skipOtherField.
+  ///
+  /// In en, this message translates to:
+  /// **'What happened?'**
+  String get skipOtherField;
+
+  /// No description provided for @skipOtherSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get skipOtherSave;
+
+  /// No description provided for @sectionReasons.
+  ///
+  /// In en, this message translates to:
+  /// **'Reasons for not giving or doing'**
+  String get sectionReasons;
+
+  /// No description provided for @reasonsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Offered when a dose is not given or a task not done. \"Other\" is always there, to write what happened.'**
+  String get reasonsNote;
+
+  /// No description provided for @reasonMedicationsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Medications only'**
+  String get reasonMedicationsOnly;
+
+  /// No description provided for @reasonOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Added by the circle'**
+  String get reasonOwn;
+
+  /// No description provided for @fieldNewReason.
+  ///
+  /// In en, this message translates to:
+  /// **'New reason'**
+  String get fieldNewReason;
+
+  /// No description provided for @fieldNewReasonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. At the hospital'**
+  String get fieldNewReasonHint;
+
+  /// No description provided for @addReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Add reason'**
+  String get addReason;
+
+  /// No description provided for @reasonExists.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a reason that is not on the list.'**
+  String get reasonExists;
 }
 
 class _AppLocalizationsDelegate

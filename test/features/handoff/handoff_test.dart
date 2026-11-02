@@ -74,6 +74,7 @@ void main() {
         for (final caregiver in SampleCircle.members) caregiver.id: caregiver,
       },
       locale: 'en',
+      customReasons: const {},
     );
 
     expect(
@@ -138,6 +139,7 @@ void main() {
         for (final caregiver in SampleCircle.members) caregiver.id: caregiver,
       },
       locale: 'en',
+      customReasons: const {},
     );
 
     expect(
@@ -174,6 +176,7 @@ void main() {
         for (final caregiver in SampleCircle.members) caregiver.id: caregiver,
       },
       locale: 'en',
+      customReasons: const {},
     );
 
     expect(
@@ -195,6 +198,7 @@ void main() {
       recipientName: 'Elena',
       caregivers: const {},
       locale: 'en',
+      customReasons: const {},
     );
 
     expect(text, contains('Nothing left to give today.'));

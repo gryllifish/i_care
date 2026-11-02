@@ -118,16 +118,20 @@ class DoseActions extends _$DoseActions {
     );
   }
 
+  /// Records the dose at [slotAt] as not given, for the reason
+  /// [reasonId], with what the caregiver wrote in [note].
   Future<Result<DoseSkipped>> skip(
     Medication medication, {
     required DateTime slotAt,
-    required SkipReason reason,
+    required String reasonId,
+    String? note,
   }) => _record(
     CareEvent.doseSkipped(
           meta: _meta(),
           medicationId: medication.id,
           slotAt: slotAt,
-          reason: reason,
+          reasonId: reasonId,
+          note: note,
         )
         as DoseSkipped,
   );

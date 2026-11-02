@@ -17,6 +17,23 @@ void main() {
     EventFactory().created('m1'),
   ])..status = SyncStatus(lastSyncedAt: now);
 
+  /// Brings [finder] into view in Settings, which is longer than a screen.
+  Future<void> reveal(WidgetTester tester, Finder finder) async {
+    await tester.scrollUntilVisible(
+      finder,
+      200,
+      // The list's own: text fields in it have scrollables too.
+      scrollable: find
+          .descendant(
+            of: find.byType(ListView),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.ensureVisible(finder);
+    await tester.pumpAndSettle();
+  }
+
   testWidgets('the first run welcomes and shows whose phone this is', (
     tester,
   ) async {
@@ -59,6 +76,7 @@ void main() {
 
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();
+    await reveal(tester, find.text('Español'));
     await tester.tap(find.text('Español'), warnIfMissed: false);
     await tester.pumpAndSettle();
 
@@ -80,6 +98,7 @@ void main() {
 
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();
+    await reveal(tester, find.text('Dark'));
     await tester.tap(find.text('Dark'), warnIfMissed: false);
     await tester.pumpAndSettle();
 
@@ -123,13 +142,7 @@ void main() {
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();
     final reset = find.text('Reset sample data');
-    await tester.scrollUntilVisible(
-      reset,
-      200,
-      scrollable: find.byType(Scrollable).last,
-    );
-    await tester.ensureVisible(reset);
-    await tester.pumpAndSettle();
+    await reveal(tester, reset);
     await tester.tap(reset);
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, 'Reset'));

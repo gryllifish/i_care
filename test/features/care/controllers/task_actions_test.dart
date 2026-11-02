@@ -77,8 +77,8 @@ void main() {
     await actions().undo((done as Ok<TaskDone>).value);
     expect(slot().status, TaskStatus.due);
 
-    await actions().skip(slot(), SkipReason.unwell);
-    expect(slot().skipped.single.reason, SkipReason.unwell);
+    await actions().skip(slot(), reasonId: SkipReason.unwell.id);
+    expect(slot().skipped.single.reasonId, 'unwell');
   });
 
   test('resolving a concurrent edit applies the chosen one and marks it '

@@ -9,6 +9,7 @@ import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/features/settings/presentation/widgets/circle_section.dart';
 import 'package:i_care/features/settings/presentation/widgets/not_sent_section.dart';
+import 'package:i_care/features/settings/presentation/widgets/reasons_section.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
@@ -36,6 +37,7 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           const NotSentSection(),
           const CircleSection(),
+          const ReasonsSection(),
           FormSection(
             title: l10n.sectionLanguage,
             children: [

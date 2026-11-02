@@ -41,8 +41,33 @@ abstract class EventMeta with _$EventMeta {
 /// joining with a code.
 const systemAuthor = 'system';
 
-/// Why a dose was not given, or a task not done.
-enum SkipReason { refused, asleep, unwell, doctorAdvice, other }
+/// The standard reasons why a dose was not given or a task not done,
+/// translated on every phone. A circle can hide them and add its own
+/// (`SkipReasonAdded`); events store a reason by id, these by their
+/// [id] and the circle's by theirs.
+enum SkipReason {
+  refused('refused'),
+  asleep('asleep'),
+  unwell('unwell'),
+
+  /// Medications only.
+  doctorAdvice('doctor_advice'),
+
+  /// Always offered, with room to say what happened.
+  other('other');
+
+  const SkipReason(this.id);
+
+  /// As stored in events.
+  final String id;
+
+  static SkipReason? byId(String id) {
+    for (final reason in values) {
+      if (reason.id == id) return reason;
+    }
+    return null;
+  }
+}
 
 /// Something a caregiver did. The log of events is the source of truth;
 /// everything shown is projected from it (see `docs/backend.md`).
@@ -106,7 +131,11 @@ sealed class CareEvent with _$CareEvent {
     required EventMeta meta,
     required String medicationId,
     required DateTime slotAt,
-    required SkipReason reason,
+
+    /// A [SkipReason]'s id, or one of the circle's own.
+    required String reasonId,
+
+    /// What happened, in the caregiver's words; mostly with "Other".
     String? note,
   }) = DoseSkipped;
 
@@ -226,8 +255,31 @@ sealed class CareEvent with _$CareEvent {
     required EventMeta meta,
     required String taskId,
     required DateTime slotAt,
-    required SkipReason reason,
+
+    /// A [SkipReason]'s id, or one of the circle's own.
+    required String reasonId,
+    String? note,
   }) = TaskSkipped;
+
+  /// A reason of the circle's own, offered next to the standard ones.
+  const factory CareEvent.skipReasonAdded({
+    required EventMeta meta,
+    required String reasonId,
+    required String label,
+  }) = SkipReasonAdded;
+
+  /// Stops offering a reason, standard or the circle's; records that used
+  /// it keep it.
+  const factory CareEvent.skipReasonHidden({
+    required EventMeta meta,
+    required String reasonId,
+  }) = SkipReasonHidden;
+
+  /// Offers a hidden reason again.
+  const factory CareEvent.skipReasonShown({
+    required EventMeta meta,
+    required String reasonId,
+  }) = SkipReasonShown;
 
   /// An admin invites someone; they show as invited until a device joins
   /// as them.

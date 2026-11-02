@@ -82,7 +82,7 @@ class EventFactory {
             meta: meta(at: at),
             medicationId: medicationId,
             slotAt: slotAt,
-            reason: SkipReason.asleep,
+            reasonId: SkipReason.asleep.id,
           )
           as DoseSkipped;
 
@@ -299,13 +299,15 @@ class EventFactory {
     String taskId, {
     required DateTime slotAt,
     SkipReason reason = SkipReason.refused,
+    String? note,
     String by = 'ana',
   }) =>
       CareEvent.taskSkipped(
             meta: meta(at: slotAt, by: by),
             taskId: taskId,
             slotAt: slotAt,
-            reason: reason,
+            reasonId: reason.id,
+            note: note,
           )
           as TaskSkipped;
 

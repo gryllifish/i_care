@@ -55,7 +55,7 @@ final class TaskActionsProvider extends $NotifierProvider<TaskActions, void> {
   }
 }
 
-String _$taskActionsHash() => r'ed957e5a536b953bccb9a5cfae23267fa583218a';
+String _$taskActionsHash() => r'cbb387aa716c47dcd0ce52ea410afa9a372b1d01';
 
 /// Changes to care tasks and what caregivers record for them. Each one
 /// appends an event; edits carry the version they were made on, so

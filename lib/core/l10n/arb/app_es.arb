@@ -424,5 +424,18 @@
   "summaryLate": "{count, plural, =1{1 atrasada} other{{count} atrasadas}}",
   "summaryTasks": "Tareas: {done} de {total}",
   "summaryLast": "Último: {record}, a las {time}.",
-  "summaryNothingYet": "Todavía no hay registros hoy."
+  "summaryNothingYet": "Todavía no hay registros hoy.",
+  "activityReasonAdded": "{name} agregó el motivo \"{reason}\"",
+  "activityReasonHidden": "{name} dejó de ofrecer \"{reason}\"",
+  "activityReasonShown": "{name} volvió a ofrecer \"{reason}\"",
+  "skipOtherField": "¿Qué pasó?",
+  "skipOtherSave": "Guardar",
+  "sectionReasons": "Motivos para no dar o no hacer",
+  "reasonsNote": "Se ofrecen cuando una toma no se da o una tarea no se hace. \"Otro\" siempre está, para escribir qué pasó.",
+  "reasonMedicationsOnly": "Solo para remedios",
+  "reasonOwn": "Agregado por el círculo",
+  "fieldNewReason": "Motivo nuevo",
+  "fieldNewReasonHint": "Ej.: En el hospital",
+  "addReason": "Agregar motivo",
+  "reasonExists": "Escribí un motivo que no esté en la lista."
 }

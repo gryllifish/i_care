@@ -5,13 +5,15 @@ import 'package:i_care/shared/l10n/care_labels.dart';
 
 /// What [event] says in one sentence, as Activity lists it: "Ana gave
 /// the 08:00 Enalapril". [author] is who wrote it; [subject] the name of
-/// what it is about (`CareLog.subjectOf`), when known.
+/// what it is about (`CareLog.subjectOf`), when known; [customReasons] the
+/// circle's own skip reasons (`CareLog.customReasonLabels`).
 String eventSentence(
   AppLocalizations l10n, {
   required CareEvent event,
   required String author,
   required String? subject,
   required String locale,
+  required Map<String, String> customReasons,
 }) {
   final name = author;
   final medication = subject ?? l10n.unknownMedication;
@@ -32,12 +34,18 @@ String eventSentence(
       time(slotAt),
     ),
     DoseGiven() => l10n.activityGiven(name, medication),
-    DoseSkipped(:final slotAt, :final reason) => l10n.activitySkipped(
-      name,
-      medication,
-      time(slotAt),
-      reason.label(l10n),
-    ),
+    DoseSkipped(:final slotAt, :final reasonId, :final note) =>
+      l10n.activitySkipped(
+        name,
+        medication,
+        time(slotAt),
+        skipText(
+          l10n,
+          reasonId: reasonId,
+          note: note,
+          customReasons: customReasons,
+        ),
+      ),
     DoseUndone() => l10n.activityUndone(name, medication),
     StockCounted(units: final count) => l10n.activityCounted(
       name,
@@ -72,10 +80,24 @@ String eventSentence(
     TaskUpdated() => l10n.activityTaskUpdated(name, task),
     TaskArchived() => l10n.activityTaskArchived(name, task),
     TaskDone() => l10n.activityTaskDone(name, task),
-    TaskSkipped(:final reason) => l10n.activityTaskSkipped(
+    TaskSkipped(:final reasonId, :final note) => l10n.activityTaskSkipped(
       name,
       task,
-      reason.label(l10n),
+      skipText(
+        l10n,
+        reasonId: reasonId,
+        note: note,
+        customReasons: customReasons,
+      ),
+    ),
+    SkipReasonAdded(:final label) => l10n.activityReasonAdded(name, label),
+    SkipReasonHidden(:final reasonId) => l10n.activityReasonHidden(
+      name,
+      reasonLabel(l10n, reasonId, customReasons: customReasons),
+    ),
+    SkipReasonShown(:final reasonId) => l10n.activityReasonShown(
+      name,
+      reasonLabel(l10n, reasonId, customReasons: customReasons),
     ),
     MemberInvited(:final role) => l10n.activityMemberInvited(
       name,

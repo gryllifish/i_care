@@ -74,16 +74,22 @@ class TaskActions extends _$TaskActions {
         as TaskDone,
   );
 
-  Future<Result<TaskSkipped>> skip(TaskSlot slot, SkipReason reason) =>
-      _recorder.record(
-        CareEvent.taskSkipped(
-              meta: _recorder.meta(),
-              taskId: slot.task.id,
-              slotAt: slot.slotAt,
-              reason: reason,
-            )
-            as TaskSkipped,
-      );
+  /// Records [slot] as not done, for the reason [reasonId], with what
+  /// the caregiver wrote in [note].
+  Future<Result<TaskSkipped>> skip(
+    TaskSlot slot, {
+    required String reasonId,
+    String? note,
+  }) => _recorder.record(
+    CareEvent.taskSkipped(
+          meta: _recorder.meta(),
+          taskId: slot.task.id,
+          slotAt: slot.slotAt,
+          reasonId: reasonId,
+          note: note,
+        )
+        as TaskSkipped,
+  );
 
   /// Takes back a [TaskDone] or [TaskSkipped] recorded by mistake.
   Future<Result<DoseUndone>> undo(CareEvent record) => _recorder.record(

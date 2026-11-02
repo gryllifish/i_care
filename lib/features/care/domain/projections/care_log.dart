@@ -29,6 +29,8 @@ class CareLog {
     required this._tasks,
     required this._taskRecords,
     required this._members,
+    required this.customReasonLabels,
+    required this.hiddenReasons,
     required this.profile,
     required this.profileVersion,
     required this._doses,
@@ -46,6 +48,13 @@ class CareLog {
   final Map<String, Appointment> _appointments;
   final Map<String, CareTask> _tasks;
   final Map<String, Member> _members;
+
+  /// The circle's own skip reasons by id, hidden ones included, so old
+  /// records still say why.
+  final Map<String, String> customReasonLabels;
+
+  /// Reasons, standard or the circle's, no longer offered.
+  final Set<String> hiddenReasons;
 
   /// [TaskDone] and [TaskSkipped] events per task, undone ones left out.
   final Map<String, List<CareEvent>> _taskRecords;
@@ -79,6 +88,31 @@ class CareLog {
         ..sort((a, b) => a.startsAt.compareTo(b.startsAt));
 
   Appointment? appointment(String id) => _appointments[id];
+
+  /// The reasons offered when a dose is not given (or, with [forTask], a
+  /// task not done), by id: the standard ones not hidden, then the
+  /// circle's, then "Other", always last and always offered. "Doctor's
+  /// advice" is about medications only.
+  List<String> reasonChoices({required bool forTask}) => [
+    for (final reason in SkipReason.values)
+      if (reason != SkipReason.other &&
+          !(forTask && reason == SkipReason.doctorAdvice) &&
+          !hiddenReasons.contains(reason.id))
+        reason.id,
+    for (final id in customReasonLabels.keys)
+      if (!hiddenReasons.contains(id)) id,
+    SkipReason.other.id,
+  ];
+
+  /// Whether [label] can be added as one of the circle's reasons: not
+  /// blank, and not one it already has, ignoring case and spaces.
+  bool isNewReasonLabel(String label) {
+    final wanted = label.trim().toLowerCase();
+    return wanted.isNotEmpty &&
+        !customReasonLabels.values.any(
+          (existing) => existing.trim().toLowerCase() == wanted,
+        );
+  }
 
   /// Members not removed, admins first, then by name.
   List<Member> get members =>
@@ -139,7 +173,11 @@ class CareLog {
     RoleChanged(:final memberId) ||
     MemberRemoved(:final memberId) ||
     MemberLeft(:final memberId) => _members[memberId]?.name,
-    RecipientProfileUpdated() || ConflictAcknowledged() => null,
+    RecipientProfileUpdated() ||
+    ConflictAcknowledged() ||
+    SkipReasonHidden() ||
+    SkipReasonShown() => null,
+    SkipReasonAdded(:final label) => label,
   };
 
   /// Care tasks that are not archived, by name.
@@ -353,6 +391,8 @@ class _Projector {
   final _appointments = <String, Appointment>{};
   final _tasks = <String, CareTask>{};
   final _members = <String, Member>{};
+  final _customReasons = <String, String>{};
+  final _hiddenReasons = <String>{};
   RecipientProfile? _profile;
   var _profileVersion = 0;
 
@@ -375,6 +415,8 @@ class _Projector {
       tasks: _tasks,
       taskRecords: _taskRecords,
       members: _members,
+      customReasonLabels: Map.unmodifiable(_customReasons),
+      hiddenReasons: Set.unmodifiable(_hiddenReasons),
       profile: _profile,
       profileVersion: _profileVersion,
       doses: _doses,
@@ -503,6 +545,16 @@ class _Projector {
       case TaskDone(:final taskId) || TaskSkipped(:final taskId)
           when !_undone.contains(event.meta.id):
         (_taskRecords[taskId] ??= []).add(event);
+      case SkipReasonAdded(:final reasonId, :final label):
+        _customReasons.putIfAbsent(reasonId, () => label);
+      case SkipReasonHidden(:final reasonId)
+          when reasonId != SkipReason.other.id:
+        _hiddenReasons.add(reasonId);
+      case SkipReasonHidden():
+        // "Other" is always offered: it is how anything unforeseen is said.
+        break;
+      case SkipReasonShown(:final reasonId):
+        _hiddenReasons.remove(reasonId);
       case MemberInvited(:final memberId) when !_members.containsKey(memberId):
         _members[memberId] = Member(
           id: memberId,

@@ -382,7 +382,7 @@ extension CareEventPatterns on CareEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MedicationCreated value)?  medicationCreated,TResult Function( MedicationUpdated value)?  medicationUpdated,TResult Function( ScheduleChanged value)?  scheduleChanged,TResult Function( MedicationArchived value)?  medicationArchived,TResult Function( DoseGiven value)?  doseGiven,TResult Function( DoseSkipped value)?  doseSkipped,TResult Function( DoseUndone value)?  doseUndone,TResult Function( StockCounted value)?  stockCounted,TResult Function( StockRefilled value)?  stockRefilled,TResult Function( AppointmentCreated value)?  appointmentCreated,TResult Function( AppointmentUpdated value)?  appointmentUpdated,TResult Function( AppointmentCancelled value)?  appointmentCancelled,TResult Function( VisitNoteAdded value)?  visitNoteAdded,TResult Function( DocumentLinked value)?  documentLinked,TResult Function( DocumentRemoved value)?  documentRemoved,TResult Function( RecipientProfileUpdated value)?  recipientProfileUpdated,TResult Function( TaskCreated value)?  taskCreated,TResult Function( TaskUpdated value)?  taskUpdated,TResult Function( TaskArchived value)?  taskArchived,TResult Function( TaskDone value)?  taskDone,TResult Function( TaskSkipped value)?  taskSkipped,TResult Function( MemberInvited value)?  memberInvited,TResult Function( InvitationRevoked value)?  invitationRevoked,TResult Function( MemberJoined value)?  memberJoined,TResult Function( RoleChanged value)?  roleChanged,TResult Function( MemberRemoved value)?  memberRemoved,TResult Function( MemberLeft value)?  memberLeft,TResult Function( ConflictAcknowledged value)?  conflictAcknowledged,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( MedicationCreated value)?  medicationCreated,TResult Function( MedicationUpdated value)?  medicationUpdated,TResult Function( ScheduleChanged value)?  scheduleChanged,TResult Function( MedicationArchived value)?  medicationArchived,TResult Function( DoseGiven value)?  doseGiven,TResult Function( DoseSkipped value)?  doseSkipped,TResult Function( DoseUndone value)?  doseUndone,TResult Function( StockCounted value)?  stockCounted,TResult Function( StockRefilled value)?  stockRefilled,TResult Function( AppointmentCreated value)?  appointmentCreated,TResult Function( AppointmentUpdated value)?  appointmentUpdated,TResult Function( AppointmentCancelled value)?  appointmentCancelled,TResult Function( VisitNoteAdded value)?  visitNoteAdded,TResult Function( DocumentLinked value)?  documentLinked,TResult Function( DocumentRemoved value)?  documentRemoved,TResult Function( RecipientProfileUpdated value)?  recipientProfileUpdated,TResult Function( TaskCreated value)?  taskCreated,TResult Function( TaskUpdated value)?  taskUpdated,TResult Function( TaskArchived value)?  taskArchived,TResult Function( TaskDone value)?  taskDone,TResult Function( TaskSkipped value)?  taskSkipped,TResult Function( SkipReasonAdded value)?  skipReasonAdded,TResult Function( SkipReasonHidden value)?  skipReasonHidden,TResult Function( SkipReasonShown value)?  skipReasonShown,TResult Function( MemberInvited value)?  memberInvited,TResult Function( InvitationRevoked value)?  invitationRevoked,TResult Function( MemberJoined value)?  memberJoined,TResult Function( RoleChanged value)?  roleChanged,TResult Function( MemberRemoved value)?  memberRemoved,TResult Function( MemberLeft value)?  memberLeft,TResult Function( ConflictAcknowledged value)?  conflictAcknowledged,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case MedicationCreated() when medicationCreated != null:
@@ -406,7 +406,10 @@ return taskCreated(_that);case TaskUpdated() when taskUpdated != null:
 return taskUpdated(_that);case TaskArchived() when taskArchived != null:
 return taskArchived(_that);case TaskDone() when taskDone != null:
 return taskDone(_that);case TaskSkipped() when taskSkipped != null:
-return taskSkipped(_that);case MemberInvited() when memberInvited != null:
+return taskSkipped(_that);case SkipReasonAdded() when skipReasonAdded != null:
+return skipReasonAdded(_that);case SkipReasonHidden() when skipReasonHidden != null:
+return skipReasonHidden(_that);case SkipReasonShown() when skipReasonShown != null:
+return skipReasonShown(_that);case MemberInvited() when memberInvited != null:
 return memberInvited(_that);case InvitationRevoked() when invitationRevoked != null:
 return invitationRevoked(_that);case MemberJoined() when memberJoined != null:
 return memberJoined(_that);case RoleChanged() when roleChanged != null:
@@ -431,7 +434,7 @@ return conflictAcknowledged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MedicationCreated value)  medicationCreated,required TResult Function( MedicationUpdated value)  medicationUpdated,required TResult Function( ScheduleChanged value)  scheduleChanged,required TResult Function( MedicationArchived value)  medicationArchived,required TResult Function( DoseGiven value)  doseGiven,required TResult Function( DoseSkipped value)  doseSkipped,required TResult Function( DoseUndone value)  doseUndone,required TResult Function( StockCounted value)  stockCounted,required TResult Function( StockRefilled value)  stockRefilled,required TResult Function( AppointmentCreated value)  appointmentCreated,required TResult Function( AppointmentUpdated value)  appointmentUpdated,required TResult Function( AppointmentCancelled value)  appointmentCancelled,required TResult Function( VisitNoteAdded value)  visitNoteAdded,required TResult Function( DocumentLinked value)  documentLinked,required TResult Function( DocumentRemoved value)  documentRemoved,required TResult Function( RecipientProfileUpdated value)  recipientProfileUpdated,required TResult Function( TaskCreated value)  taskCreated,required TResult Function( TaskUpdated value)  taskUpdated,required TResult Function( TaskArchived value)  taskArchived,required TResult Function( TaskDone value)  taskDone,required TResult Function( TaskSkipped value)  taskSkipped,required TResult Function( MemberInvited value)  memberInvited,required TResult Function( InvitationRevoked value)  invitationRevoked,required TResult Function( MemberJoined value)  memberJoined,required TResult Function( RoleChanged value)  roleChanged,required TResult Function( MemberRemoved value)  memberRemoved,required TResult Function( MemberLeft value)  memberLeft,required TResult Function( ConflictAcknowledged value)  conflictAcknowledged,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( MedicationCreated value)  medicationCreated,required TResult Function( MedicationUpdated value)  medicationUpdated,required TResult Function( ScheduleChanged value)  scheduleChanged,required TResult Function( MedicationArchived value)  medicationArchived,required TResult Function( DoseGiven value)  doseGiven,required TResult Function( DoseSkipped value)  doseSkipped,required TResult Function( DoseUndone value)  doseUndone,required TResult Function( StockCounted value)  stockCounted,required TResult Function( StockRefilled value)  stockRefilled,required TResult Function( AppointmentCreated value)  appointmentCreated,required TResult Function( AppointmentUpdated value)  appointmentUpdated,required TResult Function( AppointmentCancelled value)  appointmentCancelled,required TResult Function( VisitNoteAdded value)  visitNoteAdded,required TResult Function( DocumentLinked value)  documentLinked,required TResult Function( DocumentRemoved value)  documentRemoved,required TResult Function( RecipientProfileUpdated value)  recipientProfileUpdated,required TResult Function( TaskCreated value)  taskCreated,required TResult Function( TaskUpdated value)  taskUpdated,required TResult Function( TaskArchived value)  taskArchived,required TResult Function( TaskDone value)  taskDone,required TResult Function( TaskSkipped value)  taskSkipped,required TResult Function( SkipReasonAdded value)  skipReasonAdded,required TResult Function( SkipReasonHidden value)  skipReasonHidden,required TResult Function( SkipReasonShown value)  skipReasonShown,required TResult Function( MemberInvited value)  memberInvited,required TResult Function( InvitationRevoked value)  invitationRevoked,required TResult Function( MemberJoined value)  memberJoined,required TResult Function( RoleChanged value)  roleChanged,required TResult Function( MemberRemoved value)  memberRemoved,required TResult Function( MemberLeft value)  memberLeft,required TResult Function( ConflictAcknowledged value)  conflictAcknowledged,}){
 final _that = this;
 switch (_that) {
 case MedicationCreated():
@@ -455,7 +458,10 @@ return taskCreated(_that);case TaskUpdated():
 return taskUpdated(_that);case TaskArchived():
 return taskArchived(_that);case TaskDone():
 return taskDone(_that);case TaskSkipped():
-return taskSkipped(_that);case MemberInvited():
+return taskSkipped(_that);case SkipReasonAdded():
+return skipReasonAdded(_that);case SkipReasonHidden():
+return skipReasonHidden(_that);case SkipReasonShown():
+return skipReasonShown(_that);case MemberInvited():
 return memberInvited(_that);case InvitationRevoked():
 return invitationRevoked(_that);case MemberJoined():
 return memberJoined(_that);case RoleChanged():
@@ -476,7 +482,7 @@ return conflictAcknowledged(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MedicationCreated value)?  medicationCreated,TResult? Function( MedicationUpdated value)?  medicationUpdated,TResult? Function( ScheduleChanged value)?  scheduleChanged,TResult? Function( MedicationArchived value)?  medicationArchived,TResult? Function( DoseGiven value)?  doseGiven,TResult? Function( DoseSkipped value)?  doseSkipped,TResult? Function( DoseUndone value)?  doseUndone,TResult? Function( StockCounted value)?  stockCounted,TResult? Function( StockRefilled value)?  stockRefilled,TResult? Function( AppointmentCreated value)?  appointmentCreated,TResult? Function( AppointmentUpdated value)?  appointmentUpdated,TResult? Function( AppointmentCancelled value)?  appointmentCancelled,TResult? Function( VisitNoteAdded value)?  visitNoteAdded,TResult? Function( DocumentLinked value)?  documentLinked,TResult? Function( DocumentRemoved value)?  documentRemoved,TResult? Function( RecipientProfileUpdated value)?  recipientProfileUpdated,TResult? Function( TaskCreated value)?  taskCreated,TResult? Function( TaskUpdated value)?  taskUpdated,TResult? Function( TaskArchived value)?  taskArchived,TResult? Function( TaskDone value)?  taskDone,TResult? Function( TaskSkipped value)?  taskSkipped,TResult? Function( MemberInvited value)?  memberInvited,TResult? Function( InvitationRevoked value)?  invitationRevoked,TResult? Function( MemberJoined value)?  memberJoined,TResult? Function( RoleChanged value)?  roleChanged,TResult? Function( MemberRemoved value)?  memberRemoved,TResult? Function( MemberLeft value)?  memberLeft,TResult? Function( ConflictAcknowledged value)?  conflictAcknowledged,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( MedicationCreated value)?  medicationCreated,TResult? Function( MedicationUpdated value)?  medicationUpdated,TResult? Function( ScheduleChanged value)?  scheduleChanged,TResult? Function( MedicationArchived value)?  medicationArchived,TResult? Function( DoseGiven value)?  doseGiven,TResult? Function( DoseSkipped value)?  doseSkipped,TResult? Function( DoseUndone value)?  doseUndone,TResult? Function( StockCounted value)?  stockCounted,TResult? Function( StockRefilled value)?  stockRefilled,TResult? Function( AppointmentCreated value)?  appointmentCreated,TResult? Function( AppointmentUpdated value)?  appointmentUpdated,TResult? Function( AppointmentCancelled value)?  appointmentCancelled,TResult? Function( VisitNoteAdded value)?  visitNoteAdded,TResult? Function( DocumentLinked value)?  documentLinked,TResult? Function( DocumentRemoved value)?  documentRemoved,TResult? Function( RecipientProfileUpdated value)?  recipientProfileUpdated,TResult? Function( TaskCreated value)?  taskCreated,TResult? Function( TaskUpdated value)?  taskUpdated,TResult? Function( TaskArchived value)?  taskArchived,TResult? Function( TaskDone value)?  taskDone,TResult? Function( TaskSkipped value)?  taskSkipped,TResult? Function( SkipReasonAdded value)?  skipReasonAdded,TResult? Function( SkipReasonHidden value)?  skipReasonHidden,TResult? Function( SkipReasonShown value)?  skipReasonShown,TResult? Function( MemberInvited value)?  memberInvited,TResult? Function( InvitationRevoked value)?  invitationRevoked,TResult? Function( MemberJoined value)?  memberJoined,TResult? Function( RoleChanged value)?  roleChanged,TResult? Function( MemberRemoved value)?  memberRemoved,TResult? Function( MemberLeft value)?  memberLeft,TResult? Function( ConflictAcknowledged value)?  conflictAcknowledged,}){
 final _that = this;
 switch (_that) {
 case MedicationCreated() when medicationCreated != null:
@@ -500,7 +506,10 @@ return taskCreated(_that);case TaskUpdated() when taskUpdated != null:
 return taskUpdated(_that);case TaskArchived() when taskArchived != null:
 return taskArchived(_that);case TaskDone() when taskDone != null:
 return taskDone(_that);case TaskSkipped() when taskSkipped != null:
-return taskSkipped(_that);case MemberInvited() when memberInvited != null:
+return taskSkipped(_that);case SkipReasonAdded() when skipReasonAdded != null:
+return skipReasonAdded(_that);case SkipReasonHidden() when skipReasonHidden != null:
+return skipReasonHidden(_that);case SkipReasonShown() when skipReasonShown != null:
+return skipReasonShown(_that);case MemberInvited() when memberInvited != null:
 return memberInvited(_that);case InvitationRevoked() when invitationRevoked != null:
 return invitationRevoked(_that);case MemberJoined() when memberJoined != null:
 return memberJoined(_that);case RoleChanged() when roleChanged != null:
@@ -524,7 +533,7 @@ return conflictAcknowledged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)?  medicationCreated,TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)?  medicationUpdated,TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)?  scheduleChanged,TResult Function( EventMeta meta,  String medicationId,  int baseVersion)?  medicationArchived,TResult Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)?  doseGiven,TResult Function( EventMeta meta,  String medicationId,  DateTime slotAt,  SkipReason reason,  String? note)?  doseSkipped,TResult Function( EventMeta meta,  String targetEventId,  String? conflictKey)?  doseUndone,TResult Function( EventMeta meta,  String medicationId,  double units)?  stockCounted,TResult Function( EventMeta meta,  String medicationId,  double units)?  stockRefilled,TResult Function( EventMeta meta,  String appointmentId,  AppointmentDetails details)?  appointmentCreated,TResult Function( EventMeta meta,  String appointmentId,  int baseVersion,  AppointmentDetails details)?  appointmentUpdated,TResult Function( EventMeta meta,  String appointmentId,  int baseVersion)?  appointmentCancelled,TResult Function( EventMeta meta,  String appointmentId,  String text)?  visitNoteAdded,TResult Function( EventMeta meta,  String appointmentId,  String title,  String url)?  documentLinked,TResult Function( EventMeta meta,  String appointmentId,  String documentId)?  documentRemoved,TResult Function( EventMeta meta,  int baseVersion,  RecipientProfile profile)?  recipientProfileUpdated,TResult Function( EventMeta meta,  String taskId,  TaskDetails details,  TaskSchedule schedule)?  taskCreated,TResult Function( EventMeta meta,  String taskId,  int baseVersion,  TaskDetails details,  TaskSchedule schedule)?  taskUpdated,TResult Function( EventMeta meta,  String taskId,  int baseVersion)?  taskArchived,TResult Function( EventMeta meta,  String taskId,  DateTime slotAt)?  taskDone,TResult Function( EventMeta meta,  String taskId,  DateTime slotAt,  SkipReason reason)?  taskSkipped,TResult Function( EventMeta meta,  String memberId,  String name,  MemberRole role,  int colorIndex)?  memberInvited,TResult Function( EventMeta meta,  String memberId)?  invitationRevoked,TResult Function( EventMeta meta,  String memberId)?  memberJoined,TResult Function( EventMeta meta,  String memberId,  int baseVersion,  MemberRole role)?  roleChanged,TResult Function( EventMeta meta,  String memberId,  int baseVersion)?  memberRemoved,TResult Function( EventMeta meta,  String memberId)?  memberLeft,TResult Function( EventMeta meta,  String conflictKey)?  conflictAcknowledged,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)?  medicationCreated,TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)?  medicationUpdated,TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)?  scheduleChanged,TResult Function( EventMeta meta,  String medicationId,  int baseVersion)?  medicationArchived,TResult Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)?  doseGiven,TResult Function( EventMeta meta,  String medicationId,  DateTime slotAt,  String reasonId,  String? note)?  doseSkipped,TResult Function( EventMeta meta,  String targetEventId,  String? conflictKey)?  doseUndone,TResult Function( EventMeta meta,  String medicationId,  double units)?  stockCounted,TResult Function( EventMeta meta,  String medicationId,  double units)?  stockRefilled,TResult Function( EventMeta meta,  String appointmentId,  AppointmentDetails details)?  appointmentCreated,TResult Function( EventMeta meta,  String appointmentId,  int baseVersion,  AppointmentDetails details)?  appointmentUpdated,TResult Function( EventMeta meta,  String appointmentId,  int baseVersion)?  appointmentCancelled,TResult Function( EventMeta meta,  String appointmentId,  String text)?  visitNoteAdded,TResult Function( EventMeta meta,  String appointmentId,  String title,  String url)?  documentLinked,TResult Function( EventMeta meta,  String appointmentId,  String documentId)?  documentRemoved,TResult Function( EventMeta meta,  int baseVersion,  RecipientProfile profile)?  recipientProfileUpdated,TResult Function( EventMeta meta,  String taskId,  TaskDetails details,  TaskSchedule schedule)?  taskCreated,TResult Function( EventMeta meta,  String taskId,  int baseVersion,  TaskDetails details,  TaskSchedule schedule)?  taskUpdated,TResult Function( EventMeta meta,  String taskId,  int baseVersion)?  taskArchived,TResult Function( EventMeta meta,  String taskId,  DateTime slotAt)?  taskDone,TResult Function( EventMeta meta,  String taskId,  DateTime slotAt,  String reasonId,  String? note)?  taskSkipped,TResult Function( EventMeta meta,  String reasonId,  String label)?  skipReasonAdded,TResult Function( EventMeta meta,  String reasonId)?  skipReasonHidden,TResult Function( EventMeta meta,  String reasonId)?  skipReasonShown,TResult Function( EventMeta meta,  String memberId,  String name,  MemberRole role,  int colorIndex)?  memberInvited,TResult Function( EventMeta meta,  String memberId)?  invitationRevoked,TResult Function( EventMeta meta,  String memberId)?  memberJoined,TResult Function( EventMeta meta,  String memberId,  int baseVersion,  MemberRole role)?  roleChanged,TResult Function( EventMeta meta,  String memberId,  int baseVersion)?  memberRemoved,TResult Function( EventMeta meta,  String memberId)?  memberLeft,TResult Function( EventMeta meta,  String conflictKey)?  conflictAcknowledged,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case MedicationCreated() when medicationCreated != null:
 return medicationCreated(_that.meta,_that.medicationId,_that.details,_that.schedule,_that.effectiveFrom);case MedicationUpdated() when medicationUpdated != null:
@@ -532,7 +541,7 @@ return medicationUpdated(_that.meta,_that.medicationId,_that.baseVersion,_that.d
 return scheduleChanged(_that.meta,_that.medicationId,_that.baseVersion,_that.schedule,_that.effectiveFrom);case MedicationArchived() when medicationArchived != null:
 return medicationArchived(_that.meta,_that.medicationId,_that.baseVersion);case DoseGiven() when doseGiven != null:
 return doseGiven(_that.meta,_that.medicationId,_that.slotAt,_that.givenAt,_that.units,_that.knownDoseIds,_that.note);case DoseSkipped() when doseSkipped != null:
-return doseSkipped(_that.meta,_that.medicationId,_that.slotAt,_that.reason,_that.note);case DoseUndone() when doseUndone != null:
+return doseSkipped(_that.meta,_that.medicationId,_that.slotAt,_that.reasonId,_that.note);case DoseUndone() when doseUndone != null:
 return doseUndone(_that.meta,_that.targetEventId,_that.conflictKey);case StockCounted() when stockCounted != null:
 return stockCounted(_that.meta,_that.medicationId,_that.units);case StockRefilled() when stockRefilled != null:
 return stockRefilled(_that.meta,_that.medicationId,_that.units);case AppointmentCreated() when appointmentCreated != null:
@@ -547,7 +556,10 @@ return taskCreated(_that.meta,_that.taskId,_that.details,_that.schedule);case Ta
 return taskUpdated(_that.meta,_that.taskId,_that.baseVersion,_that.details,_that.schedule);case TaskArchived() when taskArchived != null:
 return taskArchived(_that.meta,_that.taskId,_that.baseVersion);case TaskDone() when taskDone != null:
 return taskDone(_that.meta,_that.taskId,_that.slotAt);case TaskSkipped() when taskSkipped != null:
-return taskSkipped(_that.meta,_that.taskId,_that.slotAt,_that.reason);case MemberInvited() when memberInvited != null:
+return taskSkipped(_that.meta,_that.taskId,_that.slotAt,_that.reasonId,_that.note);case SkipReasonAdded() when skipReasonAdded != null:
+return skipReasonAdded(_that.meta,_that.reasonId,_that.label);case SkipReasonHidden() when skipReasonHidden != null:
+return skipReasonHidden(_that.meta,_that.reasonId);case SkipReasonShown() when skipReasonShown != null:
+return skipReasonShown(_that.meta,_that.reasonId);case MemberInvited() when memberInvited != null:
 return memberInvited(_that.meta,_that.memberId,_that.name,_that.role,_that.colorIndex);case InvitationRevoked() when invitationRevoked != null:
 return invitationRevoked(_that.meta,_that.memberId);case MemberJoined() when memberJoined != null:
 return memberJoined(_that.meta,_that.memberId);case RoleChanged() when roleChanged != null:
@@ -572,7 +584,7 @@ return conflictAcknowledged(_that.meta,_that.conflictKey);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)  medicationCreated,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)  medicationUpdated,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)  scheduleChanged,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion)  medicationArchived,required TResult Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)  doseGiven,required TResult Function( EventMeta meta,  String medicationId,  DateTime slotAt,  SkipReason reason,  String? note)  doseSkipped,required TResult Function( EventMeta meta,  String targetEventId,  String? conflictKey)  doseUndone,required TResult Function( EventMeta meta,  String medicationId,  double units)  stockCounted,required TResult Function( EventMeta meta,  String medicationId,  double units)  stockRefilled,required TResult Function( EventMeta meta,  String appointmentId,  AppointmentDetails details)  appointmentCreated,required TResult Function( EventMeta meta,  String appointmentId,  int baseVersion,  AppointmentDetails details)  appointmentUpdated,required TResult Function( EventMeta meta,  String appointmentId,  int baseVersion)  appointmentCancelled,required TResult Function( EventMeta meta,  String appointmentId,  String text)  visitNoteAdded,required TResult Function( EventMeta meta,  String appointmentId,  String title,  String url)  documentLinked,required TResult Function( EventMeta meta,  String appointmentId,  String documentId)  documentRemoved,required TResult Function( EventMeta meta,  int baseVersion,  RecipientProfile profile)  recipientProfileUpdated,required TResult Function( EventMeta meta,  String taskId,  TaskDetails details,  TaskSchedule schedule)  taskCreated,required TResult Function( EventMeta meta,  String taskId,  int baseVersion,  TaskDetails details,  TaskSchedule schedule)  taskUpdated,required TResult Function( EventMeta meta,  String taskId,  int baseVersion)  taskArchived,required TResult Function( EventMeta meta,  String taskId,  DateTime slotAt)  taskDone,required TResult Function( EventMeta meta,  String taskId,  DateTime slotAt,  SkipReason reason)  taskSkipped,required TResult Function( EventMeta meta,  String memberId,  String name,  MemberRole role,  int colorIndex)  memberInvited,required TResult Function( EventMeta meta,  String memberId)  invitationRevoked,required TResult Function( EventMeta meta,  String memberId)  memberJoined,required TResult Function( EventMeta meta,  String memberId,  int baseVersion,  MemberRole role)  roleChanged,required TResult Function( EventMeta meta,  String memberId,  int baseVersion)  memberRemoved,required TResult Function( EventMeta meta,  String memberId)  memberLeft,required TResult Function( EventMeta meta,  String conflictKey)  conflictAcknowledged,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)  medicationCreated,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)  medicationUpdated,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)  scheduleChanged,required TResult Function( EventMeta meta,  String medicationId,  int baseVersion)  medicationArchived,required TResult Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)  doseGiven,required TResult Function( EventMeta meta,  String medicationId,  DateTime slotAt,  String reasonId,  String? note)  doseSkipped,required TResult Function( EventMeta meta,  String targetEventId,  String? conflictKey)  doseUndone,required TResult Function( EventMeta meta,  String medicationId,  double units)  stockCounted,required TResult Function( EventMeta meta,  String medicationId,  double units)  stockRefilled,required TResult Function( EventMeta meta,  String appointmentId,  AppointmentDetails details)  appointmentCreated,required TResult Function( EventMeta meta,  String appointmentId,  int baseVersion,  AppointmentDetails details)  appointmentUpdated,required TResult Function( EventMeta meta,  String appointmentId,  int baseVersion)  appointmentCancelled,required TResult Function( EventMeta meta,  String appointmentId,  String text)  visitNoteAdded,required TResult Function( EventMeta meta,  String appointmentId,  String title,  String url)  documentLinked,required TResult Function( EventMeta meta,  String appointmentId,  String documentId)  documentRemoved,required TResult Function( EventMeta meta,  int baseVersion,  RecipientProfile profile)  recipientProfileUpdated,required TResult Function( EventMeta meta,  String taskId,  TaskDetails details,  TaskSchedule schedule)  taskCreated,required TResult Function( EventMeta meta,  String taskId,  int baseVersion,  TaskDetails details,  TaskSchedule schedule)  taskUpdated,required TResult Function( EventMeta meta,  String taskId,  int baseVersion)  taskArchived,required TResult Function( EventMeta meta,  String taskId,  DateTime slotAt)  taskDone,required TResult Function( EventMeta meta,  String taskId,  DateTime slotAt,  String reasonId,  String? note)  taskSkipped,required TResult Function( EventMeta meta,  String reasonId,  String label)  skipReasonAdded,required TResult Function( EventMeta meta,  String reasonId)  skipReasonHidden,required TResult Function( EventMeta meta,  String reasonId)  skipReasonShown,required TResult Function( EventMeta meta,  String memberId,  String name,  MemberRole role,  int colorIndex)  memberInvited,required TResult Function( EventMeta meta,  String memberId)  invitationRevoked,required TResult Function( EventMeta meta,  String memberId)  memberJoined,required TResult Function( EventMeta meta,  String memberId,  int baseVersion,  MemberRole role)  roleChanged,required TResult Function( EventMeta meta,  String memberId,  int baseVersion)  memberRemoved,required TResult Function( EventMeta meta,  String memberId)  memberLeft,required TResult Function( EventMeta meta,  String conflictKey)  conflictAcknowledged,}) {final _that = this;
 switch (_that) {
 case MedicationCreated():
 return medicationCreated(_that.meta,_that.medicationId,_that.details,_that.schedule,_that.effectiveFrom);case MedicationUpdated():
@@ -580,7 +592,7 @@ return medicationUpdated(_that.meta,_that.medicationId,_that.baseVersion,_that.d
 return scheduleChanged(_that.meta,_that.medicationId,_that.baseVersion,_that.schedule,_that.effectiveFrom);case MedicationArchived():
 return medicationArchived(_that.meta,_that.medicationId,_that.baseVersion);case DoseGiven():
 return doseGiven(_that.meta,_that.medicationId,_that.slotAt,_that.givenAt,_that.units,_that.knownDoseIds,_that.note);case DoseSkipped():
-return doseSkipped(_that.meta,_that.medicationId,_that.slotAt,_that.reason,_that.note);case DoseUndone():
+return doseSkipped(_that.meta,_that.medicationId,_that.slotAt,_that.reasonId,_that.note);case DoseUndone():
 return doseUndone(_that.meta,_that.targetEventId,_that.conflictKey);case StockCounted():
 return stockCounted(_that.meta,_that.medicationId,_that.units);case StockRefilled():
 return stockRefilled(_that.meta,_that.medicationId,_that.units);case AppointmentCreated():
@@ -595,7 +607,10 @@ return taskCreated(_that.meta,_that.taskId,_that.details,_that.schedule);case Ta
 return taskUpdated(_that.meta,_that.taskId,_that.baseVersion,_that.details,_that.schedule);case TaskArchived():
 return taskArchived(_that.meta,_that.taskId,_that.baseVersion);case TaskDone():
 return taskDone(_that.meta,_that.taskId,_that.slotAt);case TaskSkipped():
-return taskSkipped(_that.meta,_that.taskId,_that.slotAt,_that.reason);case MemberInvited():
+return taskSkipped(_that.meta,_that.taskId,_that.slotAt,_that.reasonId,_that.note);case SkipReasonAdded():
+return skipReasonAdded(_that.meta,_that.reasonId,_that.label);case SkipReasonHidden():
+return skipReasonHidden(_that.meta,_that.reasonId);case SkipReasonShown():
+return skipReasonShown(_that.meta,_that.reasonId);case MemberInvited():
 return memberInvited(_that.meta,_that.memberId,_that.name,_that.role,_that.colorIndex);case InvitationRevoked():
 return invitationRevoked(_that.meta,_that.memberId);case MemberJoined():
 return memberJoined(_that.meta,_that.memberId);case RoleChanged():
@@ -616,7 +631,7 @@ return conflictAcknowledged(_that.meta,_that.conflictKey);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)?  medicationCreated,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)?  medicationUpdated,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)?  scheduleChanged,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion)?  medicationArchived,TResult? Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)?  doseGiven,TResult? Function( EventMeta meta,  String medicationId,  DateTime slotAt,  SkipReason reason,  String? note)?  doseSkipped,TResult? Function( EventMeta meta,  String targetEventId,  String? conflictKey)?  doseUndone,TResult? Function( EventMeta meta,  String medicationId,  double units)?  stockCounted,TResult? Function( EventMeta meta,  String medicationId,  double units)?  stockRefilled,TResult? Function( EventMeta meta,  String appointmentId,  AppointmentDetails details)?  appointmentCreated,TResult? Function( EventMeta meta,  String appointmentId,  int baseVersion,  AppointmentDetails details)?  appointmentUpdated,TResult? Function( EventMeta meta,  String appointmentId,  int baseVersion)?  appointmentCancelled,TResult? Function( EventMeta meta,  String appointmentId,  String text)?  visitNoteAdded,TResult? Function( EventMeta meta,  String appointmentId,  String title,  String url)?  documentLinked,TResult? Function( EventMeta meta,  String appointmentId,  String documentId)?  documentRemoved,TResult? Function( EventMeta meta,  int baseVersion,  RecipientProfile profile)?  recipientProfileUpdated,TResult? Function( EventMeta meta,  String taskId,  TaskDetails details,  TaskSchedule schedule)?  taskCreated,TResult? Function( EventMeta meta,  String taskId,  int baseVersion,  TaskDetails details,  TaskSchedule schedule)?  taskUpdated,TResult? Function( EventMeta meta,  String taskId,  int baseVersion)?  taskArchived,TResult? Function( EventMeta meta,  String taskId,  DateTime slotAt)?  taskDone,TResult? Function( EventMeta meta,  String taskId,  DateTime slotAt,  SkipReason reason)?  taskSkipped,TResult? Function( EventMeta meta,  String memberId,  String name,  MemberRole role,  int colorIndex)?  memberInvited,TResult? Function( EventMeta meta,  String memberId)?  invitationRevoked,TResult? Function( EventMeta meta,  String memberId)?  memberJoined,TResult? Function( EventMeta meta,  String memberId,  int baseVersion,  MemberRole role)?  roleChanged,TResult? Function( EventMeta meta,  String memberId,  int baseVersion)?  memberRemoved,TResult? Function( EventMeta meta,  String memberId)?  memberLeft,TResult? Function( EventMeta meta,  String conflictKey)?  conflictAcknowledged,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( EventMeta meta,  String medicationId,  MedicationDetails details,  DoseSchedule schedule,  DateTime effectiveFrom)?  medicationCreated,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion,  MedicationDetails details)?  medicationUpdated,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion,  DoseSchedule schedule,  DateTime effectiveFrom)?  scheduleChanged,TResult? Function( EventMeta meta,  String medicationId,  int baseVersion)?  medicationArchived,TResult? Function( EventMeta meta,  String medicationId,  DateTime? slotAt,  DateTime givenAt,  double units,  List<String> knownDoseIds,  String? note)?  doseGiven,TResult? Function( EventMeta meta,  String medicationId,  DateTime slotAt,  String reasonId,  String? note)?  doseSkipped,TResult? Function( EventMeta meta,  String targetEventId,  String? conflictKey)?  doseUndone,TResult? Function( EventMeta meta,  String medicationId,  double units)?  stockCounted,TResult? Function( EventMeta meta,  String medicationId,  double units)?  stockRefilled,TResult? Function( EventMeta meta,  String appointmentId,  AppointmentDetails details)?  appointmentCreated,TResult? Function( EventMeta meta,  String appointmentId,  int baseVersion,  AppointmentDetails details)?  appointmentUpdated,TResult? Function( EventMeta meta,  String appointmentId,  int baseVersion)?  appointmentCancelled,TResult? Function( EventMeta meta,  String appointmentId,  String text)?  visitNoteAdded,TResult? Function( EventMeta meta,  String appointmentId,  String title,  String url)?  documentLinked,TResult? Function( EventMeta meta,  String appointmentId,  String documentId)?  documentRemoved,TResult? Function( EventMeta meta,  int baseVersion,  RecipientProfile profile)?  recipientProfileUpdated,TResult? Function( EventMeta meta,  String taskId,  TaskDetails details,  TaskSchedule schedule)?  taskCreated,TResult? Function( EventMeta meta,  String taskId,  int baseVersion,  TaskDetails details,  TaskSchedule schedule)?  taskUpdated,TResult? Function( EventMeta meta,  String taskId,  int baseVersion)?  taskArchived,TResult? Function( EventMeta meta,  String taskId,  DateTime slotAt)?  taskDone,TResult? Function( EventMeta meta,  String taskId,  DateTime slotAt,  String reasonId,  String? note)?  taskSkipped,TResult? Function( EventMeta meta,  String reasonId,  String label)?  skipReasonAdded,TResult? Function( EventMeta meta,  String reasonId)?  skipReasonHidden,TResult? Function( EventMeta meta,  String reasonId)?  skipReasonShown,TResult? Function( EventMeta meta,  String memberId,  String name,  MemberRole role,  int colorIndex)?  memberInvited,TResult? Function( EventMeta meta,  String memberId)?  invitationRevoked,TResult? Function( EventMeta meta,  String memberId)?  memberJoined,TResult? Function( EventMeta meta,  String memberId,  int baseVersion,  MemberRole role)?  roleChanged,TResult? Function( EventMeta meta,  String memberId,  int baseVersion)?  memberRemoved,TResult? Function( EventMeta meta,  String memberId)?  memberLeft,TResult? Function( EventMeta meta,  String conflictKey)?  conflictAcknowledged,}) {final _that = this;
 switch (_that) {
 case MedicationCreated() when medicationCreated != null:
 return medicationCreated(_that.meta,_that.medicationId,_that.details,_that.schedule,_that.effectiveFrom);case MedicationUpdated() when medicationUpdated != null:
@@ -624,7 +639,7 @@ return medicationUpdated(_that.meta,_that.medicationId,_that.baseVersion,_that.d
 return scheduleChanged(_that.meta,_that.medicationId,_that.baseVersion,_that.schedule,_that.effectiveFrom);case MedicationArchived() when medicationArchived != null:
 return medicationArchived(_that.meta,_that.medicationId,_that.baseVersion);case DoseGiven() when doseGiven != null:
 return doseGiven(_that.meta,_that.medicationId,_that.slotAt,_that.givenAt,_that.units,_that.knownDoseIds,_that.note);case DoseSkipped() when doseSkipped != null:
-return doseSkipped(_that.meta,_that.medicationId,_that.slotAt,_that.reason,_that.note);case DoseUndone() when doseUndone != null:
+return doseSkipped(_that.meta,_that.medicationId,_that.slotAt,_that.reasonId,_that.note);case DoseUndone() when doseUndone != null:
 return doseUndone(_that.meta,_that.targetEventId,_that.conflictKey);case StockCounted() when stockCounted != null:
 return stockCounted(_that.meta,_that.medicationId,_that.units);case StockRefilled() when stockRefilled != null:
 return stockRefilled(_that.meta,_that.medicationId,_that.units);case AppointmentCreated() when appointmentCreated != null:
@@ -639,7 +654,10 @@ return taskCreated(_that.meta,_that.taskId,_that.details,_that.schedule);case Ta
 return taskUpdated(_that.meta,_that.taskId,_that.baseVersion,_that.details,_that.schedule);case TaskArchived() when taskArchived != null:
 return taskArchived(_that.meta,_that.taskId,_that.baseVersion);case TaskDone() when taskDone != null:
 return taskDone(_that.meta,_that.taskId,_that.slotAt);case TaskSkipped() when taskSkipped != null:
-return taskSkipped(_that.meta,_that.taskId,_that.slotAt,_that.reason);case MemberInvited() when memberInvited != null:
+return taskSkipped(_that.meta,_that.taskId,_that.slotAt,_that.reasonId,_that.note);case SkipReasonAdded() when skipReasonAdded != null:
+return skipReasonAdded(_that.meta,_that.reasonId,_that.label);case SkipReasonHidden() when skipReasonHidden != null:
+return skipReasonHidden(_that.meta,_that.reasonId);case SkipReasonShown() when skipReasonShown != null:
+return skipReasonShown(_that.meta,_that.reasonId);case MemberInvited() when memberInvited != null:
 return memberInvited(_that.meta,_that.memberId,_that.name,_that.role,_that.colorIndex);case InvitationRevoked() when invitationRevoked != null:
 return invitationRevoked(_that.meta,_that.memberId);case MemberJoined() when memberJoined != null:
 return memberJoined(_that.meta,_that.memberId);case RoleChanged() when roleChanged != null:
@@ -1123,13 +1141,15 @@ $EventMetaCopyWith<$Res> get meta {
 
 
 class DoseSkipped implements CareEvent {
-  const DoseSkipped({required this.meta, required this.medicationId, required this.slotAt, required this.reason, this.note});
+  const DoseSkipped({required this.meta, required this.medicationId, required this.slotAt, required this.reasonId, this.note});
   
 
 @override final  EventMeta meta;
  final  String medicationId;
  final  DateTime slotAt;
- final  SkipReason reason;
+/// A [SkipReason]'s id, or one of the circle's own.
+ final  String reasonId;
+/// What happened, in the caregiver's words; mostly with "Other".
  final  String? note;
 
 /// Create a copy of CareEvent
@@ -1142,16 +1162,16 @@ $DoseSkippedCopyWith<DoseSkipped> get copyWith => _$DoseSkippedCopyWithImpl<Dose
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseSkipped&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.reason, reason) || other.reason == reason)&&(identical(other.note, note) || other.note == note));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseSkipped&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId)&&(identical(other.note, note) || other.note == note));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,medicationId,slotAt,reason,note);
+int get hashCode => Object.hash(runtimeType,meta,medicationId,slotAt,reasonId,note);
 
 @override
 String toString() {
-  return 'CareEvent.doseSkipped(meta: $meta, medicationId: $medicationId, slotAt: $slotAt, reason: $reason, note: $note)';
+  return 'CareEvent.doseSkipped(meta: $meta, medicationId: $medicationId, slotAt: $slotAt, reasonId: $reasonId, note: $note)';
 }
 
 
@@ -1162,7 +1182,7 @@ abstract mixin class $DoseSkippedCopyWith<$Res> implements $CareEventCopyWith<$R
   factory $DoseSkippedCopyWith(DoseSkipped value, $Res Function(DoseSkipped) _then) = _$DoseSkippedCopyWithImpl;
 @override @useResult
 $Res call({
- EventMeta meta, String medicationId, DateTime slotAt, SkipReason reason, String? note
+ EventMeta meta, String medicationId, DateTime slotAt, String reasonId, String? note
 });
 
 
@@ -1179,13 +1199,13 @@ class _$DoseSkippedCopyWithImpl<$Res>
 
 /// Create a copy of CareEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? meta = null,Object? medicationId = null,Object? slotAt = null,Object? reason = null,Object? note = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? meta = null,Object? medicationId = null,Object? slotAt = null,Object? reasonId = null,Object? note = freezed,}) {
   return _then(DoseSkipped(
 meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
 as EventMeta,medicationId: null == medicationId ? _self.medicationId : medicationId // ignore: cast_nullable_to_non_nullable
 as String,slotAt: null == slotAt ? _self.slotAt : slotAt // ignore: cast_nullable_to_non_nullable
-as DateTime,reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
-as SkipReason,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
+as DateTime,reasonId: null == reasonId ? _self.reasonId : reasonId // ignore: cast_nullable_to_non_nullable
+as String,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -2391,13 +2411,15 @@ $EventMetaCopyWith<$Res> get meta {
 
 
 class TaskSkipped implements CareEvent {
-  const TaskSkipped({required this.meta, required this.taskId, required this.slotAt, required this.reason});
+  const TaskSkipped({required this.meta, required this.taskId, required this.slotAt, required this.reasonId, this.note});
   
 
 @override final  EventMeta meta;
  final  String taskId;
  final  DateTime slotAt;
- final  SkipReason reason;
+/// A [SkipReason]'s id, or one of the circle's own.
+ final  String reasonId;
+ final  String? note;
 
 /// Create a copy of CareEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -2409,16 +2431,16 @@ $TaskSkippedCopyWith<TaskSkipped> get copyWith => _$TaskSkippedCopyWithImpl<Task
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskSkipped&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.reason, reason) || other.reason == reason));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskSkipped&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId)&&(identical(other.note, note) || other.note == note));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,taskId,slotAt,reason);
+int get hashCode => Object.hash(runtimeType,meta,taskId,slotAt,reasonId,note);
 
 @override
 String toString() {
-  return 'CareEvent.taskSkipped(meta: $meta, taskId: $taskId, slotAt: $slotAt, reason: $reason)';
+  return 'CareEvent.taskSkipped(meta: $meta, taskId: $taskId, slotAt: $slotAt, reasonId: $reasonId, note: $note)';
 }
 
 
@@ -2429,7 +2451,7 @@ abstract mixin class $TaskSkippedCopyWith<$Res> implements $CareEventCopyWith<$R
   factory $TaskSkippedCopyWith(TaskSkipped value, $Res Function(TaskSkipped) _then) = _$TaskSkippedCopyWithImpl;
 @override @useResult
 $Res call({
- EventMeta meta, String taskId, DateTime slotAt, SkipReason reason
+ EventMeta meta, String taskId, DateTime slotAt, String reasonId, String? note
 });
 
 
@@ -2446,13 +2468,247 @@ class _$TaskSkippedCopyWithImpl<$Res>
 
 /// Create a copy of CareEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? meta = null,Object? taskId = null,Object? slotAt = null,Object? reason = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? meta = null,Object? taskId = null,Object? slotAt = null,Object? reasonId = null,Object? note = freezed,}) {
   return _then(TaskSkipped(
 meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
 as EventMeta,taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
 as String,slotAt: null == slotAt ? _self.slotAt : slotAt // ignore: cast_nullable_to_non_nullable
-as DateTime,reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
-as SkipReason,
+as DateTime,reasonId: null == reasonId ? _self.reasonId : reasonId // ignore: cast_nullable_to_non_nullable
+as String,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EventMetaCopyWith<$Res> get meta {
+  
+  return $EventMetaCopyWith<$Res>(_self.meta, (value) {
+    return _then(_self.copyWith(meta: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class SkipReasonAdded implements CareEvent {
+  const SkipReasonAdded({required this.meta, required this.reasonId, required this.label});
+  
+
+@override final  EventMeta meta;
+ final  String reasonId;
+ final  String label;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SkipReasonAddedCopyWith<SkipReasonAdded> get copyWith => _$SkipReasonAddedCopyWithImpl<SkipReasonAdded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipReasonAdded&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId)&&(identical(other.label, label) || other.label == label));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meta,reasonId,label);
+
+@override
+String toString() {
+  return 'CareEvent.skipReasonAdded(meta: $meta, reasonId: $reasonId, label: $label)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SkipReasonAddedCopyWith<$Res> implements $CareEventCopyWith<$Res> {
+  factory $SkipReasonAddedCopyWith(SkipReasonAdded value, $Res Function(SkipReasonAdded) _then) = _$SkipReasonAddedCopyWithImpl;
+@override @useResult
+$Res call({
+ EventMeta meta, String reasonId, String label
+});
+
+
+@override $EventMetaCopyWith<$Res> get meta;
+
+}
+/// @nodoc
+class _$SkipReasonAddedCopyWithImpl<$Res>
+    implements $SkipReasonAddedCopyWith<$Res> {
+  _$SkipReasonAddedCopyWithImpl(this._self, this._then);
+
+  final SkipReasonAdded _self;
+  final $Res Function(SkipReasonAdded) _then;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? meta = null,Object? reasonId = null,Object? label = null,}) {
+  return _then(SkipReasonAdded(
+meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as EventMeta,reasonId: null == reasonId ? _self.reasonId : reasonId // ignore: cast_nullable_to_non_nullable
+as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EventMetaCopyWith<$Res> get meta {
+  
+  return $EventMetaCopyWith<$Res>(_self.meta, (value) {
+    return _then(_self.copyWith(meta: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class SkipReasonHidden implements CareEvent {
+  const SkipReasonHidden({required this.meta, required this.reasonId});
+  
+
+@override final  EventMeta meta;
+ final  String reasonId;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SkipReasonHiddenCopyWith<SkipReasonHidden> get copyWith => _$SkipReasonHiddenCopyWithImpl<SkipReasonHidden>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipReasonHidden&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meta,reasonId);
+
+@override
+String toString() {
+  return 'CareEvent.skipReasonHidden(meta: $meta, reasonId: $reasonId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SkipReasonHiddenCopyWith<$Res> implements $CareEventCopyWith<$Res> {
+  factory $SkipReasonHiddenCopyWith(SkipReasonHidden value, $Res Function(SkipReasonHidden) _then) = _$SkipReasonHiddenCopyWithImpl;
+@override @useResult
+$Res call({
+ EventMeta meta, String reasonId
+});
+
+
+@override $EventMetaCopyWith<$Res> get meta;
+
+}
+/// @nodoc
+class _$SkipReasonHiddenCopyWithImpl<$Res>
+    implements $SkipReasonHiddenCopyWith<$Res> {
+  _$SkipReasonHiddenCopyWithImpl(this._self, this._then);
+
+  final SkipReasonHidden _self;
+  final $Res Function(SkipReasonHidden) _then;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? meta = null,Object? reasonId = null,}) {
+  return _then(SkipReasonHidden(
+meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as EventMeta,reasonId: null == reasonId ? _self.reasonId : reasonId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$EventMetaCopyWith<$Res> get meta {
+  
+  return $EventMetaCopyWith<$Res>(_self.meta, (value) {
+    return _then(_self.copyWith(meta: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class SkipReasonShown implements CareEvent {
+  const SkipReasonShown({required this.meta, required this.reasonId});
+  
+
+@override final  EventMeta meta;
+ final  String reasonId;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SkipReasonShownCopyWith<SkipReasonShown> get copyWith => _$SkipReasonShownCopyWithImpl<SkipReasonShown>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipReasonShown&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,meta,reasonId);
+
+@override
+String toString() {
+  return 'CareEvent.skipReasonShown(meta: $meta, reasonId: $reasonId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SkipReasonShownCopyWith<$Res> implements $CareEventCopyWith<$Res> {
+  factory $SkipReasonShownCopyWith(SkipReasonShown value, $Res Function(SkipReasonShown) _then) = _$SkipReasonShownCopyWithImpl;
+@override @useResult
+$Res call({
+ EventMeta meta, String reasonId
+});
+
+
+@override $EventMetaCopyWith<$Res> get meta;
+
+}
+/// @nodoc
+class _$SkipReasonShownCopyWithImpl<$Res>
+    implements $SkipReasonShownCopyWith<$Res> {
+  _$SkipReasonShownCopyWithImpl(this._self, this._then);
+
+  final SkipReasonShown _self;
+  final $Res Function(SkipReasonShown) _then;
+
+/// Create a copy of CareEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? meta = null,Object? reasonId = null,}) {
+  return _then(SkipReasonShown(
+meta: null == meta ? _self.meta : meta // ignore: cast_nullable_to_non_nullable
+as EventMeta,reasonId: null == reasonId ? _self.reasonId : reasonId // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

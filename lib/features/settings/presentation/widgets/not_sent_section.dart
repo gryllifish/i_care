@@ -68,6 +68,7 @@ class _RejectedCard extends ConsumerWidget {
               author: author?.name ?? l10n.unknownCaregiver,
               subject: subject,
               locale: locale,
+              customReasons: ref.watch(customReasonsProvider),
             ),
             style: AppTextStyles.body,
           ),

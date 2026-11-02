@@ -79,7 +79,7 @@ void main() {
       meta: meta,
       medicationId: 'm1',
       slotAt: DateTime(2026, 11, 2, 8),
-      reason: SkipReason.doctorAdvice,
+      reasonId: SkipReason.doctorAdvice.id,
     ),
     CareEvent.doseUndone(meta: meta, targetEventId: 'e0'),
     CareEvent.stockCounted(meta: meta, medicationId: 'm1', units: 28),
@@ -153,7 +153,7 @@ void main() {
       meta: meta,
       taskId: 't1',
       slotAt: at,
-      reason: SkipReason.refused,
+      reasonId: SkipReason.refused.id,
     ),
     CareEvent.doseUndone(
       meta: meta,
@@ -184,6 +184,20 @@ void main() {
       givenAt: at,
       units: 1,
     ),
+    CareEvent.taskSkipped(
+      meta: meta,
+      taskId: 't1',
+      slotAt: at,
+      reasonId: 'custom-1',
+      note: 'At the day center',
+    ),
+    CareEvent.skipReasonAdded(
+      meta: meta,
+      reasonId: 'custom-1',
+      label: 'At the day center',
+    ),
+    CareEvent.skipReasonHidden(meta: meta, reasonId: 'asleep'),
+    CareEvent.skipReasonShown(meta: meta, reasonId: 'asleep'),
     CareEvent.conflictAcknowledged(meta: meta, conflictKey: 'dose:m1:x'),
   ];
 

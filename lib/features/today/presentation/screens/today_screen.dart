@@ -556,6 +556,7 @@ class _DaySummaryCard extends ConsumerWidget {
                         author: author?.name ?? l10n.unknownCaregiver,
                         subject: subject,
                         locale: locale,
+                        customReasons: ref.watch(customReasonsProvider),
                       ),
                       Formatters.time(last.meta.occurredAt, locale),
                     ),
