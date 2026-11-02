@@ -2,7 +2,7 @@
 
 Design for who belongs to a care circle, what each person can do and see,
 and how a phone becomes someone's. Agreed with the product owner on
-2026-11-02; phase 1 is built, phases 2 to 4 are not (see
+2026-11-02; phases 1 and 2 are built, 3 and 4 are not (see
 [Phases](#phases)). Sync and backend
 basics: [`backend.md`](backend.md).
 
@@ -229,9 +229,15 @@ sends only its audiences.
    Settings shows the circle read-only. Two UI rules came early because
    the server now enforces them: "Remove" shows only on records the
    member may take back, and "No, only one" sends the conflict's key.
-2. **Invitations and devices**: codes on the server, the join screen,
-   Members in Settings (invite, change role, remove, new code, revoke),
-   leaving a circle, a removed device clearing itself.
+2. **Invitations and devices** (done): codes on the server (one live
+   code per member: a new one replaces an unused one; codes are typed
+   without the dash or in lower case just as well), a
+   `MembershipGateway` for issuing codes and joining, apart from the
+   sync gateway; the Join screen; the circle in Settings, where admins
+   invite, change roles, make codes, withdraw invitations and remove;
+   leaving a circle, which needs a connection and sends everything first;
+   a removed device showing why, then clearing itself. The phone's member
+   lives in its preferences (`member_id`).
 3. **UI by role and filtered sync**: audiences, watch by role, resync on
    role change, the helper's app, read-only viewer, admin summary on
    Today, demo with Ana and Rosa.

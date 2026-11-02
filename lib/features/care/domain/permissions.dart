@@ -107,3 +107,9 @@ bool canRemove(Member member, CareEvent record) => can(
       ? CareAction.removeOwnRecord
       : CareAction.removeAnyRecord,
 );
+
+/// Whether [member] is the circle's only admin among [members]: they
+/// cannot lose the role or leave the circle (`docs/roles.md`).
+bool isLastAdmin(Iterable<Member> members, Member member) =>
+    member.role == MemberRole.admin &&
+    members.where((other) => other.role == MemberRole.admin).length <= 1;

@@ -16,6 +16,9 @@ abstract final class PrefKeys {
   static const language = 'language';
   static const themeMode = 'theme_mode';
   static const welcomeSeen = 'welcome_seen';
+
+  /// The member this device joined the circle as (`docs/roles.md`).
+  static const memberId = 'member_id';
 }
 
 /// Preferences in a Hive box, so they survive restarts.

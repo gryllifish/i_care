@@ -20,6 +20,12 @@ sealed class AppException implements Exception {
       statusCode: statusCode,
       cause: this,
     ),
+    NotMemberException() => NotMemberFailure(cause: this),
+    ForbiddenException() => ForbiddenFailure(cause: this),
+    InvalidCodeException(:final problem) => InvalidCodeFailure(
+      problem,
+      cause: this,
+    ),
   };
 
   @override
@@ -51,4 +57,21 @@ final class ServerException extends AppException {
   const ServerException(super.message, {this.statusCode, super.cause});
 
   final int? statusCode;
+}
+
+/// This device does not belong to the circle, or no longer does.
+final class NotMemberException extends AppException {
+  const NotMemberException(super.message, {super.cause});
+}
+
+/// The member's role does not allow what was asked.
+final class ForbiddenException extends AppException {
+  const ForbiddenException(super.message, {super.cause});
+}
+
+/// An invitation code that cannot be used.
+final class InvalidCodeException extends AppException {
+  const InvalidCodeException(this.problem, super.message, {super.cause});
+
+  final CodeProblem problem;
 }

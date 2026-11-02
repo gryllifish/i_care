@@ -5,7 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
+import 'package:i_care/features/care/domain/entities/invite_code.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
+import 'package:i_care/features/settings/presentation/widgets/code_dialog.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_sheet.dart';
 import 'package:i_care/features/today/presentation/widgets/task_sheet.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
@@ -45,6 +47,7 @@ void main() {
     'handoff': AppRoutes.handoff,
     'settings': AppRoutes.settings,
     'welcome': AppRoutes.welcome,
+    'join': AppRoutes.join,
   };
 
   /// Pumps the app on the sample circle in [language] and opens [path].
@@ -63,13 +66,15 @@ void main() {
       now: now,
       size: size,
       prefs: MemoryDevicePrefs({
-        // Until the welcome is seen, every route leads to it.
+        // Until the phone joins, every route leads to joining; then, until
+        // the welcome is seen, to the welcome.
+        if (path != AppRoutes.join) PrefKeys.memberId: 'ana',
         if (path != AppRoutes.welcome) PrefKeys.welcomeSeen: 'true',
         PrefKeys.language: language,
         PrefKeys.themeMode: theme,
       }),
     );
-    if (path == AppRoutes.welcome) return;
+    if (path == AppRoutes.welcome || path == AppRoutes.join) return;
     GoRouter.of(tester.element(find.byType(Scaffold).first)).go(path);
     await tester.pumpAndSettle();
   }
@@ -183,6 +188,24 @@ void main() {
     'document link sheet': (
       '${AppRoutes.appointments}/appointment-cardiology',
       (tester) => tapText(tester, 'Add link'),
+    ),
+    'invite sheet': (
+      AppRoutes.settings,
+      (tester) => tapText(tester, 'Invite someone'),
+    ),
+    'member sheet': (AppRoutes.settings, (tester) => tapText(tester, 'Rosa')),
+    'code dialog': (
+      AppRoutes.settings,
+      (tester) async => unawaited(
+        showCodeDialog(
+          screen(tester),
+          name: 'Rosa',
+          code: InviteCode(
+            code: 'K7P-4QM',
+            expiresAt: today.add(const Duration(days: 2)),
+          ),
+        ),
+      ),
     ),
     'circle sheet': (
       AppRoutes.today,

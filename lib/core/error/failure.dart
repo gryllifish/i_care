@@ -64,3 +64,23 @@ final class NotFoundFailure extends Failure {
 final class UnexpectedFailure extends Failure {
   const UnexpectedFailure({super.cause});
 }
+
+/// This device does not belong to the circle, or no longer does.
+final class NotMemberFailure extends Failure {
+  const NotMemberFailure({super.cause});
+}
+
+/// The member's role does not allow what was asked.
+final class ForbiddenFailure extends Failure {
+  const ForbiddenFailure({super.cause});
+}
+
+/// Why an invitation code cannot be used.
+enum CodeProblem { unknown, used, expired }
+
+/// An invitation code that cannot be used.
+final class InvalidCodeFailure extends Failure {
+  const InvalidCodeFailure(this.problem, {super.cause});
+
+  final CodeProblem problem;
+}

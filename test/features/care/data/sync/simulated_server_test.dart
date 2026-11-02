@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:i_care/core/error/app_exception.dart';
+import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
@@ -17,6 +19,7 @@ void main() {
     final server = SimulatedServer(
       await openBox(SimulatedServer.boxName),
       await openBox(SimulatedServer.devicesBoxName),
+      await openBox(SimulatedServer.codesBoxName),
       clock: () => serverTime,
     );
     await server.seed([
@@ -24,6 +27,7 @@ void main() {
         CareEventCodec.encodeString(event),
     ]);
     await server.bind('phone-ana', 'ana');
+    await server.bind('phone-martin', 'martin');
     return server;
   }
 
@@ -51,6 +55,7 @@ void main() {
     final restarted = SimulatedServer(
       await openBox(SimulatedServer.boxName),
       await openBox(SimulatedServer.devicesBoxName),
+      await openBox(SimulatedServer.codesBoxName),
       clock: () => serverTime,
     );
 
@@ -79,4 +84,123 @@ void main() {
     expect(server.isEmpty, isTrue);
     expect(server.hasMembers, isFalse);
   });
+
+  group('invitation codes', () {
+    test("an admin's code joins a new device as that member, once", () async {
+      final server = await openServer();
+      final issued = await server.issueCode('phone-ana', 'rosa');
+
+      expect(issued.expiresAt, serverTime.add(SimulatedServer.codeLifetime));
+      expect(server.isActive('phone-new'), isFalse);
+
+      final memberId = await server.join(
+        'phone-new',
+        issued.code.toLowerCase(),
+      );
+
+      expect(memberId, 'rosa');
+      expect(server.isActive('phone-new'), isTrue);
+      final joined = CareEventCodec.decodeString(
+        server.eventsAfter(null).events.last,
+      );
+      expect(joined.meta.caregiverId, 'system');
+      await expectLater(
+        server.join('phone-other', issued.code),
+        throwsA(
+          isA<InvalidCodeException>().having(
+            (e) => e.problem,
+            'problem',
+            CodeProblem.used,
+          ),
+        ),
+      );
+    });
+
+    test('only admins issue codes', () async {
+      final server = await openServer();
+
+      await expectLater(
+        server.issueCode('phone-martin', 'rosa'),
+        throwsA(isA<ForbiddenException>()),
+      );
+    });
+
+    test('a new code replaces an unused one', () async {
+      final server = await openServer();
+      final first = await server.issueCode('phone-ana', 'rosa');
+      await server.issueCode('phone-ana', 'rosa');
+
+      await expectLater(
+        server.join('phone-new', first.code),
+        throwsA(isA<InvalidCodeException>()),
+      );
+    });
+
+    test('codes expire by the server clock', () async {
+      var now = serverTime;
+      final server = SimulatedServer(
+        await openBox(SimulatedServer.boxName),
+        await openBox(SimulatedServer.devicesBoxName),
+        await openBox(SimulatedServer.codesBoxName),
+        clock: () => now,
+      );
+      await server.seed([
+        for (final event in SampleCircle.memberEvents(DateTime(2025)))
+          CareEventCodec.encodeString(event),
+      ]);
+      await server.bind('phone-ana', 'ana');
+      final issued = await server.issueCode('phone-ana', 'rosa');
+
+      now = now.add(SimulatedServer.codeLifetime);
+
+      await expectLater(
+        server.join('phone-new', issued.code),
+        throwsA(
+          isA<InvalidCodeException>().having(
+            (e) => e.problem,
+            'problem',
+            CodeProblem.expired,
+          ),
+        ),
+      );
+    });
+
+    test('an unknown code is refused', () async {
+      final server = await openServer();
+
+      await expectLater(
+        server.join('phone-new', 'AAA-AAA'),
+        throwsA(
+          isA<InvalidCodeException>().having(
+            (e) => e.problem,
+            'problem',
+            CodeProblem.unknown,
+          ),
+        ),
+      );
+    });
+  });
+
+  test(
+    'a device that leaves, or whose member is removed, stops reading',
+    () async {
+      final server = await openServer();
+
+      await server.receive('phone-martin', [
+        CareEventCodec.encodeString(
+          events.memberLeft('martin', by: 'martin'),
+        ),
+      ]);
+      await server.receive('phone-ana', [
+        CareEventCodec.encodeString(
+          events.memberRemoved('rosa', baseVersion: 0),
+        ),
+      ]);
+      await server.bind('phone-rosa', 'rosa');
+
+      expect(server.isActive('phone-martin'), isFalse);
+      expect(server.isActive('phone-rosa'), isFalse);
+      expect(server.isActive('phone-ana'), isTrue);
+    },
+  );
 }

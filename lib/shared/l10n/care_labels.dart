@@ -56,6 +56,14 @@ extension MemberRoleLabel on MemberRole {
     MemberRole.helper => l10n.roleHelper,
     MemberRole.viewer => l10n.roleViewer,
   };
+
+  /// What the role may do, in one line.
+  String about(AppLocalizations l10n) => switch (this) {
+    MemberRole.admin => l10n.roleAdminAbout,
+    MemberRole.caregiver => l10n.roleCaregiverAbout,
+    MemberRole.helper => l10n.roleHelperAbout,
+    MemberRole.viewer => l10n.roleViewerAbout,
+  };
 }
 
 extension RejectionReasonText on RejectionReason {

@@ -2358,6 +2358,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'After their access ended'**
   String get afterAccessEnded;
+
+  /// No description provided for @errorNotMember.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone is not in the circle any more.'**
+  String get errorNotMember;
+
+  /// No description provided for @errorForbidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Your role does not allow it.'**
+  String get errorForbidden;
+
+  /// No description provided for @errorCodeUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'That code does not exist. Check it with whoever sent it.'**
+  String get errorCodeUnknown;
+
+  /// No description provided for @errorCodeUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'That code was already used. Ask for a new one.'**
+  String get errorCodeUsed;
+
+  /// No description provided for @errorCodeExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'That code expired. Ask for a new one.'**
+  String get errorCodeExpired;
+
+  /// No description provided for @joinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join a care circle'**
+  String get joinTitle;
+
+  /// No description provided for @joinBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask an admin of the circle for a code. It works once, for 48 hours.'**
+  String get joinBody;
+
+  /// No description provided for @fieldCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get fieldCode;
+
+  /// No description provided for @fieldCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. K7P-4QM'**
+  String get fieldCodeHint;
+
+  /// No description provided for @join.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get join;
+
+  /// No description provided for @joinDemoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'In this demo, make a code on Ana\'s phone: Settings, The circle, tap someone, New code.'**
+  String get joinDemoHint;
+
+  /// No description provided for @removedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone is out of the circle'**
+  String get removedTitle;
+
+  /// No description provided for @removedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'An admin took you out of the circle. Anything this phone had not sent was sent first; what it kept is cleared now.'**
+  String get removedBody;
+
+  /// No description provided for @removedOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get removedOk;
+
+  /// No description provided for @inviteSomeone.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite someone'**
+  String get inviteSomeone;
+
+  /// No description provided for @inviteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite to the circle'**
+  String get inviteTitle;
+
+  /// No description provided for @fieldRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get fieldRole;
+
+  /// No description provided for @invite.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get invite;
+
+  /// No description provided for @roleAdminAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything, including who belongs.'**
+  String get roleAdminAbout;
+
+  /// No description provided for @roleCaregiverAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily care: medications, tasks and visits.'**
+  String get roleCaregiverAbout;
+
+  /// No description provided for @roleHelperAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s doses and tasks only.'**
+  String get roleHelperAbout;
+
+  /// No description provided for @roleViewerAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'Sees everything, changes nothing.'**
+  String get roleViewerAbout;
+
+  /// No description provided for @codeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Code for {name}'**
+  String codeTitle(String name);
+
+  /// No description provided for @codeValidUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Works once, until {when}.'**
+  String codeValidUntil(String when);
+
+  /// No description provided for @codeShareHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Send it however you like. On the new phone, enter it to join.'**
+  String get codeShareHint;
+
+  /// No description provided for @copyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy code'**
+  String get copyCode;
+
+  /// No description provided for @codeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied'**
+  String get codeCopied;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @newCode.
+  ///
+  /// In en, this message translates to:
+  /// **'New code'**
+  String get newCode;
+
+  /// No description provided for @newCodeAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'For another device, or if the last code was lost. The previous one stops working.'**
+  String get newCodeAbout;
+
+  /// No description provided for @withdrawInvitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw invitation'**
+  String get withdrawInvitation;
+
+  /// No description provided for @withdrawTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw {name}\'s invitation?'**
+  String withdrawTitle(String name);
+
+  /// No description provided for @withdrawBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Their code stops working.'**
+  String get withdrawBody;
+
+  /// No description provided for @removeMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from the circle'**
+  String get removeMember;
+
+  /// No description provided for @removeMemberTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from the circle?'**
+  String removeMemberTitle(String name);
+
+  /// No description provided for @removeMemberBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Their phones stop syncing and clear what they kept. Their records stay in Activity.'**
+  String get removeMemberBody;
+
+  /// No description provided for @lastAdminNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The circle needs at least one admin.'**
+  String get lastAdminNote;
+
+  /// No description provided for @leaveCircle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave the circle on this phone'**
+  String get leaveCircle;
+
+  /// No description provided for @leaveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave the circle on this phone?'**
+  String get leaveTitle;
+
+  /// No description provided for @leaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything not sent yet is sent first, then this phone\'s copy is cleared. Coming back takes a new code.'**
+  String get leaveBody;
+
+  /// No description provided for @leave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get leave;
+
+  /// No description provided for @leaveOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to leave: there are records still to send.'**
+  String get leaveOffline;
 }
 
 class _AppLocalizationsDelegate

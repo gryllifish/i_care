@@ -40,6 +40,7 @@ Future<void> bootstrap() async {
   final server = SimulatedServer(
     await _openBox(SimulatedServer.boxName),
     await _openBox(SimulatedServer.devicesBoxName),
+    await _openBox(SimulatedServer.codesBoxName),
     clock: DateTime.now,
   );
   final phones = [
@@ -68,7 +69,6 @@ Future<void> bootstrap() async {
               HiveDevicePrefs(phone.prefs),
             ),
             simulatedServerProvider.overrideWithValue(server),
-            deviceOwnerIdProvider.overrideWithValue(phone.owner.id),
             demoResetProvider.overrideWithValue(resetDemo),
           ],
         ),
@@ -119,6 +119,7 @@ Future<void> _seed(SimulatedServer server, List<_Phone> phones) async {
   ]);
   for (final phone in phones) {
     await server.bind(phone.deviceId, phone.owner.id);
+    await HiveDevicePrefs(phone.prefs).write(PrefKeys.memberId, phone.owner.id);
   }
 }
 
@@ -129,25 +130,29 @@ Future<void> _clearAll(SimulatedServer server, List<_Phone> phones) async {
     await EventStore(phone.events).clear();
     await RejectedStore(phone.rejected).clear();
     await SyncStateStore(phone.syncState).clear();
+    await HiveDevicePrefs(phone.prefs).write(PrefKeys.memberId, null);
   }
 }
 
 /// Clears every phone and the server, then seeds again. Each phone stops
 /// syncing first and restarts afterwards from an empty cursor, so none
-/// keeps a position from the old log.
+/// keeps a position from the old log; a phone that had left the circle
+/// is its owner's again.
 Future<void> _reset(SimulatedServer server, List<_Phone> phones) async {
-  final repositories = [
-    for (final phone in phones)
-      if (phone.container case final container?)
-        container.read(careRepositoryImplProvider),
+  final containers = [
+    for (final phone in phones) ?phone.container,
   ];
-  for (final repository in repositories) {
-    await repository.stop();
+  for (final container in containers) {
+    await container.read(careRepositoryImplProvider).stop();
   }
   await _clearAll(server, phones);
   await _seed(server, phones);
-  for (final repository in repositories) {
-    repository.start();
+  for (final (index, container) in containers.indexed) {
+    await container
+        .read(deviceMembershipProvider.notifier)
+        .joined(phones[index].owner.id);
+    await container.read(welcomeSeenProvider.notifier).markSeen();
+    await container.read(careRepositoryImplProvider).restart();
   }
 }
 

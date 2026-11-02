@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:i_care/core/error/result.dart';
+import 'package:i_care/core/l10n/failure_messages.dart';
+import 'package:i_care/core/l10n/l10n.dart';
+import 'package:i_care/core/theme/app_colors.dart';
+import 'package:i_care/core/theme/app_spacing.dart';
+import 'package:i_care/core/theme/app_text_styles.dart';
+import 'package:i_care/features/care/controllers/membership_actions.dart';
+import 'package:i_care/shared/widgets/app_card.dart';
+import 'package:i_care/shared/widgets/labeled_field.dart';
+
+/// A phone that belongs to nobody: joins a circle with an invitation code
+/// (`docs/roles.md`).
+class JoinScreen extends ConsumerStatefulWidget {
+  const JoinScreen({super.key});
+
+  @override
+  ConsumerState<JoinScreen> createState() => _JoinScreenState();
+}
+
+class _JoinScreenState extends ConsumerState<JoinScreen> {
+  final _code = TextEditingController();
+  String? _error;
+  var _busy = false;
+
+  @override
+  void dispose() {
+    _code.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Scaffold(
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.screenHorizontal,
+            AppSpacing.xxl,
+            AppSpacing.screenHorizontal,
+            AppSpacing.lg,
+          ),
+          children: [
+            Semantics(
+              container: true,
+              header: true,
+              child: Text(l10n.joinTitle, style: AppTextStyles.display),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(l10n.joinBody, style: AppTextStyles.body),
+            const SizedBox(height: AppSpacing.xl),
+            LabeledField(
+              label: l10n.fieldCode,
+              controller: _code,
+              hint: l10n.fieldCodeHint,
+              textCapitalization: TextCapitalization.characters,
+              error: _error,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            FilledButton(
+              onPressed: _busy ? null : _join,
+              child: Text(l10n.join),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            AppCard(
+              raised: false,
+              color: context.colors.surfaceMuted,
+              child: Text(
+                l10n.joinDemoHint,
+                style: AppTextStyles.bodyMuted.copyWith(
+                  color: context.colors.inkMuted,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _join() async {
+    final code = _code.text.trim();
+    if (code.isEmpty) return;
+    final l10n = context.l10n;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final result = await ref
+        .read(membershipActionsProvider.notifier)
+        .join(code);
+    if (!mounted) return;
+    // On success the router moves on to the welcome.
+    setState(() {
+      _busy = false;
+      if (result case Err(:final failure)) _error = failure.message(l10n);
+    });
+  }
+}

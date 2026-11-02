@@ -352,6 +352,13 @@ class EventFactory {
           )
           as MemberRemoved;
 
+  MemberLeft memberLeft(String memberId, {required String by}) =>
+      CareEvent.memberLeft(
+            meta: meta(at: DateTime(2026, 1, 4), by: by),
+            memberId: memberId,
+          )
+          as MemberLeft;
+
   ConflictAcknowledged acknowledged(String key) =>
       CareEvent.conflictAcknowledged(
             meta: meta(at: DateTime(2026)),

@@ -1449,4 +1449,147 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get afterAccessEnded => 'After their access ended';
+
+  @override
+  String get errorNotMember => 'This phone is not in the circle any more.';
+
+  @override
+  String get errorForbidden => 'Your role does not allow it.';
+
+  @override
+  String get errorCodeUnknown =>
+      'That code does not exist. Check it with whoever sent it.';
+
+  @override
+  String get errorCodeUsed => 'That code was already used. Ask for a new one.';
+
+  @override
+  String get errorCodeExpired => 'That code expired. Ask for a new one.';
+
+  @override
+  String get joinTitle => 'Join a care circle';
+
+  @override
+  String get joinBody =>
+      'Ask an admin of the circle for a code. It works once, for 48 hours.';
+
+  @override
+  String get fieldCode => 'Code';
+
+  @override
+  String get fieldCodeHint => 'e.g. K7P-4QM';
+
+  @override
+  String get join => 'Join';
+
+  @override
+  String get joinDemoHint =>
+      'In this demo, make a code on Ana\'s phone: Settings, The circle, tap someone, New code.';
+
+  @override
+  String get removedTitle => 'This phone is out of the circle';
+
+  @override
+  String get removedBody =>
+      'An admin took you out of the circle. Anything this phone had not sent was sent first; what it kept is cleared now.';
+
+  @override
+  String get removedOk => 'OK';
+
+  @override
+  String get inviteSomeone => 'Invite someone';
+
+  @override
+  String get inviteTitle => 'Invite to the circle';
+
+  @override
+  String get fieldRole => 'Role';
+
+  @override
+  String get invite => 'Invite';
+
+  @override
+  String get roleAdminAbout => 'Everything, including who belongs.';
+
+  @override
+  String get roleCaregiverAbout => 'Daily care: medications, tasks and visits.';
+
+  @override
+  String get roleHelperAbout => 'Today\'s doses and tasks only.';
+
+  @override
+  String get roleViewerAbout => 'Sees everything, changes nothing.';
+
+  @override
+  String codeTitle(String name) {
+    return 'Code for $name';
+  }
+
+  @override
+  String codeValidUntil(String when) {
+    return 'Works once, until $when.';
+  }
+
+  @override
+  String get codeShareHint =>
+      'Send it however you like. On the new phone, enter it to join.';
+
+  @override
+  String get copyCode => 'Copy code';
+
+  @override
+  String get codeCopied => 'Code copied';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get newCode => 'New code';
+
+  @override
+  String get newCodeAbout =>
+      'For another device, or if the last code was lost. The previous one stops working.';
+
+  @override
+  String get withdrawInvitation => 'Withdraw invitation';
+
+  @override
+  String withdrawTitle(String name) {
+    return 'Withdraw $name\'s invitation?';
+  }
+
+  @override
+  String get withdrawBody => 'Their code stops working.';
+
+  @override
+  String get removeMember => 'Remove from the circle';
+
+  @override
+  String removeMemberTitle(String name) {
+    return 'Remove $name from the circle?';
+  }
+
+  @override
+  String get removeMemberBody =>
+      'Their phones stop syncing and clear what they kept. Their records stay in Activity.';
+
+  @override
+  String get lastAdminNote => 'The circle needs at least one admin.';
+
+  @override
+  String get leaveCircle => 'Leave the circle on this phone';
+
+  @override
+  String get leaveTitle => 'Leave the circle on this phone?';
+
+  @override
+  String get leaveBody =>
+      'Anything not sent yet is sent first, then this phone\'s copy is cleared. Coming back takes a new code.';
+
+  @override
+  String get leave => 'Leave';
+
+  @override
+  String get leaveOffline =>
+      'Connect to leave: there are records still to send.';
 }

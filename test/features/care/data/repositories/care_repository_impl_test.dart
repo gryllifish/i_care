@@ -5,10 +5,12 @@ import 'package:i_care/features/care/data/datasources/rejected_store.dart';
 import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/data/repositories/care_repository_impl.dart';
+import 'package:i_care/features/care/data/repositories/membership_repository_impl.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/data/sync/simulated_connection.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/invite_code.dart';
 import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 
@@ -26,6 +28,7 @@ void main() {
     server = SimulatedServer(
       await openBox(SimulatedServer.boxName),
       await openBox(SimulatedServer.devicesBoxName),
+      await openBox(SimulatedServer.codesBoxName),
       clock: () => now,
     );
     await server.seed([
@@ -178,5 +181,97 @@ void main() {
 
     await rosa.dismissRejected(medication.meta.id);
     expect(await rosa.watchRejected().first, isEmpty);
+  });
+
+  test('a removed device sends what it still had, flagged, then learns it is '
+      'out', () async {
+    final (ana, _) = await device('ana');
+    final (rosa, rosaConnection) = await device('rosa');
+    rosaConnection.isOnline = false;
+    final dose = events.given('m1', at: eight, by: 'rosa');
+    await rosa.record(dose);
+
+    await ana.record(events.memberRemoved('rosa', baseVersion: 0));
+    await logWhere(ana, (log) => log.any((e) => e is MemberRemoved));
+    rosaConnection.isOnline = true;
+
+    final status = await rosa.watchSyncStatus().firstWhere(
+      (status) => !status.isMember && status.pendingCount == 0,
+    );
+    expect(status.rejectedCount, 0);
+    final kept = CareEventCodec.decodeString(
+      server.eventsAfter(null).events.last,
+    );
+    expect(kept.meta.id, dose.meta.id);
+    expect(kept.meta.fromFormerMember, isTrue);
+  });
+
+  group('membership', () {
+    Future<(MembershipRepositoryImpl, CareRepositoryImpl, SimulatedConnection)>
+    joinedPhone(String id) async {
+      final (care, connection) = await device(id);
+      return (
+        MembershipRepositoryImpl(
+          care: care,
+          gateway: connection,
+          meta: (memberId) => events.meta(at: now, by: memberId),
+        ),
+        care,
+        connection,
+      );
+    }
+
+    test('leaving offline fails and records nothing', () async {
+      final (membership, care, connection) = await joinedPhone('martin');
+      await care.record(events.given('m1', at: eight, by: 'martin'));
+      connection.isOnline = false;
+
+      expect(await membership.leave('martin'), isA<Err<void>>());
+      expect(server.isActive('phone-martin'), isTrue);
+    });
+
+    test(
+      'leaving sends what is pending, unbinds and clears this device',
+      () async {
+        final (membership, care, _) = await joinedPhone('martin');
+        final dose = events.given('m1', at: eight, by: 'martin');
+        await care.record(dose);
+
+        expect(await membership.leave('martin'), isA<Ok<void>>());
+
+        expect(server.isActive('phone-martin'), isFalse);
+        expect(
+          server.eventsAfter(null).events.map(CareEventCodec.decodeString),
+          contains(isA<MemberLeft>()),
+        );
+        expect(await logWhere(care, (log) => log.isEmpty), isEmpty);
+      },
+    );
+
+    test('joining with a code binds this device and starts over', () async {
+      final (anaMembership, _, _) = await joinedPhone('ana');
+      final code =
+          (await anaMembership.issueCode('rosa') as Ok<InviteCode>).value.code;
+      final connection = SimulatedConnection(server, deviceId: 'phone-new');
+      final care = CareRepositoryImpl(
+        events: EventStore(await openBox('new_events')),
+        rejected: RejectedStore(await openBox('new_rejected')),
+        syncState: SyncStateStore(await openBox('new_sync')),
+        gateway: connection,
+        clock: () => now,
+      )..start();
+      addTearDown(care.dispose);
+      final newPhone = MembershipRepositoryImpl(
+        care: care,
+        gateway: connection,
+        meta: (memberId) => events.meta(at: now, by: memberId),
+      );
+
+      expect(
+        await newPhone.join(code),
+        isA<Ok<String>>().having((ok) => ok.value, 'member', 'rosa'),
+      );
+      expect(server.isActive('phone-new'), isTrue);
+    });
   });
 }

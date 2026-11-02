@@ -16,5 +16,9 @@ abstract class SyncStatus with _$SyncStatus {
     /// Events recorded here that the server refused (`docs/roles.md`).
     @Default(0) int rejectedCount,
     @Default(true) bool isConnected,
+
+    /// False once the server says this device is not in the circle any
+    /// more: it was removed, or it left (`docs/roles.md`).
+    @Default(true) bool isMember,
   }) = _SyncStatus;
 }

@@ -128,7 +128,7 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     final slot = detail.slot;
     final isGiven = slot != null && slot.status == DoseStatus.given;
     final givenByMe =
-        isGiven && slot.isGivenBy(ref.watch(deviceOwnerIdProvider));
+        isGiven && slot.isGivenBy(ref.watch(deviceMembershipProvider) ?? '');
     final isResolved = isGiven || slot?.status == DoseStatus.skipped;
 
     return SingleChildScrollView(

@@ -20,7 +20,7 @@ void main() {
   testWidgets('the first run welcomes and shows whose phone this is', (
     tester,
   ) async {
-    final prefs = MemoryDevicePrefs();
+    final prefs = MemoryDevicePrefs({PrefKeys.memberId: 'ana'});
     await pumpApp(
       tester,
       repository: circle(),
@@ -46,7 +46,10 @@ void main() {
   });
 
   testWidgets('settings switch the language and remember it', (tester) async {
-    final prefs = MemoryDevicePrefs({PrefKeys.welcomeSeen: 'true'});
+    final prefs = MemoryDevicePrefs({
+      PrefKeys.welcomeSeen: 'true',
+      PrefKeys.memberId: 'ana',
+    });
     await pumpApp(
       tester,
       repository: circle(),
@@ -64,7 +67,10 @@ void main() {
   });
 
   testWidgets('settings switch the theme and remember it', (tester) async {
-    final prefs = MemoryDevicePrefs({PrefKeys.welcomeSeen: 'true'});
+    final prefs = MemoryDevicePrefs({
+      PrefKeys.welcomeSeen: 'true',
+      PrefKeys.memberId: 'ana',
+    });
     await pumpApp(
       tester,
       repository: circle(),
@@ -94,6 +100,7 @@ void main() {
       now: now,
       prefs: MemoryDevicePrefs({
         PrefKeys.welcomeSeen: 'true',
+        PrefKeys.memberId: 'ana',
         PrefKeys.themeMode: 'dark',
       }),
     );
@@ -121,6 +128,8 @@ void main() {
       200,
       scrollable: find.byType(Scrollable).last,
     );
+    await tester.ensureVisible(reset);
+    await tester.pumpAndSettle();
     await tester.tap(reset);
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, 'Reset'));

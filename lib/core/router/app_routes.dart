@@ -52,6 +52,12 @@ abstract final class AppRoutes {
   /// Shown instead of everything else until the welcome was seen.
   static const welcome = '/welcome';
 
+  /// Shown instead of everything else while the phone belongs to nobody.
+  static const join = '/join';
+
+  /// Shown once the server says this phone is out of the circle.
+  static const removed = '/removed';
+
   /// Nested under [appointments], like medications.
   static const newAppointment = 'new';
   static const appointment = ':$idParam';

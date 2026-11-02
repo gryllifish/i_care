@@ -18,7 +18,10 @@ class CareRecorder {
   /// Metadata for a new event by the current caregiver at this moment.
   EventMeta meta() => EventMeta(
     id: _ref.read(newIdProvider)(),
-    caregiverId: _ref.read(deviceOwnerIdProvider),
+    // Recording screens are reachable only once the device has joined.
+    caregiverId:
+        _ref.read(deviceMembershipProvider) ??
+        (throw StateError('This device has not joined a circle')),
     occurredAt: _ref.read(clockProvider)(),
   );
 

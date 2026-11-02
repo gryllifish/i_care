@@ -18,7 +18,9 @@ mixin _$SyncStatus {
 /// it never synced.
  DateTime? get lastSyncedAt;/// Events recorded here that the server has not received yet.
  int get pendingCount;/// Events recorded here that the server refused (`docs/roles.md`).
- int get rejectedCount; bool get isConnected;
+ int get rejectedCount; bool get isConnected;/// False once the server says this device is not in the circle any
+/// more: it was removed, or it left (`docs/roles.md`).
+ bool get isMember;
 /// Create a copy of SyncStatus
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +31,16 @@ $SyncStatusCopyWith<SyncStatus> get copyWith => _$SyncStatusCopyWithImpl<SyncSta
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncStatus&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt)&&(identical(other.pendingCount, pendingCount) || other.pendingCount == pendingCount)&&(identical(other.rejectedCount, rejectedCount) || other.rejectedCount == rejectedCount)&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncStatus&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt)&&(identical(other.pendingCount, pendingCount) || other.pendingCount == pendingCount)&&(identical(other.rejectedCount, rejectedCount) || other.rejectedCount == rejectedCount)&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected)&&(identical(other.isMember, isMember) || other.isMember == isMember));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lastSyncedAt,pendingCount,rejectedCount,isConnected);
+int get hashCode => Object.hash(runtimeType,lastSyncedAt,pendingCount,rejectedCount,isConnected,isMember);
 
 @override
 String toString() {
-  return 'SyncStatus(lastSyncedAt: $lastSyncedAt, pendingCount: $pendingCount, rejectedCount: $rejectedCount, isConnected: $isConnected)';
+  return 'SyncStatus(lastSyncedAt: $lastSyncedAt, pendingCount: $pendingCount, rejectedCount: $rejectedCount, isConnected: $isConnected, isMember: $isMember)';
 }
 
 
@@ -49,7 +51,7 @@ abstract mixin class $SyncStatusCopyWith<$Res>  {
   factory $SyncStatusCopyWith(SyncStatus value, $Res Function(SyncStatus) _then) = _$SyncStatusCopyWithImpl;
 @useResult
 $Res call({
- DateTime? lastSyncedAt, int pendingCount, int rejectedCount, bool isConnected
+ DateTime? lastSyncedAt, int pendingCount, int rejectedCount, bool isConnected, bool isMember
 });
 
 
@@ -66,12 +68,13 @@ class _$SyncStatusCopyWithImpl<$Res>
 
 /// Create a copy of SyncStatus
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? lastSyncedAt = freezed,Object? pendingCount = null,Object? rejectedCount = null,Object? isConnected = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? lastSyncedAt = freezed,Object? pendingCount = null,Object? rejectedCount = null,Object? isConnected = null,Object? isMember = null,}) {
   return _then(_self.copyWith(
 lastSyncedAt: freezed == lastSyncedAt ? _self.lastSyncedAt : lastSyncedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,pendingCount: null == pendingCount ? _self.pendingCount : pendingCount // ignore: cast_nullable_to_non_nullable
 as int,rejectedCount: null == rejectedCount ? _self.rejectedCount : rejectedCount // ignore: cast_nullable_to_non_nullable
 as int,isConnected: null == isConnected ? _self.isConnected : isConnected // ignore: cast_nullable_to_non_nullable
+as bool,isMember: null == isMember ? _self.isMember : isMember // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -157,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DateTime? lastSyncedAt,  int pendingCount,  int rejectedCount,  bool isConnected)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DateTime? lastSyncedAt,  int pendingCount,  int rejectedCount,  bool isConnected,  bool isMember)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SyncStatus() when $default != null:
-return $default(_that.lastSyncedAt,_that.pendingCount,_that.rejectedCount,_that.isConnected);case _:
+return $default(_that.lastSyncedAt,_that.pendingCount,_that.rejectedCount,_that.isConnected,_that.isMember);case _:
   return orElse();
 
 }
@@ -178,10 +181,10 @@ return $default(_that.lastSyncedAt,_that.pendingCount,_that.rejectedCount,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DateTime? lastSyncedAt,  int pendingCount,  int rejectedCount,  bool isConnected)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DateTime? lastSyncedAt,  int pendingCount,  int rejectedCount,  bool isConnected,  bool isMember)  $default,) {final _that = this;
 switch (_that) {
 case _SyncStatus():
-return $default(_that.lastSyncedAt,_that.pendingCount,_that.rejectedCount,_that.isConnected);case _:
+return $default(_that.lastSyncedAt,_that.pendingCount,_that.rejectedCount,_that.isConnected,_that.isMember);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +201,10 @@ return $default(_that.lastSyncedAt,_that.pendingCount,_that.rejectedCount,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DateTime? lastSyncedAt,  int pendingCount,  int rejectedCount,  bool isConnected)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DateTime? lastSyncedAt,  int pendingCount,  int rejectedCount,  bool isConnected,  bool isMember)?  $default,) {final _that = this;
 switch (_that) {
 case _SyncStatus() when $default != null:
-return $default(_that.lastSyncedAt,_that.pendingCount,_that.rejectedCount,_that.isConnected);case _:
+return $default(_that.lastSyncedAt,_that.pendingCount,_that.rejectedCount,_that.isConnected,_that.isMember);case _:
   return null;
 
 }
@@ -213,7 +216,7 @@ return $default(_that.lastSyncedAt,_that.pendingCount,_that.rejectedCount,_that.
 
 
 class _SyncStatus implements SyncStatus {
-  const _SyncStatus({this.lastSyncedAt, this.pendingCount = 0, this.rejectedCount = 0, this.isConnected = true});
+  const _SyncStatus({this.lastSyncedAt, this.pendingCount = 0, this.rejectedCount = 0, this.isConnected = true, this.isMember = true});
   
 
 /// Last time the server confirmed this device was up to date; null if
@@ -224,6 +227,9 @@ class _SyncStatus implements SyncStatus {
 /// Events recorded here that the server refused (`docs/roles.md`).
 @override@JsonKey() final  int rejectedCount;
 @override@JsonKey() final  bool isConnected;
+/// False once the server says this device is not in the circle any
+/// more: it was removed, or it left (`docs/roles.md`).
+@override@JsonKey() final  bool isMember;
 
 /// Create a copy of SyncStatus
 /// with the given fields replaced by the non-null parameter values.
@@ -235,16 +241,16 @@ _$SyncStatusCopyWith<_SyncStatus> get copyWith => __$SyncStatusCopyWithImpl<_Syn
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SyncStatus&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt)&&(identical(other.pendingCount, pendingCount) || other.pendingCount == pendingCount)&&(identical(other.rejectedCount, rejectedCount) || other.rejectedCount == rejectedCount)&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SyncStatus&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt)&&(identical(other.pendingCount, pendingCount) || other.pendingCount == pendingCount)&&(identical(other.rejectedCount, rejectedCount) || other.rejectedCount == rejectedCount)&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected)&&(identical(other.isMember, isMember) || other.isMember == isMember));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lastSyncedAt,pendingCount,rejectedCount,isConnected);
+int get hashCode => Object.hash(runtimeType,lastSyncedAt,pendingCount,rejectedCount,isConnected,isMember);
 
 @override
 String toString() {
-  return 'SyncStatus(lastSyncedAt: $lastSyncedAt, pendingCount: $pendingCount, rejectedCount: $rejectedCount, isConnected: $isConnected)';
+  return 'SyncStatus(lastSyncedAt: $lastSyncedAt, pendingCount: $pendingCount, rejectedCount: $rejectedCount, isConnected: $isConnected, isMember: $isMember)';
 }
 
 
@@ -255,7 +261,7 @@ abstract mixin class _$SyncStatusCopyWith<$Res> implements $SyncStatusCopyWith<$
   factory _$SyncStatusCopyWith(_SyncStatus value, $Res Function(_SyncStatus) _then) = __$SyncStatusCopyWithImpl;
 @override @useResult
 $Res call({
- DateTime? lastSyncedAt, int pendingCount, int rejectedCount, bool isConnected
+ DateTime? lastSyncedAt, int pendingCount, int rejectedCount, bool isConnected, bool isMember
 });
 
 
@@ -272,12 +278,13 @@ class __$SyncStatusCopyWithImpl<$Res>
 
 /// Create a copy of SyncStatus
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? lastSyncedAt = freezed,Object? pendingCount = null,Object? rejectedCount = null,Object? isConnected = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? lastSyncedAt = freezed,Object? pendingCount = null,Object? rejectedCount = null,Object? isConnected = null,Object? isMember = null,}) {
   return _then(_SyncStatus(
 lastSyncedAt: freezed == lastSyncedAt ? _self.lastSyncedAt : lastSyncedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,pendingCount: null == pendingCount ? _self.pendingCount : pendingCount // ignore: cast_nullable_to_non_nullable
 as int,rejectedCount: null == rejectedCount ? _self.rejectedCount : rejectedCount // ignore: cast_nullable_to_non_nullable
 as int,isConnected: null == isConnected ? _self.isConnected : isConnected // ignore: cast_nullable_to_non_nullable
+as bool,isMember: null == isMember ? _self.isMember : isMember // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/core/error/failure.dart';
-import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
-
 import 'package:i_care/features/today/presentation/widgets/dose_tile.dart';
 import 'package:i_care/features/today/presentation/widgets/task_tile.dart';
+import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 
 import '../../../helpers/pump_app.dart';
@@ -262,7 +261,10 @@ void main() {
       tester,
       repository: circle([anas, martins]),
       now: now,
-      overrides: [deviceOwnerIdProvider.overrideWithValue('martin')],
+      prefs: MemoryDevicePrefs({
+        PrefKeys.welcomeSeen: 'true',
+        PrefKeys.memberId: 'martin',
+      }),
     );
 
     await openDose(tester, '08:00');

@@ -12,14 +12,18 @@ import 'package:i_care/shared/widgets/member_avatar.dart';
 import 'package:i_care/shared/widgets/status_pill.dart';
 
 /// The circle's members with their roles, this phone's member marked.
-/// Read-only: a phone belongs to whoever joined on it.
+/// A phone belongs to whoever joined on it; [onSelected], when set (for
+/// admins), opens what can be done about a member.
 class MemberList extends ConsumerWidget {
-  const MemberList({super.key});
+  const MemberList({this.onSelected, super.key});
+
+  final ValueChanged<Member>? onSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final ownerId = ref.watch(deviceOwnerIdProvider);
+    final ownerId = ref.watch(deviceMembershipProvider);
+    final onSelected = this.onSelected;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: AppSpacing.sm,
@@ -31,6 +35,7 @@ class MemberList extends ConsumerWidget {
               color: member.id == ownerId
                   ? context.colors.tealSoft
                   : context.colors.surface,
+              onTap: onSelected == null ? null : () => onSelected(member),
               child: Row(
                 spacing: AppSpacing.md,
                 children: [

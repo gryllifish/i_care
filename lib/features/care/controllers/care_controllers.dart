@@ -1,10 +1,10 @@
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/features/care/data/care_providers.dart';
-import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
+import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'care_controllers.g.dart';
@@ -43,15 +43,36 @@ List<Member> members(Ref ref) =>
 Map<String, Member> membersById(Ref ref) =>
     ref.watch(careLogProvider).value?.membersById ?? const {};
 
-/// The member this device belongs to. Each simulated phone overrides it;
-/// joining with an invitation code sets it (`docs/roles.md`).
+/// The member this device joined the circle as; null until it joins
+/// with a code, and again after it leaves (`docs/roles.md`). Remembered
+/// on the device.
 @Riverpod(keepAlive: true)
-String deviceOwnerId(Ref ref) => SampleCircle.ana.id;
+class DeviceMembership extends _$DeviceMembership {
+  @override
+  String? build() => ref.watch(devicePrefsProvider).read(PrefKeys.memberId);
 
-/// The member using this device; null until the log has them.
+  Future<void> joined(String memberId) async {
+    state = memberId;
+    await ref.read(devicePrefsProvider).write(PrefKeys.memberId, memberId);
+  }
+
+  /// Forgets the member, and the welcome with it: whoever joins next
+  /// sees it again.
+  Future<void> cleared() async {
+    state = null;
+    final prefs = ref.read(devicePrefsProvider);
+    await prefs.write(PrefKeys.memberId, null);
+    await prefs.write(PrefKeys.welcomeSeen, null);
+  }
+}
+
+/// The member using this device; null before it joins, or until the log
+/// has them.
 @Riverpod(keepAlive: true)
-Member? currentMember(Ref ref) =>
-    ref.watch(membersByIdProvider)[ref.watch(deviceOwnerIdProvider)];
+Member? currentMember(Ref ref) => switch (ref.watch(deviceMembershipProvider)) {
+  final String id => ref.watch(membersByIdProvider)[id],
+  null => null,
+};
 
 /// Whether this simulated phone has network. Demo control only.
 @Riverpod(keepAlive: true)

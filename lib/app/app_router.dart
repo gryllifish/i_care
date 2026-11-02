@@ -6,6 +6,7 @@ import 'package:i_care/features/activity/presentation/screens/activity_screen.da
 import 'package:i_care/features/appointments/presentation/screens/appointment_detail_screen.dart';
 import 'package:i_care/features/appointments/presentation/screens/appointment_form_screen.dart';
 import 'package:i_care/features/appointments/presentation/screens/appointments_screen.dart';
+import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/emergency/presentation/screens/emergency_card_screen.dart';
 import 'package:i_care/features/emergency/presentation/screens/profile_form_screen.dart';
 import 'package:i_care/features/handoff/presentation/screens/handoff_screen.dart';
@@ -14,6 +15,8 @@ import 'package:i_care/features/medications/presentation/screens/medication_form
 import 'package:i_care/features/medications/presentation/screens/medications_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/schedule_change_screen.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
+import 'package:i_care/features/settings/presentation/screens/join_screen.dart';
+import 'package:i_care/features/settings/presentation/screens/removed_screen.dart';
 import 'package:i_care/features/settings/presentation/screens/settings_screen.dart';
 import 'package:i_care/features/settings/presentation/screens/welcome_screen.dart';
 import 'package:i_care/features/tasks/presentation/screens/task_form_screen.dart';
@@ -31,22 +34,47 @@ part 'app_router.g.dart';
 /// browser's back button must not move both at once.
 @Riverpod(keepAlive: true)
 GoRouter appRouter(Ref ref) {
-  // The router lives as long as the app, so it follows the welcome flag
-  // through a listenable instead of being rebuilt.
-  final welcomeSeen = ValueNotifier(ref.read(welcomeSeenProvider));
+  // The router lives as long as the app, so it follows where this phone
+  // stands through a listenable instead of being rebuilt.
+  _Gate gate() => (
+    joined: ref.read(deviceMembershipProvider) != null,
+    isMember: ref.read(syncStatusProvider).value?.isMember ?? true,
+    welcomeSeen: ref.read(welcomeSeenProvider),
+  );
+  final stand = ValueNotifier(gate());
+  void update() => stand.value = gate();
   ref
-    ..listen(welcomeSeenProvider, (_, seen) => welcomeSeen.value = seen)
-    ..onDispose(welcomeSeen.dispose);
+    ..listen(deviceMembershipProvider, (_, _) => update())
+    ..listen(syncStatusProvider, (_, _) => update())
+    ..listen(welcomeSeenProvider, (_, _) => update())
+    ..onDispose(stand.dispose);
 
   final router = GoRouter(
     routerNeglect: true,
-    refreshListenable: welcomeSeen,
+    refreshListenable: stand,
     redirect: (context, state) {
-      final atWelcome = state.matchedLocation == AppRoutes.welcome;
-      if (!welcomeSeen.value) return atWelcome ? null : AppRoutes.welcome;
-      return atWelcome ? AppRoutes.today : null;
+      // A phone that belongs to nobody joins first; one taken out of the
+      // circle says so; then the welcome, once.
+      final required = switch (stand.value) {
+        (joined: false, isMember: _, welcomeSeen: _) => AppRoutes.join,
+        (joined: true, isMember: false, welcomeSeen: _) => AppRoutes.removed,
+        (joined: true, isMember: true, welcomeSeen: false) => AppRoutes.welcome,
+        _ => null,
+      };
+      final at = state.matchedLocation;
+      if (required != null) return at == required ? null : required;
+      const gates = {AppRoutes.join, AppRoutes.removed, AppRoutes.welcome};
+      return gates.contains(at) ? AppRoutes.today : null;
     },
     routes: [
+      GoRoute(
+        path: AppRoutes.join,
+        builder: (context, state) => const JoinScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.removed,
+        builder: (context, state) => const RemovedScreen(),
+      ),
       GoRoute(
         path: AppRoutes.welcome,
         builder: (context, state) => const WelcomeScreen(),
@@ -181,3 +209,7 @@ GoRouter appRouter(Ref ref) {
 /// The path only matches with a non-empty id, so it is always present.
 String _idOf(GoRouterState state) =>
     state.pathParameters[AppRoutes.idParam] ?? '';
+
+/// Where this phone stands: whether it joined a circle, is still in it,
+/// and has seen the welcome.
+typedef _Gate = ({bool joined, bool isMember, bool welcomeSeen});

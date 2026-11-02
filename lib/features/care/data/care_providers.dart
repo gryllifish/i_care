@@ -3,11 +3,16 @@ import 'package:i_care/features/care/data/datasources/event_store.dart';
 import 'package:i_care/features/care/data/datasources/rejected_store.dart';
 import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
 import 'package:i_care/features/care/data/repositories/care_repository_impl.dart';
+import 'package:i_care/features/care/data/repositories/membership_repository_impl.dart';
+import 'package:i_care/features/care/data/sync/membership_gateway.dart';
 import 'package:i_care/features/care/data/sync/simulated_connection.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
 import 'package:i_care/features/care/data/sync/sync_gateway.dart';
+import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/repositories/care_repository.dart';
+import 'package:i_care/features/care/domain/repositories/membership_repository.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
+import 'package:i_care/shared/providers/id_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'care_providers.g.dart';
@@ -77,3 +82,18 @@ CareRepositoryImpl careRepositoryImpl(Ref ref) {
 
 @Riverpod(keepAlive: true)
 CareRepository careRepository(Ref ref) => ref.watch(careRepositoryImplProvider);
+
+@Riverpod(keepAlive: true)
+MembershipGateway membershipGateway(Ref ref) =>
+    ref.watch(simulatedConnectionProvider);
+
+@Riverpod(keepAlive: true)
+MembershipRepository membershipRepository(Ref ref) => MembershipRepositoryImpl(
+  care: ref.watch(careRepositoryImplProvider),
+  gateway: ref.watch(membershipGatewayProvider),
+  meta: (memberId) => EventMeta(
+    id: ref.read(newIdProvider)(),
+    caregiverId: memberId,
+    occurredAt: ref.read(clockProvider)(),
+  ),
+);

@@ -35,6 +35,7 @@ class CareRepositoryImpl implements CareRepository {
   final _statusChanges = StreamController<SyncStatus>.broadcast();
   StreamSubscription<SyncBatch>? _subscription;
   var _isConnected = true;
+  var _isMember = true;
 
   /// Pushes run one after another, so an event is never sent twice at
   /// once.
@@ -117,12 +118,43 @@ class CareRepositoryImpl implements CareRepository {
   }
 
   void _onWatchError(Object error, StackTrace stackTrace) {
+    if (error is NotMemberException) {
+      // Send what is still here too: the server keeps a former member's
+      // facts, flagged, and a dose given must not be lost. The app waits
+      // for nothing pending before clearing this device.
+      _isMember = false;
+      _emitStatus();
+      unawaited(_push());
+      return;
+    }
     if (error is! NoConnectionException) {
       AppLogger.error('Sync stream failed', error, stackTrace);
     }
     _isConnected = false;
     _emitStatus();
   }
+
+  /// Sends what is pending and waits. Fails when it could not all be sent,
+  /// for instance offline: leaving a circle must not lose records.
+  Future<Result<void>> flush() => guard(() async {
+    await _push();
+    if (_events.readPending().isNotEmpty) {
+      throw const NoConnectionException('Records still to send');
+    }
+  });
+
+  /// Clears this device's copy of the log and syncs again from the start:
+  /// after joining a circle, leaving one, or a role change that changes
+  /// what this device may read.
+  Future<Result<void>> restart() => guard(() async {
+    await stop();
+    await _events.clear();
+    await _rejected.clear();
+    await _syncState.clear();
+    _isMember = true;
+    _isConnected = true;
+    start();
+  });
 
   Future<void> _push() => _pushing = _pushing.then((_) => _pushPending());
 
@@ -175,6 +207,7 @@ class CareRepositoryImpl implements CareRepository {
         pendingCount: _events.readPending().length,
         rejectedCount: _rejected.readAll().length,
         isConnected: _isConnected,
+        isMember: _isMember,
       );
     } on AppException catch (error, stackTrace) {
       AppLogger.error('Could not read sync status', error, stackTrace);

@@ -15,6 +15,7 @@ void main() {
       final server = SimulatedServer(
         await openBox(SimulatedServer.boxName),
         await openBox(SimulatedServer.devicesBoxName),
+        await openBox(SimulatedServer.codesBoxName),
         clock: DateTime.now,
       );
       await server.seed([

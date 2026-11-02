@@ -5,16 +5,16 @@ import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
+import 'package:i_care/features/settings/presentation/widgets/circle_section.dart';
 import 'package:i_care/features/settings/presentation/widgets/not_sent_section.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
-import 'package:i_care/shared/widgets/member_list.dart';
 import 'package:i_care/shared/widgets/segmented_control.dart';
 
-/// Who uses this phone, its language, the demo's reset and the medical
-/// disclaimer.
+/// The circle and this phone's place in it, language, theme, the demo's
+/// reset and the medical disclaimer.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -33,10 +33,7 @@ class SettingsScreen extends ConsumerWidget {
         ),
         children: [
           const NotSentSection(),
-          FormSection(
-            title: l10n.circleTitle,
-            children: const [MemberList()],
-          ),
+          const CircleSection(),
           FormSection(
             title: l10n.sectionLanguage,
             children: [

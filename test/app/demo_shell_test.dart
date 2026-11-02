@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:i_care/app/demo_shell.dart';
 import 'package:i_care/app/simulated_device.dart';
-import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/data/care_providers.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/data/sync/simulated_connection.dart';
@@ -27,6 +26,7 @@ void main() {
     server = SimulatedServer(
       await Hive.openBox<String>('demo_shell_test', bytes: Uint8List(0)),
       await Hive.openBox<String>('demo_shell_devices', bytes: Uint8List(0)),
+      await Hive.openBox<String>('demo_shell_codes', bytes: Uint8List(0)),
       clock: () => now,
     );
     devices = [
@@ -44,9 +44,11 @@ void main() {
                   deviceId: 'phone-${owner.id}',
                 ),
               ),
-              deviceOwnerIdProvider.overrideWithValue(owner.id),
               devicePrefsProvider.overrideWithValue(
-                MemoryDevicePrefs({PrefKeys.welcomeSeen: 'true'}),
+                MemoryDevicePrefs({
+                  PrefKeys.welcomeSeen: 'true',
+                  PrefKeys.memberId: owner.id,
+                }),
               ),
               clockProvider.overrideWithValue(() => now),
             ],

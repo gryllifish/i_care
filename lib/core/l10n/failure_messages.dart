@@ -10,6 +10,11 @@ extension FailureMessage on Failure {
     TimeoutFailure() => l10n.errorTimeout,
     ServerFailure() => l10n.errorServer,
     UnexpectedFailure() => l10n.errorUnexpected,
+    NotMemberFailure() => l10n.errorNotMember,
+    ForbiddenFailure() => l10n.errorForbidden,
+    InvalidCodeFailure(problem: CodeProblem.unknown) => l10n.errorCodeUnknown,
+    InvalidCodeFailure(problem: CodeProblem.used) => l10n.errorCodeUsed,
+    InvalidCodeFailure(problem: CodeProblem.expired) => l10n.errorCodeExpired,
   };
 }
 

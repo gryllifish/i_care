@@ -1220,5 +1220,75 @@
   "rejectedNotMember": "You are no longer in the circle.",
   "rejectedLastAdmin": "The circle would be left without an admin.",
   "dismiss": "Dismiss",
-  "afterAccessEnded": "After their access ended"
+  "afterAccessEnded": "After their access ended",
+  "errorNotMember": "This phone is not in the circle any more.",
+  "errorForbidden": "Your role does not allow it.",
+  "errorCodeUnknown": "That code does not exist. Check it with whoever sent it.",
+  "errorCodeUsed": "That code was already used. Ask for a new one.",
+  "errorCodeExpired": "That code expired. Ask for a new one.",
+  "joinTitle": "Join a care circle",
+  "joinBody": "Ask an admin of the circle for a code. It works once, for 48 hours.",
+  "fieldCode": "Code",
+  "fieldCodeHint": "e.g. K7P-4QM",
+  "join": "Join",
+  "joinDemoHint": "In this demo, make a code on Ana's phone: Settings, The circle, tap someone, New code.",
+  "removedTitle": "This phone is out of the circle",
+  "removedBody": "An admin took you out of the circle. Anything this phone had not sent was sent first; what it kept is cleared now.",
+  "removedOk": "OK",
+  "inviteSomeone": "Invite someone",
+  "inviteTitle": "Invite to the circle",
+  "fieldRole": "Role",
+  "invite": "Invite",
+  "roleAdminAbout": "Everything, including who belongs.",
+  "roleCaregiverAbout": "Daily care: medications, tasks and visits.",
+  "roleHelperAbout": "Today's doses and tasks only.",
+  "roleViewerAbout": "Sees everything, changes nothing.",
+  "codeTitle": "Code for {name}",
+  "@codeTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "codeValidUntil": "Works once, until {when}.",
+  "@codeValidUntil": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "codeShareHint": "Send it however you like. On the new phone, enter it to join.",
+  "copyCode": "Copy code",
+  "codeCopied": "Code copied",
+  "close": "Close",
+  "newCode": "New code",
+  "newCodeAbout": "For another device, or if the last code was lost. The previous one stops working.",
+  "withdrawInvitation": "Withdraw invitation",
+  "withdrawTitle": "Withdraw {name}'s invitation?",
+  "@withdrawTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "withdrawBody": "Their code stops working.",
+  "removeMember": "Remove from the circle",
+  "removeMemberTitle": "Remove {name} from the circle?",
+  "@removeMemberTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "removeMemberBody": "Their phones stop syncing and clear what they kept. Their records stay in Activity.",
+  "lastAdminNote": "The circle needs at least one admin.",
+  "leaveCircle": "Leave the circle on this phone",
+  "leaveTitle": "Leave the circle on this phone?",
+  "leaveBody": "Anything not sent yet is sent first, then this phone's copy is cleared. Coming back takes a new code.",
+  "leave": "Leave",
+  "leaveOffline": "Connect to leave: there are records still to send."
 }

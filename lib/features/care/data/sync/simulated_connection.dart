@@ -2,16 +2,18 @@ import 'dart:async';
 
 import 'package:i_care/core/error/app_exception.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
+import 'package:i_care/features/care/data/sync/membership_gateway.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
 import 'package:i_care/features/care/data/sync/sync_gateway.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/invite_code.dart';
 import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 
 /// One device's link to the [SimulatedServer], with network latency and
 /// an offline switch so the demo can reproduce what real networks do.
 /// The server knows the device by [deviceId], as a real one would by the
 /// signed-in account.
-class SimulatedConnection implements SyncGateway {
+class SimulatedConnection implements SyncGateway, MembershipGateway {
   SimulatedConnection(
     this._server, {
     required this.deviceId,
@@ -68,6 +70,11 @@ class SimulatedConnection implements SyncGateway {
       await Future<void>.delayed(_latency);
       // The connection may have dropped while the batch was in flight.
       if (!_isOnline || controller.isClosed) return;
+      // Only members read the log; a removed device learns it here.
+      if (!_server.isActive(deviceId)) {
+        controller.addError(const NotMemberException('Not in the circle'));
+        return;
+      }
       final batch = _server.eventsAfter(position);
       position = batch.cursor;
       controller.add((
@@ -96,6 +103,30 @@ class SimulatedConnection implements SyncGateway {
     );
     return controller.stream;
   }
+
+  @override
+  Future<InviteCode> issueCode(String memberId) async {
+    await _travel();
+    final issued = await _server.issueCode(deviceId, memberId);
+    await _travel();
+    return InviteCode(
+      code: _display(issued.code),
+      expiresAt: issued.expiresAt,
+    );
+  }
+
+  @override
+  Future<String> join(String code) async {
+    await _travel();
+    final memberId = await _server.join(deviceId, code);
+    await _travel();
+    return memberId;
+  }
+
+  /// "K7P4QM" as "K7P-4QM": easier to read aloud and type.
+  static String _display(String code) =>
+      '${code.substring(0, code.length ~/ 2)}-'
+      '${code.substring(code.length ~/ 2)}';
 
   Future<void> _travel() async {
     if (!_isOnline) throw const NoConnectionException('Offline');

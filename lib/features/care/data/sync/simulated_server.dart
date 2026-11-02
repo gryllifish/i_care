@@ -1,14 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:hive_ce/hive.dart';
 import 'package:i_care/core/error/app_exception.dart';
+import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/core/utils/hive_guard.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/permissions.dart';
+
+/// A one-time invitation code and until when it can be used, by the
+/// server's clock.
+typedef IssuedCode = ({String code, DateTime expiresAt});
 
 /// What the server answers to a push: events stored (encoded, with
 /// `receivedAt`) and the ids it refused with why.
@@ -29,7 +35,13 @@ typedef ServerPushResult = ({
 /// clock. Members are recomputed from the stored log on start: here the
 /// log is the server's own record; Firestore keeps them as documents.
 class SimulatedServer {
-  SimulatedServer(this._box, this._devices, {required this._clock}) {
+  SimulatedServer(
+    this._box,
+    this._devices,
+    this._codes, {
+    required this._clock,
+    Random? random,
+  }) : _random = random ?? Random.secure() {
     for (final value in hiveGuard('Server log', () => _box.values.toList())) {
       final record = _Record.decode(value);
       _records.add(record);
@@ -45,14 +57,33 @@ class SimulatedServer {
     ).entries) {
       _bindings[key] = _Binding.decode(value);
     }
+    for (final MapEntry(:key, :value) in hiveGuard(
+      'Server codes',
+      () => _codes.toMap().cast<String, String>(),
+    ).entries) {
+      _issued[key] = _Code.decode(value);
+    }
   }
 
   static const boxName = 'simulated_server';
   static const devicesBoxName = 'simulated_server_devices';
+  static const codesBoxName = 'simulated_server_codes';
+
+  /// How long an invitation code can be used (`docs/roles.md`).
+  static const codeLifetime = Duration(hours: 48);
+
+  /// Letters and digits that cannot be misread for one another: no 0/O,
+  /// 1/I/L.
+  static const _codeAlphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  static const _codeHalf = 3;
 
   final Box<String> _box;
   final Box<String> _devices;
+
+  /// Invitation codes: a secret the log never holds.
+  final Box<String> _codes;
   final DateTime Function() _clock;
+  final Random _random;
   final _records = <_Record>[];
   final _byId = <String, _Record>{};
   final _appended = StreamController<void>.broadcast();
@@ -60,6 +91,7 @@ class SimulatedServer {
   final _members = <String, ({MemberRole role, bool removed})>{};
   final _authors = <String, String>{};
   final _bindings = <String, _Binding>{};
+  final _issued = <String, _Code>{};
 
   int get _lastSequence => _records.isEmpty ? 0 : _records.last.sequence;
 
@@ -94,6 +126,13 @@ class SimulatedServer {
           );
           added.add(record);
           stored.add(record.event);
+          // A device leaving unbinds only itself.
+          if (event is MemberLeft) {
+            _bindings[deviceId] = _Binding(
+              memberId: event.memberId,
+              ended: true,
+            );
+          }
       }
     }
     await _persist(added);
@@ -126,6 +165,84 @@ class SimulatedServer {
     );
   }
 
+  /// Whether [deviceId] belongs to a current member: what lets it read
+  /// the log.
+  bool isActive(String deviceId) => switch (_bindings[deviceId]) {
+    _Binding(:final memberId, ended: false) =>
+      _members[memberId]?.removed == false,
+    _ => false,
+  };
+
+  /// A new one-time code for [memberId], asked by an admin on [deviceId].
+  /// Any unused code for the same member stops working: one live code per
+  /// person.
+  ///
+  /// Throws [NotMemberException], [ForbiddenException],
+  /// [NotFoundException] or [StorageException].
+  Future<IssuedCode> issueCode(String deviceId, String memberId) async {
+    _requireAdmin(deviceId);
+    if (_members[memberId] case null || (removed: true, role: _)) {
+      throw const NotFoundException('No such member');
+    }
+    for (final MapEntry(:key, :value) in _issued.entries.toList()) {
+      if (value.memberId == memberId && !value.used) {
+        _issued[key] = value.copyWith(used: true);
+      }
+    }
+    var code = _newCode();
+    while (_issued.containsKey(code)) {
+      code = _newCode();
+    }
+    final issued = _Code(
+      memberId: memberId,
+      expiresAt: _clock().add(codeLifetime),
+    );
+    _issued[code] = issued;
+    await _saveCodes();
+    return (code: code, expiresAt: issued.expiresAt);
+  }
+
+  /// Binds [deviceId] to the member [code] was issued for, marks the code
+  /// used and records that they joined. Returns the member's id.
+  ///
+  /// Throws [InvalidCodeException] or [StorageException].
+  Future<String> join(String deviceId, String code) async {
+    final key = normalizeCode(code);
+    final issued = _issued[key];
+    if (issued == null || _members[issued.memberId]?.removed != false) {
+      throw const InvalidCodeException(CodeProblem.unknown, 'Unknown code');
+    }
+    if (issued.used) {
+      throw const InvalidCodeException(CodeProblem.used, 'Code used');
+    }
+    if (!_clock().isBefore(issued.expiresAt)) {
+      throw const InvalidCodeException(CodeProblem.expired, 'Code expired');
+    }
+    _issued[key] = issued.copyWith(used: true);
+    _bindings[deviceId] = _Binding(memberId: issued.memberId);
+    final at = _clock();
+    await _persist([
+      _store(
+        CareEvent.memberJoined(
+          meta: EventMeta(
+            id: 'joined-$deviceId-${at.microsecondsSinceEpoch}',
+            caregiverId: systemAuthor,
+            occurredAt: at,
+          ),
+          memberId: issued.memberId,
+        ),
+        sequence: _lastSequence + 1,
+      ),
+    ]);
+    await _saveCodes();
+    return issued.memberId;
+  }
+
+  /// [code] as stored: upper case, without spaces or dashes, so "k7p 4qm"
+  /// works as well as "K7P-4QM".
+  static String normalizeCode(String code) =>
+      code.toUpperCase().replaceAll(RegExp('[^A-Z0-9]'), '');
+
   /// Encoded events after [cursor] in server order, and the cursor that
   /// follows them.
   ({List<String> events, String cursor}) eventsAfter(String? cursor) {
@@ -151,8 +268,10 @@ class SimulatedServer {
     _members.clear();
     _authors.clear();
     _bindings.clear();
+    _issued.clear();
     await hiveGuardAsync('Server log', _box.clear);
     await hiveGuardAsync('Server devices', _devices.clear);
+    await hiveGuardAsync('Server codes', _codes.clear);
   }
 
   Future<void> dispose() => _appended.close();
@@ -196,6 +315,32 @@ class SimulatedServer {
     }
     return const _Verdict.accept();
   }
+
+  /// Throws [NotMemberException] or [ForbiddenException].
+  void _requireAdmin(String deviceId) {
+    if (!isActive(deviceId)) {
+      throw const NotMemberException('Device not in the circle');
+    }
+    final role = _members[_bindings[deviceId]?.memberId]?.role;
+    if (role == null || !can(role, CareAction.manageMembers)) {
+      throw const ForbiddenException('Only admins manage members');
+    }
+  }
+
+  String _newCode() {
+    String half() => [
+      for (var i = 0; i < _codeHalf; i++)
+        _codeAlphabet[_random.nextInt(_codeAlphabet.length)],
+    ].join();
+    return '${half()}${half()}';
+  }
+
+  Future<void> _saveCodes() => hiveGuardAsync(
+    'Server codes',
+    () => _codes.putAll({
+      for (final MapEntry(:key, :value) in _issued.entries) key: value.encode(),
+    }),
+  );
 
   /// Whether [event] would take away the circle's last admin.
   bool _leavesNoAdmin(CareEvent event) {
@@ -296,6 +441,49 @@ class _Verdict {
 
   final RejectionReason? reason;
   final bool fromFormerMember;
+}
+
+/// An issued invitation code: whom it is for, until when, and whether it
+/// was used (or replaced by a newer one).
+class _Code {
+  const _Code({
+    required this.memberId,
+    required this.expiresAt,
+    this.used = false,
+  });
+
+  /// Throws [ParsingException].
+  factory _Code.decode(String value) {
+    final Object? json;
+    try {
+      json = jsonDecode(value);
+    } on FormatException catch (error) {
+      throw ParsingException('Corrupted invitation code', cause: error);
+    }
+    if (json case {
+      'member': final String memberId,
+      'expires_at': final String expiresAt,
+      'used': final bool used,
+    }) {
+      if (DateTime.tryParse(expiresAt) case final DateTime at) {
+        return _Code(memberId: memberId, expiresAt: at, used: used);
+      }
+    }
+    throw const ParsingException('Corrupted invitation code');
+  }
+
+  final String memberId;
+  final DateTime expiresAt;
+  final bool used;
+
+  _Code copyWith({required bool used}) =>
+      _Code(memberId: memberId, expiresAt: expiresAt, used: used);
+
+  String encode() => jsonEncode({
+    'member': memberId,
+    'expires_at': expiresAt.toIso8601String(),
+    'used': used,
+  });
 }
 
 /// Which member a device belongs to, and whether that has ended.

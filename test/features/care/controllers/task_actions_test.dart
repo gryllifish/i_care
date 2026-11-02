@@ -9,6 +9,7 @@ import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
+import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:i_care/shared/providers/id_provider.dart';
 
 import '../../../helpers/pump_app.dart';
@@ -30,6 +31,9 @@ void main() {
         careRepositoryProvider.overrideWithValue(repository),
         clockProvider.overrideWithValue(() => now),
         newIdProvider.overrideWithValue(() => 'id-${nextId++}'),
+        devicePrefsProvider.overrideWithValue(
+          MemoryDevicePrefs({PrefKeys.memberId: 'ana'}),
+        ),
       ],
     );
   });

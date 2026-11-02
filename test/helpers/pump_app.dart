@@ -10,9 +10,11 @@ import 'package:i_care/core/error/result.dart';
 import 'package:i_care/features/care/data/care_providers.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/invite_code.dart';
 import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/care/domain/repositories/care_repository.dart';
+import 'package:i_care/features/care/domain/repositories/membership_repository.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:i_care/shared/providers/id_provider.dart';
@@ -79,6 +81,50 @@ class FakeCareRepository implements CareRepository {
   }
 }
 
+/// Answers membership requests without a server: [validCode] joins as
+/// [joinsAs]; anything else is an unknown code.
+class FakeMembershipRepository implements MembershipRepository {
+  static const validCode = 'K7P-4QM';
+  String joinsAs = 'martin';
+
+  /// When set, every request fails with it.
+  Failure? failure;
+
+  final issuedFor = <String>[];
+  int left = 0;
+  int forgotten = 0;
+
+  @override
+  Future<Result<InviteCode>> issueCode(String memberId) async {
+    if (failure case final Failure failure) return Err(failure);
+    issuedFor.add(memberId);
+    return Ok(
+      InviteCode(code: validCode, expiresAt: DateTime(2026, 11, 4, 9)),
+    );
+  }
+
+  @override
+  Future<Result<String>> join(String code) async {
+    if (failure case final Failure failure) return Err(failure);
+    return code.toUpperCase() == validCode
+        ? Ok(joinsAs)
+        : const Err(InvalidCodeFailure(CodeProblem.unknown));
+  }
+
+  @override
+  Future<Result<void>> leave(String memberId) async {
+    if (failure case final Failure failure) return Err(failure);
+    left++;
+    return const Ok(null);
+  }
+
+  @override
+  Future<Result<void>> forget() async {
+    forgotten++;
+    return const Ok(null);
+  }
+}
+
 /// Logical size of a typical phone.
 const phoneSize = Size(393, 852);
 
@@ -91,8 +137,9 @@ Future<void> pumpApp(
   Size size = phoneSize,
   List<Override> overrides = const [],
 
-  /// This phone's preferences; by default, past the welcome.
+  /// This phone's preferences; by default, Ana's phone past the welcome.
   DevicePrefs? prefs,
+  MembershipRepository? membership,
 }) async {
   tester.view
     ..physicalSize = size * 3
@@ -104,10 +151,17 @@ Future<void> pumpApp(
     ProviderScope(
       overrides: [
         careRepositoryProvider.overrideWithValue(repository),
+        membershipRepositoryProvider.overrideWithValue(
+          membership ?? FakeMembershipRepository(),
+        ),
         clockProvider.overrideWithValue(() => now),
         newIdProvider.overrideWithValue(() => 'new-${nextId++}'),
         devicePrefsProvider.overrideWithValue(
-          prefs ?? MemoryDevicePrefs({PrefKeys.welcomeSeen: 'true'}),
+          prefs ??
+              MemoryDevicePrefs({
+                PrefKeys.welcomeSeen: 'true',
+                PrefKeys.memberId: 'ana',
+              }),
         ),
         ...overrides,
       ],

@@ -431,3 +431,98 @@ final class CareRepositoryProvider
 }
 
 String _$careRepositoryHash() => r'02c1a84b680ae14d3c507bb0ea0202e4f454e64e';
+
+@ProviderFor(membershipGateway)
+final membershipGatewayProvider = MembershipGatewayProvider._();
+
+final class MembershipGatewayProvider
+    extends
+        $FunctionalProvider<
+          MembershipGateway,
+          MembershipGateway,
+          MembershipGateway
+        >
+    with $Provider<MembershipGateway> {
+  MembershipGatewayProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'membershipGatewayProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$membershipGatewayHash();
+
+  @$internal
+  @override
+  $ProviderElement<MembershipGateway> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  MembershipGateway create(Ref ref) {
+    return membershipGateway(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MembershipGateway value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<MembershipGateway>(value),
+    );
+  }
+}
+
+String _$membershipGatewayHash() => r'd56d8722f1217f267dcf00663c4d2ac3cbc3b6b3';
+
+@ProviderFor(membershipRepository)
+final membershipRepositoryProvider = MembershipRepositoryProvider._();
+
+final class MembershipRepositoryProvider
+    extends
+        $FunctionalProvider<
+          MembershipRepository,
+          MembershipRepository,
+          MembershipRepository
+        >
+    with $Provider<MembershipRepository> {
+  MembershipRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'membershipRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$membershipRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<MembershipRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  MembershipRepository create(Ref ref) {
+    return membershipRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MembershipRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<MembershipRepository>(value),
+    );
+  }
+}
+
+String _$membershipRepositoryHash() =>
+    r'8096a04007898be9bba9338a49af19f9a7d601ae';

@@ -286,66 +286,86 @@ final class MembersByIdProvider
 
 String _$membersByIdHash() => r'183825e4ef4eebb38704a5b74430901c47d016b3';
 
-/// The member this device belongs to. Each simulated phone overrides it;
-/// joining with an invitation code sets it (`docs/roles.md`).
+/// The member this device joined the circle as; null until it joins
+/// with a code, and again after it leaves (`docs/roles.md`). Remembered
+/// on the device.
 
-@ProviderFor(deviceOwnerId)
-final deviceOwnerIdProvider = DeviceOwnerIdProvider._();
+@ProviderFor(DeviceMembership)
+final deviceMembershipProvider = DeviceMembershipProvider._();
 
-/// The member this device belongs to. Each simulated phone overrides it;
-/// joining with an invitation code sets it (`docs/roles.md`).
-
-final class DeviceOwnerIdProvider
-    extends $FunctionalProvider<String, String, String>
-    with $Provider<String> {
-  /// The member this device belongs to. Each simulated phone overrides it;
-  /// joining with an invitation code sets it (`docs/roles.md`).
-  DeviceOwnerIdProvider._()
+/// The member this device joined the circle as; null until it joins
+/// with a code, and again after it leaves (`docs/roles.md`). Remembered
+/// on the device.
+final class DeviceMembershipProvider
+    extends $NotifierProvider<DeviceMembership, String?> {
+  /// The member this device joined the circle as; null until it joins
+  /// with a code, and again after it leaves (`docs/roles.md`). Remembered
+  /// on the device.
+  DeviceMembershipProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'deviceOwnerIdProvider',
+        name: r'deviceMembershipProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$deviceOwnerIdHash();
+  String debugGetCreateSourceHash() => _$deviceMembershipHash();
 
   @$internal
   @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  String create(Ref ref) {
-    return deviceOwnerId(ref);
-  }
+  DeviceMembership create() => DeviceMembership();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(String value) {
+  Override overrideWithValue(String? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String?>(value),
     );
   }
 }
 
-String _$deviceOwnerIdHash() => r'e5798ca577b965c557ae931d7f862e9cc9cd52c9';
+String _$deviceMembershipHash() => r'f0d53d4424c03a67888196a9825be14d285d64cc';
 
-/// The member using this device; null until the log has them.
+/// The member this device joined the circle as; null until it joins
+/// with a code, and again after it leaves (`docs/roles.md`). Remembered
+/// on the device.
+
+abstract class _$DeviceMembership extends $Notifier<String?> {
+  String? build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<String?, String?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String?, String?>,
+              String?,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
+/// The member using this device; null before it joins, or until the log
+/// has them.
 
 @ProviderFor(currentMember)
 final currentMemberProvider = CurrentMemberProvider._();
 
-/// The member using this device; null until the log has them.
+/// The member using this device; null before it joins, or until the log
+/// has them.
 
 final class CurrentMemberProvider
     extends $FunctionalProvider<Member?, Member?, Member?>
     with $Provider<Member?> {
-  /// The member using this device; null until the log has them.
+  /// The member using this device; null before it joins, or until the log
+  /// has them.
   CurrentMemberProvider._()
     : super(
         from: null,
@@ -379,7 +399,7 @@ final class CurrentMemberProvider
   }
 }
 
-String _$currentMemberHash() => r'6b64958ec386950c24718d3f32b39c8d705f4483';
+String _$currentMemberHash() => r'0ea33ce7343d2e1040cc29f9b92fbbeed3f7f821';
 
 /// Whether this simulated phone has network. Demo control only.
 
