@@ -139,7 +139,7 @@ family portal for residents' relatives is a possible later path.
     with confirmation, and listed in the handoff for the next
     appointment. ICare stores links only, never files.
 
-15. **Roles and membership** (phases 1 and 2 of 4 built): admin, caregiver,
+15. **Roles and membership** (phases 1 to 3 of 4 built): admin, caregiver,
     helper and view-only members with their own permissions and data,
     phones joined by one-time invitation codes instead of "Who are you?",
     and the server checking every event. Design and phases:
@@ -277,6 +277,10 @@ documented), nursing-home features.
   server, a Join screen, the circle in Settings (invite, change role, new
   code, withdraw, remove), leaving a circle on a phone, and a removed
   phone that says so before clearing itself.
+- Roles, phase 3: data by role (helpers never receive the team's events),
+  a resync when a role change alters that, actions offered by role, the
+  helper's Today-only app, read-only viewers, a day summary for admins,
+  and the demo with Ana (admin) and Rosa (helper).
 
 ### Known gaps
 - Routers use `routerNeglect`, so the browser back button never moves
@@ -284,11 +288,9 @@ documented), nursing-home features.
   either (two apps on one page). Acceptable for the demo.
 
 ### Next steps, in order
-1. Roles, phase 3: UI by role and filtered sync
-   ([`docs/roles.md`](../../docs/roles.md)).
-2. Shifts (who is responsible when), designed after roles.
-3. Review design details with the user; update README screenshots.
-4. Dependabot PRs #1 and #2 (very_good_analysis 11).
+1. Shifts (who is responsible when): roles phase 4, to design next.
+2. Review design details with the user; update README screenshots.
+3. Dependabot PRs #1 and #2 (very_good_analysis 11).
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.
 

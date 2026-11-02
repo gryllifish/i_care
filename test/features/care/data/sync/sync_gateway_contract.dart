@@ -185,6 +185,19 @@ void runSyncGatewayContract(Future<Gateways> Function() connect) {
       },
     );
 
+    test(
+      "a helper's watch leaves out the team's appointments and notes",
+      () async {
+        final [note, dose] = (await gateways.device.push([
+          events.note('a1', 'Same dose'),
+          events.given('m1', at: eight),
+        ])).stored;
+
+        expect(await firstBatch(gateways.helper, cursor: start), [dose]);
+        expect(await firstBatch(gateways.other, cursor: start), [note, dose]);
+      },
+    );
+
     test('never leaves the circle without an admin', () async {
       final result = await gateways.device.push([
         events.roleChanged('ana', MemberRole.caregiver, baseVersion: 0),

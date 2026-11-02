@@ -113,3 +113,34 @@ bool canRemove(Member member, CareEvent record) => can(
 bool isLastAdmin(Iterable<Member> members, Member member) =>
     member.role == MemberRole.admin &&
     members.where((other) => other.role == MemberRole.admin).length <= 1;
+
+/// Who may read an event (`docs/roles.md`, "Data by role").
+enum Audience {
+  /// What everyone needs to give care: medications, doses, tasks, the
+  /// emergency card, members.
+  care,
+
+  /// The rest of the team's information: appointments, visit notes and
+  /// documents.
+  team,
+}
+
+/// [event]'s audience, decided by its type alone so the server can file
+/// it when it arrives.
+Audience audienceOf(CareEvent event) => switch (event) {
+  AppointmentCreated() ||
+  AppointmentUpdated() ||
+  AppointmentCancelled() ||
+  VisitNoteAdded() ||
+  DocumentLinked() ||
+  DocumentRemoved() => Audience.team,
+  _ => Audience.care,
+};
+
+/// The audiences [role] reads.
+Set<Audience> audiencesFor(MemberRole role) => switch (role) {
+  MemberRole.helper => const {Audience.care},
+  MemberRole.admin ||
+  MemberRole.caregiver ||
+  MemberRole.viewer => const {Audience.care, Audience.team},
+};

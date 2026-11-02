@@ -6,6 +6,7 @@ import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
@@ -78,6 +79,14 @@ abstract class TodayView with _$TodayView {
 
     /// Today's tasks with no set time.
     @Default(<TaskSlot>[]) List<TaskSlot> anyTimeTasks,
+
+    /// For the day's summary: doses and tasks past their time and not
+    /// resolved (yesterday's too), today's tasks and how many are done or
+    /// skipped, and the latest dose or task record made today.
+    @Default(0) int lateCount,
+    @Default(0) int tasksToday,
+    @Default(0) int tasksResolvedToday,
+    CareEvent? lastRecord,
     @Default(<AsNeededItem>[]) List<AsNeededItem> asNeeded,
 
     /// The next appointment if it is within [upcomingAppointmentWindow].
@@ -113,8 +122,40 @@ TodayView buildTodayView(CareLog log, DateTime now) {
     ),
   ];
 
+  final lastRecord =
+      [
+        for (final event in log.events)
+          if (event is DoseGiven ||
+              event is DoseSkipped ||
+              event is TaskDone ||
+              event is TaskSkipped)
+            if (_isSameDay(event.meta.occurredAt, day)) event,
+      ].fold<CareEvent?>(
+        null,
+        (latest, event) =>
+            latest == null ||
+                event.meta.occurredAt.isAfter(latest.meta.occurredAt)
+            ? event
+            : latest,
+      );
+
   return TodayView(
     day: day,
+    lateCount:
+        [
+          ...fromYesterday,
+          ...slots,
+        ].where((slot) => slot.status == DoseStatus.overdue).length +
+        tasks.where((slot) => slot.status == TaskStatus.late).length,
+    tasksToday: tasks.length,
+    tasksResolvedToday: tasks
+        .where(
+          (slot) =>
+              slot.status == TaskStatus.done ||
+              slot.status == TaskStatus.skipped,
+        )
+        .length,
+    lastRecord: lastRecord,
     totalToday: slots.length,
     resolvedToday: slots
         .where(
@@ -169,6 +210,15 @@ TodayView buildTodayView(CareLog log, DateTime now) {
     ],
   );
 }
+
+/// Whether [role] sees a summary of the day at the top of Today instead
+/// of the next dose to give (`docs/roles.md`): admins, who coordinate
+/// rather than record, and viewers, who cannot record.
+bool showsDaySummary(MemberRole role) =>
+    role == MemberRole.admin || role == MemberRole.viewer;
+
+bool _isSameDay(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;
 
 /// By time; at the same time doses first, then by name. Explicit all the
 /// way down, since `List.sort` is not stable.

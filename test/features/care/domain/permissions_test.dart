@@ -81,4 +81,15 @@ void main() {
     expect(isFact(CareAction.manageMedications), isFalse);
     expect(isFact(null), isFalse);
   });
+
+  test("a helper reads care, not the team's appointments and notes", () {
+    expect(audienceOf(events.given('m1', at: eight)), Audience.care);
+    expect(audienceOf(events.task('t1')), Audience.care);
+    expect(audienceOf(events.memberInvited('lucia')), Audience.care);
+    expect(audienceOf(events.note('a1', 'Same dose')), Audience.team);
+    expect(audienceOf(events.document('a1', 'ECG')), Audience.team);
+
+    expect(audiencesFor(MemberRole.helper), {Audience.care});
+    expect(audiencesFor(MemberRole.viewer), Audience.values.toSet());
+  });
 }

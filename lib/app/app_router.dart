@@ -7,6 +7,7 @@ import 'package:i_care/features/appointments/presentation/screens/appointment_de
 import 'package:i_care/features/appointments/presentation/screens/appointment_form_screen.dart';
 import 'package:i_care/features/appointments/presentation/screens/appointments_screen.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/emergency/presentation/screens/emergency_card_screen.dart';
 import 'package:i_care/features/emergency/presentation/screens/profile_form_screen.dart';
 import 'package:i_care/features/handoff/presentation/screens/handoff_screen.dart';
@@ -40,6 +41,7 @@ GoRouter appRouter(Ref ref) {
     joined: ref.read(deviceMembershipProvider) != null,
     isMember: ref.read(syncStatusProvider).value?.isMember ?? true,
     welcomeSeen: ref.read(welcomeSeenProvider),
+    helper: ref.read(currentMemberProvider)?.role == MemberRole.helper,
   );
   final stand = ValueNotifier(gate());
   void update() => stand.value = gate();
@@ -47,6 +49,7 @@ GoRouter appRouter(Ref ref) {
     ..listen(deviceMembershipProvider, (_, _) => update())
     ..listen(syncStatusProvider, (_, _) => update())
     ..listen(welcomeSeenProvider, (_, _) => update())
+    ..listen(currentMemberProvider, (_, _) => update())
     ..onDispose(stand.dispose);
 
   final router = GoRouter(
@@ -55,16 +58,30 @@ GoRouter appRouter(Ref ref) {
     redirect: (context, state) {
       // A phone that belongs to nobody joins first; one taken out of the
       // circle says so; then the welcome, once.
-      final required = switch (stand.value) {
-        (joined: false, isMember: _, welcomeSeen: _) => AppRoutes.join,
-        (joined: true, isMember: false, welcomeSeen: _) => AppRoutes.removed,
-        (joined: true, isMember: true, welcomeSeen: false) => AppRoutes.welcome,
+      final gate = stand.value;
+      final required = switch (gate) {
+        (joined: false, isMember: _, welcomeSeen: _, helper: _) =>
+          AppRoutes.join,
+        (joined: true, isMember: false, welcomeSeen: _, helper: _) =>
+          AppRoutes.removed,
+        (joined: true, isMember: true, welcomeSeen: false, helper: _) =>
+          AppRoutes.welcome,
         _ => null,
       };
       final at = state.matchedLocation;
       if (required != null) return at == required ? null : required;
       const gates = {AppRoutes.join, AppRoutes.removed, AppRoutes.welcome};
-      return gates.contains(at) ? AppRoutes.today : null;
+      if (gates.contains(at)) return AppRoutes.today;
+      // A helper's app is today's care only (`docs/roles.md`).
+      const helpersAway = [
+        AppRoutes.medications,
+        AppRoutes.tasks,
+        AppRoutes.appointments,
+        AppRoutes.activity,
+      ];
+      return gate.helper && helpersAway.any(at.startsWith)
+          ? AppRoutes.today
+          : null;
     },
     routes: [
       GoRoute(
@@ -211,5 +228,5 @@ String _idOf(GoRouterState state) =>
     state.pathParameters[AppRoutes.idParam] ?? '';
 
 /// Where this phone stands: whether it joined a circle, is still in it,
-/// and has seen the welcome.
-typedef _Gate = ({bool joined, bool isMember, bool welcomeSeen});
+/// has seen the welcome, and is a helper's.
+typedef _Gate = ({bool joined, bool isMember, bool welcomeSeen, bool helper});

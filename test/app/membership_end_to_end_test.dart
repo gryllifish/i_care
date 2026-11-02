@@ -11,10 +11,13 @@ import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/data/sync/simulated_connection.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
+import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/invite_code.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 
+import '../features/care/helpers/care_events.dart';
 import '../features/care/helpers/hive_boxes.dart';
 
 /// The real stack the demo runs (server, connections, repositories and
@@ -110,5 +113,39 @@ void main() {
         .firstWhere((status) => !status.isMember)
         .timeout(const Duration(seconds: 5));
     expect(status.isMember, isFalse);
+  });
+
+  test("becoming a helper drops the team's notes from the phone", () async {
+    final ana = await phone('ana');
+    final martin = await phone('martin');
+    final logs = <int>[];
+    martin
+      ..listen(audienceSyncProvider, (_, _) {})
+      ..listen(careLogProvider, (_, next) {
+        if (next.value case final log?) {
+          logs.add(log.events.whereType<VisitNoteAdded>().length);
+        }
+      }, fireImmediately: true);
+    await ana
+        .read(careRepositoryProvider)
+        .record(EventFactory().note('a1', 'Same dose', at: now));
+
+    Future<void> until(String what, bool Function() condition) async {
+      for (var i = 0; i < 100 && !condition(); i++) {
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+      }
+      expect(condition(), isTrue, reason: '$what (logs: $logs)');
+    }
+
+    await until('the note arrives', () => logs.isNotEmpty && logs.last == 1);
+    await ana
+        .read(membershipActionsProvider.notifier)
+        .changeRole(SampleCircle.martin, MemberRole.helper);
+    await until(
+      'Martín is a helper',
+      () => martin.read(currentMemberProvider)?.role == MemberRole.helper,
+    );
+
+    await until('the note leaves', () => logs.last == 0);
   });
 }

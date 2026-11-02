@@ -49,6 +49,12 @@ of the treating doctor or pharmacist.
 - **Handoff summary:** what was given, what is pending and what's next,
   copied as plain text for a chat message.
 - **Activity:** the shared log of everything that happened, by day.
+- **Roles:** admins, daily caregivers, occasional helpers and view-only
+  relatives, each offered only what their role allows, while the server
+  checks every event. Phones join by one-time invitation codes. An
+  admin's Today sums up the day instead of asking them to record; a
+  helper's app is today's care only, and their phone never receives the
+  team's appointments, notes or documents.
 - English and Spanish, a light and a dark theme, and a low-vision
   font. Screen reader labels and contrast are checked in tests.
 

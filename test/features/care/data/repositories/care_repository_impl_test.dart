@@ -78,7 +78,7 @@ void main() {
 
     final [synced] = await logWhere(repository, allSynced);
     expect(synced.meta.id, event.meta.id);
-    expect(synced.meta.receivedAt, now);
+    expect(synced.meta.receivedAt, receivedAround(now));
   });
 
   test("devices receive each other's events", () async {
@@ -273,5 +273,20 @@ void main() {
       );
       expect(server.isActive('phone-new'), isTrue);
     });
+  });
+
+  test('starting over keeps what was never sent', () async {
+    final (ana, connection) = await device('ana');
+    connection.isOnline = false;
+    final dose = events.given('m1', at: eight);
+    await ana.record(dose);
+
+    expect(await ana.restart(), isA<Ok<void>>());
+
+    final status = await ana.watchSyncStatus().first;
+    expect(status.pendingCount, 1);
+    connection.isOnline = true;
+    final [sent] = await logWhere(ana, allSynced);
+    expect(sent.meta.id, dose.meta.id);
   });
 }

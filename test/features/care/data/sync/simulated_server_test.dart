@@ -4,6 +4,7 @@ import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
+import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 
 import '../../helpers/care_events.dart';
@@ -43,9 +44,29 @@ void main() {
 
     expect(
       CareEventCodec.decodeString(result.stored.single).meta.receivedAt,
-      serverTime,
+      receivedAround(serverTime),
     );
   });
+
+  test(
+    'events received in the same instant keep their arrival order',
+    () async {
+      final server = await openServer();
+      final first = events.given('m1', at: serverTime, id: 'z-first');
+      final second = events.given('m1', at: serverTime, id: 'a-second');
+
+      final result = await server.receive('phone-ana', [
+        CareEventCodec.encodeString(first),
+        CareEventCodec.encodeString(second),
+      ]);
+
+      final [stored1, stored2] = [
+        for (final value in result.stored) CareEventCodec.decodeString(value),
+      ];
+      // Ids would put the second one first; the server's time must not.
+      expect(compareEvents(stored1, stored2), lessThan(0));
+    },
+  );
 
   test('keeps its log, members and devices across restarts', () async {
     final first = await openServer();
@@ -204,6 +225,8 @@ void main() {
       expect(server.activeMemberOf('phone-ana'), 'ana');
       expect(server.activeMemberOf('phone-martin'), isNull);
       expect(server.activeMemberOf('phone-unknown'), isNull);
+      expect(server.knowsDevice('phone-martin'), isTrue);
+      expect(server.knowsDevice('phone-unknown'), isFalse);
     },
   );
 }

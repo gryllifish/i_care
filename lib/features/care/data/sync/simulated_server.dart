@@ -49,7 +49,9 @@ class SimulatedServer {
     }
     _records.sort((a, b) => a.sequence.compareTo(b.sequence));
     for (final record in _records) {
-      _remember(CareEventCodec.decodeString(record.event));
+      final event = CareEventCodec.decodeString(record.event);
+      _remember(event);
+      _lastReceivedAt = event.meta.receivedAt ?? _lastReceivedAt;
     }
     for (final MapEntry(:key, :value) in hiveGuard(
       'Server devices',
@@ -90,6 +92,10 @@ class SimulatedServer {
 
   final _members = <String, ({MemberRole role, bool removed})>{};
   final _authors = <String, String>{};
+  final _audiences = <String, Audience>{};
+
+  /// The latest `receivedAt` given, so the next one is always later.
+  DateTime? _lastReceivedAt;
   final _bindings = <String, _Binding>{};
   final _issued = <String, _Code>{};
 
@@ -173,6 +179,9 @@ class SimulatedServer {
     _ => false,
   };
 
+  /// Whether [deviceId] ever joined, even if it left since.
+  bool knowsDevice(String deviceId) => _bindings.containsKey(deviceId);
+
   /// The current member [deviceId] belongs to; null when it never joined,
   /// left, or its member was removed.
   String? activeMemberOf(String deviceId) =>
@@ -249,13 +258,27 @@ class SimulatedServer {
       code.toUpperCase().replaceAll(RegExp('[^A-Z0-9]'), '');
 
   /// Encoded events after [cursor] in server order, and the cursor that
-  /// follows them.
-  ({List<String> events, String cursor}) eventsAfter(String? cursor) {
+  /// follows them. With [deviceId], only what that device's member may
+  /// read (`docs/roles.md`, "Data by role"); the cursor still covers
+  /// everything, so nothing is sent twice.
+  ({List<String> events, String cursor}) eventsAfter(
+    String? cursor, {
+    String? deviceId,
+  }) {
     final after = int.tryParse(cursor ?? '') ?? 0;
+    final role = switch (deviceId) {
+      final String id => _members[_bindings[id]?.memberId]?.role,
+      null => null,
+    };
+    final readable = role == null
+        ? Audience.values.toSet()
+        : audiencesFor(role);
     return (
       events: [
         for (final record in _records)
-          if (record.sequence > after) record.event,
+          if (record.sequence > after &&
+              readable.contains(_audiences[record.id] ?? Audience.care))
+            record.event,
       ],
       cursor: '$_lastSequence',
     );
@@ -272,6 +295,8 @@ class SimulatedServer {
     _byId.clear();
     _members.clear();
     _authors.clear();
+    _audiences.clear();
+    _lastReceivedAt = null;
     _bindings.clear();
     _issued.clear();
     await hiveGuardAsync('Server log', _box.clear);
@@ -372,7 +397,7 @@ class SimulatedServer {
   }) {
     final storedEvent = event.copyWith(
       meta: event.meta.copyWith(
-        receivedAt: _clock(),
+        receivedAt: _nextReceivedAt(),
         fromFormerMember: fromFormerMember,
       ),
     );
@@ -384,6 +409,18 @@ class SimulatedServer {
     );
     _byId[record.id] = record;
     return record;
+  }
+
+  /// The server's time, but always after the last event's: the log is
+  /// ordered by `receivedAt`, so events received in the same instant (one
+  /// push, or a fixed clock) must still keep the order they arrived in.
+  DateTime _nextReceivedAt() {
+    final now = _clock();
+    final last = _lastReceivedAt;
+    final next = last != null && !now.isAfter(last)
+        ? last.add(const Duration(microseconds: 1))
+        : now;
+    return _lastReceivedAt = next;
   }
 
   Future<void> _persist(List<_Record> added) async {
@@ -406,6 +443,7 @@ class SimulatedServer {
   /// Updates members and authors with a stored event.
   void _remember(CareEvent event) {
     _authors[event.meta.id] = event.meta.caregiverId;
+    _audiences[event.meta.id] = audienceOf(event);
     switch (event) {
       case MemberInvited(:final memberId, :final role)
           when !_members.containsKey(memberId):

@@ -4,6 +4,8 @@ import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
+import 'package:i_care/features/care/controllers/care_controllers.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/features/settings/presentation/widgets/circle_section.dart';
 import 'package:i_care/features/settings/presentation/widgets/not_sent_section.dart';
@@ -65,25 +67,26 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ],
           ),
-          FormSection(
-            title: l10n.sectionDemo,
-            children: [
-              Text(
-                l10n.resetDemoBody,
-                style: AppTextStyles.bodyMuted.copyWith(
-                  color: context.colors.inkMuted,
+          if (ref.watch(canDoProvider(CareAction.resetDemo)))
+            FormSection(
+              title: l10n.sectionDemo,
+              children: [
+                Text(
+                  l10n.resetDemoBody,
+                  style: AppTextStyles.bodyMuted.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
                 ),
-              ),
-              OutlinedButton.icon(
-                onPressed: () => _reset(context, ref),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: context.colors.overdue,
+                OutlinedButton.icon(
+                  onPressed: () => _reset(context, ref),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: context.colors.overdue,
+                  ),
+                  icon: const Icon(Icons.restart_alt),
+                  label: Text(l10n.resetDemo),
                 ),
-                icon: const Icon(Icons.restart_alt),
-                label: Text(l10n.resetDemo),
-              ),
-            ],
-          ),
+              ],
+            ),
           FormSection(
             title: l10n.sectionAbout,
             children: [

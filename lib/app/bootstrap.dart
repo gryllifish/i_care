@@ -44,7 +44,9 @@ Future<void> bootstrap() async {
     clock: DateTime.now,
   );
   final phones = [
-    for (final owner in [SampleCircle.ana, SampleCircle.martin])
+    // An admin who coordinates and a helper with today's care: the two
+    // ends of what roles change (`docs/roles.md`).
+    for (final owner in [SampleCircle.ana, SampleCircle.rosa])
       await _openPhone(owner),
   ];
   // A log without members was saved before roles existed: phones there
@@ -124,9 +126,10 @@ Future<void> _seed(SimulatedServer server, List<_Phone> phones) async {
   }
 }
 
-/// Tells each phone whose it is when only the server knows: phones saved
-/// before they kept it themselves. A phone that left keeps asking for a
-/// code: the server has no current member for it.
+/// Tells each phone whose it is when it does not know: phones saved
+/// before they kept it themselves, and demo phones the server has never
+/// seen (a newer demo's), which join as their owners. A phone that left
+/// keeps asking for a code: the server knows it, with no current member.
 Future<void> _restoreMembers(
   SimulatedServer server,
   List<_Phone> phones,
@@ -134,6 +137,9 @@ Future<void> _restoreMembers(
   for (final phone in phones) {
     final prefs = HiveDevicePrefs(phone.prefs);
     if (prefs.read(PrefKeys.memberId) != null) continue;
+    if (!server.knowsDevice(phone.deviceId)) {
+      await server.bind(phone.deviceId, phone.owner.id);
+    }
     if (server.activeMemberOf(phone.deviceId) case final String memberId) {
       await prefs.write(PrefKeys.memberId, memberId);
     }

@@ -30,7 +30,7 @@ void main() {
       clock: () => now,
     );
     devices = [
-      for (final owner in [SampleCircle.ana, SampleCircle.martin])
+      for (final owner in [SampleCircle.ana, SampleCircle.rosa])
         SimulatedDevice(
           owner: owner,
           container: ProviderContainer(
@@ -84,13 +84,13 @@ void main() {
 
     expect(find.byType(TodayScreen), findsNWidgets(2));
     expect(find.text("Ana's phone"), findsOneWidget);
-    expect(find.text("Martín's phone"), findsOneWidget);
+    expect(find.text("Rosa's phone"), findsOneWidget);
 
     await tester.ensureVisible(find.byType(Switch).last);
     await tester.tap(find.byType(Switch).last);
     await tester.pumpAndSettle();
 
-    expect(connections['martin']?.isOnline, isFalse);
+    expect(connections['rosa']?.isOnline, isFalse);
     expect(connections['ana']?.isOnline, isTrue);
     expect(find.text('Offline'), findsOneWidget);
     await disposeDevices(tester);

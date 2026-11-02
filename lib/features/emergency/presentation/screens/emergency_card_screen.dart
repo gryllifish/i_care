@@ -11,6 +11,7 @@ import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/emergency/controllers/emergency_card.dart';
 import 'package:i_care/features/emergency/presentation/widgets/emergency_text.dart';
 import 'package:i_care/shared/l10n/schedule_text.dart';
@@ -36,11 +37,12 @@ class EmergencyCardScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(l10n.emergencyCard),
         actions: [
-          IconButton(
-            tooltip: l10n.editProfile,
-            onPressed: () => context.push(AppRoutes.editEmergencyPath()),
-            icon: const Icon(Icons.edit_outlined),
-          ),
+          if (ref.watch(canDoProvider(CareAction.editEmergencyCard)))
+            IconButton(
+              tooltip: l10n.editProfile,
+              onPressed: () => context.push(AppRoutes.editEmergencyPath()),
+              icon: const Icon(Icons.edit_outlined),
+            ),
         ],
       ),
       body: switch (card) {

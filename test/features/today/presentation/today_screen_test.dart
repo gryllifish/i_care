@@ -33,6 +33,13 @@ void main() {
     ])..status = SyncStatus(lastSyncedAt: now);
   }
 
+  /// Martín's phone: a caregiver's, with the next dose to give at the top
+  /// (an admin's shows the day's summary instead).
+  MemoryDevicePrefs martinsPhone() => MemoryDevicePrefs({
+    PrefKeys.welcomeSeen: 'true',
+    PrefKeys.memberId: 'martin',
+  });
+
   /// Opens the sheet of the dose at [time] on the timeline.
   Future<void> openDose(WidgetTester tester, String time) async {
     final tile = find.ancestor(
@@ -63,7 +70,12 @@ void main() {
   testWidgets('shows the next dose and today by part of the day', (
     tester,
   ) async {
-    await pumpApp(tester, repository: circle(), now: now);
+    await pumpApp(
+      tester,
+      repository: circle(),
+      now: now,
+      prefs: martinsPhone(),
+    );
 
     expect(find.text('NEXT DOSE · DUE NOW'), findsOneWidget);
     expect(find.text('08:00 · Enalapril'), findsOneWidget);
@@ -129,7 +141,12 @@ void main() {
     testWidgets('says the dose was given, then fades through to the next', (
       tester,
     ) async {
-      await pumpApp(tester, repository: circle(), now: now);
+      await pumpApp(
+        tester,
+        repository: circle(),
+        now: now,
+        prefs: martinsPhone(),
+      );
       expect(find.text('08:00 · Enalapril'), findsOneWidget);
 
       await giveFromCard(tester);
@@ -165,7 +182,12 @@ void main() {
       addTearDown(
         tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
       );
-      await pumpApp(tester, repository: circle(), now: now);
+      await pumpApp(
+        tester,
+        repository: circle(),
+        now: now,
+        prefs: martinsPhone(),
+      );
 
       await giveFromCard(tester);
       await tester.pump();
@@ -478,7 +500,12 @@ void main() {
     final repository = FakeCareRepository([
       events.created('m1', effectiveFrom: DateTime(2026, 11)),
     ])..status = SyncStatus(lastSyncedAt: now);
-    await pumpApp(tester, repository: repository, now: now);
+    await pumpApp(
+      tester,
+      repository: repository,
+      now: now,
+      prefs: martinsPhone(),
+    );
 
     expect(find.text('FROM YESTERDAY · LATE'), findsOneWidget);
 
@@ -487,7 +514,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(repository.recorded.single, isA<DoseGiven>());
-    await scrollTo(tester, find.text('Ana, today at 08:10'));
+    await scrollTo(tester, find.text('Martín, today at 08:10'));
     expect(find.text('From yesterday'), findsOneWidget);
   });
 

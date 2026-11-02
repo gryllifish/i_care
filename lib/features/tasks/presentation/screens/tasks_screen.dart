@@ -8,6 +8,7 @@ import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/tasks/controllers/tasks_view.dart';
 import 'package:i_care/shared/l10n/schedule_text.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
@@ -23,14 +24,17 @@ class TasksScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
+    final manages = ref.watch(canDoProvider(CareAction.manageTasks));
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        // Tabs stay alive side by side: each button needs its own tag.
-        heroTag: AppRoutes.tasks,
-        onPressed: () => context.push(AppRoutes.newTaskPath()),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.add),
-      ),
+      floatingActionButton: !manages
+          ? null
+          : FloatingActionButton.extended(
+              // Tabs stay alive side by side: each button needs its own tag.
+              heroTag: AppRoutes.tasks,
+              onPressed: () => context.push(AppRoutes.newTaskPath()),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.add),
+            ),
       body: SafeArea(
         bottom: false,
         child: switch (ref.watch(tasksViewProvider)) {
@@ -60,7 +64,7 @@ class TasksScreen extends ConsumerWidget {
               for (final row in value)
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: _TaskCard(row: row),
+                  child: _TaskCard(row: row, editable: manages),
                 ),
               // Room for the floating button over the last card.
               const SizedBox(height: AppSpacing.xxxl * 2),
@@ -78,9 +82,12 @@ class TasksScreen extends ConsumerWidget {
 }
 
 class _TaskCard extends StatelessWidget {
-  const _TaskCard({required this.row});
+  const _TaskCard({required this.row, required this.editable});
 
   final TaskRow row;
+
+  /// Opens the task's form; otherwise the card only shows it.
+  final bool editable;
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +97,9 @@ class _TaskCard extends StatelessWidget {
     final details = task.details;
 
     return AppCard(
-      onTap: () => context.push(AppRoutes.editTaskPath(task.id)),
+      onTap: editable
+          ? () => context.push(AppRoutes.editTaskPath(task.id))
+          : null,
       child: Row(
         spacing: AppSpacing.md,
         children: [
@@ -125,7 +134,8 @@ class _TaskCard extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: context.colors.inkMuted),
+          if (editable)
+            Icon(Icons.chevron_right, color: context.colors.inkMuted),
         ],
       ),
     );

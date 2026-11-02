@@ -75,7 +75,7 @@ class SimulatedConnection implements SyncGateway, MembershipGateway {
         controller.addError(const NotMemberException('Not in the circle'));
         return;
       }
-      final batch = _server.eventsAfter(position);
+      final batch = _server.eventsAfter(position, deviceId: deviceId);
       position = batch.cursor;
       controller.add((
         events: [

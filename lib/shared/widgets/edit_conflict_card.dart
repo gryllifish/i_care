@@ -10,6 +10,7 @@ import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/conflict.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/status_pill.dart';
@@ -45,6 +46,7 @@ class _EditConflictCardState extends ConsumerState<EditConflictCard> {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final caregivers = ref.watch(membersByIdProvider);
     final changes = widget.conflict.changes;
+    final reviews = ref.watch(canDoProvider(CareAction.reviewConflict));
 
     return AppCard(
       color: context.colors.overdueSoft,
@@ -101,12 +103,15 @@ class _EditConflictCardState extends ConsumerState<EditConflictCard> {
                         )
                       else
                         const SizedBox.shrink(),
-                      TextButton(
-                        onPressed: _busy ? null : () => _choose(change),
-                        child: Text(
-                          change == changes.last ? l10n.keepThis : l10n.useThis,
+                      if (reviews)
+                        TextButton(
+                          onPressed: _busy ? null : () => _choose(change),
+                          child: Text(
+                            change == changes.last
+                                ? l10n.keepThis
+                                : l10n.useThis,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ],

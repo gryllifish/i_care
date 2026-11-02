@@ -65,7 +65,7 @@
   "phoneOf": "Teléfono de {name}",
   "networkOn": "Con conexión",
   "networkOff": "Sin conexión",
-  "demoHint": "Dos teléfonos sincronizados con un servidor simulado. Para simular una toma registrada tarde: desconectá el de Martín, marcá la misma toma en los dos y volvé a conectarlo.",
+  "demoHint": "Dos teléfonos sincronizados con un servidor simulado: Ana coordina como admin, Rosa ayuda con el cuidado del día. Para simular una toma registrada dos veces: desconectá el teléfono de Rosa, marcá la misma toma en los dos y volvé a conectarlo. Ana la revisa.",
   "yesterday": "Ayer",
   "notSyncedYet": "Aún no sincronizada",
   "conflictSlotTitle": "{medication} de las {time} se registró {count} veces",
@@ -417,5 +417,12 @@
   "leaveTitle": "¿Salir del círculo en este teléfono?",
   "leaveBody": "Primero se envía lo que falta, después se borra lo guardado en este teléfono. Para volver hace falta un código nuevo.",
   "leave": "Salir",
-  "leaveOffline": "Conectate para salir: quedan registros por enviar."
+  "leaveOffline": "Conectate para salir: quedan registros por enviar.",
+  "conflictNeedsReviewer": "Lo va a revisar una persona admin o que cuida a diario.",
+  "daySummaryTitle": "El día hasta ahora",
+  "summaryNothingLate": "Nada atrasado",
+  "summaryLate": "{count, plural, =1{1 atrasada} other{{count} atrasadas}}",
+  "summaryTasks": "Tareas: {done} de {total}",
+  "summaryLast": "Último: {record}, a las {time}.",
+  "summaryNothingYet": "Todavía no hay registros hoy."
 }

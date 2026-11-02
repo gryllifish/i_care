@@ -132,6 +132,8 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     final givenByMe =
         isGiven && slot.isGivenBy(ref.watch(deviceMembershipProvider) ?? '');
     final isResolved = isGiven || slot?.status == DoseStatus.skipped;
+    final records = ref.watch(canDoProvider(CareAction.recordCare));
+    final reviews = ref.watch(canDoProvider(CareAction.reviewConflict));
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(
@@ -174,31 +176,35 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
               lines: [l10n.conflictExplanation],
             ),
             _History(detail: detail),
-            Text(
-              l10n.conflictQuestion(
-                SampleCircle.recipientName,
-                _conflictDoseCount(detail),
+            if (!reviews)
+              Text(l10n.conflictNeedsReviewer, style: AppTextStyles.body)
+            else ...[
+              Text(
+                l10n.conflictQuestion(
+                  SampleCircle.recipientName,
+                  _conflictDoseCount(detail),
+                ),
+                style: AppTextStyles.title,
               ),
-              style: AppTextStyles.title,
-            ),
-            FilledButton(
-              onPressed: _busy ? null : () => _keepOnlyOne(detail),
-              child: Text(l10n.conflictOnlyOne),
-            ),
-            OutlinedButton(
-              onPressed: _busy ? null : () => _confirmAll(detail),
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(_secondaryButtonHeight),
+              FilledButton(
+                onPressed: _busy ? null : () => _keepOnlyOne(detail),
+                child: Text(l10n.conflictOnlyOne),
               ),
-              child: Text(l10n.conflictAllGiven(_conflictDoseCount(detail))),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(
-                minimumSize: const Size.fromHeight(_secondaryButtonHeight),
+              OutlinedButton(
+                onPressed: _busy ? null : () => _confirmAll(detail),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(_secondaryButtonHeight),
+                ),
+                child: Text(l10n.conflictAllGiven(_conflictDoseCount(detail))),
               ),
-              child: Text(l10n.conflictNotSure),
-            ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: TextButton.styleFrom(
+                  minimumSize: const Size.fromHeight(_secondaryButtonHeight),
+                ),
+                child: Text(l10n.conflictNotSure),
+              ),
+            ],
           ] else ...[
             if (slot?.isDouble ?? false)
               _Notice(
@@ -212,7 +218,7 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
             // A dose already given is corrected from its records above;
             // recording it again is only for a second dose someone else
             // really gave.
-            if (isGiven && !_givingToo) ...[
+            if (records && isGiven && !_givingToo) ...[
               if (!givenByMe)
                 OutlinedButton(
                   onPressed: _busy
@@ -223,7 +229,7 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
                   ),
                   child: Text(l10n.givenToo),
                 ),
-            ] else ...[
+            ] else if (records) ...[
               if (detail.warnings.isNotEmpty)
                 _Notice(
                   icon: Icons.warning_amber,

@@ -11,6 +11,7 @@ import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/medications/controllers/medication_detail.dart';
 import 'package:i_care/features/medications/controllers/medications_view.dart';
 import 'package:i_care/shared/l10n/schedule_text.dart';
@@ -29,14 +30,17 @@ class MedicationsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final conflicts = ref.watch(medicationConflictsProvider).value ?? const {};
+    final manages = ref.watch(canDoProvider(CareAction.manageMedications));
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        // Tabs stay alive side by side: each button needs its own tag.
-        heroTag: AppRoutes.medications,
-        onPressed: () => context.push(AppRoutes.newMedicationPath()),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.add),
-      ),
+      floatingActionButton: !manages
+          ? null
+          : FloatingActionButton.extended(
+              // Tabs stay alive side by side: each button needs its own tag.
+              heroTag: AppRoutes.medications,
+              onPressed: () => context.push(AppRoutes.newMedicationPath()),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.add),
+            ),
       body: SafeArea(
         bottom: false,
         child: switch (ref.watch(medicationsViewProvider)) {

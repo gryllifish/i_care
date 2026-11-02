@@ -458,3 +458,152 @@ abstract class _$NetworkEnabled extends $Notifier<bool> {
     element.handleCreate(ref, build);
   }
 }
+
+/// Whether this phone's member may do [action] (`docs/roles.md`); false
+/// before the log has them. The UI offers only what this allows; the
+/// server checks every event anyway.
+
+@ProviderFor(canDo)
+final canDoProvider = CanDoFamily._();
+
+/// Whether this phone's member may do [action] (`docs/roles.md`); false
+/// before the log has them. The UI offers only what this allows; the
+/// server checks every event anyway.
+
+final class CanDoProvider extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  /// Whether this phone's member may do [action] (`docs/roles.md`); false
+  /// before the log has them. The UI offers only what this allows; the
+  /// server checks every event anyway.
+  CanDoProvider._({
+    required CanDoFamily super.from,
+    required CareAction super.argument,
+  }) : super(
+         retry: null,
+         name: r'canDoProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$canDoHash();
+
+  @override
+  String toString() {
+    return r'canDoProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    final argument = this.argument as CareAction;
+    return canDo(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is CanDoProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$canDoHash() => r'cbe0c3a029e85d1affe643548775eaa39d6a3481';
+
+/// Whether this phone's member may do [action] (`docs/roles.md`); false
+/// before the log has them. The UI offers only what this allows; the
+/// server checks every event anyway.
+
+final class CanDoFamily extends $Family
+    with $FunctionalFamilyOverride<bool, CareAction> {
+  CanDoFamily._()
+    : super(
+        retry: null,
+        name: r'canDoProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Whether this phone's member may do [action] (`docs/roles.md`); false
+  /// before the log has them. The UI offers only what this allows; the
+  /// server checks every event anyway.
+
+  CanDoProvider call(CareAction action) =>
+      CanDoProvider._(argument: action, from: this);
+
+  @override
+  String toString() => r'canDoProvider';
+}
+
+/// Starts this phone's copy of the log over when a role change changes
+/// what it may read (`docs/roles.md`, "Data by role"): becoming a helper
+/// drops the team's events, leaving it brings them. The app keeps it
+/// alive.
+
+@ProviderFor(audienceSync)
+final audienceSyncProvider = AudienceSyncProvider._();
+
+/// Starts this phone's copy of the log over when a role change changes
+/// what it may read (`docs/roles.md`, "Data by role"): becoming a helper
+/// drops the team's events, leaving it brings them. The app keeps it
+/// alive.
+
+final class AudienceSyncProvider extends $FunctionalProvider<void, void, void>
+    with $Provider<void> {
+  /// Starts this phone's copy of the log over when a role change changes
+  /// what it may read (`docs/roles.md`, "Data by role"): becoming a helper
+  /// drops the team's events, leaving it brings them. The app keeps it
+  /// alive.
+  AudienceSyncProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'audienceSyncProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$audienceSyncHash();
+
+  @$internal
+  @override
+  $ProviderElement<void> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  void create(Ref ref) {
+    return audienceSync(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<void>(value),
+    );
+  }
+}
+
+String _$audienceSyncHash() => r'7f124182da284708ead07af51ec976ab383a73bb';

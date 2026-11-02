@@ -1,3 +1,4 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
@@ -60,9 +61,10 @@ class EventFactory {
     double units = 1,
     List<DoseGiven> knowing = const [],
     DateTime? receivedAt,
+    String? id,
   }) =>
       CareEvent.doseGiven(
-            meta: meta(at: at, by: by, receivedAt: receivedAt),
+            meta: meta(at: at, by: by, receivedAt: receivedAt, id: id),
             medicationId: medicationId,
             slotAt: slotAt,
             givenAt: givenAt ?? at,
@@ -372,3 +374,14 @@ extension WithAuthor<T extends CareEvent> on T {
   T withAuthor(String memberId) =>
       copyWith(meta: meta.copyWith(caregiverId: memberId)) as T;
 }
+
+/// The server's time [at], or a moment after: the server keeps each
+/// `receivedAt` later than the one before, so events received in the same
+/// instant still sort in the order they arrived.
+Matcher receivedAround(DateTime at) => isA<DateTime>().having(
+  (received) => received.difference(at),
+  'after $at by',
+  allOf(greaterThanOrEqualTo(Duration.zero), lessThan(_instant)),
+);
+
+const _instant = Duration(milliseconds: 1);

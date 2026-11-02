@@ -16,6 +16,7 @@ import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/conflict.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/shared/l10n/date_texts.dart';
 import 'package:i_care/shared/providers/link_opener.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
@@ -44,7 +45,8 @@ class AppointmentDetailScreen extends ConsumerWidget {
       AsyncData(value: final AppointmentDetail detail) => Scaffold(
         appBar: AppBar(
           actions: [
-            if (!detail.appointment.isCancelled)
+            if (!detail.appointment.isCancelled &&
+                ref.watch(canDoProvider(CareAction.manageAppointments)))
               _Menu(appointment: detail.appointment),
           ],
         ),
@@ -134,9 +136,11 @@ class _DetailContent extends ConsumerWidget {
     final details = appointment.details;
     final now = ref.watch(nowProvider);
     final questions = details.questionList;
-    final canAddNotes =
+    final manages =
         !appointment.isCancelled &&
-        !appointment.startsAt.subtract(_notesOpenEarly).isAfter(now);
+        ref.watch(canDoProvider(CareAction.manageAppointments));
+    final canAddNotes =
+        manages && !appointment.startsAt.subtract(_notesOpenEarly).isAfter(now);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(
@@ -218,7 +222,7 @@ class _DetailContent extends ConsumerWidget {
               ),
             ],
           ),
-        if (appointment.documents.isNotEmpty || !appointment.isCancelled)
+        if (appointment.documents.isNotEmpty || manages)
           FormSection(
             title: l10n.documentsTitle,
             children: [
@@ -232,11 +236,11 @@ class _DetailContent extends ConsumerWidget {
               for (final document in appointment.documents)
                 _DocumentCard(
                   document: document,
-                  onRemove: appointment.isCancelled
-                      ? null
-                      : () => _removeDocument(context, ref, document),
+                  onRemove: manages
+                      ? () => _removeDocument(context, ref, document)
+                      : null,
                 ),
-              if (!appointment.isCancelled)
+              if (manages)
                 Align(
                   alignment: Alignment.centerLeft,
                   child: TextButton.icon(

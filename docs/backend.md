@@ -59,7 +59,11 @@ Every event carries `id` (UUID v4, generated on the device), `circleId`,
 ### Ordering and clocks
 Device clocks drift, so they never decide anything. The feed is ordered by
 `receivedAt` (then `occurredAt` for unsynced local events); conflicts are
-detected by slot or `baseVersion`, not by time.
+detected by slot or `baseVersion`, not by time. The server keeps every
+`receivedAt` later than the one before, so events received in the same
+instant (one push) keep their arrival order instead of falling back to
+their random ids: an invitation and a role change pushed together must
+apply in that order.
 
 ### Offline
 Each device keeps its log and an outbox locally. The UI shows the last

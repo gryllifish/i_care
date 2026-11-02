@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/features/care/data/care_providers.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -85,4 +88,27 @@ class NetworkEnabled extends _$NetworkEnabled {
     ref.read(simulatedConnectionProvider).isOnline = enabled;
     state = enabled;
   }
+}
+
+/// Whether this phone's member may do [action] (`docs/roles.md`); false
+/// before the log has them. The UI offers only what this allows; the
+/// server checks every event anyway.
+@riverpod
+bool canDo(Ref ref, CareAction action) =>
+    switch (ref.watch(currentMemberProvider)) {
+      final Member member => can(member.role, action),
+      null => false,
+    };
+
+/// Starts this phone's copy of the log over when a role change changes
+/// what it may read (`docs/roles.md`, "Data by role"): becoming a helper
+/// drops the team's events, leaving it brings them. The app keeps it
+/// alive.
+@Riverpod(keepAlive: true)
+void audienceSync(Ref ref) {
+  ref.listen(currentMemberProvider, (previous, next) {
+    if (previous == null || next == null) return;
+    if (audiencesFor(previous.role) == audiencesFor(next.role)) return;
+    unawaited(ref.read(careRepositoryImplProvider).restart());
+  });
 }

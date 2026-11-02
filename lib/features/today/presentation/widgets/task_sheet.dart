@@ -111,7 +111,7 @@ class _TaskSheetState extends ConsumerState<TaskSheet> {
               ),
             ),
           _Records(slot: slot, onRemove: _remove),
-          if (!isResolved)
+          if (!isResolved && ref.watch(canDoProvider(CareAction.recordCare)))
             if (_choosingReason)
               SkipReasonPicker(
                 title: l10n.taskSkipReasonTitle,

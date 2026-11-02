@@ -14,6 +14,7 @@ import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/medications/controllers/medication_actions.dart';
 import 'package:i_care/features/medications/controllers/medication_detail.dart';
 import 'package:i_care/features/medications/presentation/widgets/stock_input.dart';
@@ -43,7 +44,8 @@ class MedicationDetailScreen extends ConsumerWidget {
       AsyncData(value: final MedicationDetail detail) => Scaffold(
         appBar: AppBar(
           actions: [
-            if (!detail.medication.isArchived)
+            if (!detail.medication.isArchived &&
+                ref.watch(canDoProvider(CareAction.manageMedications)))
               _Menu(medication: detail.medication),
           ],
         ),
@@ -117,18 +119,22 @@ class _Menu extends ConsumerWidget {
   }
 }
 
-class _DetailContent extends StatelessWidget {
+class _DetailContent extends ConsumerWidget {
   const _DetailContent({required this.detail});
 
   final MedicationDetail detail;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
     final medication = detail.medication;
     final details = medication.details;
-    final isActive = !medication.isArchived;
+    // Archived ones are history; others change only for whoever manages
+    // medications.
+    final isActive =
+        !medication.isArchived &&
+        ref.watch(canDoProvider(CareAction.manageMedications));
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(

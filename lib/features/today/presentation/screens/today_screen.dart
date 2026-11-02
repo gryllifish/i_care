@@ -30,6 +30,7 @@ import 'package:i_care/features/today/presentation/widgets/sync_banner.dart';
 import 'package:i_care/features/today/presentation/widgets/task_sheet.dart';
 import 'package:i_care/features/today/presentation/widgets/task_tile.dart';
 import 'package:i_care/shared/l10n/date_texts.dart';
+import 'package:i_care/shared/l10n/event_text.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
@@ -38,6 +39,7 @@ import 'package:i_care/shared/widgets/error_view.dart';
 import 'package:i_care/shared/widgets/member_avatar.dart';
 import 'package:i_care/shared/widgets/member_list.dart';
 import 'package:i_care/shared/widgets/screen_header.dart';
+import 'package:i_care/shared/widgets/status_pill.dart';
 
 /// Today's doses: what is next, what is late and who did what.
 class TodayScreen extends ConsumerWidget {
@@ -97,15 +99,17 @@ Future<void> _openConflict(BuildContext context, ConflictItem item) =>
       slotAt: item.slotAt,
     );
 
-class _TodayContent extends StatelessWidget {
+class _TodayContent extends ConsumerWidget {
   const _TodayContent({required this.view});
 
   final TodayView view;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final next = view.next;
+    final role = ref.watch(currentMemberProvider)?.role;
+    final summary = role != null && showsDaySummary(role);
 
     void open(DoseSlot slot) => showDoseSheet(
       context,
@@ -128,20 +132,24 @@ class _TodayContent extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           _ConflictCard(item: item, onTap: () => _openConflict(context, item)),
         ],
-        _NextDoseSwitcher(
-          child: next == null
-              ? null
-              : Padding(
-                  // One card per dose: a new one animates in.
-                  key: ValueKey((next.medication.id, next.slotAt)),
-                  padding: const EdgeInsets.only(top: AppSpacing.lg),
-                  child: _NextDoseCard(
-                    slot: next,
-                    isFromYesterday: next.slotAt.isBefore(view.day),
-                    onOpen: () => open(next),
+        if (summary) ...[
+          const SizedBox(height: AppSpacing.lg),
+          _DaySummaryCard(view: view),
+        ] else
+          _NextDoseSwitcher(
+            child: next == null
+                ? null
+                : Padding(
+                    // One card per dose: a new one animates in.
+                    key: ValueKey((next.medication.id, next.slotAt)),
+                    padding: const EdgeInsets.only(top: AppSpacing.lg),
+                    child: _NextDoseCard(
+                      slot: next,
+                      isFromYesterday: next.slotAt.isBefore(view.day),
+                      onOpen: () => open(next),
+                    ),
                   ),
-                ),
-        ),
+          ),
         if (view.nextAppointment case final appointment?) ...[
           const SizedBox(height: AppSpacing.lg),
           _NextAppointmentCard(appointment: appointment),
@@ -471,6 +479,90 @@ class _DayProgress extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// How the day is going, for whoever coordinates rather than gives the
+/// doses: how much is done, what is late, and the latest record.
+class _DaySummaryCard extends ConsumerWidget {
+  const _DaySummaryCard({required this.view});
+
+  final TodayView view;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final colors = context.colors;
+    final last = view.lastRecord;
+    final author = last == null
+        ? null
+        : ref.watch(membersByIdProvider)[last.meta.caregiverId];
+    final subject = last == null
+        ? null
+        : ref.watch(careLogProvider).value?.subjectOf(last);
+
+    return Semantics(
+      container: true,
+      child: AppCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: AppSpacing.md,
+          children: [
+            Text(
+              l10n.daySummaryTitle.toUpperCase(),
+              semanticsLabel: l10n.daySummaryTitle,
+              style: AppTextStyles.overline.copyWith(color: colors.inkMuted),
+            ),
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.xs,
+              children: [
+                if (view.lateCount > 0)
+                  StatusPill(
+                    icon: Icons.warning_amber,
+                    label: l10n.summaryLate(view.lateCount),
+                    color: colors.overdue,
+                    background: colors.overdueSoft,
+                  )
+                else
+                  StatusPill(
+                    icon: Icons.check_circle,
+                    label: l10n.summaryNothingLate,
+                    color: colors.given,
+                    background: colors.givenSoft,
+                  ),
+                if (view.tasksToday > 0)
+                  StatusPill(
+                    icon: Icons.volunteer_activism_outlined,
+                    label: l10n.summaryTasks(
+                      view.tasksResolvedToday,
+                      view.tasksToday,
+                    ),
+                    color: colors.inkMuted,
+                    background: colors.surfaceMuted,
+                  ),
+              ],
+            ),
+            Text(
+              last == null
+                  ? l10n.summaryNothingYet
+                  : l10n.summaryLast(
+                      eventSentence(
+                        l10n,
+                        event: last,
+                        author: author?.name ?? l10n.unknownCaregiver,
+                        subject: subject,
+                        locale: locale,
+                      ),
+                      Formatters.time(last.meta.occurredAt, locale),
+                    ),
+              style: AppTextStyles.body,
+            ),
+          ],
+        ),
       ),
     );
   }

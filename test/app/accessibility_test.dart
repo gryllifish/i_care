@@ -50,13 +50,15 @@ void main() {
     'join': AppRoutes.join,
   };
 
-  /// Pumps the app on the sample circle in [language] and opens [path].
+  /// Pumps the app on the sample circle in [language] and opens [path],
+  /// on [member]'s phone: Ana's by default, an admin's.
   Future<void> pumpAt(
     WidgetTester tester,
     String path, {
     String language = 'en',
     String theme = 'light',
     Size size = phoneSize,
+    String member = 'ana',
   }) async {
     await pumpApp(
       tester,
@@ -68,7 +70,7 @@ void main() {
       prefs: MemoryDevicePrefs({
         // Until the phone joins, every route leads to joining; then, until
         // the welcome is seen, to the welcome.
-        if (path != AppRoutes.join) PrefKeys.memberId: 'ana',
+        if (path != AppRoutes.join) PrefKeys.memberId: member,
         if (path != AppRoutes.welcome) PrefKeys.welcomeSeen: 'true',
         PrefKeys.language: language,
         PrefKeys.themeMode: theme,
@@ -113,6 +115,41 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text(item));
   }
+
+  // Today as a helper: the next dose card, which an admin's Today shows
+  // as a summary instead.
+  group("a helper's Today", () {
+    for (final theme in themes) {
+      testWidgets('meets the guidelines in $theme', (tester) async {
+        final handle = tester.ensureSemantics();
+        await pumpAt(
+          tester,
+          AppRoutes.today,
+          theme: theme,
+          size: tallPhone,
+          member: 'rosa',
+        );
+
+        await expectGuidelines(tester);
+        handle.dispose();
+      });
+    }
+
+    for (final language in ['en', 'es']) {
+      testWidgets('fits text at 200% in $language', (tester) async {
+        useLargeText(tester);
+        await pumpAt(
+          tester,
+          AppRoutes.today,
+          language: language,
+          size: tallPhone,
+          member: 'rosa',
+        );
+
+        expect(tester.takeException(), isNull);
+      });
+    }
+  });
 
   group('screens', () {
     for (final MapEntry(key: name, value: path) in routes.entries) {

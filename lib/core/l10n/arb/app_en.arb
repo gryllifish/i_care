@@ -205,7 +205,7 @@
   },
   "networkOn": "Connected",
   "networkOff": "Offline",
-  "demoHint": "Two phones synced through a simulated server. To simulate a dose recorded late: turn Martín's phone off, mark the same dose on both and turn it back on.",
+  "demoHint": "Two phones synced through a simulated server: Ana coordinates as admin, Rosa helps with today's care. To simulate a dose recorded twice: turn Rosa's phone off, mark the same dose on both and turn it back on. Ana reviews it.",
   "yesterday": "Yesterday",
   "notSyncedYet": "Not synced yet",
   "conflictSlotTitle": "{medication} at {time} was recorded {count} times",
@@ -1290,5 +1290,39 @@
   "leaveTitle": "Leave the circle on this phone?",
   "leaveBody": "Anything not sent yet is sent first, then this phone's copy is cleared. Coming back takes a new code.",
   "leave": "Leave",
-  "leaveOffline": "Connect to leave: there are records still to send."
+  "leaveOffline": "Connect to leave: there are records still to send.",
+  "conflictNeedsReviewer": "An admin or a caregiver will review it.",
+  "daySummaryTitle": "Today so far",
+  "summaryNothingLate": "Nothing late",
+  "summaryLate": "{count, plural, =1{1 late} other{{count} late}}",
+  "@summaryLate": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "summaryTasks": "Tasks: {done} of {total}",
+  "@summaryTasks": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "summaryLast": "Last: {record}, at {time}.",
+  "@summaryLast": {
+    "placeholders": {
+      "record": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "summaryNothingYet": "Nothing recorded today yet."
 }

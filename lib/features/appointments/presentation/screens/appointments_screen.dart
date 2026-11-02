@@ -10,6 +10,7 @@ import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/appointments/controllers/appointments_view.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/shared/l10n/date_texts.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
@@ -26,14 +27,17 @@ class AppointmentsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
+    final manages = ref.watch(canDoProvider(CareAction.manageAppointments));
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        // Tabs stay alive side by side: each button needs its own tag.
-        heroTag: AppRoutes.appointments,
-        onPressed: () => context.push(AppRoutes.newAppointmentPath()),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.add),
-      ),
+      floatingActionButton: !manages
+          ? null
+          : FloatingActionButton.extended(
+              // Tabs stay alive side by side: each button needs its own tag.
+              heroTag: AppRoutes.appointments,
+              onPressed: () => context.push(AppRoutes.newAppointmentPath()),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.add),
+            ),
       body: SafeArea(
         bottom: false,
         child: switch (ref.watch(appointmentsViewProvider)) {

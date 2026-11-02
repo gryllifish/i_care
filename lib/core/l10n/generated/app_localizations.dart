@@ -491,7 +491,7 @@ abstract class AppLocalizations {
   /// No description provided for @demoHint.
   ///
   /// In en, this message translates to:
-  /// **'Two phones synced through a simulated server. To simulate a dose recorded late: turn Martín\'s phone off, mark the same dose on both and turn it back on.'**
+  /// **'Two phones synced through a simulated server: Ana coordinates as admin, Rosa helps with today\'s care. To simulate a dose recorded twice: turn Rosa\'s phone off, mark the same dose on both and turn it back on. Ana reviews it.'**
   String get demoHint;
 
   /// No description provided for @yesterday.
@@ -2610,6 +2610,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connect to leave: there are records still to send.'**
   String get leaveOffline;
+
+  /// No description provided for @conflictNeedsReviewer.
+  ///
+  /// In en, this message translates to:
+  /// **'An admin or a caregiver will review it.'**
+  String get conflictNeedsReviewer;
+
+  /// No description provided for @daySummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today so far'**
+  String get daySummaryTitle;
+
+  /// No description provided for @summaryNothingLate.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing late'**
+  String get summaryNothingLate;
+
+  /// No description provided for @summaryLate.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 late} other{{count} late}}'**
+  String summaryLate(int count);
+
+  /// No description provided for @summaryTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks: {done} of {total}'**
+  String summaryTasks(int done, int total);
+
+  /// No description provided for @summaryLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Last: {record}, at {time}.'**
+  String summaryLast(String record, String time);
+
+  /// No description provided for @summaryNothingYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded today yet.'**
+  String get summaryNothingYet;
 }
 
 class _AppLocalizationsDelegate

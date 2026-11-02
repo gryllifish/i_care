@@ -145,10 +145,13 @@ class CareRepositoryImpl implements CareRepository {
 
   /// Clears this device's copy of the log and syncs again from the start:
   /// after joining a circle, leaving one, or a role change that changes
-  /// what this device may read.
+  /// what this device may read. What was never sent stays, to be sent:
+  /// a record is never lost to a restart.
   Future<Result<void>> restart() => guard(() async {
     await stop();
+    final unsent = _events.readPending();
     await _events.clear();
+    await _events.merge(unsent);
     await _rejected.clear();
     await _syncState.clear();
     _isMember = true;

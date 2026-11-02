@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_care/core/l10n/l10n.dart';
+import 'package:i_care/features/care/controllers/care_controllers.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 
 /// The tabs around every screen. Each tab keeps its own navigation stack
 /// and scroll position.
-class AppShell extends StatelessWidget {
+class AppShell extends ConsumerWidget {
   const AppShell({required this.shell, super.key});
 
   final StatefulNavigationShell shell;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
+    // A helper's app is Today only (`docs/roles.md`): no tabs.
+    if (ref.watch(currentMemberProvider)?.role == MemberRole.helper) {
+      return Scaffold(body: shell);
+    }
     return Scaffold(
       body: shell,
       bottomNavigationBar: NavigationBar(

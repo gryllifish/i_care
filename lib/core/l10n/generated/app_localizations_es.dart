@@ -257,7 +257,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get demoHint =>
-      'Dos teléfonos sincronizados con un servidor simulado. Para simular una toma registrada tarde: desconectá el de Martín, marcá la misma toma en los dos y volvé a conectarlo.';
+      'Dos teléfonos sincronizados con un servidor simulado: Ana coordina como admin, Rosa ayuda con el cuidado del día. Para simular una toma registrada dos veces: desconectá el teléfono de Rosa, marcá la misma toma en los dos y volvé a conectarlo. Ana la revisa.';
 
   @override
   String get yesterday => 'Ayer';
@@ -1593,4 +1593,38 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get leaveOffline =>
       'Conectate para salir: quedan registros por enviar.';
+
+  @override
+  String get conflictNeedsReviewer =>
+      'Lo va a revisar una persona admin o que cuida a diario.';
+
+  @override
+  String get daySummaryTitle => 'El día hasta ahora';
+
+  @override
+  String get summaryNothingLate => 'Nada atrasado';
+
+  @override
+  String summaryLate(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count atrasadas',
+      one: '1 atrasada',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String summaryTasks(int done, int total) {
+    return 'Tareas: $done de $total';
+  }
+
+  @override
+  String summaryLast(String record, String time) {
+    return 'Último: $record, a las $time.';
+  }
+
+  @override
+  String get summaryNothingYet => 'Todavía no hay registros hoy.';
 }
