@@ -1,5 +1,6 @@
 import 'package:hive_ce/hive.dart';
 import 'package:i_care/features/care/data/datasources/event_store.dart';
+import 'package:i_care/features/care/data/datasources/rejected_store.dart';
 import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
 import 'package:i_care/features/care/data/repositories/care_repository_impl.dart';
 import 'package:i_care/features/care/data/sync/simulated_connection.dart';
@@ -19,6 +20,16 @@ part 'care_providers.g.dart';
 @Riverpod(keepAlive: true)
 Box<String> eventBox(Ref ref) =>
     throw UnimplementedError('Override eventBoxProvider at startup');
+
+/// This device's box of events the server refused.
+@Riverpod(keepAlive: true)
+Box<String> rejectedBox(Ref ref) =>
+    throw UnimplementedError('Override rejectedBoxProvider at startup');
+
+/// How the server knows this device. Each simulated phone overrides it.
+@Riverpod(keepAlive: true)
+String deviceId(Ref ref) =>
+    throw UnimplementedError('Override deviceIdProvider at startup');
 
 /// This device's sync state box.
 @Riverpod(keepAlive: true)
@@ -40,6 +51,7 @@ const simulatedLatency = Duration(milliseconds: 600);
 SimulatedConnection simulatedConnection(Ref ref) {
   final connection = SimulatedConnection(
     ref.watch(simulatedServerProvider),
+    deviceId: ref.watch(deviceIdProvider),
     latency: simulatedLatency,
   );
   ref.onDispose(connection.dispose);
@@ -54,6 +66,7 @@ SyncGateway syncGateway(Ref ref) => ref.watch(simulatedConnectionProvider);
 CareRepositoryImpl careRepositoryImpl(Ref ref) {
   final repository = CareRepositoryImpl(
     events: EventStore(ref.watch(eventBoxProvider)),
+    rejected: RejectedStore(ref.watch(rejectedBoxProvider)),
     syncState: SyncStateStore(ref.watch(syncStateBoxProvider)),
     gateway: ref.watch(syncGatewayProvider),
     clock: ref.watch(clockProvider),

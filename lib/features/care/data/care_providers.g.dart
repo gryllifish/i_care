@@ -54,6 +54,97 @@ final class EventBoxProvider
 
 String _$eventBoxHash() => r'82d4df808248738d8817366057a99183f7bbd5d1';
 
+/// This device's box of events the server refused.
+
+@ProviderFor(rejectedBox)
+final rejectedBoxProvider = RejectedBoxProvider._();
+
+/// This device's box of events the server refused.
+
+final class RejectedBoxProvider
+    extends $FunctionalProvider<Box<String>, Box<String>, Box<String>>
+    with $Provider<Box<String>> {
+  /// This device's box of events the server refused.
+  RejectedBoxProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'rejectedBoxProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$rejectedBoxHash();
+
+  @$internal
+  @override
+  $ProviderElement<Box<String>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Box<String> create(Ref ref) {
+    return rejectedBox(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Box<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Box<String>>(value),
+    );
+  }
+}
+
+String _$rejectedBoxHash() => r'11b3c3fe8d7b57de0dc3a9504147bf55259e0754';
+
+/// How the server knows this device. Each simulated phone overrides it.
+
+@ProviderFor(deviceId)
+final deviceIdProvider = DeviceIdProvider._();
+
+/// How the server knows this device. Each simulated phone overrides it.
+
+final class DeviceIdProvider extends $FunctionalProvider<String, String, String>
+    with $Provider<String> {
+  /// How the server knows this device. Each simulated phone overrides it.
+  DeviceIdProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'deviceIdProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$deviceIdHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return deviceId(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+}
+
+String _$deviceIdHash() => r'0b71f5c75533fdd50971e0a6f6530ef26235e922';
+
 /// This device's sync state box.
 
 @ProviderFor(syncStateBox)
@@ -204,7 +295,7 @@ final class SimulatedConnectionProvider
 }
 
 String _$simulatedConnectionHash() =>
-    r'd7ef6b71ca53648407e2eb20e0889ccd92f1e28b';
+    r'6633c61231896d594e0111399716dbb6bae16816';
 
 @ProviderFor(syncGateway)
 final syncGatewayProvider = SyncGatewayProvider._();
@@ -298,7 +389,7 @@ final class CareRepositoryImplProvider
 }
 
 String _$careRepositoryImplHash() =>
-    r'e87e337a9c3b1063fe19ca58ab996000b6ce00a0';
+    r'db4337f352c94ad488958aa854ba4008bd372253';
 
 @ProviderFor(careRepository)
 final careRepositoryProvider = CareRepositoryProvider._();

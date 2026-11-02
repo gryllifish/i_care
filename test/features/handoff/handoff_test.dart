@@ -71,8 +71,7 @@ void main() {
       l10n,
       recipientName: 'Elena',
       caregivers: {
-        for (final caregiver in SampleCircle.caregivers)
-          caregiver.id: caregiver,
+        for (final caregiver in SampleCircle.members) caregiver.id: caregiver,
       },
       locale: 'en',
     );
@@ -136,8 +135,7 @@ void main() {
       l10n,
       recipientName: 'Elena',
       caregivers: {
-        for (final caregiver in SampleCircle.caregivers)
-          caregiver.id: caregiver,
+        for (final caregiver in SampleCircle.members) caregiver.id: caregiver,
       },
       locale: 'en',
     );
@@ -173,8 +171,7 @@ void main() {
       l10n,
       recipientName: 'Elena',
       caregivers: {
-        for (final caregiver in SampleCircle.caregivers)
-          caregiver.id: caregiver,
+        for (final caregiver in SampleCircle.members) caregiver.id: caregiver,
       },
       locale: 'en',
     );

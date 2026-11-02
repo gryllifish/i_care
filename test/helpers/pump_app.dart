@@ -8,7 +8,9 @@ import 'package:i_care/app/app.dart';
 import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/features/care/data/care_providers.dart';
+import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/care/domain/repositories/care_repository.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
@@ -18,8 +20,14 @@ import 'package:i_care/shared/providers/id_provider.dart';
 /// An in-memory log; recorded events stay pending, as on a phone that
 /// has not synced them yet.
 class FakeCareRepository implements CareRepository {
+  /// Holds [events], after the sample circle's members unless [events]
+  /// brings members of its own: screens name people from the log.
   FakeCareRepository([List<CareEvent> events = const []])
-    : events = [...events];
+    : events = [
+        if (!events.any((event) => event is MemberInvited))
+          ...SampleCircle.memberEvents(DateTime(2025)),
+        ...events,
+      ];
 
   final List<CareEvent> events;
   final _changes = StreamController<void>.broadcast();
@@ -31,6 +39,9 @@ class FakeCareRepository implements CareRepository {
 
   /// Events recorded through the app, in order.
   final recorded = <CareEvent>[];
+
+  /// Events the server refused, as the repository reports them.
+  final rejected = <RejectedEvent>[];
 
   @override
   Stream<List<CareEvent>> watchEvents() async* {
@@ -57,6 +68,15 @@ class FakeCareRepository implements CareRepository {
 
   @override
   Stream<SyncStatus> watchSyncStatus() => Stream.value(status);
+
+  @override
+  Stream<List<RejectedEvent>> watchRejected() => Stream.value(rejected);
+
+  @override
+  Future<Result<void>> dismissRejected(String eventId) async {
+    rejected.removeWhere((item) => item.event.meta.id == eventId);
+    return const Ok(null);
+  }
 }
 
 /// Logical size of a typical phone.

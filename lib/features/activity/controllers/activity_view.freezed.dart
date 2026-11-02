@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ActivityEntry {
 
- CareEvent get event;/// Name of the medication or task, or title of the appointment involved,
+ CareEvent get event;/// Name of the medication, task or member, or title of the appointment
+/// involved,
 /// looked up through the cancelled record for undos; null when none
 /// applies or it is unknown.
  String? get subject;
@@ -223,7 +224,8 @@ class _ActivityEntry implements ActivityEntry {
   
 
 @override final  CareEvent event;
-/// Name of the medication or task, or title of the appointment involved,
+/// Name of the medication, task or member, or title of the appointment
+/// involved,
 /// looked up through the cancelled record for undos; null when none
 /// applies or it is unknown.
 @override final  String? subject;

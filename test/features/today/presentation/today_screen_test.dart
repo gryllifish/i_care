@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/core/error/failure.dart';
+import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
@@ -247,6 +248,28 @@ void main() {
     expect(inSheet('Skip this dose'), findsOneWidget);
   });
 
+  testWidgets("only an admin is offered removing someone else's record", (
+    tester,
+  ) async {
+    final anas = events.given('m1', at: eight, slotAt: eight);
+    final martins = events.given(
+      'm1',
+      at: DateTime(2026, 11, 1, 20),
+      slotAt: DateTime(2026, 11, 1, 20),
+      by: 'martin',
+    );
+    await pumpApp(
+      tester,
+      repository: circle([anas, martins]),
+      now: now,
+      overrides: [deviceOwnerIdProvider.overrideWithValue('martin')],
+    );
+
+    await openDose(tester, '08:00');
+
+    expect(find.bySemanticsLabel("Remove Ana's record"), findsNothing);
+  });
+
   testWidgets('cancelling the confirmation keeps the record', (tester) async {
     final repository = circle([events.given('m1', at: eight, slotAt: eight)]);
     await pumpApp(tester, repository: repository, now: now);
@@ -304,11 +327,10 @@ void main() {
 
       expect(
         repository.recorded.single,
-        isA<DoseUndone>().having(
-          (e) => e.targetEventId,
-          'target',
-          martins.meta.id,
-        ),
+        isA<DoseUndone>()
+            .having((e) => e.targetEventId, 'target', martins.meta.id)
+            // So the server takes it from a caregiver as part of a review.
+            .having((e) => e.conflictKey, 'conflictKey', startsWith('dose:')),
       );
       expect(find.text('Repeated record cancelled'), findsOneWidget);
       await scrollTo(tester, find.text('Ana at 08:00'));

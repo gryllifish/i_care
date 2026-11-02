@@ -2,6 +2,8 @@ import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/medication_validation.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
+import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/task_validation.dart';
 
 extension SkipReasonLabel on SkipReason {
@@ -44,5 +46,23 @@ extension TaskIssueMessage on TaskIssue {
     TaskIssue.nameMissing => l10n.issueNameMissing,
     TaskIssue.noTimes => l10n.issueNoTimes,
     TaskIssue.noWeekdays => l10n.issueNoWeekdays,
+  };
+}
+
+extension MemberRoleLabel on MemberRole {
+  String label(AppLocalizations l10n) => switch (this) {
+    MemberRole.admin => l10n.roleAdmin,
+    MemberRole.caregiver => l10n.roleCaregiver,
+    MemberRole.helper => l10n.roleHelper,
+    MemberRole.viewer => l10n.roleViewer,
+  };
+}
+
+extension RejectionReasonText on RejectionReason {
+  String text(AppLocalizations l10n) => switch (this) {
+    RejectionReason.wrongAuthor => l10n.rejectedWrongAuthor,
+    RejectionReason.notAllowed => l10n.rejectedNotAllowed,
+    RejectionReason.notMember => l10n.rejectedNotMember,
+    RejectionReason.lastAdmin => l10n.rejectedLastAdmin,
   };
 }

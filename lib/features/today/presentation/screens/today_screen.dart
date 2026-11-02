@@ -29,10 +29,10 @@ import 'package:i_care/shared/l10n/date_texts.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
-import 'package:i_care/shared/widgets/caregiver_avatar.dart';
-import 'package:i_care/shared/widgets/caregiver_choices.dart';
 import 'package:i_care/shared/widgets/date_badge.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
+import 'package:i_care/shared/widgets/member_avatar.dart';
+import 'package:i_care/shared/widgets/member_list.dart';
 import 'package:i_care/shared/widgets/screen_header.dart';
 
 /// Today's doses: what is next, what is late and who did what.
@@ -328,8 +328,8 @@ class _SampleDataPill extends StatelessWidget {
   }
 }
 
-/// The circle's members as overlapping avatars, the current one first.
-/// Tapping switches who is recording on this phone.
+/// The circle's members as overlapping avatars, this phone's first.
+/// Tapping shows the circle with everyone's role.
 class _TeamButton extends ConsumerWidget {
   const _TeamButton();
 
@@ -338,16 +338,17 @@ class _TeamButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final current = ref.watch(currentCaregiverProvider);
+    final current = ref.watch(currentMemberProvider);
     final members = [
-      current,
-      for (final caregiver in ref.watch(caregiversProvider))
-        if (caregiver != current) caregiver,
+      ?current,
+      for (final member in ref.watch(membersProvider))
+        if (member != current) member,
     ];
+    if (members.isEmpty) return const SizedBox.shrink();
     const step = _avatarSize - _overlap;
 
     return Semantics(
-      label: '${context.l10n.whoAreYou} ${current.name}',
+      label: context.l10n.circleButtonLabel(current?.name ?? ''),
       button: true,
       excludeSemantics: true,
       child: InkWell(
@@ -356,7 +357,7 @@ class _TeamButton extends ConsumerWidget {
           context: context,
           isScrollControlled: true,
           useSafeArea: true,
-          builder: (_) => const _CaregiverPicker(),
+          builder: (_) => const _CircleSheet(),
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.xs),
@@ -365,9 +366,8 @@ class _TeamButton extends ConsumerWidget {
             height: _avatarSize,
             child: Stack(
               children: [
-                // Painted last to first, so the current caregiver is on top.
-                for (final (index, caregiver)
-                    in members.indexed.toList().reversed)
+                // Painted last to first, so this phone's member is on top.
+                for (final (index, member) in members.indexed.toList().reversed)
                   Positioned(
                     left: index * step,
                     child: Container(
@@ -376,8 +376,8 @@ class _TeamButton extends ConsumerWidget {
                         shape: BoxShape.circle,
                         color: context.colors.background,
                       ),
-                      child: CaregiverAvatar(
-                        caregiver: caregiver,
+                      child: MemberAvatar(
+                        member: member,
                         size: _avatarSize - AppSpacing.xs,
                       ),
                     ),
@@ -391,8 +391,8 @@ class _TeamButton extends ConsumerWidget {
   }
 }
 
-class _CaregiverPicker extends StatelessWidget {
-  const _CaregiverPicker();
+class _CircleSheet extends StatelessWidget {
+  const _CircleSheet();
 
   @override
   Widget build(BuildContext context) {
@@ -409,8 +409,8 @@ class _CaregiverPicker extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: AppSpacing.sm,
           children: [
-            Text(context.l10n.whoAreYou, style: AppTextStyles.headline),
-            CaregiverChoices(onChosen: () => Navigator.of(context).pop()),
+            Text(context.l10n.circleTitle, style: AppTextStyles.headline),
+            const MemberList(),
           ],
         ),
       ),
@@ -690,7 +690,7 @@ class _ConflictCard extends ConsumerWidget {
                     conflictRecordsText(
                       l10n,
                       item: item,
-                      caregivers: ref.watch(caregiversByIdProvider),
+                      caregivers: ref.watch(membersByIdProvider),
                       today: ref.watch(nowProvider),
                       locale: locale,
                     ),

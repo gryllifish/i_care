@@ -5,9 +5,11 @@ import 'package:i_care/core/error/guard.dart';
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/core/utils/app_logger.dart';
 import 'package:i_care/features/care/data/datasources/event_store.dart';
+import 'package:i_care/features/care/data/datasources/rejected_store.dart';
 import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
 import 'package:i_care/features/care/data/sync/sync_gateway.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/care/domain/repositories/care_repository.dart';
 
@@ -18,12 +20,14 @@ import 'package:i_care/features/care/domain/repositories/care_repository.dart';
 class CareRepositoryImpl implements CareRepository {
   CareRepositoryImpl({
     required this._events,
+    required this._rejected,
     required this._syncState,
     required this._gateway,
     required this._clock,
   });
 
   final EventStore _events;
+  final RejectedStore _rejected;
   final SyncStateStore _syncState;
   final SyncGateway _gateway;
   final DateTime Function() _clock;
@@ -86,6 +90,20 @@ class CareRepositoryImpl implements CareRepository {
     yield* _statusChanges.stream;
   }
 
+  @override
+  Stream<List<RejectedEvent>> watchRejected() async* {
+    yield _readRejected();
+    await for (final _ in _rejected.changes) {
+      yield _readRejected();
+    }
+  }
+
+  @override
+  Future<Result<void>> dismissRejected(String eventId) => guard(() async {
+    await _rejected.remove(eventId);
+    _emitStatus();
+  });
+
   Future<void> _onBatch(SyncBatch batch) async {
     try {
       await _events.merge(batch.events);
@@ -112,8 +130,18 @@ class CareRepositoryImpl implements CareRepository {
     try {
       final pending = _events.readPending();
       if (pending.isEmpty) return;
-      final stored = await _gateway.push(pending);
-      await _events.merge(stored);
+      final result = await _gateway.push(pending);
+      await _events.merge(result.stored);
+      if (result.rejected.isNotEmpty) {
+        // Kept apart first, then dropped from the log: never lost.
+        await _rejected.add(result.rejected);
+        await _events.remove([
+          for (final rejected in result.rejected) rejected.event.meta.id,
+        ]);
+        AppLogger.warning(
+          '${result.rejected.length} event(s) refused by the server',
+        );
+      }
       await _syncState.save(lastSyncedAt: _clock());
       _isConnected = true;
     } on NoConnectionException {
@@ -122,6 +150,14 @@ class CareRepositoryImpl implements CareRepository {
       AppLogger.error('Could not push events', error, stackTrace);
     }
     _emitStatus();
+  }
+
+  List<RejectedEvent> _readRejected() {
+    try {
+      return _rejected.readAll();
+    } on AppException catch (error) {
+      throw error.toFailure();
+    }
   }
 
   List<CareEvent> _readAll() {
@@ -137,6 +173,7 @@ class CareRepositoryImpl implements CareRepository {
       return SyncStatus(
         lastSyncedAt: _syncState.lastSyncedAt,
         pendingCount: _events.readPending().length,
+        rejectedCount: _rejected.readAll().length,
         isConnected: _isConnected,
       );
     } on AppException catch (error, stackTrace) {

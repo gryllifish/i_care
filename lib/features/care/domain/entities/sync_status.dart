@@ -12,6 +12,9 @@ abstract class SyncStatus with _$SyncStatus {
 
     /// Events recorded here that the server has not received yet.
     @Default(0) int pendingCount,
+
+    /// Events recorded here that the server refused (`docs/roles.md`).
+    @Default(0) int rejectedCount,
     @Default(true) bool isConnected,
   }) = _SyncStatus;
 }

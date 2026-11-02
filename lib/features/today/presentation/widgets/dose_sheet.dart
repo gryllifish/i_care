@@ -12,6 +12,7 @@ import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/care/domain/projections/dose_warnings.dart';
 import 'package:i_care/features/today/controllers/dose_controller.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_status_style.dart';
@@ -127,7 +128,7 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     final slot = detail.slot;
     final isGiven = slot != null && slot.status == DoseStatus.given;
     final givenByMe =
-        isGiven && slot.isGivenBy(ref.watch(currentCaregiverProvider).id);
+        isGiven && slot.isGivenBy(ref.watch(deviceOwnerIdProvider));
     final isResolved = isGiven || slot?.status == DoseStatus.skipped;
 
     return SingleChildScrollView(
@@ -232,7 +233,7 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
                       warning.text(
                         l10n,
                         locale: locale,
-                        caregivers: ref.watch(caregiversByIdProvider),
+                        caregivers: ref.watch(membersByIdProvider),
                       ),
                   ],
                 ),
@@ -332,7 +333,7 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     final actions = ref.read(doseActionsProvider.notifier);
     final caregiverId = record.meta.caregiverId;
     final name =
-        ref.read(caregiversByIdProvider)[caregiverId]?.name ??
+        ref.read(membersByIdProvider)[caregiverId]?.name ??
         l10n.unknownCaregiver;
 
     final confirmed = await showConfirmDialog(
@@ -373,11 +374,14 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
     final actions = ref.read(doseActionsProvider.notifier);
     setState(() => _busy = true);
 
+    // Each repeated record with the conflict it is cancelled for, so the
+    // server lets reviewers cancel others' records only in a review.
     final repeated = {
-      for (final conflict in detail.conflicts) ...conflict.doses.skip(1),
+      for (final conflict in detail.conflicts)
+        for (final dose in conflict.doses.skip(1)) dose: conflict.key,
     };
-    for (final dose in repeated) {
-      await actions.undo(dose);
+    for (final MapEntry(key: dose, value: conflictKey) in repeated.entries) {
+      await actions.undo(dose, conflictKey: conflictKey);
     }
     if (!mounted) return;
     Navigator.of(context).pop();
@@ -515,7 +519,7 @@ class _History extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final caregivers = ref.watch(caregiversByIdProvider);
+    final caregivers = ref.watch(membersByIdProvider);
     final skipped = detail.slot?.skipped ?? const <DoseSkipped>[];
     if (detail.history.isEmpty && skipped.isEmpty) {
       return const SizedBox.shrink();
@@ -523,6 +527,9 @@ class _History extends ConsumerWidget {
 
     String nameOf(String id) => caregivers[id]?.name ?? l10n.unknownCaregiver;
     final onRemove = this.onRemove;
+    final me = ref.watch(currentMemberProvider);
+    bool removable(CareEvent record) =>
+        onRemove != null && me != null && canRemove(me, record);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,7 +551,7 @@ class _History extends ConsumerWidget {
               today: ref.watch(nowProvider),
               locale: locale,
             ),
-            onRemove: onRemove == null ? null : () => onRemove(dose),
+            onRemove: removable(dose) ? () => onRemove?.call(dose) : null,
           ),
         for (final skip in skipped)
           RecordRow(
@@ -554,7 +561,7 @@ class _History extends ConsumerWidget {
               nameOf(skip.meta.caregiverId),
               skip.reason.label(l10n),
             ),
-            onRemove: onRemove == null ? null : () => onRemove(skip),
+            onRemove: removable(skip) ? () => onRemove?.call(skip) : null,
           ),
       ],
     );

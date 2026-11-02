@@ -7,8 +7,8 @@ import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
-import 'package:i_care/shared/widgets/caregiver_choices.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
+import 'package:i_care/shared/widgets/member_list.dart';
 
 /// First run on a phone: what ICare is, that it gives no medical advice,
 /// and who uses this phone.
@@ -79,8 +79,8 @@ class WelcomeScreen extends ConsumerWidget {
                     ),
                   ),
                   FormSection(
-                    title: l10n.welcomeWho,
-                    children: const [CaregiverChoices()],
+                    title: l10n.circleTitle,
+                    children: const [MemberList()],
                   ),
                 ],
               ),

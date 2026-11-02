@@ -1,8 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
 
@@ -639,6 +641,54 @@ void main() {
       expect(
         log.conflicts.single,
         isA<EditConflict>().having((c) => c.entityId, 'entityId', 't1'),
+      );
+    });
+  });
+
+  group('members', () {
+    test('are invited, join, change role and leave the list when removed', () {
+      final log = CareLog([
+        events.memberInvited('lucia'),
+        events.memberInvited('pablo', name: 'Pablo', role: MemberRole.viewer),
+        events.memberJoined('lucia'),
+        events.roleChanged('lucia', MemberRole.caregiver, baseVersion: 0),
+        events.memberRemoved('pablo', baseVersion: 0),
+      ]);
+
+      final lucia = log.membersById['lucia'];
+      expect(lucia?.status, MemberStatus.active);
+      expect(lucia?.role, MemberRole.caregiver);
+      expect(log.members, [lucia]);
+      expect(log.membersById['pablo']?.isRemoved, isTrue);
+    });
+
+    test('a revoked invitation removes a member nobody joined as', () {
+      final log = CareLog([
+        events.memberInvited('lucia'),
+        CareEvent.invitationRevoked(
+          meta: events.meta(at: DateTime(2026, 1, 2)),
+          memberId: 'lucia',
+        ),
+      ]);
+
+      expect(log.members, isEmpty);
+    });
+
+    test('concurrent role changes are flagged for review', () {
+      final log = CareLog([
+        events.memberInvited('lucia'),
+        events.roleChanged('lucia', MemberRole.caregiver, baseVersion: 0),
+        events.roleChanged(
+          'lucia',
+          MemberRole.viewer,
+          baseVersion: 0,
+          by: 'martin',
+        ),
+      ]);
+
+      expect(
+        log.conflicts.single,
+        isA<EditConflict>().having((c) => c.entityId, 'entityId', 'lucia'),
       );
     });
   });

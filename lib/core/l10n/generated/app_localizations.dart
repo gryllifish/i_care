@@ -470,12 +470,6 @@ abstract class AppLocalizations {
   /// **'Someone'**
   String get unknownCaregiver;
 
-  /// No description provided for @whoAreYou.
-  ///
-  /// In en, this message translates to:
-  /// **'Who are you?'**
-  String get whoAreYou;
-
   /// No description provided for @phoneOf.
   ///
   /// In en, this message translates to:
@@ -1813,12 +1807,6 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settingsTitle;
 
-  /// No description provided for @sectionWho.
-  ///
-  /// In en, this message translates to:
-  /// **'Who you are'**
-  String get sectionWho;
-
   /// No description provided for @sectionLanguage.
   ///
   /// In en, this message translates to:
@@ -1914,12 +1902,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Everything here is sample data. Try it freely.'**
   String get welcomeSample;
-
-  /// No description provided for @welcomeWho.
-  ///
-  /// In en, this message translates to:
-  /// **'Who\'s using this phone?'**
-  String get welcomeWho;
 
   /// No description provided for @welcomeStart.
   ///
@@ -2238,6 +2220,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Documents for it:'**
   String get handoffDocuments;
+
+  /// No description provided for @roleAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get roleAdmin;
+
+  /// No description provided for @roleCaregiver.
+  ///
+  /// In en, this message translates to:
+  /// **'Caregiver'**
+  String get roleCaregiver;
+
+  /// No description provided for @roleHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Helper'**
+  String get roleHelper;
+
+  /// No description provided for @roleViewer.
+  ///
+  /// In en, this message translates to:
+  /// **'View only'**
+  String get roleViewer;
+
+  /// No description provided for @activityMemberInvited.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} invited {member} ({role})'**
+  String activityMemberInvited(String name, String member, String role);
+
+  /// No description provided for @activityInvitationRevoked.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} withdrew {member}\'s invitation'**
+  String activityInvitationRevoked(String name, String member);
+
+  /// No description provided for @activityMemberJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'{member} joined the circle'**
+  String activityMemberJoined(String member);
+
+  /// No description provided for @activityRoleChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} changed {member}\'s role to {role}'**
+  String activityRoleChanged(String name, String member, String role);
+
+  /// No description provided for @activityMemberRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} removed {member} from the circle'**
+  String activityMemberRemoved(String name, String member);
+
+  /// No description provided for @activityMemberLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{member} left the circle on a phone'**
+  String activityMemberLeft(String member);
+
+  /// No description provided for @circleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The circle'**
+  String get circleTitle;
+
+  /// No description provided for @thisPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone'**
+  String get thisPhone;
+
+  /// No description provided for @memberInvitedStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited'**
+  String get memberInvitedStatus;
+
+  /// No description provided for @circleButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, on this phone. See the circle'**
+  String circleButtonLabel(String name);
+
+  /// No description provided for @syncRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 record not sent} other{{count} records not sent}}'**
+  String syncRejected(int count);
+
+  /// No description provided for @sectionNotSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent'**
+  String get sectionNotSent;
+
+  /// No description provided for @notSentNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The server refused these records, so nobody else has them and the app shows them nowhere else.'**
+  String get notSentNote;
+
+  /// No description provided for @rejectedWrongAuthor.
+  ///
+  /// In en, this message translates to:
+  /// **'It was written as someone else.'**
+  String get rejectedWrongAuthor;
+
+  /// No description provided for @rejectedNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your role does not allow it.'**
+  String get rejectedNotAllowed;
+
+  /// No description provided for @rejectedNotMember.
+  ///
+  /// In en, this message translates to:
+  /// **'You are no longer in the circle.'**
+  String get rejectedNotMember;
+
+  /// No description provided for @rejectedLastAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'The circle would be left without an admin.'**
+  String get rejectedLastAdmin;
+
+  /// No description provided for @dismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get dismiss;
+
+  /// No description provided for @afterAccessEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'After their access ended'**
+  String get afterAccessEnded;
 }
 
 class _AppLocalizationsDelegate

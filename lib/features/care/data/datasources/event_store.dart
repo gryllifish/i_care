@@ -47,6 +47,12 @@ class EventStore {
     return hiveGuardAsync('Event log', () => _box.putAll(updates));
   }
 
+  /// Drops events the server refused; they live on in the rejected store.
+  ///
+  /// Throws [StorageException].
+  Future<void> remove(Iterable<String> ids) =>
+      hiveGuardAsync('Event log', () => _box.deleteAll(ids));
+
   /// Fires after every change to the log.
   Stream<void> get changes => _box.watch();
 

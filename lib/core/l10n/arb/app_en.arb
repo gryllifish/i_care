@@ -195,7 +195,6 @@
   "recordedToday": "Recorded today",
   "recordedForThisDose": "Recorded for this dose",
   "unknownCaregiver": "Someone",
-  "whoAreYou": "Who are you?",
   "phoneOf": "{name}'s phone",
   "@phoneOf": {
     "placeholders": {
@@ -914,7 +913,6 @@
   "handoffCopied": "Copied. Paste it in your family chat.",
   "copy": "Copy",
   "settingsTitle": "Settings",
-  "sectionWho": "Who you are",
   "sectionLanguage": "Language",
   "languageSystem": "System",
   "sectionAppearance": "Appearance",
@@ -938,7 +936,6 @@
     }
   },
   "welcomeSample": "Everything here is sample data. Try it freely.",
-  "welcomeWho": "Who's using this phone?",
   "welcomeStart": "Got it",
   "unknownTask": "a task",
   "activityTaskCreated": "{name} added the task {task}",
@@ -1126,5 +1123,102 @@
       }
     }
   },
-  "handoffDocuments": "Documents for it:"
+  "handoffDocuments": "Documents for it:",
+  "roleAdmin": "Admin",
+  "roleCaregiver": "Caregiver",
+  "roleHelper": "Helper",
+  "roleViewer": "View only",
+  "activityMemberInvited": "{name} invited {member} ({role})",
+  "@activityMemberInvited": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "member": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "activityInvitationRevoked": "{name} withdrew {member}'s invitation",
+  "@activityInvitationRevoked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "member": {
+        "type": "String"
+      }
+    }
+  },
+  "activityMemberJoined": "{member} joined the circle",
+  "@activityMemberJoined": {
+    "placeholders": {
+      "member": {
+        "type": "String"
+      }
+    }
+  },
+  "activityRoleChanged": "{name} changed {member}'s role to {role}",
+  "@activityRoleChanged": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "member": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "activityMemberRemoved": "{name} removed {member} from the circle",
+  "@activityMemberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "member": {
+        "type": "String"
+      }
+    }
+  },
+  "activityMemberLeft": "{member} left the circle on a phone",
+  "@activityMemberLeft": {
+    "placeholders": {
+      "member": {
+        "type": "String"
+      }
+    }
+  },
+  "circleTitle": "The circle",
+  "thisPhone": "This phone",
+  "memberInvitedStatus": "Invited",
+  "circleButtonLabel": "{name}, on this phone. See the circle",
+  "@circleButtonLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syncRejected": "{count, plural, =1{1 record not sent} other{{count} records not sent}}",
+  "@syncRejected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sectionNotSent": "Not sent",
+  "notSentNote": "The server refused these records, so nobody else has them and the app shows them nowhere else.",
+  "rejectedWrongAuthor": "It was written as someone else.",
+  "rejectedNotAllowed": "Your role does not allow it.",
+  "rejectedNotMember": "You are no longer in the circle.",
+  "rejectedLastAdmin": "The circle would be left without an admin.",
+  "dismiss": "Dismiss",
+  "afterAccessEnded": "After their access ended"
 }

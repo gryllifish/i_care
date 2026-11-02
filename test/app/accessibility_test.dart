@@ -90,8 +90,14 @@ void main() {
   BuildContext screen(WidgetTester tester) =>
       tester.element(find.byType(Scaffold).last);
 
+  /// Scrolls to [text] first: at 200 % it may be past what the list has
+  /// built.
   Future<void> tapText(WidgetTester tester, String text) async {
-    await tester.ensureVisible(find.text(text));
+    await tester.scrollUntilVisible(
+      find.text(text),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.text(text));
     await tester.pumpAndSettle();
@@ -176,21 +182,12 @@ void main() {
     ),
     'document link sheet': (
       '${AppRoutes.appointments}/appointment-cardiology',
-      (tester) async {
-        // Further down than the screen at 200 %, so not built yet.
-        await tester.scrollUntilVisible(
-          find.text('Add link'),
-          200,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Add link'));
-      },
+      (tester) => tapText(tester, 'Add link'),
     ),
-    'caregiver picker': (
+    'circle sheet': (
       AppRoutes.today,
       (tester) async {
-        await tester.tap(find.bySemanticsLabel(RegExp('^Who are you?')));
+        await tester.tap(find.bySemanticsLabel(RegExp('See the circle')));
       },
     ),
     'recount sheet': (

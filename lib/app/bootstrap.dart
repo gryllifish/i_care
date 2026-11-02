@@ -11,11 +11,12 @@ import 'package:i_care/core/utils/app_logger.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/data/care_providers.dart';
 import 'package:i_care/features/care/data/datasources/event_store.dart';
+import 'package:i_care/features/care/data/datasources/rejected_store.dart';
 import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
-import 'package:i_care/features/care/domain/entities/caregiver.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 
@@ -38,14 +39,19 @@ Future<void> bootstrap() async {
   await _initStorage();
   final server = SimulatedServer(
     await _openBox(SimulatedServer.boxName),
+    await _openBox(SimulatedServer.devicesBoxName),
     clock: DateTime.now,
   );
-  if (server.isEmpty) await _seed(server);
-
   final phones = [
     for (final owner in [SampleCircle.ana, SampleCircle.martin])
       await _openPhone(owner),
   ];
+  // A log without members was saved before roles existed: phones there
+  // belong to nobody, so the demo starts over.
+  if (server.isEmpty || !server.hasMembers) {
+    await _clearAll(server, phones);
+    await _seed(server, phones);
+  }
   Future<void> resetDemo() => _reset(server, phones);
   final devices = [
     for (final phone in phones)
@@ -54,7 +60,9 @@ Future<void> bootstrap() async {
         container: ProviderContainer(
           retry: retryPolicy,
           overrides: [
+            deviceIdProvider.overrideWithValue(phone.deviceId),
             eventBoxProvider.overrideWithValue(phone.events),
+            rejectedBoxProvider.overrideWithValue(phone.rejected),
             syncStateBoxProvider.overrideWithValue(phone.syncState),
             devicePrefsProvider.overrideWithValue(
               HiveDevicePrefs(phone.prefs),
@@ -76,32 +84,53 @@ Future<void> bootstrap() async {
 
 /// One simulated phone's storage, and its container once created.
 class _Phone {
-  _Phone(this.owner, this.events, this.syncState, this.prefs);
+  _Phone(this.owner, this.events, this.rejected, this.syncState, this.prefs);
 
-  final Caregiver owner;
+  final Member owner;
   final Box<String> events;
+  final Box<String> rejected;
   final Box<String> syncState;
   final Box<String> prefs;
   ProviderContainer? container;
+
+  /// How the server knows this phone; joined as [owner] in the demo.
+  String get deviceId => 'phone-${owner.id}';
 }
 
-Future<_Phone> _openPhone(Caregiver owner) async {
-  final (events, syncState, prefs) = await (
+Future<_Phone> _openPhone(Member owner) async {
+  final (events, rejected, syncState, prefs) = await (
     _openBox(EventStore.boxName(owner.id)),
+    _openBox(RejectedStore.boxName(owner.id)),
     _openBox(SyncStateStore.boxName(owner.id)),
     _openBox(HiveDevicePrefs.boxName(owner.id)),
   ).wait;
-  return _Phone(owner, events, syncState, prefs);
+  return _Phone(owner, events, rejected, syncState, prefs);
 }
 
-/// Loads the sample circle into the server, in the device's language.
-Future<void> _seed(SimulatedServer server) => server.receive([
-  for (final event in SampleCircle.events(
-    DateTime.now(),
-    language: PlatformDispatcher.instance.locale.languageCode,
-  ))
-    CareEventCodec.encodeString(event),
-]);
+/// Loads the sample circle into the server, in the device's language,
+/// and binds each phone to its owner, as if they had joined with a code.
+Future<void> _seed(SimulatedServer server, List<_Phone> phones) async {
+  await server.seed([
+    for (final event in SampleCircle.events(
+      DateTime.now(),
+      language: PlatformDispatcher.instance.locale.languageCode,
+    ))
+      CareEventCodec.encodeString(event),
+  ]);
+  for (final phone in phones) {
+    await server.bind(phone.deviceId, phone.owner.id);
+  }
+}
+
+/// Empties the server and every phone's stores.
+Future<void> _clearAll(SimulatedServer server, List<_Phone> phones) async {
+  await server.clear();
+  for (final phone in phones) {
+    await EventStore(phone.events).clear();
+    await RejectedStore(phone.rejected).clear();
+    await SyncStateStore(phone.syncState).clear();
+  }
+}
 
 /// Clears every phone and the server, then seeds again. Each phone stops
 /// syncing first and restarts afterwards from an empty cursor, so none
@@ -115,12 +144,8 @@ Future<void> _reset(SimulatedServer server, List<_Phone> phones) async {
   for (final repository in repositories) {
     await repository.stop();
   }
-  await server.clear();
-  for (final phone in phones) {
-    await EventStore(phone.events).clear();
-    await SyncStateStore(phone.syncState).clear();
-  }
-  await _seed(server);
+  await _clearAll(server, phones);
+  await _seed(server, phones);
   for (final repository in repositories) {
     repository.start();
   }

@@ -1,9 +1,9 @@
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
-import 'package:i_care/features/care/domain/entities/caregiver.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 
 /// The demo's care circle: Elena, her two children and a hired carer.
@@ -13,11 +13,26 @@ import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 abstract final class SampleCircle {
   static const recipientName = 'Elena';
 
-  static const ana = Caregiver(id: 'ana', name: 'Ana', colorIndex: 0);
-  static const martin = Caregiver(id: 'martin', name: 'Martín', colorIndex: 1);
-  static const rosa = Caregiver(id: 'rosa', name: 'Rosa', colorIndex: 2);
+  static const ana = Member(
+    id: 'ana',
+    name: 'Ana',
+    colorIndex: 0,
+    role: MemberRole.admin,
+  );
+  static const martin = Member(
+    id: 'martin',
+    name: 'Martín',
+    colorIndex: 1,
+    role: MemberRole.caregiver,
+  );
+  static const rosa = Member(
+    id: 'rosa',
+    name: 'Rosa',
+    colorIndex: 2,
+    role: MemberRole.helper,
+  );
 
-  static const List<Caregiver> caregivers = [ana, martin, rosa];
+  static const List<Member> members = [ana, martin, rosa];
 
   /// Events of the last few days, as if caregivers had recorded them in
   /// [language] (the device's, on first run). Doses and tasks of today
@@ -26,6 +41,33 @@ abstract final class SampleCircle {
   /// time, still to do.
   static List<CareEvent> events(DateTime now, {required String language}) =>
       _SampleHistory(now, language).build();
+
+  /// The circle's members as of [at]: Ana created it (the server invites
+  /// whoever creates a circle), invited the others, and everyone joined.
+  /// Ids sort before the rest of the sample's, so members come first.
+  static List<CareEvent> memberEvents(DateTime at) => [
+    for (final member in members) ...[
+      CareEvent.memberInvited(
+        meta: EventMeta(
+          id: 'member-${member.id}-1-invited',
+          caregiverId: member == ana ? systemAuthor : ana.id,
+          occurredAt: at,
+        ),
+        memberId: member.id,
+        name: member.name,
+        role: member.role,
+        colorIndex: member.colorIndex,
+      ),
+      CareEvent.memberJoined(
+        meta: EventMeta(
+          id: 'member-${member.id}-2-joined',
+          caregiverId: systemAuthor,
+          occurredAt: at,
+        ),
+        memberId: member.id,
+      ),
+    ],
+  ];
 }
 
 class _SampleHistory {
@@ -44,6 +86,7 @@ class _SampleHistory {
   final _events = <CareEvent>[];
 
   List<CareEvent> build() {
+    _events.addAll(SampleCircle.memberEvents(start));
     for (final medication in _medications) {
       _add(
         (meta) => CareEvent.medicationCreated(

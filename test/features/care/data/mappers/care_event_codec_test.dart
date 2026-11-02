@@ -6,6 +6,7 @@ import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 
 void main() {
@@ -153,6 +154,35 @@ void main() {
       taskId: 't1',
       slotAt: at,
       reason: SkipReason.refused,
+    ),
+    CareEvent.doseUndone(
+      meta: meta,
+      targetEventId: 'e0',
+      conflictKey: 'dose:m1:x',
+    ),
+    CareEvent.memberInvited(
+      meta: meta.copyWith(caregiverId: systemAuthor),
+      memberId: 'rosa',
+      name: 'Rosa',
+      role: MemberRole.helper,
+      colorIndex: 2,
+    ),
+    CareEvent.invitationRevoked(meta: meta, memberId: 'rosa'),
+    CareEvent.memberJoined(meta: meta, memberId: 'rosa'),
+    CareEvent.roleChanged(
+      meta: meta,
+      memberId: 'rosa',
+      baseVersion: 1,
+      role: MemberRole.viewer,
+    ),
+    CareEvent.memberRemoved(meta: meta, memberId: 'rosa', baseVersion: 2),
+    CareEvent.memberLeft(meta: meta, memberId: 'rosa'),
+    CareEvent.doseGiven(
+      meta: meta.copyWith(fromFormerMember: true),
+      medicationId: 'm1',
+      slotAt: at,
+      givenAt: at,
+      units: 1,
     ),
     CareEvent.conflictAcknowledged(meta: meta, conflictKey: 'dose:m1:x'),
   ];

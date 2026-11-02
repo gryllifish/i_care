@@ -1,6 +1,7 @@
 import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 
 /// The care circle's event log on this device, kept in sync with the
@@ -17,4 +18,11 @@ abstract interface class CareRepository {
 
   /// The sync state, now and after every change.
   Stream<SyncStatus> watchSyncStatus();
+
+  /// Events recorded here that the server refused, now and after every
+  /// change. They are not part of [watchEvents].
+  Stream<List<RejectedEvent>> watchRejected();
+
+  /// Stops listing a refused event once someone has read about it.
+  Future<Result<void>> dismissRejected(String eventId);
 }

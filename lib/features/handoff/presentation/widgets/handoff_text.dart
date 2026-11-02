@@ -1,9 +1,9 @@
 import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
-import 'package:i_care/features/care/domain/entities/caregiver.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
 import 'package:i_care/features/handoff/controllers/handoff.dart';
@@ -17,7 +17,7 @@ String handoffText(
   Handoff handoff,
   AppLocalizations l10n, {
   required String recipientName,
-  required Map<String, Caregiver> caregivers,
+  required Map<String, Member> caregivers,
   required String locale,
 }) {
   final at = handoff.at;

@@ -81,7 +81,7 @@ class TaskCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final names = ref.watch(caregiversByIdProvider);
+    final names = ref.watch(membersByIdProvider);
     final today = ref.watch(nowProvider);
     final style = slot.style(l10n, context.colors);
 

@@ -18,7 +18,7 @@ class CareRecorder {
   /// Metadata for a new event by the current caregiver at this moment.
   EventMeta meta() => EventMeta(
     id: _ref.read(newIdProvider)(),
-    caregiverId: _ref.read(currentCaregiverProvider).id,
+    caregiverId: _ref.read(deviceOwnerIdProvider),
     occurredAt: _ref.read(clockProvider)(),
   );
 

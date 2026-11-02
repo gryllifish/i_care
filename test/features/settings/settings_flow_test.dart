@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/features/today/presentation/screens/today_screen.dart';
@@ -16,7 +17,7 @@ void main() {
     EventFactory().created('m1'),
   ])..status = SyncStatus(lastSyncedAt: now);
 
-  testWidgets('the first run welcomes and asks who uses the phone', (
+  testWidgets('the first run welcomes and shows whose phone this is', (
     tester,
   ) async {
     final prefs = MemoryDevicePrefs();
@@ -29,19 +30,18 @@ void main() {
 
     expect(find.text('Welcome to ICare'), findsOneWidget);
     expect(find.byType(TodayScreen), findsNothing);
-
     await centerInList(
       tester,
-      find.text('Martín'),
+      find.text('This phone'),
       list: find.byType(Scrollable).first,
     );
-    await tester.tap(find.text('Martín'));
-    await tester.pumpAndSettle();
+    expect(find.text('Admin'), findsOneWidget);
+    expect(find.text('Helper'), findsOneWidget);
+
     await tester.tap(find.text('Got it'));
     await tester.pumpAndSettle();
 
     expect(find.byType(TodayScreen), findsOneWidget);
-    expect(prefs.read(PrefKeys.caregiverId), 'martin');
     expect(prefs.read(PrefKeys.welcomeSeen), 'true');
   });
 
@@ -128,5 +128,29 @@ void main() {
 
     expect(resets, 1);
     expect(find.text('Sample data loaded again'), findsOneWidget);
+  });
+
+  testWidgets('a refused record is flagged on Today and read in Settings', (
+    tester,
+  ) async {
+    final refused = EventFactory().created('m2').withAuthor('ana');
+    final repository = circle()
+      ..rejected.add(
+        RejectedEvent(event: refused, reason: RejectionReason.notAllowed),
+      )
+      ..status = SyncStatus(lastSyncedAt: now, rejectedCount: 1);
+    await pumpApp(tester, repository: repository, now: now);
+
+    expect(find.text('1 record not sent'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+    expect(find.text('NOT SENT'), findsOneWidget);
+    expect(find.text('Ana added Enalapril'), findsOneWidget);
+    expect(find.textContaining('Your role does not allow it.'), findsOneWidget);
+
+    await tester.tap(find.text('Dismiss'));
+    await tester.pumpAndSettle();
+    expect(repository.rejected, isEmpty);
   });
 }

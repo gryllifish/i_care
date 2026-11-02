@@ -11,6 +11,7 @@ import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/controllers/task_actions.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/today/controllers/task_detail.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_texts.dart';
 import 'package:i_care/features/today/presentation/widgets/record_row.dart';
@@ -192,7 +193,7 @@ class _TaskSheetState extends ConsumerState<TaskSheet> {
     final messenger = ScaffoldMessenger.of(context);
     final actions = ref.read(taskActionsProvider.notifier);
     final name =
-        ref.read(caregiversByIdProvider)[record.meta.caregiverId]?.name ??
+        ref.read(membersByIdProvider)[record.meta.caregiverId]?.name ??
         l10n.unknownCaregiver;
 
     final confirmed = await showConfirmDialog(
@@ -237,13 +238,16 @@ class _Records extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final caregivers = ref.watch(caregiversByIdProvider);
+    final caregivers = ref.watch(membersByIdProvider);
     final today = ref.watch(nowProvider);
     if (slot.done.isEmpty && slot.skipped.isEmpty) {
       return const SizedBox.shrink();
     }
 
     String nameOf(String id) => caregivers[id]?.name ?? l10n.unknownCaregiver;
+    final me = ref.watch(currentMemberProvider);
+    VoidCallback? removeOf(CareEvent record) =>
+        me != null && canRemove(me, record) ? () => onRemove(record) : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,7 +266,7 @@ class _Records extends ConsumerWidget {
               today: today,
               locale: locale,
             ),
-            onRemove: () => onRemove(record),
+            onRemove: removeOf(record),
           ),
         for (final record in slot.skipped)
           RecordRow(
@@ -272,7 +276,7 @@ class _Records extends ConsumerWidget {
               nameOf(record.meta.caregiverId),
               record.reason.label(l10n),
             ),
-            onRemove: () => onRemove(record),
+            onRemove: removeOf(record),
           ),
       ],
     );

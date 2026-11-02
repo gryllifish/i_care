@@ -65,7 +65,7 @@ family portal for residents' relatives is a possible later path.
 ## Scope
 ### In scope (MVP)
 1. **Care circle** with sample data: one care recipient, three caregivers.
-   "Who are you?" picks the identity; no login.
+   Each phone belongs to one member (see item 15); no login.
 2. **Medications**: name, strength (free text), form, instructions,
    units per dose, stock threshold in days. Schedules are versioned
    (`effectiveFrom`): fixed times on chosen weekdays, or as needed with
@@ -139,7 +139,7 @@ family portal for residents' relatives is a possible later path.
     with confirmation, and listed in the handoff for the next
     appointment. ICare stores links only, never files.
 
-15. **Roles and membership** (designed, not built): admin, caregiver,
+15. **Roles and membership** (phase 1 of 4 built): admin, caregiver,
     helper and view-only members with their own permissions and data,
     phones joined by one-time invitation codes instead of "Who are you?",
     and the server checking every event. Design and phases:
@@ -268,6 +268,11 @@ documented), nursing-home features.
   `DocumentRemoved`, a documents section and link sheet on the
   appointment, a count on the list, handoff lines and sample links on
   example.com.
+- Roles, phase 1: members and roles as events, the permission rule shared
+  by UI and server, the simulated server checking each event (author,
+  role, last admin; former members' facts accepted and flagged), per-event
+  push results, refused events kept apart and listed under "Not sent",
+  phones bound to their owners instead of "Who are you?".
 
 ### Known gaps
 - Routers use `routerNeglect`, so the browser back button never moves
@@ -275,8 +280,8 @@ documented), nursing-home features.
   either (two apps on one page). Acceptable for the demo.
 
 ### Next steps, in order
-1. Roles, phase 1: members, roles and authorization
-   ([`docs/roles.md`](../../docs/roles.md)); then phases 2 and 3.
+1. Roles, phase 2: invitations and devices; then phase 3, UI by role
+   and filtered sync ([`docs/roles.md`](../../docs/roles.md)).
 2. Shifts (who is responsible when), designed after roles.
 3. Review design details with the user; update README screenshots.
 4. Dependabot PRs #1 and #2 (very_good_analysis 11).

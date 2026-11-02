@@ -43,7 +43,7 @@ class _EditConflictCardState extends ConsumerState<EditConflictCard> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final caregivers = ref.watch(caregiversByIdProvider);
+    final caregivers = ref.watch(membersByIdProvider);
     final changes = widget.conflict.changes;
 
     return AppCard(

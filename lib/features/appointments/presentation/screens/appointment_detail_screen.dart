@@ -21,13 +21,13 @@ import 'package:i_care/shared/providers/link_opener.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
-import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/date_badge.dart';
 import 'package:i_care/shared/widgets/edit_conflict_card.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
+import 'package:i_care/shared/widgets/member_avatar.dart';
 import 'package:i_care/shared/widgets/status_pill.dart';
 
 /// One appointment: when and where, questions to ask, and what the
@@ -324,7 +324,7 @@ class _DocumentCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final caregiver = ref.watch(
-      caregiversByIdProvider,
+      membersByIdProvider,
     )[document.meta.caregiverId];
     final onRemove = this.onRemove;
     return AppCard(
@@ -385,14 +385,14 @@ class _NoteCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final caregiver = ref.watch(caregiversByIdProvider)[note.meta.caregiverId];
+    final caregiver = ref.watch(membersByIdProvider)[note.meta.caregiverId];
     final at = note.meta.occurredAt;
     return AppCard(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: AppSpacing.md,
         children: [
-          if (caregiver != null) CaregiverAvatar(caregiver: caregiver),
+          if (caregiver != null) MemberAvatar(member: caregiver),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

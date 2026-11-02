@@ -2,7 +2,8 @@
 
 Design for who belongs to a care circle, what each person can do and see,
 and how a phone becomes someone's. Agreed with the product owner on
-2026-11-02; not built yet (see [Phases](#phases)). Sync and backend
+2026-11-02; phase 1 is built, phases 2 to 4 are not (see
+[Phases](#phases)). Sync and backend
 basics: [`backend.md`](backend.md).
 
 ## Goals
@@ -220,12 +221,17 @@ sends only its audiences.
 
 ## Phases
 
-1. **Members, roles and authorization**: `Member` and member events, the
-   permission matrix, author checks, per-event push results, rejected
-   events on the client, facts from former members, legacy reseed.
+1. **Members, roles and authorization** (done): `Member` and member
+   events, the permission matrix (`domain/permissions.dart`), author
+   checks, per-event push results, rejected events on the client ("Not
+   sent" in Settings), facts from former members, legacy reseed. "Who are
+   you?" went away here: each demo phone is bound to its owner, and
+   Settings shows the circle read-only. Two UI rules came early because
+   the server now enforces them: "Remove" shows only on records the
+   member may take back, and "No, only one" sends the conflict's key.
 2. **Invitations and devices**: codes on the server, the join screen,
    Members in Settings (invite, change role, remove, new code, revoke),
-   leaving a circle; "Who are you?" goes away.
+   leaving a circle, a removed device clearing itself.
 3. **UI by role and filtered sync**: audiences, watch by role, resync on
    role change, the helper's app, read-only viewer, admin summary on
    Today, demo with Ana and Rosa.

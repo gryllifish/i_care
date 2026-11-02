@@ -21,12 +21,12 @@ import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/l10n/schedule_text.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
-import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/edit_conflict_card.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
 import 'package:i_care/shared/widgets/low_stock_pill.dart';
 import 'package:i_care/shared/widgets/medication_icon.dart';
+import 'package:i_care/shared/widgets/member_avatar.dart';
 import 'package:i_care/shared/widgets/status_pill.dart';
 
 /// One medication: schedule and its history, stock, recent doses, and
@@ -361,7 +361,7 @@ class _RecentDoses extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final caregivers = ref.watch(caregiversByIdProvider);
+    final caregivers = ref.watch(membersByIdProvider);
     return Column(
       spacing: AppSpacing.sm,
       children: [
@@ -371,7 +371,7 @@ class _RecentDoses extends ConsumerWidget {
               spacing: AppSpacing.md,
               children: [
                 if (caregivers[dose.meta.caregiverId] case final caregiver?)
-                  CaregiverAvatar(caregiver: caregiver),
+                  MemberAvatar(member: caregiver),
                 Expanded(
                   child: Text(
                     l10n.recordedBy(

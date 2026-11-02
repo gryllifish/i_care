@@ -5,6 +5,7 @@ import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
@@ -27,6 +28,7 @@ class CareLog {
     required this._appointments,
     required this._tasks,
     required this._taskRecords,
+    required this._members,
     required this.profile,
     required this.profileVersion,
     required this._doses,
@@ -43,6 +45,7 @@ class CareLog {
   final Map<String, Medication> _medications;
   final Map<String, Appointment> _appointments;
   final Map<String, CareTask> _tasks;
+  final Map<String, Member> _members;
 
   /// [TaskDone] and [TaskSkipped] events per task, undone ones left out.
   final Map<String, List<CareEvent>> _taskRecords;
@@ -76,6 +79,68 @@ class CareLog {
         ..sort((a, b) => a.startsAt.compareTo(b.startsAt));
 
   Appointment? appointment(String id) => _appointments[id];
+
+  /// Members not removed, admins first, then by name.
+  List<Member> get members =>
+      _members.values.where((member) => !member.isRemoved).toList()..sort(
+        (a, b) => switch (a.role.index.compareTo(b.role.index)) {
+          0 => a.name.compareTo(b.name),
+          final order => order,
+        },
+      );
+
+  /// Every member who ever belonged, removed ones included, so old
+  /// records still name who wrote them.
+  Map<String, Member> get membersById => Map.unmodifiable(_members);
+
+  late final Map<String, CareEvent> _eventsById = {
+    for (final event in events) event.meta.id: event,
+  };
+
+  /// Name of the medication, task or member, or title of the appointment
+  /// [event] is about, looked up through the cancelled record for undos;
+  /// null when none applies or it is unknown.
+  String? subjectOf(CareEvent event) => switch (event) {
+    // Creations carry their own name: a refused one is not in the log.
+    MedicationCreated(:final medicationId, :final details) =>
+      medication(medicationId)?.details.name ?? details.name,
+    TaskCreated(:final taskId, :final details) =>
+      task(taskId)?.details.name ?? details.name,
+    AppointmentCreated(:final appointmentId, :final details) =>
+      appointment(appointmentId)?.details.title ?? details.title,
+    MemberInvited(:final memberId, :final name) =>
+      _members[memberId]?.name ?? name,
+    MedicationUpdated(:final medicationId) ||
+    ScheduleChanged(:final medicationId) ||
+    MedicationArchived(:final medicationId) ||
+    DoseGiven(:final medicationId) ||
+    DoseSkipped(:final medicationId) ||
+    StockCounted(:final medicationId) ||
+    StockRefilled(:final medicationId) => medication(
+      medicationId,
+    )?.details.name,
+    DoseUndone(:final targetEventId) => switch (_eventsById[targetEventId]) {
+      final CareEvent target => subjectOf(target),
+      null => null,
+    },
+    AppointmentUpdated(:final appointmentId) ||
+    AppointmentCancelled(:final appointmentId) ||
+    VisitNoteAdded(:final appointmentId) ||
+    DocumentLinked(:final appointmentId) ||
+    DocumentRemoved(:final appointmentId) => appointment(
+      appointmentId,
+    )?.details.title,
+    TaskUpdated(:final taskId) ||
+    TaskArchived(:final taskId) ||
+    TaskDone(:final taskId) ||
+    TaskSkipped(:final taskId) => task(taskId)?.details.name,
+    InvitationRevoked(:final memberId) ||
+    MemberJoined(:final memberId) ||
+    RoleChanged(:final memberId) ||
+    MemberRemoved(:final memberId) ||
+    MemberLeft(:final memberId) => _members[memberId]?.name,
+    RecipientProfileUpdated() || ConflictAcknowledged() => null,
+  };
 
   /// Care tasks that are not archived, by name.
   List<CareTask> get tasks =>
@@ -287,6 +352,7 @@ class _Projector {
   final _medications = <String, Medication>{};
   final _appointments = <String, Appointment>{};
   final _tasks = <String, CareTask>{};
+  final _members = <String, Member>{};
   RecipientProfile? _profile;
   var _profileVersion = 0;
 
@@ -308,6 +374,7 @@ class _Projector {
       appointments: _appointments,
       tasks: _tasks,
       taskRecords: _taskRecords,
+      members: _members,
       profile: _profile,
       profileVersion: _profileVersion,
       doses: _doses,
@@ -436,6 +503,37 @@ class _Projector {
       case TaskDone(:final taskId) || TaskSkipped(:final taskId)
           when !_undone.contains(event.meta.id):
         (_taskRecords[taskId] ??= []).add(event);
+      case MemberInvited(:final memberId) when !_members.containsKey(memberId):
+        _members[memberId] = Member(
+          id: memberId,
+          name: event.name,
+          colorIndex: event.colorIndex,
+          role: event.role,
+          status: MemberStatus.invited,
+        );
+        _changes[memberId] = [];
+      case InvitationRevoked(:final memberId):
+        if (_members[memberId] case final member?
+            when member.status == MemberStatus.invited) {
+          _members[memberId] = member.copyWith(status: MemberStatus.removed);
+        }
+      case MemberJoined(:final memberId):
+        if (_members[memberId] case final member?
+            when member.status == MemberStatus.invited) {
+          _members[memberId] = member.copyWith(status: MemberStatus.active);
+        }
+      case RoleChanged(:final memberId, :final baseVersion):
+        _changeMember(event, memberId, baseVersion, (member) {
+          return member.copyWith(role: event.role);
+        });
+      case MemberRemoved(:final memberId, :final baseVersion):
+        _changeMember(event, memberId, baseVersion, (member) {
+          return member.copyWith(status: MemberStatus.removed);
+        });
+      case MemberInvited() || MemberLeft():
+        // A repeated invitation stands as the first; a device leaving
+        // changes nothing about the member, who may have others.
+        break;
       case ConflictAcknowledged(:final conflictKey):
         _acknowledged.add(conflictKey);
       case DoseGiven() ||
@@ -488,6 +586,18 @@ class _Projector {
     _tasks[taskId] = update(task).copyWith(version: task.version + 1);
   }
 
+  void _changeMember(
+    CareEvent event,
+    String memberId,
+    int baseVersion,
+    Member Function(Member) update,
+  ) {
+    final member = _members[memberId];
+    if (member == null) return;
+    _recordChange(event, memberId, baseVersion);
+    _members[memberId] = update(member).copyWith(version: member.version + 1);
+  }
+
   /// Records a change to an existing entity. The change wins in log
   /// order, but if it was made on an older version and overlaps a change
   /// applied since, it is flagged with every change it raced against.
@@ -513,16 +623,22 @@ class _Projector {
   /// A medication's details and schedule are independent; archiving or
   /// cancelling overlaps everything.
   static bool _overlap(CareEvent a, CareEvent b) => switch ((a, b)) {
-    (MedicationArchived() || AppointmentCancelled() || TaskArchived(), _) ||
-    (
-      _,
-      MedicationArchived() || AppointmentCancelled() || TaskArchived(),
-    ) => true,
+    _ when _ends(a) || _ends(b) => true,
     (MedicationUpdated(), MedicationUpdated()) => true,
     (ScheduleChanged(), ScheduleChanged()) => true,
     (AppointmentUpdated(), AppointmentUpdated()) => true,
     (TaskUpdated(), TaskUpdated()) => true,
+    (RoleChanged(), RoleChanged()) => true,
     (RecipientProfileUpdated(), RecipientProfileUpdated()) => true,
+    _ => false,
+  };
+
+  /// Archiving, cancelling or removing: a change that ends the entity.
+  static bool _ends(CareEvent change) => switch (change) {
+    MedicationArchived() ||
+    AppointmentCancelled() ||
+    TaskArchived() ||
+    MemberRemoved() => true,
     _ => false,
   };
 

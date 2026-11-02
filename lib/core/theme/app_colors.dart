@@ -155,7 +155,7 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color skipped;
   final Color skippedSoft;
 
-  /// Caregiver avatars, picked by `Caregiver.colorIndex`.
+  /// Member avatars, picked by `Member.colorIndex`.
   final List<Color> avatars;
 
   /// The palette is fixed per brightness: nothing customizes single tokens.

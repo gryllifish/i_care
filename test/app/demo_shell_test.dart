@@ -26,6 +26,7 @@ void main() {
   setUp(() async {
     server = SimulatedServer(
       await Hive.openBox<String>('demo_shell_test', bytes: Uint8List(0)),
+      await Hive.openBox<String>('demo_shell_devices', bytes: Uint8List(0)),
       clock: () => now,
     );
     devices = [
@@ -38,7 +39,10 @@ void main() {
                 FakeCareRepository()..status = SyncStatus(lastSyncedAt: now),
               ),
               simulatedConnectionProvider.overrideWithValue(
-                connections[owner.id] = SimulatedConnection(server),
+                connections[owner.id] = SimulatedConnection(
+                  server,
+                  deviceId: 'phone-${owner.id}',
+                ),
               ),
               deviceOwnerIdProvider.overrideWithValue(owner.id),
               devicePrefsProvider.overrideWithValue(

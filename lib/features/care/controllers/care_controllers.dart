@@ -1,9 +1,10 @@
+import 'package:i_care/core/error/result.dart';
 import 'package:i_care/features/care/data/care_providers.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
-import 'package:i_care/features/care/domain/entities/caregiver.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
+import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
-import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'care_controllers.g.dart';
@@ -17,45 +18,40 @@ Stream<CareLog> careLog(Ref ref) =>
 Stream<SyncStatus> syncStatus(Ref ref) =>
     ref.watch(careRepositoryProvider).watchSyncStatus();
 
-/// Members of the circle. Fixed sample members until stage 2 adds
-/// accounts and invitations.
+/// Events recorded here that the server refused (`docs/roles.md`).
 @Riverpod(keepAlive: true)
-List<Caregiver> caregivers(Ref ref) => SampleCircle.caregivers;
+Stream<List<RejectedEvent>> rejectedEvents(Ref ref) =>
+    ref.watch(careRepositoryProvider).watchRejected();
 
-/// Members by id, to name who recorded what.
+/// What someone can do about refused events: read and dismiss them.
 @Riverpod(keepAlive: true)
-Map<String, Caregiver> caregiversById(Ref ref) => {
-  for (final caregiver in ref.watch(caregiversProvider))
-    caregiver.id: caregiver,
-};
+class RejectedActions extends _$RejectedActions {
+  @override
+  void build() {}
 
-/// Who uses this device at first. Each simulated phone overrides it.
+  Future<Result<void>> dismiss(RejectedEvent rejected) =>
+      ref.read(careRepositoryProvider).dismissRejected(rejected.event.meta.id);
+}
+
+/// Members of the circle not removed, admins first.
+@Riverpod(keepAlive: true)
+List<Member> members(Ref ref) =>
+    ref.watch(careLogProvider).value?.members ?? const [];
+
+/// Every member who ever belonged, to name who recorded what.
+@Riverpod(keepAlive: true)
+Map<String, Member> membersById(Ref ref) =>
+    ref.watch(careLogProvider).value?.membersById ?? const {};
+
+/// The member this device belongs to. Each simulated phone overrides it;
+/// joining with an invitation code sets it (`docs/roles.md`).
 @Riverpod(keepAlive: true)
 String deviceOwnerId(Ref ref) => SampleCircle.ana.id;
 
-/// Who is recording on this device; "Who are you?" switches it, and the
-/// choice is remembered on this device.
+/// The member using this device; null until the log has them.
 @Riverpod(keepAlive: true)
-class CurrentCaregiver extends _$CurrentCaregiver {
-  @override
-  Caregiver build() {
-    final chosenId =
-        ref.watch(devicePrefsProvider).read(PrefKeys.caregiverId) ??
-        ref.watch(deviceOwnerIdProvider);
-    final members = ref.watch(caregiversProvider);
-    return members.firstWhere(
-      (caregiver) => caregiver.id == chosenId,
-      orElse: () => members.first,
-    );
-  }
-
-  Future<void> select(Caregiver caregiver) async {
-    state = caregiver;
-    await ref
-        .read(devicePrefsProvider)
-        .write(PrefKeys.caregiverId, caregiver.id);
-  }
-}
+Member? currentMember(Ref ref) =>
+    ref.watch(membersByIdProvider)[ref.watch(deviceOwnerIdProvider)];
 
 /// Whether this simulated phone has network. Demo control only.
 @Riverpod(keepAlive: true)

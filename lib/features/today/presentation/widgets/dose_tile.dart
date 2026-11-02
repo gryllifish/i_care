@@ -45,7 +45,7 @@ class DoseTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final names = ref.watch(caregiversByIdProvider);
+    final names = ref.watch(membersByIdProvider);
     final today = ref.watch(nowProvider);
     final style = slot.style(l10n, context.colors);
     final details = slot.medication.details;
@@ -147,7 +147,7 @@ class AsNeededTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final names = ref.watch(caregiversByIdProvider);
+    final names = ref.watch(membersByIdProvider);
     final details = item.medication.details;
     final last = item.lastDose;
 

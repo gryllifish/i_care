@@ -245,9 +245,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get unknownCaregiver => 'Alguien';
 
   @override
-  String get whoAreYou => '¿Quién sos?';
-
-  @override
   String phoneOf(String name) {
     return 'Teléfono de $name';
   }
@@ -1104,9 +1101,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsTitle => 'Ajustes';
 
   @override
-  String get sectionWho => 'Quién sos';
-
-  @override
   String get sectionLanguage => 'Idioma';
 
   @override
@@ -1157,9 +1151,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get welcomeSample =>
       'Todo lo que ves son datos de ejemplo. Probá con libertad.';
-
-  @override
-  String get welcomeWho => '¿Quién usa este teléfono?';
 
   @override
   String get welcomeStart => 'Entendido';
@@ -1366,4 +1357,96 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get handoffDocuments => 'Documentos para el turno:';
+
+  @override
+  String get roleAdmin => 'Admin';
+
+  @override
+  String get roleCaregiver => 'Cuida a diario';
+
+  @override
+  String get roleHelper => 'Ayuda a veces';
+
+  @override
+  String get roleViewer => 'Solo lectura';
+
+  @override
+  String activityMemberInvited(String name, String member, String role) {
+    return '$name invitó a $member ($role)';
+  }
+
+  @override
+  String activityInvitationRevoked(String name, String member) {
+    return '$name retiró la invitación de $member';
+  }
+
+  @override
+  String activityMemberJoined(String member) {
+    return '$member se unió al círculo';
+  }
+
+  @override
+  String activityRoleChanged(String name, String member, String role) {
+    return '$name cambió el rol de $member a $role';
+  }
+
+  @override
+  String activityMemberRemoved(String name, String member) {
+    return '$name quitó a $member del círculo';
+  }
+
+  @override
+  String activityMemberLeft(String member) {
+    return '$member salió del círculo en un teléfono';
+  }
+
+  @override
+  String get circleTitle => 'El círculo';
+
+  @override
+  String get thisPhone => 'Este teléfono';
+
+  @override
+  String get memberInvitedStatus => 'Invitado';
+
+  @override
+  String circleButtonLabel(String name) {
+    return '$name, en este teléfono. Ver el círculo';
+  }
+
+  @override
+  String syncRejected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count registros sin enviar',
+      one: '1 registro sin enviar',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sectionNotSent => 'Sin enviar';
+
+  @override
+  String get notSentNote =>
+      'El servidor rechazó estos registros: nadie más los tiene y la app no los muestra en ningún otro lugar.';
+
+  @override
+  String get rejectedWrongAuthor => 'Quedó escrito a nombre de otra persona.';
+
+  @override
+  String get rejectedNotAllowed => 'Tu rol no lo permite.';
+
+  @override
+  String get rejectedNotMember => 'Ya no estás en el círculo.';
+
+  @override
+  String get rejectedLastAdmin => 'El círculo quedaría sin admin.';
+
+  @override
+  String get dismiss => 'Descartar';
+
+  @override
+  String get afterAccessEnded => 'Después de que terminó su acceso';
 }

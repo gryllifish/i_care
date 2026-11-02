@@ -13,7 +13,6 @@ abstract interface class DevicePrefs {
 
 /// Keys of the preferences stored on each device.
 abstract final class PrefKeys {
-  static const caregiverId = 'caregiver_id';
   static const language = 'language';
   static const themeMode = 'theme_mode';
   static const welcomeSeen = 'welcome_seen';

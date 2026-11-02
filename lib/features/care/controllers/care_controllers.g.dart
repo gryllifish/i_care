@@ -84,119 +84,222 @@ final class SyncStatusProvider
 
 String _$syncStatusHash() => r'da164c6383bc14969471008f4d39968f5f4e1231';
 
-/// Members of the circle. Fixed sample members until stage 2 adds
-/// accounts and invitations.
+/// Events recorded here that the server refused (`docs/roles.md`).
 
-@ProviderFor(caregivers)
-final caregiversProvider = CaregiversProvider._();
+@ProviderFor(rejectedEvents)
+final rejectedEventsProvider = RejectedEventsProvider._();
 
-/// Members of the circle. Fixed sample members until stage 2 adds
-/// accounts and invitations.
+/// Events recorded here that the server refused (`docs/roles.md`).
 
-final class CaregiversProvider
+final class RejectedEventsProvider
     extends
-        $FunctionalProvider<List<Caregiver>, List<Caregiver>, List<Caregiver>>
-    with $Provider<List<Caregiver>> {
-  /// Members of the circle. Fixed sample members until stage 2 adds
-  /// accounts and invitations.
-  CaregiversProvider._()
+        $FunctionalProvider<
+          AsyncValue<List<RejectedEvent>>,
+          List<RejectedEvent>,
+          Stream<List<RejectedEvent>>
+        >
+    with
+        $FutureModifier<List<RejectedEvent>>,
+        $StreamProvider<List<RejectedEvent>> {
+  /// Events recorded here that the server refused (`docs/roles.md`).
+  RejectedEventsProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'caregiversProvider',
+        name: r'rejectedEventsProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$caregiversHash();
+  String debugGetCreateSourceHash() => _$rejectedEventsHash();
 
   @$internal
   @override
-  $ProviderElement<List<Caregiver>> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $StreamProviderElement<List<RejectedEvent>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
 
   @override
-  List<Caregiver> create(Ref ref) {
-    return caregivers(ref);
+  Stream<List<RejectedEvent>> create(Ref ref) {
+    return rejectedEvents(ref);
   }
+}
+
+String _$rejectedEventsHash() => r'ede9598270483a17ae11169df1aae3cea7890954';
+
+/// What someone can do about refused events: read and dismiss them.
+
+@ProviderFor(RejectedActions)
+final rejectedActionsProvider = RejectedActionsProvider._();
+
+/// What someone can do about refused events: read and dismiss them.
+final class RejectedActionsProvider
+    extends $NotifierProvider<RejectedActions, void> {
+  /// What someone can do about refused events: read and dismiss them.
+  RejectedActionsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'rejectedActionsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$rejectedActionsHash();
+
+  @$internal
+  @override
+  RejectedActions create() => RejectedActions();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<Caregiver> value) {
+  Override overrideWithValue(void value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<List<Caregiver>>(value),
+      providerOverride: $SyncValueProvider<void>(value),
     );
   }
 }
 
-String _$caregiversHash() => r'954c8b3e511ee5bddf07fb9fb610aabd95caa2ef';
+String _$rejectedActionsHash() => r'7037b0c32f612b2184fb1260a5cbf4c81fd6f2a8';
 
-/// Members by id, to name who recorded what.
+/// What someone can do about refused events: read and dismiss them.
 
-@ProviderFor(caregiversById)
-final caregiversByIdProvider = CaregiversByIdProvider._();
+abstract class _$RejectedActions extends $Notifier<void> {
+  void build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<void, void>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<void, void>,
+              void,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
 
-/// Members by id, to name who recorded what.
+/// Members of the circle not removed, admins first.
 
-final class CaregiversByIdProvider
-    extends
-        $FunctionalProvider<
-          Map<String, Caregiver>,
-          Map<String, Caregiver>,
-          Map<String, Caregiver>
-        >
-    with $Provider<Map<String, Caregiver>> {
-  /// Members by id, to name who recorded what.
-  CaregiversByIdProvider._()
+@ProviderFor(members)
+final membersProvider = MembersProvider._();
+
+/// Members of the circle not removed, admins first.
+
+final class MembersProvider
+    extends $FunctionalProvider<List<Member>, List<Member>, List<Member>>
+    with $Provider<List<Member>> {
+  /// Members of the circle not removed, admins first.
+  MembersProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'caregiversByIdProvider',
+        name: r'membersProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$caregiversByIdHash();
+  String debugGetCreateSourceHash() => _$membersHash();
 
   @$internal
   @override
-  $ProviderElement<Map<String, Caregiver>> $createElement(
+  $ProviderElement<List<Member>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Member> create(Ref ref) {
+    return members(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Member> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<Member>>(value),
+    );
+  }
+}
+
+String _$membersHash() => r'5b14bdbf0863656adb5c9462c375e0b7e1cbdd43';
+
+/// Every member who ever belonged, to name who recorded what.
+
+@ProviderFor(membersById)
+final membersByIdProvider = MembersByIdProvider._();
+
+/// Every member who ever belonged, to name who recorded what.
+
+final class MembersByIdProvider
+    extends
+        $FunctionalProvider<
+          Map<String, Member>,
+          Map<String, Member>,
+          Map<String, Member>
+        >
+    with $Provider<Map<String, Member>> {
+  /// Every member who ever belonged, to name who recorded what.
+  MembersByIdProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'membersByIdProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$membersByIdHash();
+
+  @$internal
+  @override
+  $ProviderElement<Map<String, Member>> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  Map<String, Caregiver> create(Ref ref) {
-    return caregiversById(ref);
+  Map<String, Member> create(Ref ref) {
+    return membersById(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Map<String, Caregiver> value) {
+  Override overrideWithValue(Map<String, Member> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<Map<String, Caregiver>>(value),
+      providerOverride: $SyncValueProvider<Map<String, Member>>(value),
     );
   }
 }
 
-String _$caregiversByIdHash() => r'af23b52c2de0fdffc2ac099de24164657178d328';
+String _$membersByIdHash() => r'183825e4ef4eebb38704a5b74430901c47d016b3';
 
-/// Who uses this device at first. Each simulated phone overrides it.
+/// The member this device belongs to. Each simulated phone overrides it;
+/// joining with an invitation code sets it (`docs/roles.md`).
 
 @ProviderFor(deviceOwnerId)
 final deviceOwnerIdProvider = DeviceOwnerIdProvider._();
 
-/// Who uses this device at first. Each simulated phone overrides it.
+/// The member this device belongs to. Each simulated phone overrides it;
+/// joining with an invitation code sets it (`docs/roles.md`).
 
 final class DeviceOwnerIdProvider
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  /// Who uses this device at first. Each simulated phone overrides it.
+  /// The member this device belongs to. Each simulated phone overrides it;
+  /// joining with an invitation code sets it (`docs/roles.md`).
   DeviceOwnerIdProvider._()
     : super(
         from: null,
@@ -232,67 +335,51 @@ final class DeviceOwnerIdProvider
 
 String _$deviceOwnerIdHash() => r'e5798ca577b965c557ae931d7f862e9cc9cd52c9';
 
-/// Who is recording on this device; "Who are you?" switches it, and the
-/// choice is remembered on this device.
+/// The member using this device; null until the log has them.
 
-@ProviderFor(CurrentCaregiver)
-final currentCaregiverProvider = CurrentCaregiverProvider._();
+@ProviderFor(currentMember)
+final currentMemberProvider = CurrentMemberProvider._();
 
-/// Who is recording on this device; "Who are you?" switches it, and the
-/// choice is remembered on this device.
-final class CurrentCaregiverProvider
-    extends $NotifierProvider<CurrentCaregiver, Caregiver> {
-  /// Who is recording on this device; "Who are you?" switches it, and the
-  /// choice is remembered on this device.
-  CurrentCaregiverProvider._()
+/// The member using this device; null until the log has them.
+
+final class CurrentMemberProvider
+    extends $FunctionalProvider<Member?, Member?, Member?>
+    with $Provider<Member?> {
+  /// The member using this device; null until the log has them.
+  CurrentMemberProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'currentCaregiverProvider',
+        name: r'currentMemberProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$currentCaregiverHash();
+  String debugGetCreateSourceHash() => _$currentMemberHash();
 
   @$internal
   @override
-  CurrentCaregiver create() => CurrentCaregiver();
+  $ProviderElement<Member?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Member? create(Ref ref) {
+    return currentMember(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Caregiver value) {
+  Override overrideWithValue(Member? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<Caregiver>(value),
+      providerOverride: $SyncValueProvider<Member?>(value),
     );
   }
 }
 
-String _$currentCaregiverHash() => r'36e1a2de43989acb85cf71ada2426503bc77f777';
-
-/// Who is recording on this device; "Who are you?" switches it, and the
-/// choice is remembered on this device.
-
-abstract class _$CurrentCaregiver extends $Notifier<Caregiver> {
-  Caregiver build();
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final ref = this.ref as $Ref<Caregiver, Caregiver>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<Caregiver, Caregiver>,
-              Caregiver,
-              Object?,
-              Object?
-            >;
-    element.handleCreate(ref, build);
-  }
-}
+String _$currentMemberHash() => r'6b64958ec386950c24718d3f32b39c8d705f4483';
 
 /// Whether this simulated phone has network. Demo control only.
 

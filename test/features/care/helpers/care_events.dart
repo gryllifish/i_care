@@ -3,6 +3,7 @@ import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 
 /// Builds events tersely. Ids are sequential so tests stay readable;
@@ -306,10 +307,61 @@ class EventFactory {
           )
           as TaskSkipped;
 
+  MemberInvited memberInvited(
+    String memberId, {
+    String name = 'Lucía',
+    MemberRole role = MemberRole.helper,
+    String by = 'ana',
+    DateTime? at,
+  }) =>
+      CareEvent.memberInvited(
+            meta: meta(at: at ?? DateTime(2026), by: by),
+            memberId: memberId,
+            name: name,
+            role: role,
+            colorIndex: 0,
+          )
+          as MemberInvited;
+
+  MemberJoined memberJoined(String memberId, {DateTime? at}) =>
+      CareEvent.memberJoined(
+            meta: meta(at: at ?? DateTime(2026), by: systemAuthor),
+            memberId: memberId,
+          )
+          as MemberJoined;
+
+  RoleChanged roleChanged(
+    String memberId,
+    MemberRole role, {
+    required int baseVersion,
+    String by = 'ana',
+  }) =>
+      CareEvent.roleChanged(
+            meta: meta(at: DateTime(2026, 1, 2), by: by),
+            memberId: memberId,
+            baseVersion: baseVersion,
+            role: role,
+          )
+          as RoleChanged;
+
+  MemberRemoved memberRemoved(String memberId, {required int baseVersion}) =>
+      CareEvent.memberRemoved(
+            meta: meta(at: DateTime(2026, 1, 3)),
+            memberId: memberId,
+            baseVersion: baseVersion,
+          )
+          as MemberRemoved;
+
   ConflictAcknowledged acknowledged(String key) =>
       CareEvent.conflictAcknowledged(
             meta: meta(at: DateTime(2026)),
             conflictKey: key,
           )
           as ConflictAcknowledged;
+}
+
+extension WithAuthor<T extends CareEvent> on T {
+  /// This event as written by [memberId].
+  T withAuthor(String memberId) =>
+      copyWith(meta: meta.copyWith(caregiverId: memberId)) as T;
 }

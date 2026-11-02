@@ -6,6 +6,7 @@ import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 
 /// Wire and storage format of [CareEvent]s.
@@ -43,6 +44,7 @@ abstract final class CareEventCodec {
     'caregiver_id': event.meta.caregiverId,
     'occurred_at': _date(event.meta.occurredAt),
     'received_at': event.meta.receivedAt.let(_date),
+    if (event.meta.fromFormerMember) 'from_former_member': true,
     ...switch (event) {
       MedicationCreated() => {
         'type': 'medication_created',
@@ -88,6 +90,7 @@ abstract final class CareEventCodec {
       DoseUndone() => {
         'type': 'dose_undone',
         'target_event_id': event.targetEventId,
+        if (event.conflictKey case final String key) 'conflict_key': key,
       },
       StockCounted() => {
         'type': 'stock_counted',
@@ -165,6 +168,30 @@ abstract final class CareEventCodec {
         'slot_at': _date(event.slotAt),
         'reason': _skipReasons.inverse[event.reason],
       },
+      MemberInvited() => {
+        'type': 'member_invited',
+        'member_id': event.memberId,
+        'name': event.name,
+        'role': _roles.inverse[event.role],
+        'color_index': event.colorIndex,
+      },
+      InvitationRevoked() => {
+        'type': 'invitation_revoked',
+        'member_id': event.memberId,
+      },
+      MemberJoined() => {'type': 'member_joined', 'member_id': event.memberId},
+      RoleChanged() => {
+        'type': 'role_changed',
+        'member_id': event.memberId,
+        'base_version': event.baseVersion,
+        'role': _roles.inverse[event.role],
+      },
+      MemberRemoved() => {
+        'type': 'member_removed',
+        'member_id': event.memberId,
+        'base_version': event.baseVersion,
+      },
+      MemberLeft() => {'type': 'member_left', 'member_id': event.memberId},
       ConflictAcknowledged() => {
         'type': 'conflict_acknowledged',
         'conflict_key': event.conflictKey,
@@ -191,6 +218,8 @@ abstract final class CareEventCodec {
       caregiverId: json.string('caregiver_id'),
       occurredAt: json.date('occurred_at'),
       receivedAt: json.optionalDate('received_at'),
+      // Absent before roles existed, and whenever it is false.
+      fromFormerMember: json.optionalBool('from_former_member') ?? false,
     );
 
     return switch (json.string('type')) {
@@ -238,6 +267,7 @@ abstract final class CareEventCodec {
       'dose_undone' => CareEvent.doseUndone(
         meta: meta,
         targetEventId: json.string('target_event_id'),
+        conflictKey: json.optionalString('conflict_key'),
       ),
       'stock_counted' => CareEvent.stockCounted(
         meta: meta,
@@ -314,6 +344,36 @@ abstract final class CareEventCodec {
         taskId: json.string('task_id'),
         slotAt: json.date('slot_at'),
         reason: json.oneOf('reason', _skipReasons),
+      ),
+      'member_invited' => CareEvent.memberInvited(
+        meta: meta,
+        memberId: json.string('member_id'),
+        name: json.string('name'),
+        role: json.oneOf('role', _roles),
+        colorIndex: json.integer('color_index'),
+      ),
+      'invitation_revoked' => CareEvent.invitationRevoked(
+        meta: meta,
+        memberId: json.string('member_id'),
+      ),
+      'member_joined' => CareEvent.memberJoined(
+        meta: meta,
+        memberId: json.string('member_id'),
+      ),
+      'role_changed' => CareEvent.roleChanged(
+        meta: meta,
+        memberId: json.string('member_id'),
+        baseVersion: json.integer('base_version'),
+        role: json.oneOf('role', _roles),
+      ),
+      'member_removed' => CareEvent.memberRemoved(
+        meta: meta,
+        memberId: json.string('member_id'),
+        baseVersion: json.integer('base_version'),
+      ),
+      'member_left' => CareEvent.memberLeft(
+        meta: meta,
+        memberId: json.string('member_id'),
       ),
       'conflict_acknowledged' => CareEvent.conflictAcknowledged(
         meta: meta,
@@ -453,6 +513,13 @@ abstract final class CareEventCodec {
     'other': MedicationForm.other,
   };
 
+  static const Map<String, MemberRole> _roles = {
+    'admin': MemberRole.admin,
+    'caregiver': MemberRole.caregiver,
+    'helper': MemberRole.helper,
+    'viewer': MemberRole.viewer,
+  };
+
   static const Map<String, SkipReason> _skipReasons = {
     'refused': SkipReason.refused,
     'asleep': SkipReason.asleep,
@@ -475,6 +542,8 @@ extension type const _Reader(Map<String, Object?> _json) {
   String string(String key) => _field<String>(key);
 
   String? optionalString(String key) => _field<String?>(key);
+
+  bool? optionalBool(String key) => _field<bool?>(key);
 
   int integer(String key) => _field<int>(key);
 

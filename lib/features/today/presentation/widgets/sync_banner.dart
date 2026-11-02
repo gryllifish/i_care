@@ -18,6 +18,13 @@ class SyncBanner extends ConsumerWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
 
     final (icon, color, background, text) = switch (status) {
+      // Refused records come first: they need someone to read about them.
+      SyncStatus(rejectedCount: > 0) => (
+        Icons.error_outline,
+        context.colors.overdue,
+        context.colors.overdueSoft,
+        l10n.syncRejected(status.rejectedCount),
+      ),
       SyncStatus(isConnected: false) => (
         Icons.cloud_off,
         context.colors.due,

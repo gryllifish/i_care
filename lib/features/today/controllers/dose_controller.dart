@@ -132,11 +132,17 @@ class DoseActions extends _$DoseActions {
         as DoseSkipped,
   );
 
-  /// Cancels a dose recorded by mistake.
-  Future<Result<DoseUndone>> undo(CareEvent dose) => _record(
-    CareEvent.doseUndone(meta: _meta(), targetEventId: dose.meta.id)
-        as DoseUndone,
-  );
+  /// Cancels a dose recorded by mistake, or, with [conflictKey], one
+  /// found repeated while reviewing that conflict.
+  Future<Result<DoseUndone>> undo(CareEvent dose, {String? conflictKey}) =>
+      _record(
+        CareEvent.doseUndone(
+              meta: _meta(),
+              targetEventId: dose.meta.id,
+              conflictKey: conflictKey,
+            )
+            as DoseUndone,
+      );
 
   Future<Result<ConflictAcknowledged>> acknowledge(String conflictKey) =>
       _record(

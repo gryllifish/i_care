@@ -3,6 +3,7 @@ import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 
 part 'care_event.freezed.dart';
@@ -13,6 +14,9 @@ abstract class EventMeta with _$EventMeta {
   const factory EventMeta({
     /// UUID generated on the device, so retries never duplicate an event.
     required String id,
+
+    /// The member who wrote it, or [systemAuthor] for events the server
+    /// writes. The name predates roles; the wire format keeps it.
     required String caregiverId,
 
     /// When it happened, by the device clock. Shown to people; never used
@@ -21,12 +25,21 @@ abstract class EventMeta with _$EventMeta {
 
     /// When the server received it; null until synced. Orders the log.
     DateTime? receivedAt,
+
+    /// Set by the server on a fact (a dose or task record) from a device
+    /// whose member had left the circle by the time it synced: accepted,
+    /// since it may be true, and flagged for admins (`docs/roles.md`).
+    @Default(false) bool fromFormerMember,
   }) = _EventMeta;
 
   const EventMeta._();
 
   bool get isSynced => receivedAt != null;
 }
+
+/// Author of the events the server writes itself, such as a device
+/// joining with a code.
+const systemAuthor = 'system';
 
 /// Why a dose was not given, or a task not done.
 enum SkipReason { refused, asleep, unwell, doctorAdvice, other }
@@ -103,6 +116,10 @@ sealed class CareEvent with _$CareEvent {
   const factory CareEvent.doseUndone({
     required EventMeta meta,
     required String targetEventId,
+
+    /// The conflict being reviewed when this cancels a repeated record
+    /// ("No, only one"); null when someone takes back a mistake.
+    String? conflictKey,
   }) = DoseUndone;
 
   /// Sets stock to a counted amount.
@@ -211,6 +228,48 @@ sealed class CareEvent with _$CareEvent {
     required DateTime slotAt,
     required SkipReason reason,
   }) = TaskSkipped;
+
+  /// An admin invites someone; they show as invited until a device joins
+  /// as them.
+  const factory CareEvent.memberInvited({
+    required EventMeta meta,
+    required String memberId,
+    required String name,
+    required MemberRole role,
+    required int colorIndex,
+  }) = MemberInvited;
+
+  /// An admin withdraws an invitation nobody has used.
+  const factory CareEvent.invitationRevoked({
+    required EventMeta meta,
+    required String memberId,
+  }) = InvitationRevoked;
+
+  /// Written by the server ([systemAuthor]) when a device joins as
+  /// [memberId] with a code.
+  const factory CareEvent.memberJoined({
+    required EventMeta meta,
+    required String memberId,
+  }) = MemberJoined;
+
+  const factory CareEvent.roleChanged({
+    required EventMeta meta,
+    required String memberId,
+    required int baseVersion,
+    required MemberRole role,
+  }) = RoleChanged;
+
+  const factory CareEvent.memberRemoved({
+    required EventMeta meta,
+    required String memberId,
+    required int baseVersion,
+  }) = MemberRemoved;
+
+  /// One of [memberId]'s devices left the circle by itself.
+  const factory CareEvent.memberLeft({
+    required EventMeta meta,
+    required String memberId,
+  }) = MemberLeft;
 
   /// A caregiver reviewed a conflict; it stops being shown as pending.
   const factory CareEvent.conflictAcknowledged({

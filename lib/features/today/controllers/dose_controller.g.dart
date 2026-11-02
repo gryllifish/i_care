@@ -161,7 +161,7 @@ final class DoseActionsProvider extends $NotifierProvider<DoseActions, void> {
   }
 }
 
-String _$doseActionsHash() => r'12e9c0e4024eeeb67ffc2efd0161ad3de73fdac4';
+String _$doseActionsHash() => r'b394083f900ac873d8680176875711bdfcec95ce';
 
 /// Records what the current caregiver does with a dose. Each action
 /// appends one event; nothing is edited in place. Kept alive so an undo

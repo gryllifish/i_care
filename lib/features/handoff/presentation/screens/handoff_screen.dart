@@ -29,7 +29,7 @@ class HandoffScreen extends ConsumerWidget {
             value,
             l10n,
             recipientName: SampleCircle.recipientName,
-            caregivers: ref.watch(caregiversByIdProvider),
+            caregivers: ref.watch(membersByIdProvider),
             locale: Localizations.localeOf(context).toLanguageTag(),
           ),
         ),

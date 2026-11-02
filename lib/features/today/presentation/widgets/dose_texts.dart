@@ -1,6 +1,6 @@
 import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/core/utils/formatters.dart';
-import 'package:i_care/features/care/domain/entities/caregiver.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/projections/dose_warnings.dart';
 import 'package:i_care/features/today/controllers/today_view.dart';
 
@@ -26,7 +26,7 @@ String recordedByText(
 String conflictRecordsText(
   AppLocalizations l10n, {
   required ConflictItem item,
-  required Map<String, Caregiver> caregivers,
+  required Map<String, Member> caregivers,
   required DateTime today,
   required String locale,
 }) => [
@@ -62,7 +62,7 @@ extension DoseWarningText on DoseWarning {
   String text(
     AppLocalizations l10n, {
     required String locale,
-    required Map<String, Caregiver> caregivers,
+    required Map<String, Member> caregivers,
   }) {
     String time(DateTime value) => Formatters.time(value, locale);
     String nameOf(String id) => caregivers[id]?.name ?? l10n.unknownCaregiver;

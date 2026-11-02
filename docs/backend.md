@@ -31,7 +31,8 @@ feed, the latest version of a medication) is a projection of the log.
 | `RecipientProfileUpdated` | profile snapshot (allergies, conditions, doctors, contacts), `baseVersion` |
 
 Every event carries `id` (UUID v4, generated on the device), `circleId`,
-`caregiverId`, `occurredAt` (device clock, shown to users) and
+`caregiverId` (the author: a member, or `system`; see `roles.md`),
+`occurredAt` (device clock, shown to users) and
 `receivedAt` (assigned by the server, null until synced).
 
 ### Why events

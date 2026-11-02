@@ -8,14 +8,13 @@ import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/activity/controllers/activity_view.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
-import 'package:i_care/features/care/domain/entities/care_event.dart';
-import 'package:i_care/features/care/domain/entities/caregiver.dart';
-import 'package:i_care/shared/l10n/care_labels.dart';
+import 'package:i_care/shared/l10n/event_text.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
-import 'package:i_care/shared/widgets/caregiver_avatar.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
+import 'package:i_care/shared/widgets/member_avatar.dart';
 import 'package:i_care/shared/widgets/screen_header.dart';
+import 'package:i_care/shared/widgets/status_pill.dart';
 
 /// Who did what, newest first, grouped by day.
 class ActivityScreen extends ConsumerWidget {
@@ -130,7 +129,7 @@ class _EntryRow extends ConsumerWidget {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
     final event = entry.event;
-    final caregiver = ref.watch(caregiversByIdProvider)[event.meta.caregiverId];
+    final caregiver = ref.watch(membersByIdProvider)[event.meta.caregiverId];
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -139,7 +138,7 @@ class _EntryRow extends ConsumerWidget {
         spacing: AppSpacing.md,
         children: [
           if (caregiver != null)
-            CaregiverAvatar(caregiver: caregiver)
+            MemberAvatar(member: caregiver)
           else
             const SizedBox.square(dimension: AppSpacing.xxl),
           Expanded(
@@ -148,7 +147,13 @@ class _EntryRow extends ConsumerWidget {
               spacing: AppSpacing.xxs,
               children: [
                 Text(
-                  _sentence(l10n, locale, caregiver),
+                  eventSentence(
+                    l10n,
+                    event: event,
+                    author: caregiver?.name ?? l10n.unknownCaregiver,
+                    subject: entry.subject,
+                    locale: locale,
+                  ),
                   style: AppTextStyles.body,
                 ),
                 Wrap(
@@ -161,6 +166,13 @@ class _EntryRow extends ConsumerWidget {
                         color: context.colors.inkMuted,
                       ),
                     ),
+                    if (event.meta.fromFormerMember)
+                      StatusPill(
+                        icon: Icons.person_off_outlined,
+                        label: l10n.afterAccessEnded,
+                        color: context.colors.due,
+                        background: context.colors.dueSoft,
+                      ),
                     if (!event.meta.isSynced) ...[
                       Icon(
                         Icons.cloud_upload_outlined,
@@ -182,78 +194,5 @@ class _EntryRow extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  String _sentence(
-    AppLocalizations l10n,
-    String locale,
-    Caregiver? caregiver,
-  ) {
-    final name = caregiver?.name ?? l10n.unknownCaregiver;
-    final medication = entry.subject ?? l10n.unknownMedication;
-    final appointment = entry.subject ?? l10n.unknownAppointment;
-    final task = entry.subject ?? l10n.unknownTask;
-    String time(DateTime at) => Formatters.time(at, locale);
-    String units(double value) => Formatters.units(value, locale);
-
-    return switch (entry.event) {
-      MedicationCreated() => l10n.activityCreated(name, medication),
-      MedicationUpdated() => l10n.activityUpdated(name, medication),
-      ScheduleChanged() => l10n.activityScheduleChanged(name, medication),
-      MedicationArchived() => l10n.activityArchived(name, medication),
-      DoseGiven(:final DateTime slotAt) => l10n.activityGivenSlot(
-        name,
-        medication,
-        time(slotAt),
-      ),
-      DoseGiven() => l10n.activityGiven(name, medication),
-      DoseSkipped(:final slotAt, :final reason) => l10n.activitySkipped(
-        name,
-        medication,
-        time(slotAt),
-        reason.label(l10n),
-      ),
-      DoseUndone() => l10n.activityUndone(name, medication),
-      StockCounted(units: final count) => l10n.activityCounted(
-        name,
-        medication,
-        units(count),
-      ),
-      StockRefilled(units: final count) => l10n.activityRefilled(
-        name,
-        units(count),
-        medication,
-      ),
-      AppointmentCreated() => l10n.activityAppointmentCreated(
-        name,
-        appointment,
-      ),
-      AppointmentUpdated() => l10n.activityAppointmentUpdated(
-        name,
-        appointment,
-      ),
-      AppointmentCancelled() => l10n.activityAppointmentCancelled(
-        name,
-        appointment,
-      ),
-      VisitNoteAdded() => l10n.activityVisitNote(name, appointment),
-      DocumentLinked(title: final document) => l10n.activityDocumentLinked(
-        name,
-        document,
-        appointment,
-      ),
-      DocumentRemoved() => l10n.activityDocumentRemoved(name, appointment),
-      TaskCreated() => l10n.activityTaskCreated(name, task),
-      TaskUpdated() => l10n.activityTaskUpdated(name, task),
-      TaskArchived() => l10n.activityTaskArchived(name, task),
-      TaskDone() => l10n.activityTaskDone(name, task),
-      TaskSkipped(:final reason) => l10n.activityTaskSkipped(
-        name,
-        task,
-        reason.label(l10n),
-      ),
-      RecipientProfileUpdated() => l10n.activityProfileUpdated(name),
-      ConflictAcknowledged() => l10n.activityReviewed(name),
-    };
   }
 }
