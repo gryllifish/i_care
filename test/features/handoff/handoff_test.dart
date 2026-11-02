@@ -157,6 +157,39 @@ void main() {
     );
   });
 
+  test('lists the documents for the next appointment', () {
+    final text = handoffText(
+      buildHandoff(
+        CareLog([
+          ...circle(),
+          events.document(
+            'a1',
+            'Blood test results',
+            at: DateTime(2026, 10, 28),
+          ),
+        ]),
+        now,
+      ),
+      l10n,
+      recipientName: 'Elena',
+      caregivers: {
+        for (final caregiver in SampleCircle.caregivers)
+          caregiver.id: caregiver,
+      },
+      locale: 'en',
+    );
+
+    expect(
+      text,
+      contains(
+        'Next appointment:\n'
+        'Cardiology, Saturday, 10:30\n'
+        'Documents for it:\n'
+        '- Blood test results: https://lab.example.com/results\n',
+      ),
+    );
+  });
+
   test('says when nothing is left to give', () {
     final handoff = buildHandoff(CareLog([events.created('m1')]), now);
     final text = handoffText(

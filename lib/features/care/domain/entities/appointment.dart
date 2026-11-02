@@ -37,6 +37,10 @@ abstract class Appointment with _$Appointment {
 
     /// Notes from the visit, oldest first, by whoever wrote them.
     @Default(<VisitNoteAdded>[]) List<VisitNoteAdded> notes,
+
+    /// Links to studies, results or reports, oldest first; removed ones
+    /// left out. Each one's id is its event's.
+    @Default(<DocumentLinked>[]) List<DocumentLinked> documents,
     @Default(false) bool isCancelled,
 
     /// Number of changes applied, as for medications.

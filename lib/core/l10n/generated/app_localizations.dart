@@ -2118,6 +2118,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Visits'**
   String get tabAppointments;
+
+  /// No description provided for @activityDocumentLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added {document} to the {title} appointment'**
+  String activityDocumentLinked(String name, String document, String title);
+
+  /// No description provided for @activityDocumentRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} removed a document from the {title} appointment'**
+  String activityDocumentRemoved(String name, String title);
+
+  /// No description provided for @documentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Studies and documents'**
+  String get documentsTitle;
+
+  /// No description provided for @documentsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep links to results, reports or orders here, so they are at hand at the visit.'**
+  String get documentsEmpty;
+
+  /// No description provided for @addLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Add link'**
+  String get addLink;
+
+  /// No description provided for @newLinkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New link'**
+  String get newLinkTitle;
+
+  /// No description provided for @fieldDocumentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What it is'**
+  String get fieldDocumentTitle;
+
+  /// No description provided for @fieldDocumentTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Blood test results'**
+  String get fieldDocumentTitleHint;
+
+  /// No description provided for @fieldDocumentUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get fieldDocumentUrl;
+
+  /// No description provided for @fieldDocumentUrlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the address'**
+  String get fieldDocumentUrlHint;
+
+  /// No description provided for @linkOnlyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'ICare keeps the link, not the file: it opens wherever the document already is, like the lab\'s website or a shared folder.'**
+  String get linkOnlyNote;
+
+  /// No description provided for @issueDocumentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter what it is'**
+  String get issueDocumentTitle;
+
+  /// No description provided for @issueDocumentUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a web address, like lab.example.com/results'**
+  String get issueDocumentUrl;
+
+  /// No description provided for @removeDocument.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {document}'**
+  String removeDocument(String document);
+
+  /// No description provided for @removeDocumentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {document}?'**
+  String removeDocumentTitle(String document);
+
+  /// No description provided for @removeDocumentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The link is taken off this appointment. The change shows in Activity.'**
+  String get removeDocumentBody;
+
+  /// No description provided for @linkAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Link added'**
+  String get linkAdded;
+
+  /// No description provided for @openLinkFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the link'**
+  String get openLinkFailed;
+
+  /// No description provided for @documentsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 document} other{{count} documents}}'**
+  String documentsCount(int count);
+
+  /// No description provided for @handoffDocuments.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents for it:'**
+  String get handoffDocuments;
 }
 
 class _AppLocalizationsDelegate

@@ -174,6 +174,19 @@ void main() {
         ),
       ),
     ),
+    'document link sheet': (
+      '${AppRoutes.appointments}/appointment-cardiology',
+      (tester) async {
+        // Further down than the screen at 200 %, so not built yet.
+        await tester.scrollUntilVisible(
+          find.text('Add link'),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Add link'));
+      },
+    ),
     'caregiver picker': (
       AppRoutes.today,
       (tester) async {

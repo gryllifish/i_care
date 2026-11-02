@@ -49,7 +49,9 @@ List<ActivityDay> buildActivity(CareLog log) {
     AppointmentCreated(:final appointmentId) ||
     AppointmentUpdated(:final appointmentId) ||
     AppointmentCancelled(:final appointmentId) ||
-    VisitNoteAdded(:final appointmentId) => titleOf(appointmentId),
+    VisitNoteAdded(:final appointmentId) ||
+    DocumentLinked(:final appointmentId) ||
+    DocumentRemoved(:final appointmentId) => titleOf(appointmentId),
     TaskCreated(:final taskId) ||
     TaskUpdated(:final taskId) ||
     TaskArchived(:final taskId) ||

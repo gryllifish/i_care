@@ -430,6 +430,21 @@ void main() {
       expect(log.appointment('a1')?.notes, [anas, martins]);
     });
 
+    test('keep linked documents, removed ones left out', () {
+      final results = events.document('a1', 'Blood test results');
+      final ecg = events.document('a1', 'ECG', by: 'martin');
+      final log = CareLog([
+        events.appointment('a1', startsAt: sooner),
+        results,
+        ecg,
+        events.documentRemoved(results),
+        events.appointmentUpdated('a1', baseVersion: 0, startsAt: later),
+      ]);
+
+      expect(log.appointment('a1')?.documents, [ecg]);
+      expect(log.conflicts, isEmpty);
+    });
+
     test('concurrent edits conflict like medication edits', () {
       final log = CareLog([
         events.appointment('a1', startsAt: sooner),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
+import 'package:i_care/shared/providers/link_opener.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
 
 import '../../../helpers/pump_app.dart';
@@ -138,6 +139,77 @@ void main() {
       'Same treatment for now',
     );
     expect(find.text('Same treatment for now'), findsOneWidget);
+  });
+
+  group('documents', () {
+    testWidgets('a link is added, checked first and shown on the list', (
+      tester,
+    ) async {
+      await openTab(tester);
+      await tapAndSettle(tester, find.text('Cardiology'));
+      await tapAndSettle(tester, find.text('Add link'));
+
+      await tester.enterText(field('Link'), 'lab results');
+      await tapAndSettle(tester, find.widgetWithText(FilledButton, 'Add link'));
+      expect(find.text('Enter what it is'), findsOneWidget);
+      expect(
+        find.text('Enter a web address, like lab.example.com/results'),
+        findsOneWidget,
+      );
+      expect(repository.recorded, isEmpty);
+
+      await tester.enterText(field('What it is'), 'Blood test results');
+      await tester.enterText(field('Link'), 'lab.example.com/results');
+      await tapAndSettle(tester, find.widgetWithText(FilledButton, 'Add link'));
+
+      final linked = repository.recorded.single as DocumentLinked;
+      expect(linked.title, 'Blood test results');
+      expect(linked.url, 'https://lab.example.com/results');
+      expect(find.text('Blood test results'), findsOneWidget);
+      expect(find.text('lab.example.com · Ana'), findsOneWidget);
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.text('1 document'), findsOneWidget);
+    });
+
+    testWidgets('a link opens outside the app', (tester) async {
+      final opened = <String>[];
+      repository.events.add(
+        events.document('cardio', 'ECG', at: DateTime(2026, 11, 2)),
+      );
+      await pumpApp(
+        tester,
+        repository: repository,
+        now: now,
+        overrides: [
+          linkOpenerProvider.overrideWithValue((url) async {
+            opened.add(url);
+            return true;
+          }),
+        ],
+      );
+      await tapAndSettle(tester, tab('Visits'));
+      await tapAndSettle(tester, find.text('Cardiology'));
+      await tapAndSettle(tester, find.text('ECG'));
+
+      expect(opened, ['https://lab.example.com/results']);
+    });
+
+    testWidgets('a link is removed after confirming', (tester) async {
+      final ecg = events.document('cardio', 'ECG', at: DateTime(2026, 11, 2));
+      repository.events.add(ecg);
+      await openTab(tester);
+      await tapAndSettle(tester, find.text('Cardiology'));
+
+      await tapAndSettle(tester, find.byTooltip('Remove ECG'));
+      expect(find.text('Remove ECG?'), findsOneWidget);
+      await tapAndSettle(tester, find.widgetWithText(FilledButton, 'Remove'));
+
+      final removed = repository.recorded.single as DocumentRemoved;
+      expect(removed.documentId, ecg.meta.id);
+      expect(find.text('ECG'), findsNothing);
+    });
   });
 
   testWidgets('cancelling asks first and removes it from the list', (

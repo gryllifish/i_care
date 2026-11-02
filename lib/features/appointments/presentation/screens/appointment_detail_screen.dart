@@ -11,11 +11,13 @@ import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/appointments/controllers/appointment_actions.dart';
 import 'package:i_care/features/appointments/controllers/appointments_view.dart';
+import 'package:i_care/features/appointments/presentation/widgets/document_link_sheet.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/conflict.dart';
 import 'package:i_care/shared/l10n/date_texts.dart';
+import 'package:i_care/shared/providers/link_opener.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
@@ -216,6 +218,38 @@ class _DetailContent extends ConsumerWidget {
               ),
             ],
           ),
+        if (appointment.documents.isNotEmpty || !appointment.isCancelled)
+          FormSection(
+            title: l10n.documentsTitle,
+            children: [
+              if (appointment.documents.isEmpty)
+                Text(
+                  l10n.documentsEmpty,
+                  style: AppTextStyles.bodyMuted.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
+                ),
+              for (final document in appointment.documents)
+                _DocumentCard(
+                  document: document,
+                  onRemove: appointment.isCancelled
+                      ? null
+                      : () => _removeDocument(context, ref, document),
+                ),
+              if (!appointment.isCancelled)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    onPressed: () => showDocumentLinkSheet(
+                      context,
+                      appointment: appointment,
+                    ),
+                    icon: const Icon(Icons.add_link),
+                    label: Text(l10n.addLink),
+                  ),
+                ),
+            ],
+          ),
         // Notes are what the doctor said, so they open once the visit can
         // have started.
         if (appointment.notes.isNotEmpty || canAddNotes)
@@ -228,6 +262,29 @@ class _DetailContent extends ConsumerWidget {
           ),
       ],
     );
+  }
+
+  Future<void> _removeDocument(
+    BuildContext context,
+    WidgetRef ref,
+    DocumentLinked document,
+  ) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final confirmed = await showConfirmDialog(
+      context,
+      title: l10n.removeDocumentTitle(document.title),
+      body: l10n.removeDocumentBody,
+      cancelLabel: l10n.cancel,
+      confirmLabel: l10n.remove,
+    );
+    if (!confirmed) return;
+    final result = await ref
+        .read(appointmentActionsProvider.notifier)
+        .removeDocument(detail.appointment, document);
+    if (result case Err(:final failure)) {
+      messenger.showError(failure.message(l10n));
+    }
   }
 }
 
@@ -253,6 +310,69 @@ class _InfoRow extends StatelessWidget {
         Expanded(child: Text(text, style: AppTextStyles.body)),
       ],
     );
+  }
+}
+
+/// A linked study or report: opens it, or takes it off the appointment.
+class _DocumentCard extends ConsumerWidget {
+  const _DocumentCard({required this.document, required this.onRemove});
+
+  final DocumentLinked document;
+  final VoidCallback? onRemove;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final caregiver = ref.watch(
+      caregiversByIdProvider,
+    )[document.meta.caregiverId];
+    final onRemove = this.onRemove;
+    return AppCard(
+      onTap: () => _open(context, ref),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.md,
+        AppSpacing.xs,
+        AppSpacing.md,
+      ),
+      child: Row(
+        spacing: AppSpacing.md,
+        children: [
+          Icon(Icons.link, color: context.colors.tealDark),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: AppSpacing.xxs,
+              children: [
+                Text(document.title, style: AppTextStyles.label),
+                Text(
+                  [
+                    Uri.tryParse(document.url)?.host ?? document.url,
+                    caregiver?.name ?? l10n.unknownCaregiver,
+                  ].join(' · '),
+                  style: AppTextStyles.bodyMuted.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (onRemove != null)
+            IconButton(
+              onPressed: onRemove,
+              tooltip: l10n.removeDocument(document.title),
+              icon: Icon(Icons.close, color: context.colors.inkMuted),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _open(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final opened = await ref.read(linkOpenerProvider)(document.url);
+    if (!opened) messenger.showError(l10n.openLinkFailed);
   }
 }
 

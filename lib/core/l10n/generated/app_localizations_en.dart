@@ -1286,4 +1286,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tabAppointments => 'Visits';
+
+  @override
+  String activityDocumentLinked(String name, String document, String title) {
+    return '$name added $document to the $title appointment';
+  }
+
+  @override
+  String activityDocumentRemoved(String name, String title) {
+    return '$name removed a document from the $title appointment';
+  }
+
+  @override
+  String get documentsTitle => 'Studies and documents';
+
+  @override
+  String get documentsEmpty =>
+      'Keep links to results, reports or orders here, so they are at hand at the visit.';
+
+  @override
+  String get addLink => 'Add link';
+
+  @override
+  String get newLinkTitle => 'New link';
+
+  @override
+  String get fieldDocumentTitle => 'What it is';
+
+  @override
+  String get fieldDocumentTitleHint => 'e.g. Blood test results';
+
+  @override
+  String get fieldDocumentUrl => 'Link';
+
+  @override
+  String get fieldDocumentUrlHint => 'Paste the address';
+
+  @override
+  String get linkOnlyNote =>
+      'ICare keeps the link, not the file: it opens wherever the document already is, like the lab\'s website or a shared folder.';
+
+  @override
+  String get issueDocumentTitle => 'Enter what it is';
+
+  @override
+  String get issueDocumentUrl =>
+      'Enter a web address, like lab.example.com/results';
+
+  @override
+  String removeDocument(String document) {
+    return 'Remove $document';
+  }
+
+  @override
+  String removeDocumentTitle(String document) {
+    return 'Remove $document?';
+  }
+
+  @override
+  String get removeDocumentBody =>
+      'The link is taken off this appointment. The change shows in Activity.';
+
+  @override
+  String get linkAdded => 'Link added';
+
+  @override
+  String get openLinkFailed => 'Couldn\'t open the link';
+
+  @override
+  String documentsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count documents',
+      one: '1 document',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get handoffDocuments => 'Documents for it:';
 }

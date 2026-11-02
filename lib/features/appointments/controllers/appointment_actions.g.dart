@@ -48,7 +48,7 @@ final class AppointmentActionsProvider
 }
 
 String _$appointmentActionsHash() =>
-    r'8343c1f7c1d90006f6713417d8173881223c6534';
+    r'1a15164d6a589184c331a1a6899d0cc5ffcf5f57';
 
 /// Changes to appointments, each carrying the version it was made on.
 /// Callers validate first (`validateAppointment`).

@@ -61,4 +61,24 @@ void main() {
       everyElement('Bath'),
     );
   });
+
+  test('names the appointment of a linked document', () {
+    final linked = events.document('a1', 'ECG', at: DateTime(2026, 11, 2));
+    final days = buildActivity(
+      CareLog([
+        events.appointment(
+          'a1',
+          startsAt: DateTime(2026, 11, 4),
+          at: DateTime(2026, 11),
+        ),
+        linked,
+        events.documentRemoved(linked, at: DateTime(2026, 11, 3)),
+      ]),
+    );
+
+    expect(
+      days.expand((d) => d.entries).map((e) => e.subject),
+      everyElement('Cardiology'),
+    );
+  });
 }

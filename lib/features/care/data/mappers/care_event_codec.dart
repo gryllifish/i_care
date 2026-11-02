@@ -120,6 +120,17 @@ abstract final class CareEventCodec {
         'appointment_id': event.appointmentId,
         'text': event.text,
       },
+      DocumentLinked() => {
+        'type': 'document_linked',
+        'appointment_id': event.appointmentId,
+        'title': event.title,
+        'url': event.url,
+      },
+      DocumentRemoved() => {
+        'type': 'document_removed',
+        'appointment_id': event.appointmentId,
+        'document_id': event.documentId,
+      },
       RecipientProfileUpdated() => {
         'type': 'recipient_profile_updated',
         'base_version': event.baseVersion,
@@ -258,6 +269,17 @@ abstract final class CareEventCodec {
         meta: meta,
         appointmentId: json.string('appointment_id'),
         text: json.string('text'),
+      ),
+      'document_linked' => CareEvent.documentLinked(
+        meta: meta,
+        appointmentId: json.string('appointment_id'),
+        title: json.string('title'),
+        url: json.string('url'),
+      ),
+      'document_removed' => CareEvent.documentRemoved(
+        meta: meta,
+        appointmentId: json.string('appointment_id'),
+        documentId: json.string('document_id'),
       ),
       'recipient_profile_updated' => CareEvent.recipientProfileUpdated(
         meta: meta,

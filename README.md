@@ -41,7 +41,8 @@ of the treating doctor or pharmacist.
   check, at set times or during the day, on chosen weekdays. They join
   the doses on Today and are marked done or not done (with a reason).
   Unlike doses, a task done twice is never flagged.
-- **Appointments:** questions to ask beforehand, visit notes from several
+- **Appointments:** links to studies and results kept with each visit,
+  questions to ask beforehand, visit notes from several
   caregivers afterwards, and a nudge when a past visit has no notes.
 - **Emergency card:** allergies, conditions, medications, doctors and
   contacts on one screen, with call buttons and "Copy as text".

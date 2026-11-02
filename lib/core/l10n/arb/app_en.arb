@@ -1062,5 +1062,69 @@
   "handoffTasksSkipped": "Tasks not done today:",
   "handoffTasksPending": "Tasks still to do:",
   "tabMedications": "Meds",
-  "tabAppointments": "Visits"
+  "tabAppointments": "Visits",
+  "activityDocumentLinked": "{name} added {document} to the {title} appointment",
+  "@activityDocumentLinked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "document": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "activityDocumentRemoved": "{name} removed a document from the {title} appointment",
+  "@activityDocumentRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "documentsTitle": "Studies and documents",
+  "documentsEmpty": "Keep links to results, reports or orders here, so they are at hand at the visit.",
+  "addLink": "Add link",
+  "newLinkTitle": "New link",
+  "fieldDocumentTitle": "What it is",
+  "fieldDocumentTitleHint": "e.g. Blood test results",
+  "fieldDocumentUrl": "Link",
+  "fieldDocumentUrlHint": "Paste the address",
+  "linkOnlyNote": "ICare keeps the link, not the file: it opens wherever the document already is, like the lab's website or a shared folder.",
+  "issueDocumentTitle": "Enter what it is",
+  "issueDocumentUrl": "Enter a web address, like lab.example.com/results",
+  "removeDocument": "Remove {document}",
+  "@removeDocument": {
+    "placeholders": {
+      "document": {
+        "type": "String"
+      }
+    }
+  },
+  "removeDocumentTitle": "Remove {document}?",
+  "@removeDocumentTitle": {
+    "placeholders": {
+      "document": {
+        "type": "String"
+      }
+    }
+  },
+  "removeDocumentBody": "The link is taken off this appointment. The change shows in Activity.",
+  "linkAdded": "Link added",
+  "openLinkFailed": "Couldn't open the link",
+  "documentsCount": "{count, plural, =1{1 document} other{{count} documents}}",
+  "@documentsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "handoffDocuments": "Documents for it:"
 }

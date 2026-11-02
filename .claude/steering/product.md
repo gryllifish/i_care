@@ -133,7 +133,17 @@ family portal for residents' relatives is a possible later path.
     A task missed yesterday does not carry over. Concurrent edits are
     reviewed like medications. The handoff summary includes them.
 
+14. **Appointment documents**: links to studies, results or reports
+    (a title and an http or https address) kept with an appointment,
+    shown on its detail and the list, opened outside the app, removable
+    with confirmation, and listed in the handoff for the next
+    appointment. ICare stores links only, never files.
+
 ### Later candidates (after the MVP)
+- Uploaded files (PDFs, photos) for appointment documents: with the
+  stage 2 backend and file storage, and only once local data is
+  encrypted. Not a medical record: no diagnoses or history beyond what
+  caregivers link.
 - Shift rotation: who is on duty and when (strongest differentiator
   candidate).
 - Helper role with a Today-only view, or guest access by link (needs
@@ -248,6 +258,10 @@ documented), nursing-home features.
   a record); a Tasks tab with add, edit, archive and conflict review;
   sample tasks; Activity and handoff entries. Five tabs, so the bar uses
   short labels (Meds, Visits / Remedios, Turnos).
+- Appointment documents (scope item 14): `DocumentLinked` and
+  `DocumentRemoved`, a documents section and link sheet on the
+  appointment, a count on the list, handoff lines and sample links on
+  example.com.
 
 ### Known gaps
 - Routers use `routerNeglect`, so the browser back button never moves

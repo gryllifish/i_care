@@ -180,6 +180,15 @@ class _AppointmentCard extends ConsumerWidget {
                         color: context.colors.tealDark,
                         background: context.colors.tealSoft,
                       ),
+                    if (appointment.documents.isNotEmpty)
+                      StatusPill(
+                        icon: Icons.link,
+                        label: l10n.documentsCount(
+                          appointment.documents.length,
+                        ),
+                        color: context.colors.inkMuted,
+                        background: context.colors.surfaceMuted,
+                      ),
                   ],
                 ),
               ],

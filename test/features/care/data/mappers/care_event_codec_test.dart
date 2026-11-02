@@ -106,6 +106,17 @@ void main() {
       baseVersion: 2,
     ),
     CareEvent.visitNoteAdded(meta: meta, appointmentId: 'a1', text: 'OK'),
+    CareEvent.documentLinked(
+      meta: meta,
+      appointmentId: 'a1',
+      title: 'Blood test results',
+      url: 'https://lab.example.com/results',
+    ),
+    CareEvent.documentRemoved(
+      meta: meta,
+      appointmentId: 'a1',
+      documentId: 'e0',
+    ),
     CareEvent.recipientProfileUpdated(
       meta: meta,
       baseVersion: 3,

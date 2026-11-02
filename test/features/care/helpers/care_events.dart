@@ -204,6 +204,29 @@ class EventFactory {
           )
           as VisitNoteAdded;
 
+  DocumentLinked document(
+    String appointmentId,
+    String title, {
+    String url = 'https://lab.example.com/results',
+    String by = 'ana',
+    DateTime? at,
+  }) =>
+      CareEvent.documentLinked(
+            meta: meta(at: at ?? DateTime(2026, 1, 3), by: by),
+            appointmentId: appointmentId,
+            title: title,
+            url: url,
+          )
+          as DocumentLinked;
+
+  DocumentRemoved documentRemoved(DocumentLinked document, {DateTime? at}) =>
+      CareEvent.documentRemoved(
+            meta: meta(at: at ?? DateTime(2026, 1, 4)),
+            appointmentId: document.appointmentId,
+            documentId: document.meta.id,
+          )
+          as DocumentRemoved;
+
   RecipientProfileUpdated profile(
     RecipientProfile profile, {
     int baseVersion = 0,

@@ -63,6 +63,35 @@ class AppointmentActions extends _$AppointmentActions {
         ),
       );
 
+  /// Keeps a link to a study or report with the appointment. Callers
+  /// validate first (`validateDocument`); [url] is stored as
+  /// `parseDocumentUrl` returns it.
+  Future<Result<void>> linkDocument(
+    Appointment appointment, {
+    required String title,
+    required String url,
+  }) => _recorder.record(
+    CareEvent.documentLinked(
+      meta: _recorder.meta(),
+      appointmentId: appointment.id,
+      title: title,
+      url: url,
+    ),
+  );
+
+  /// Like notes, links are added or removed, never edited, so they cannot
+  /// conflict.
+  Future<Result<void>> removeDocument(
+    Appointment appointment,
+    DocumentLinked document,
+  ) => _recorder.record(
+    CareEvent.documentRemoved(
+      meta: _recorder.meta(),
+      appointmentId: appointment.id,
+      documentId: document.meta.id,
+    ),
+  );
+
   /// Settles [conflict] like medication edits: [chosen] is applied again
   /// unless it is the change in use, and the conflict is marked reviewed.
   Future<Result<void>> resolve(

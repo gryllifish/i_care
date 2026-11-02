@@ -145,6 +145,27 @@ sealed class CareEvent with _$CareEvent {
     required String text,
   }) = VisitNoteAdded;
 
+  /// A link to a study, result or report, kept with an appointment. Files
+  /// are not stored: the link points to wherever they already live (a
+  /// lab's portal, a shared folder).
+  const factory CareEvent.documentLinked({
+    required EventMeta meta,
+    required String appointmentId,
+    required String title,
+
+    /// An http or https URL.
+    required String url,
+  }) = DocumentLinked;
+
+  /// Takes a [DocumentLinked] off its appointment; Activity keeps both.
+  const factory CareEvent.documentRemoved({
+    required EventMeta meta,
+    required String appointmentId,
+
+    /// The id of the [DocumentLinked] event.
+    required String documentId,
+  }) = DocumentRemoved;
+
   /// Replaces the emergency card's profile of the person cared for.
   const factory CareEvent.recipientProfileUpdated({
     required EventMeta meta,

@@ -237,6 +237,12 @@ class _EntryRow extends ConsumerWidget {
         appointment,
       ),
       VisitNoteAdded() => l10n.activityVisitNote(name, appointment),
+      DocumentLinked(title: final document) => l10n.activityDocumentLinked(
+        name,
+        document,
+        appointment,
+      ),
+      DocumentRemoved() => l10n.activityDocumentRemoved(name, appointment),
       TaskCreated() => l10n.activityTaskCreated(name, task),
       TaskUpdated() => l10n.activityTaskUpdated(name, task),
       TaskArchived() => l10n.activityTaskArchived(name, task),

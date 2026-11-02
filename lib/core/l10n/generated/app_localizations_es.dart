@@ -1286,4 +1286,84 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tabAppointments => 'Turnos';
+
+  @override
+  String activityDocumentLinked(String name, String document, String title) {
+    return '$name agregó $document al turno de $title';
+  }
+
+  @override
+  String activityDocumentRemoved(String name, String title) {
+    return '$name quitó un documento del turno de $title';
+  }
+
+  @override
+  String get documentsTitle => 'Estudios y documentos';
+
+  @override
+  String get documentsEmpty =>
+      'Guardá acá links a resultados, informes u órdenes, para tenerlos a mano en la visita.';
+
+  @override
+  String get addLink => 'Agregar link';
+
+  @override
+  String get newLinkTitle => 'Nuevo link';
+
+  @override
+  String get fieldDocumentTitle => 'Qué es';
+
+  @override
+  String get fieldDocumentTitleHint => 'Ej.: Resultados del análisis';
+
+  @override
+  String get fieldDocumentUrl => 'Link';
+
+  @override
+  String get fieldDocumentUrlHint => 'Pegá la dirección';
+
+  @override
+  String get linkOnlyNote =>
+      'ICare guarda el link, no el archivo: se abre donde ya está el documento, como la web del laboratorio o una carpeta compartida.';
+
+  @override
+  String get issueDocumentTitle => 'Escribí qué es';
+
+  @override
+  String get issueDocumentUrl =>
+      'Escribí una dirección web, como lab.example.com/resultados';
+
+  @override
+  String removeDocument(String document) {
+    return 'Quitar $document';
+  }
+
+  @override
+  String removeDocumentTitle(String document) {
+    return '¿Quitar $document?';
+  }
+
+  @override
+  String get removeDocumentBody =>
+      'El link deja de estar en este turno. El cambio queda en Actividad.';
+
+  @override
+  String get linkAdded => 'Link agregado';
+
+  @override
+  String get openLinkFailed => 'No se pudo abrir el link';
+
+  @override
+  String documentsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count documentos',
+      one: '1 documento',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get handoffDocuments => 'Documentos para el turno:';
 }

@@ -281,6 +281,35 @@ class _SampleHistory {
         );
       }
     }
+
+    // Links for the cardiologist, on example.com: reserved for examples,
+    // so none of them leads anywhere real.
+    final documents = [
+      (
+        title: spanish ? 'Resultados del análisis' : 'Blood test results',
+        url: 'https://lab.example.com/results/elena-rossi',
+        at: dayAt(1 - _days, 18),
+        by: SampleCircle.martin.id,
+      ),
+      (
+        title: spanish ? 'Electrocardiograma anterior' : 'Previous ECG',
+        url: 'https://drive.example.com/elena/ecg-2026.pdf',
+        at: dayAt(-1, 21),
+        by: SampleCircle.ana.id,
+      ),
+    ];
+    for (final document in documents) {
+      _add(
+        (meta) => CareEvent.documentLinked(
+          meta: meta,
+          appointmentId: 'appointment-cardiology',
+          title: document.title,
+          url: document.url,
+        ),
+        at: document.at,
+        by: document.by,
+      );
+    }
   }
 
   void _addScheduledDoses() {

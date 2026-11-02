@@ -121,6 +121,11 @@ String handoffText(
           appointmentWhen(l10n, next.startsAt, now: at, locale: locale),
           if (next.details.doctor.isNotEmpty) next.details.doctor,
         ].join(', '),
+        if (next.documents.isNotEmpty) ...[
+          l10n.handoffDocuments,
+          for (final document in next.documents)
+            '- ${document.title}: ${document.url}',
+        ],
       ],
     if (note != null)
       [

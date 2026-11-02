@@ -274,10 +274,15 @@ class _Projector {
     : _undone = {
         for (final event in _events)
           if (event case DoseUndone(:final targetEventId)) targetEventId,
+      },
+      _removedDocuments = {
+        for (final event in _events)
+          if (event case DocumentRemoved(:final documentId)) documentId,
       };
 
   final List<CareEvent> _events;
   final Set<String> _undone;
+  final Set<String> _removedDocuments;
 
   final _medications = <String, Medication>{};
   final _appointments = <String, Appointment>{};
@@ -393,6 +398,16 @@ class _Projector {
           (stock) => stock + units,
           ifAbsent: () => units,
         );
+      case DocumentLinked(:final appointmentId)
+          when !_removedDocuments.contains(event.meta.id):
+        if (_appointments[appointmentId] case final appointment?) {
+          _appointments[appointmentId] = appointment.copyWith(
+            documents: [...appointment.documents, event],
+          );
+        }
+      case DocumentLinked() || DocumentRemoved():
+        // Removed links, and the removals themselves, change nothing.
+        break;
       case RecipientProfileUpdated(:final baseVersion, :final profile):
         _recordChange(event, CareLog.profileId, baseVersion);
         _profile = profile;
