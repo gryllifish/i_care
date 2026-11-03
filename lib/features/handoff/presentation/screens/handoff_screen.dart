@@ -12,6 +12,7 @@ import 'package:i_care/features/handoff/presentation/widgets/handoff_text.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
+import 'package:i_care/shared/widgets/labeled_field.dart';
 
 /// The handoff exactly as it will be pasted, and a button to copy it.
 class HandoffScreen extends ConsumerWidget {
@@ -24,7 +25,7 @@ class HandoffScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(l10n.handoffTitle)),
       body: switch (ref.watch(handoffProvider)) {
         AsyncData(:final value) => _HandoffContent(
-          text: handoffText(
+          textWith: (note) => handoffText(
             value,
             l10n,
             recipientName:
@@ -32,6 +33,7 @@ class HandoffScreen extends ConsumerWidget {
             caregivers: ref.watch(membersByIdProvider),
             locale: Localizations.localeOf(context).toLanguageTag(),
             customReasons: ref.watch(customReasonsProvider),
+            note: note,
           ),
         ),
         AsyncError(:final error) => ErrorView(
@@ -44,14 +46,38 @@ class HandoffScreen extends ConsumerWidget {
   }
 }
 
-class _HandoffContent extends StatelessWidget {
-  const _HandoffContent({required this.text});
+/// A note to add, kept only until the text is copied or the screen is
+/// left, and the text as it will be pasted.
+class _HandoffContent extends StatefulWidget {
+  const _HandoffContent({required this.textWith});
 
-  final String text;
+  /// The handoff text with the note written here.
+  final String Function(String note) textWith;
+
+  @override
+  State<_HandoffContent> createState() => _HandoffContentState();
+}
+
+class _HandoffContentState extends State<_HandoffContent> {
+  final _note = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // The preview follows the note as it is written.
+    _note.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _note.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final text = widget.textWith(_note.text);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -71,6 +97,14 @@ class _HandoffContent extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
+              LabeledField(
+                label: l10n.handoffNoteField,
+                controller: _note,
+                hint: l10n.handoffNoteHint,
+                textCapitalization: TextCapitalization.sentences,
+                multiline: true,
+              ),
+              const SizedBox(height: AppSpacing.lg),
               AppCard(child: SelectableText(text, style: AppTextStyles.body)),
             ],
           ),

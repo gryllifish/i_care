@@ -117,8 +117,9 @@ family portal for residents' relatives is a possible later path.
     contacts and active medications on one legible screen, copyable as
     text (for an ER visit). Backed by a `RecipientProfileUpdated` event.
 11. **Handoff summary** ("te dejo dicho"): pending doses, last doses
-    given, low stock, next appointment and recent notes, copied as text
-    to paste into WhatsApp. Clipboard only, no share dependency.
+    given, low stock, next appointment and recent notes, plus a note the
+    caregiver writes (not stored), copied as text to paste into
+    WhatsApp. Clipboard only, no share dependency.
 12. **Settings**: language (en/es), identity, simulation controls, medical
     disclaimer, reset demo data.
 

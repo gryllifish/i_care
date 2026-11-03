@@ -936,6 +936,9 @@
     }
   },
   "handoffCopied": "Copied. Paste it in your family chat.",
+  "handoffNote": "Also:",
+  "handoffNoteField": "Anything else to tell (optional)",
+  "handoffNoteHint": "e.g. Ate little at lunch",
   "copy": "Copy",
   "settingsTitle": "Settings",
   "sectionLanguage": "Language",

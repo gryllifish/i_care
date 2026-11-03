@@ -20,6 +20,10 @@ String handoffText(
   required Map<String, Member> caregivers,
   required String locale,
   required Map<String, String> customReasons,
+
+  /// What the caregiver wrote to add, right after the header; left out
+  /// when blank.
+  String note = '',
 }) {
   final at = handoff.at;
   final today = DateTime(at.year, at.month, at.day);
@@ -73,7 +77,7 @@ String handoffText(
       '- ${slot.task.details.name}: ${skipOf(slot.skipped.first)}';
 
   final next = handoff.nextAppointment;
-  final note = handoff.latestNote;
+  final visitNote = handoff.latestNote;
 
   final sections = [
     [
@@ -83,6 +87,7 @@ String handoffText(
         time(at),
       ),
     ],
+    if (note.trim().isNotEmpty) [l10n.handoffNote, note.trim()],
     if (handoff.given.isNotEmpty)
       [
         l10n.handoffGiven,
@@ -139,13 +144,13 @@ String handoffText(
             '- ${document.title}: ${document.url}',
         ],
       ],
-    if (note != null)
+    if (visitNote != null)
       [
         l10n.handoffLastNote(
-          note.appointment.details.title,
-          nameOf(note.note.meta.caregiverId),
+          visitNote.appointment.details.title,
+          nameOf(visitNote.note.meta.caregiverId),
         ),
-        note.note.text,
+        visitNote.note.text,
       ],
   ];
   return [for (final section in sections) section.join('\n')].join('\n\n');

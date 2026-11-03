@@ -1115,6 +1115,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get handoffCopied => 'Copied. Paste it in your family chat.';
 
   @override
+  String get handoffNote => 'Also:';
+
+  @override
+  String get handoffNoteField => 'Anything else to tell (optional)';
+
+  @override
+  String get handoffNoteHint => 'e.g. Ate little at lunch';
+
+  @override
   String get copy => 'Copy';
 
   @override

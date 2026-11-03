@@ -1825,6 +1825,24 @@ abstract class AppLocalizations {
   /// **'Copied. Paste it in your family chat.'**
   String get handoffCopied;
 
+  /// No description provided for @handoffNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Also:'**
+  String get handoffNote;
+
+  /// No description provided for @handoffNoteField.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything else to tell (optional)'**
+  String get handoffNoteField;
+
+  /// No description provided for @handoffNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Ate little at lunch'**
+  String get handoffNoteHint;
+
   /// No description provided for @copy.
   ///
   /// In en, this message translates to:

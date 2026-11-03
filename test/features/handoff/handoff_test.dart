@@ -204,11 +204,36 @@ void main() {
     expect(text, contains('Nothing left to give today.'));
   });
 
-  testWidgets('opens from Today and copies the text', (tester) async {
+  test('a note goes right after the header; a blank one is left out', () {
+    final handoff = buildHandoff(CareLog([events.created('m1')]), now);
+    String textWith(String note) => handoffText(
+      handoff,
+      l10n,
+      recipientName: 'Elena',
+      caregivers: const {},
+      locale: 'en',
+      customReasons: const {},
+      note: note,
+    );
+
+    final sections = textWith('  Ate little at lunch \n').split('\n\n');
+    expect(sections[1], 'Also:\nAte little at lunch');
+    expect(textWith('   '), isNot(contains('Also:')));
+  });
+
+  testWidgets('opens from Today and copies the text with a note', (
+    tester,
+  ) async {
     // Tests have no platform clipboard; answer its calls like one.
+    String? copied;
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
       SystemChannels.platform,
-      (call) async => null,
+      (call) async {
+        if (call.method == 'Clipboard.setData') {
+          copied = (call.arguments as Map<Object?, Object?>)['text'] as String?;
+        }
+        return null;
+      },
     );
     addTearDown(
       () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -226,8 +251,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Still to give:'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), 'Ate little at lunch');
+    await tester.pump();
+    expect(find.textContaining('Also:\nAte little at lunch'), findsOneWidget);
+
     await tester.tap(find.text('Copy'));
     await tester.pumpAndSettle();
     expect(find.text('Copied. Paste it in your family chat.'), findsOneWidget);
+    expect(copied, contains('Also:\nAte little at lunch'));
   });
 }
