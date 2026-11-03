@@ -339,8 +339,8 @@ documented), nursing-home features.
    dependencies first:
    1. (done) Supabase schema, functions and pgTAP tests (`supabase/`), on a
       local stack.
-   2. `SupabaseSyncGateway` and `SupabaseMembershipGateway`, passing the
-      contract suites; gateway chosen by `SYNC_BACKEND`.
+   2. (done) `SupabaseConnection` for both gateways, passing the
+      contract suite; the beta build chosen by `SYNC_BACKEND`.
    3. Encrypted local storage and `delete_circle` (`docs/privacy.md`).
    4. Push notifications by event (FCM).
    5. Beta build for the family: web/PWA and Android first; iOS needs an

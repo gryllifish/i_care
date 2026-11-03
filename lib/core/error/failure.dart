@@ -76,7 +76,14 @@ final class ForbiddenFailure extends Failure {
 }
 
 /// Why an invitation code cannot be used.
-enum CodeProblem { unknown, used, expired }
+enum CodeProblem {
+  unknown,
+  used,
+  expired,
+
+  /// Too many wrong codes from this device: it has to wait.
+  locked,
+}
 
 /// An invitation code that cannot be used.
 final class InvalidCodeFailure extends Failure {

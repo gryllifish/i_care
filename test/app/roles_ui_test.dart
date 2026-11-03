@@ -93,6 +93,30 @@ void main() {
     });
   });
 
+  testWidgets('outside the demo even an admin is offered no demo reset', (
+    tester,
+  ) async {
+    await pumpApp(
+      tester,
+      repository: circle(),
+      now: now,
+      prefs: MemoryDevicePrefs({
+        PrefKeys.welcomeSeen: 'true',
+        PrefKeys.memberId: 'ana',
+      }),
+      overrides: [isDemoProvider.overrideWithValue(false)],
+    );
+
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('ABOUT'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    expect(find.text('Reset sample data'), findsNothing);
+  });
+
   testWidgets('in the one-phone demo a caregiver can reset it, having no '
       'admin to ask', (tester) async {
     await pumpApp(

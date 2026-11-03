@@ -543,9 +543,12 @@ $$;
 
 -- MembershipGateway.createCircle: a circle for [p_recipient_name] with
 -- this device joined as its first admin; returns the admin's member id.
+-- [p_member_id] picks that id, as clients pick invited members' ids;
+-- the server makes one up when it is null.
 create function public.create_circle(
   p_creator_name text,
-  p_recipient_name text
+  p_recipient_name text,
+  p_member_id text default null
 )
 returns text
 language plpgsql
@@ -555,7 +558,7 @@ as $$
 declare
   v_uid uuid := auth.uid();
   v_circle uuid;
-  v_member text := 'member-' || gen_random_uuid()::text;
+  v_member text := coalesce(p_member_id, 'member-' || gen_random_uuid()::text);
 begin
   if v_uid is null then
     raise exception 'not_member';
@@ -778,7 +781,7 @@ $$;
 revoke execute on function
   public.push_events(jsonb),
   public.events_after(text, int),
-  public.create_circle(text, text),
+  public.create_circle(text, text, text),
   public.issue_code(text),
   public.join_circle(text),
   public.delete_circle(),
@@ -788,7 +791,7 @@ from public, anon;
 grant execute on function
   public.push_events(jsonb),
   public.events_after(text, int),
-  public.create_circle(text, text),
+  public.create_circle(text, text, text),
   public.issue_code(text),
   public.join_circle(text),
   public.delete_circle(),

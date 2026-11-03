@@ -384,6 +384,7 @@
   "errorCodeUnknown": "Ese código no existe. Revisalo con quien te lo mandó.",
   "errorCodeUsed": "Ese código ya se usó. Pedí uno nuevo.",
   "errorCodeExpired": "Ese código venció. Pedí uno nuevo.",
+  "errorCodeLocked": "Demasiados códigos incorrectos. Esperá 15 minutos y probá de nuevo.",
   "joinTitle": "Unite a un círculo de cuidado",
   "joinBody": "Pedile un código a una persona admin del círculo. Sirve una sola vez, durante 48 horas.",
   "fieldCode": "Código",

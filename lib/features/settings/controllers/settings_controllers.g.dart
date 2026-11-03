@@ -271,6 +271,57 @@ final class DemoStartEmptyProvider
 
 String _$demoStartEmptyHash() => r'edaadf9ac06440b16fa5b67345dd885858696159';
 
+/// Whether this is the demo, with simulated phones and sample data, or a
+/// real phone syncing with a backend, where demo actions are not offered.
+/// `bootstrap` provides it.
+
+@ProviderFor(isDemo)
+final isDemoProvider = IsDemoProvider._();
+
+/// Whether this is the demo, with simulated phones and sample data, or a
+/// real phone syncing with a backend, where demo actions are not offered.
+/// `bootstrap` provides it.
+
+final class IsDemoProvider extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  /// Whether this is the demo, with simulated phones and sample data, or a
+  /// real phone syncing with a backend, where demo actions are not offered.
+  /// `bootstrap` provides it.
+  IsDemoProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'isDemoProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$isDemoHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return isDemo(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$isDemoHash() => r'06bd36445964042156baca663e3cef91ec4765ea';
+
 /// How this demo shows its phones. `bootstrap` provides it.
 
 @ProviderFor(demoLayout)
@@ -363,4 +414,4 @@ final class CanResetDemoProvider extends $FunctionalProvider<bool, bool, bool>
   }
 }
 
-String _$canResetDemoHash() => r'9f762fd971c8cd1f44c74da08f9cb0d1790c8a6b';
+String _$canResetDemoHash() => r'8abb5e182f93117f13ea0322c01392bfcc849c0d';

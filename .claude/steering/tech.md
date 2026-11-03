@@ -14,6 +14,7 @@
 | `flutter_localizations` + `intl` | i18n via ARB files (`en`, `es`) and locale-aware formatting. |
 | `hive_ce` + `hive_ce_flutter` | Local event log, outbox and the simulated remote (IndexedDB on web). Boxes of JSON strings; no type adapters. |
 | `uuid` | Event ids generated on the device, unique across devices without a server (`docs/backend.md`). |
+| `supabase_flutter` | Stage 2 beta backend: anonymous sign-in, calls to the backend's functions, Realtime pings, session kept across restarts. Used only in `data/sync/supabase_connection.dart` and `bootstrap`. |
 | `mocktail` (dev) | Mocks without codegen. |
 | `fake_async` (dev) | Deterministic time for sync latency and undo windows. |
 | `very_good_analysis` (dev) | Strict lint set. |
@@ -21,8 +22,6 @@
 | `flutter_launcher_icons` (dev) | Platform icons from `tool/icon/icare.svg`, drawn by `tool/icon/render.sh`. |
 
 ### Deliberately not added yet (YAGNI)
-- **Supabase** (`supabase_flutter`): stage 2, as a second `SyncGateway`
-  implementation (`docs/backend.md`).
 - **FCM** (`firebase_core`, `firebase_messaging`): stage 2 push
   notifications by event; Firebase is used for messaging only.
 - **`google_fonts`**: Atkinson Hyperlegible Next is bundled in
@@ -57,15 +56,20 @@ maintainer's Mac; its `docker` lives in `~/.orbstack/bin`).
 # Only what the app uses: database, auth, REST and Realtime.
 supabase start -x studio,imgproxy,mailpit,storage-api,edge-runtime,logflare,vector,supavisor,postgres-meta
 supabase test db                        # pgTAP suite in supabase/tests/
+flutter test test/features/care/data/sync/supabase_connection_test.dart
+flutter run --dart-define-from-file=env/beta.json   # the beta, one phone
 supabase db reset                       # reapply migrations from scratch
 supabase stop
 ```
 Local keys printed by `supabase start` are the CLI's fixed demo keys,
-not secrets; real project keys go only in git-ignored `env/*.json`.
+not secrets; real project keys go only in git-ignored `env/*.json`
+(`env/beta.json.example`). An Android emulator reaches the host's stack
+at `10.0.2.2`, not `127.0.0.1`.
 
 ## Environments
-- `env/<env>.json` (git-ignored) holds `APP_ENV`; copy
-  from `env/dev.json.example`. Read them only through `core/config/env.dart`.
+- `env/<env>.json` (git-ignored) holds `APP_ENV`, and for the beta
+  `SYNC_BACKEND` and the Supabase project; copy from
+  `env/*.json.example`. Read them only through `core/config/env.dart`.
 - Never commit secrets. Anything shipped in the binary is not secret anyway.
 
 ## Generated code

@@ -1249,6 +1249,7 @@
   "errorCodeUnknown": "That code does not exist. Check it with whoever sent it.",
   "errorCodeUsed": "That code was already used. Ask for a new one.",
   "errorCodeExpired": "That code expired. Ask for a new one.",
+  "errorCodeLocked": "Too many wrong codes. Wait 15 minutes and try again.",
   "joinTitle": "Join a care circle",
   "joinBody": "Ask an admin of the circle for a code. It works once, for 48 hours.",
   "fieldCode": "Code",

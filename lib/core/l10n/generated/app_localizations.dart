@@ -2407,6 +2407,12 @@ abstract class AppLocalizations {
   /// **'That code expired. Ask for a new one.'**
   String get errorCodeExpired;
 
+  /// No description provided for @errorCodeLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong codes. Wait 15 minutes and try again.'**
+  String get errorCodeLocked;
+
   /// No description provided for @joinTitle.
   ///
   /// In en, this message translates to:

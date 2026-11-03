@@ -1484,6 +1484,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get errorCodeExpired => 'Ese código venció. Pedí uno nuevo.';
 
   @override
+  String get errorCodeLocked =>
+      'Demasiados códigos incorrectos. Esperá 15 minutos y probá de nuevo.';
+
+  @override
   String get joinTitle => 'Unite a un círculo de cuidado';
 
   @override

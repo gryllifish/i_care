@@ -124,8 +124,11 @@ against a local Supabase stack (`supabase start`) in stage 2.
 ### Which gateway runs
 The public web demo keeps the simulated remote: free, always up, and no
 visitor ever sees real data. The beta build selects Supabase through
-`--dart-define-from-file` (`SYNC_BACKEND=supabase` plus the project URL
-and anon key). Nothing above `data` changes.
+`--dart-define-from-file=env/beta.json` (`SYNC_BACKEND=supabase`, the
+project URL and its publishable key; see `env/beta.json.example`).
+`bootstrap` then runs one phone, without the demo's frame, sample data
+or demo actions (`isDemoProvider` is false), and `SupabaseConnection`
+implements both gateways. Nothing else above `data` changes.
 
 ## Supabase (stage 2)
 
@@ -173,7 +176,7 @@ join_attempts   uid, failed_count, locked_until             -- no client access
   server reads only what it checks (type, author, targets) and writes
   `received_at`, `server_seq` and `from_former_member` into it, in the
   codec's formats. `received_at` uses the codec's wall-clock format in
-  the circle's time zone (open issue 5 below).
+  the circle's time zone (open issue 4 below).
 - Every device signs in anonymously; its auth `uid` is the device, and
   `device_bindings` says which member it is (`roles.md`).
 - Members, roles, bindings and codes are server state, as in the
@@ -284,28 +287,32 @@ could repopulate an empty server.
 - SQL tests (`supabase/tests/`, pgTAP) cover each function, every cell
   of the permission matrix, audiences, paging, former members, the last
   admin, code lockout, table access and deletion.
-- The gateway contract suite will run against the same local stack.
+- `test/features/care/data/sync/supabase_connection_test.dart` runs the
+  gateway contract suite, plus membership checks, against the local
+  stack. A TCP proxy cuts one phone's network, so going offline fails
+  requests and the Realtime socket as a real outage would. Skipped when
+  no stack is running (CI today).
+- `SupabaseConnection.watch` reads on start, on each Realtime ping and
+  every 30 s: the poll catches up when Realtime drops a ping, and is how
+  an idle phone learns it is offline.
 - Schema: `supabase/migrations/`. Malformed events are refused alone as
   `not_allowed`; events of a newer `formatVersion` too, until the server
   is updated.
 
 ### Open issues before the beta
-Found reviewing the code against this design on 2026-11-03. Two more
-were fixed then: ordering ties on the web ("Ordering and clocks") and
-events from newer app versions stopping sync ("App versions").
-1. **Demo-only paths in the beta build.** Bootstrap binds simulated
-   phones, seeds the sample, and Settings offers "Reset demo". A
-   `SYNC_BACKEND=supabase` build needs its own bootstrap (one phone,
-   anonymous sign-in, no seeding) and must hide demo actions.
-2. **Device identity.** Local stores are keyed by `deviceId`; on Supabase
+Found reviewing the code against this design on 2026-11-03. Three more
+were fixed then: ordering ties on the web ("Ordering and clocks"),
+events from newer app versions stopping sync ("App versions"), and
+demo-only paths in a beta build ("Which gateway runs").
+1. **Device identity.** Local stores are keyed by `deviceId`; on Supabase
    it becomes the auth `uid`. Losing the anonymous session (reinstall,
    cleared browser data) unbinds the device: it needs a new code, and
    anything unsent on it is lost.
-3. **Browser storage on iPhone.** Safari may delete a website's storage
+2. **Browser storage on iPhone.** Safari may delete a website's storage
    after 7 days without a visit, including the unsent outbox. Testers on
    iPhone should install the PWA to the home screen, or use Android.
-4. **Unencrypted local storage** (`privacy.md`).
-5. **Time zone for server-side alerts.** Dates are encoded without an
+3. **Unencrypted local storage** (`privacy.md`).
+4. **Time zone for server-side alerts.** Dates are encoded without an
    offset (local time). Phase 2 alerts need the circle's time zone
    stored on the server.
 

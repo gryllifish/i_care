@@ -81,30 +81,33 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
               ),
               child: Text(l10n.createCircle),
             ),
-            const SizedBox(height: AppSpacing.xl),
-            AppCard(
-              raised: false,
-              color: context.colors.surfaceMuted,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: AppSpacing.sm,
-                children: [
-                  Text(
-                    switch (ref.watch(demoLayoutProvider)) {
-                      DemoLayout.twoPhones => l10n.joinDemoHint,
-                      DemoLayout.onePhone => l10n.joinDemoHintOnePhone,
-                    },
-                    style: AppTextStyles.bodyMuted.copyWith(
-                      color: context.colors.inkMuted,
+            // Back to the sample, only in the demo.
+            if (ref.watch(isDemoProvider)) ...[
+              const SizedBox(height: AppSpacing.xl),
+              AppCard(
+                raised: false,
+                color: context.colors.surfaceMuted,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: AppSpacing.sm,
+                  children: [
+                    Text(
+                      switch (ref.watch(demoLayoutProvider)) {
+                        DemoLayout.twoPhones => l10n.joinDemoHint,
+                        DemoLayout.onePhone => l10n.joinDemoHintOnePhone,
+                      },
+                      style: AppTextStyles.bodyMuted.copyWith(
+                        color: context.colors.inkMuted,
+                      ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: _busy ? null : _exploreSample,
-                    child: Text(l10n.exploreSample),
-                  ),
-                ],
+                    TextButton(
+                      onPressed: _busy ? null : _exploreSample,
+                      child: Text(l10n.exploreSample),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

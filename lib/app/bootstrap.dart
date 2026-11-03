@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
+import 'package:i_care/app/app.dart';
 import 'package:i_care/app/demo_shell.dart';
 import 'package:i_care/app/simulated_device.dart';
 import 'package:i_care/core/config/demo_layout.dart';
@@ -17,13 +18,14 @@ import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
+import 'package:i_care/features/care/data/sync/supabase_connection.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// Sets up error reporting and storage, seeds the simulated server with
-/// sample data on first run, and starts one container per simulated
-/// phone: two, or one with `?single` in the address ([DemoLayout]).
+/// Sets up error reporting and storage, then starts the demo or, in a
+/// build for the beta ([SyncBackend.supabase]), this phone alone.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -38,6 +40,51 @@ Future<void> bootstrap() async {
   LicenseRegistry.addLicense(_fontLicense);
 
   await _initStorage();
+  AppLogger.info(
+    'Starting app (${Env.environment.name}, ${Env.syncBackend.name})',
+  );
+  switch (Env.syncBackend) {
+    case SyncBackend.simulated:
+      await _runDemo();
+    case SyncBackend.supabase:
+      await _runBeta();
+  }
+}
+
+/// This phone alone, syncing with the Supabase project the build names
+/// (`docs/backend.md`): no sample data, no demo actions. It starts
+/// offline too; the device signs in on its first request.
+Future<void> _runBeta() async {
+  final phone = await _openStores(_betaDeviceId);
+  await Supabase.initialize(
+    url: Env.supabaseUrl,
+    publishableKey: Env.supabasePublishableKey,
+  );
+  final connection = SupabaseConnection(Supabase.instance.client);
+  final container = ProviderContainer(
+    retry: retryPolicy,
+    overrides: [
+      deviceIdProvider.overrideWithValue(_betaDeviceId),
+      eventBoxProvider.overrideWithValue(phone.events),
+      rejectedBoxProvider.overrideWithValue(phone.rejected),
+      syncStateBoxProvider.overrideWithValue(phone.syncState),
+      devicePrefsProvider.overrideWithValue(HiveDevicePrefs(phone.prefs)),
+      syncGatewayProvider.overrideWithValue(connection),
+      membershipGatewayProvider.overrideWithValue(connection),
+      isDemoProvider.overrideWithValue(false),
+    ],
+  );
+  runApp(UncontrolledProviderScope(container: container, child: const App()));
+}
+
+/// Names this phone's stores. The server knows the phone by its signed-in
+/// user instead, which it may not have yet.
+const _betaDeviceId = 'device';
+
+/// Seeds the simulated server with sample data on first run and starts
+/// one container per simulated phone: two, or one with `?single` in the
+/// address ([DemoLayout]).
+Future<void> _runDemo() async {
   final layout = DemoLayout.fromUri(Uri.base);
   // Both demos share the browser's storage: the one-phone demo keeps a
   // server of its own, so neither changes the other's circle.
@@ -95,7 +142,6 @@ Future<void> bootstrap() async {
     phones[index].container = device.container;
   }
 
-  AppLogger.info('Starting app (${Env.environment.name})');
   runApp(DemoShell(devices: devices));
 }
 
@@ -115,13 +161,38 @@ class _Phone {
 }
 
 Future<_Phone> _openPhone(Member owner) async {
+  final stores = await _openStores(owner.id);
+  return _Phone(
+    owner,
+    stores.events,
+    stores.rejected,
+    stores.syncState,
+    stores.prefs,
+  );
+}
+
+/// One phone's boxes, named after [deviceId].
+Future<
+  ({
+    Box<String> events,
+    Box<String> rejected,
+    Box<String> syncState,
+    Box<String> prefs,
+  })
+>
+_openStores(String deviceId) async {
   final (events, rejected, syncState, prefs) = await (
-    _openBox(EventStore.boxName(owner.id)),
-    _openBox(RejectedStore.boxName(owner.id)),
-    _openBox(SyncStateStore.boxName(owner.id)),
-    _openBox(HiveDevicePrefs.boxName(owner.id)),
+    _openBox(EventStore.boxName(deviceId)),
+    _openBox(RejectedStore.boxName(deviceId)),
+    _openBox(SyncStateStore.boxName(deviceId)),
+    _openBox(HiveDevicePrefs.boxName(deviceId)),
   ).wait;
-  return _Phone(owner, events, rejected, syncState, prefs);
+  return (
+    events: events,
+    rejected: rejected,
+    syncState: syncState,
+    prefs: prefs,
+  );
 }
 
 /// Loads the sample circle into the server, in the device's language,

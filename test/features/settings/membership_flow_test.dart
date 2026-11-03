@@ -4,6 +4,7 @@ import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
+import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/features/today/presentation/screens/today_screen.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 
@@ -33,6 +34,29 @@ void main() {
     await tester.tap(finder);
     await tester.pumpAndSettle();
   }
+
+  testWidgets('outside the demo, joining offers no sample, and a phone with '
+      'too many wrong codes is told to wait', (tester) async {
+    await pumpApp(
+      tester,
+      repository: circle(),
+      now: now,
+      prefs: MemoryDevicePrefs(),
+      membership: FakeMembershipRepository()
+        ..failure = const InvalidCodeFailure(CodeProblem.locked),
+      overrides: [isDemoProvider.overrideWithValue(false)],
+    );
+
+    expect(find.text('Join a care circle'), findsOneWidget);
+    expect(find.text('Explore with sample data'), findsNothing);
+    await tester.enterText(find.byType(TextField), 'K7P-4QM');
+    await tester.tap(find.text('Join'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Too many wrong codes. Wait 15 minutes and try again.'),
+      findsOneWidget,
+    );
+  });
 
   testWidgets('a phone that belongs to nobody joins with a code', (
     tester,

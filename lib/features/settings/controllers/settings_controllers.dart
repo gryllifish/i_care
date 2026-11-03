@@ -73,6 +73,12 @@ DemoReset demoStartEmpty(Ref ref) =>
     () =>
         throw UnimplementedError('Override demoStartEmptyProvider at startup');
 
+/// Whether this is the demo, with simulated phones and sample data, or a
+/// real phone syncing with a backend, where demo actions are not offered.
+/// `bootstrap` provides it.
+@Riverpod(keepAlive: true)
+bool isDemo(Ref ref) => true;
+
 /// How this demo shows its phones. `bootstrap` provides it.
 @Riverpod(keepAlive: true)
 DemoLayout demoLayout(Ref ref) => DemoLayout.twoPhones;
@@ -81,5 +87,6 @@ DemoLayout demoLayout(Ref ref) => DemoLayout.twoPhones;
 /// phone of the one-phone demo, which has no admin to ask.
 @riverpod
 bool canResetDemo(Ref ref) =>
-    ref.watch(demoLayoutProvider) == DemoLayout.onePhone ||
-    ref.watch(canDoProvider(CareAction.resetDemo));
+    ref.watch(isDemoProvider) &&
+    (ref.watch(demoLayoutProvider) == DemoLayout.onePhone ||
+        ref.watch(canDoProvider(CareAction.resetDemo)));
