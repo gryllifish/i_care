@@ -903,7 +903,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sectionQuestions => 'Preguntas para el médico';
 
   @override
-  String get fieldQuestionsHint => 'Una por línea';
+  String get fieldQuestionsHint => 'Escribí una pregunta';
+
+  @override
+  String get addQuestion => 'Agregar pregunta';
+
+  @override
+  String get removeQuestion => 'Quitar pregunta';
 
   @override
   String get issueTitleMissing => 'Escribí la especialidad o el motivo';

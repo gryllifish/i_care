@@ -21,6 +21,12 @@ abstract class AppointmentDetails with _$AppointmentDetails {
 
   const AppointmentDetails._();
 
+  /// [questions] stored one per line, blank ones left out.
+  static String joinQuestions(Iterable<String> questions) => [
+    for (final question in questions)
+      if (question.trim().isNotEmpty) question.trim(),
+  ].join('\n');
+
   /// [questions] as a list, blank lines left out.
   List<String> get questionList => [
     for (final line in questions.split('\n'))

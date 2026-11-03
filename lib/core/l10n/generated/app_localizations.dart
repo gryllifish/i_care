@@ -1462,8 +1462,20 @@ abstract class AppLocalizations {
   /// No description provided for @fieldQuestionsHint.
   ///
   /// In en, this message translates to:
-  /// **'One per line'**
+  /// **'Write a question'**
   String get fieldQuestionsHint;
+
+  /// No description provided for @addQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Add question'**
+  String get addQuestion;
+
+  /// No description provided for @removeQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove question'**
+  String get removeQuestion;
 
   /// No description provided for @issueTitleMissing.
   ///

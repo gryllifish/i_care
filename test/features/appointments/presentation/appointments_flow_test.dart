@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:i_care/features/appointments/presentation/widgets/question_list_field.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/shared/providers/link_opener.dart';
@@ -98,6 +99,38 @@ void main() {
     expect(created.details.doctor, 'Dr. Ruiz');
     expect(created.details.startsAt, DateTime(2026, 11, 3, 10));
     expect(find.text('Dentist'), findsOneWidget);
+  });
+
+  testWidgets('questions are written one per field and can be removed', (
+    tester,
+  ) async {
+    await openTab(tester);
+    await tapAndSettle(tester, find.text('Add'));
+    await tester.enterText(field('Specialty or reason'), 'Dentist');
+
+    Finder question(int index) => find
+        .descendant(
+          of: find.byType(QuestionListField),
+          matching: find.byType(TextField),
+        )
+        .at(index);
+
+    await tester.ensureVisible(question(0));
+    await tester.enterText(question(0), 'Is the dose right?');
+    // The keyboard's next key adds a field below.
+    await tester.testTextInput.receiveAction(TextInputAction.next);
+    await tester.pumpAndSettle();
+    await tester.enterText(question(1), 'Blood test?');
+    await tapAndSettle(tester, find.text('Add question'));
+    await tester.enterText(question(2), 'When is the next visit?');
+    await tapAndSettle(tester, find.byTooltip('Remove question').at(1));
+    await tapAndSettle(tester, find.text('Save'));
+
+    final created = repository.recorded.whereType<AppointmentCreated>().single;
+    expect(
+      created.details.questions,
+      'Is the dose right?\nWhen is the next visit?',
+    );
   });
 
   testWidgets('day and time are picked apart, each keeping the other', (

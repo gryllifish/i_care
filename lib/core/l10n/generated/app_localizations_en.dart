@@ -904,7 +904,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sectionQuestions => 'Questions for the doctor';
 
   @override
-  String get fieldQuestionsHint => 'One per line';
+  String get fieldQuestionsHint => 'Write a question';
+
+  @override
+  String get addQuestion => 'Add question';
+
+  @override
+  String get removeQuestion => 'Remove question';
 
   @override
   String get issueTitleMissing => 'Enter the specialty or reason';

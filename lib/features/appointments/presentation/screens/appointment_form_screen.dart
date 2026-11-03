@@ -11,6 +11,7 @@ import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/appointments/controllers/appointment_actions.dart';
 import 'package:i_care/features/appointments/controllers/appointments_view.dart';
+import 'package:i_care/features/appointments/presentation/widgets/question_list_field.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/appointment_validation.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
@@ -62,7 +63,7 @@ class _AppointmentFormState extends ConsumerState<_AppointmentForm> {
   late final TextEditingController _title;
   late final TextEditingController _doctor;
   late final TextEditingController _location;
-  late final TextEditingController _questions;
+  late List<String> _questions;
   late DateTime _startsAt;
   Set<AppointmentIssue> _issues = const {};
   var _busy = false;
@@ -80,7 +81,7 @@ class _AppointmentFormState extends ConsumerState<_AppointmentForm> {
     _title = TextEditingController(text: details?.title);
     _doctor = TextEditingController(text: details?.doctor);
     _location = TextEditingController(text: details?.location);
-    _questions = TextEditingController(text: details?.questions);
+    _questions = details?.questionList ?? const [];
     _startsAt =
         details?.startsAt ??
         DateTime(now.year, now.month, now.day + 1, _defaultHour);
@@ -91,7 +92,6 @@ class _AppointmentFormState extends ConsumerState<_AppointmentForm> {
     _title.dispose();
     _doctor.dispose();
     _location.dispose();
-    _questions.dispose();
     super.dispose();
   }
 
@@ -167,12 +167,9 @@ class _AppointmentFormState extends ConsumerState<_AppointmentForm> {
           FormSection(
             title: l10n.sectionQuestions,
             children: [
-              LabeledField(
-                label: l10n.sectionQuestions,
-                controller: _questions,
-                hint: l10n.fieldQuestionsHint,
-                textCapitalization: TextCapitalization.sentences,
-                multiline: true,
+              QuestionListField(
+                initial: _questions,
+                onChanged: (questions) => _questions = questions,
               ),
             ],
           ),
@@ -223,7 +220,7 @@ class _AppointmentFormState extends ConsumerState<_AppointmentForm> {
       startsAt: _startsAt,
       doctor: _doctor.text.trim(),
       location: _location.text.trim(),
-      questions: _questions.text.trim(),
+      questions: AppointmentDetails.joinQuestions(_questions),
     );
     final issues = validateAppointment(details);
     setState(() => _issues = issues);
