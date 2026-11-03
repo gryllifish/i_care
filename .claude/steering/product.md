@@ -168,8 +168,10 @@ family portal for residents' relatives is a possible later path.
   stage 2 backend and file storage, and only once local data is
   encrypted. Not a medical record: no diagnoses or history beyond what
   caregivers link.
-- Shift rotation: who is on duty and when (strongest differentiator
-  candidate).
+- Shift rotation: who is on duty and when. Designed and set aside on
+  2026-11-03: a weekly pattern to keep up adds work to a family's day
+  for little gain while notes for the circle carry the handoff.
+  Revisit only if testers ask who is responsible.
 - Helper role with a Today-only view, or guest access by link (needs
   stage 2 auth).
 - Note tags or threads by concern (sleep, swelling) to show evolution.
@@ -319,9 +321,7 @@ documented), nursing-home features.
   either (two apps on one page). Acceptable for the demo.
 
 ### Next steps, in order
-1. Shifts (who is responsible when): roles phase 4, to design next.
-   Notes for the circle are the handoff between shifts.
-2. Review design details with the user; update README screenshots.
+1. Review design details with the user; update README screenshots.
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.
 

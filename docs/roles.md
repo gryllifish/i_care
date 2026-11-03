@@ -2,7 +2,7 @@
 
 Design for who belongs to a care circle, what each person can do and see,
 and how a phone becomes someone's. Agreed with the product owner on
-2026-11-02; phases 1 to 3 are built, shifts (4) are not (see
+2026-11-02; phases 1 to 3 are built, shifts (4) are set aside (see
 [Phases](#phases)). Sync and backend
 basics: [`backend.md`](backend.md).
 
@@ -63,7 +63,7 @@ Labels describe what a person does and carry no grammatical gender.
 
 - **admin, caregiver**: the whole app. Admins also get a summary at the
   top of Today (done, pending, late, last record) instead of the large
-  "Mark as given" card; who is responsible comes with shifts.
+  "Mark as given" card.
 - **helper**: Today (doses and tasks, without the next appointment), the
   emergency card, the handoff and Settings. No tab bar, no Activity,
   medications, appointments, notes or documents.
@@ -254,7 +254,9 @@ sends only its audiences.
    admins and viewers instead of the next dose card; the demo with Ana
    (admin) and Rosa (helper). Demo phones the server has never seen join
    as their owners on start, so older installs keep working.
-4. **Shifts**: who is responsible when (separate design).
+4. **Shifts**: who is responsible when. Set aside on 2026-11-03: keeping
+   a schedule up adds work to a family's day, and notes for the circle
+   already carry the handoff (`product.md`, later candidates).
 
 Each phase ends with `scripts/verify.sh` green and the gateway contract
 tests covering what changed.
