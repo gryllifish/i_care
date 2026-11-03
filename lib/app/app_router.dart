@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_care/app/app_shell.dart';
 import 'package:i_care/core/router/app_routes.dart';
@@ -94,38 +94,38 @@ GoRouter appRouter(Ref ref) {
           : null;
     },
     routes: [
-      GoRoute(
+      _route(
         path: AppRoutes.join,
         builder: (context, state) => const JoinScreen(),
       ),
-      GoRoute(
+      _route(
         path: AppRoutes.createCircle,
         builder: (context, state) => const CreateCircleScreen(),
       ),
-      GoRoute(
+      _route(
         path: AppRoutes.removed,
         builder: (context, state) => const RemovedScreen(),
       ),
-      GoRoute(
+      _route(
         path: AppRoutes.welcome,
         builder: (context, state) => const WelcomeScreen(),
       ),
-      GoRoute(
+      _route(
         path: AppRoutes.settings,
         builder: (context, state) => const SettingsScreen(),
       ),
       // Outside the shell, so they cover the tab bar.
-      GoRoute(
+      _route(
         path: AppRoutes.emergency,
         builder: (context, state) => const EmergencyCardScreen(),
         routes: [
-          GoRoute(
+          _route(
             path: AppRoutes.editEmergency,
             builder: (context, state) => const ProfileFormScreen(),
           ),
         ],
       ),
-      GoRoute(
+      _route(
         path: AppRoutes.handoff,
         builder: (context, state) => const HandoffScreen(),
       ),
@@ -134,7 +134,7 @@ GoRouter appRouter(Ref ref) {
         branches: [
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              _route(
                 path: AppRoutes.today,
                 builder: (context, state) => const TodayScreen(),
               ),
@@ -142,27 +142,27 @@ GoRouter appRouter(Ref ref) {
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              _route(
                 path: AppRoutes.medications,
                 builder: (context, state) => const MedicationsScreen(),
                 routes: [
-                  GoRoute(
+                  _route(
                     path: AppRoutes.newMedication,
                     builder: (context, state) => const MedicationFormScreen(),
                   ),
-                  GoRoute(
+                  _route(
                     path: AppRoutes.medication,
                     builder: (context, state) => MedicationDetailScreen(
                       medicationId: _idOf(state),
                     ),
                     routes: [
-                      GoRoute(
+                      _route(
                         path: AppRoutes.editMedication,
                         builder: (context, state) => MedicationFormScreen(
                           medicationId: _idOf(state),
                         ),
                       ),
-                      GoRoute(
+                      _route(
                         path: AppRoutes.changeSchedule,
                         builder: (context, state) => ScheduleChangeScreen(
                           medicationId: _idOf(state),
@@ -176,15 +176,15 @@ GoRouter appRouter(Ref ref) {
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              _route(
                 path: AppRoutes.tasks,
                 builder: (context, state) => const TasksScreen(),
                 routes: [
-                  GoRoute(
+                  _route(
                     path: AppRoutes.newTask,
                     builder: (context, state) => const TaskFormScreen(),
                   ),
-                  GoRoute(
+                  _route(
                     path: AppRoutes.editTask,
                     builder: (context, state) =>
                         TaskFormScreen(taskId: _idOf(state)),
@@ -195,21 +195,21 @@ GoRouter appRouter(Ref ref) {
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              _route(
                 path: AppRoutes.appointments,
                 builder: (context, state) => const AppointmentsScreen(),
                 routes: [
-                  GoRoute(
+                  _route(
                     path: AppRoutes.newAppointment,
                     builder: (context, state) => const AppointmentFormScreen(),
                   ),
-                  GoRoute(
+                  _route(
                     path: AppRoutes.appointment,
                     builder: (context, state) => AppointmentDetailScreen(
                       appointmentId: _idOf(state),
                     ),
                     routes: [
-                      GoRoute(
+                      _route(
                         path: AppRoutes.editAppointment,
                         builder: (context, state) => AppointmentFormScreen(
                           appointmentId: _idOf(state),
@@ -223,7 +223,7 @@ GoRouter appRouter(Ref ref) {
           ),
           StatefulShellBranch(
             routes: [
-              GoRoute(
+              _route(
                 path: AppRoutes.activity,
                 builder: (context, state) => const ActivityScreen(),
               ),
@@ -244,3 +244,25 @@ String _idOf(GoRouterState state) =>
 /// Where this phone stands: whether it joined a circle, is still in it,
 /// has seen the welcome, and is a helper's.
 typedef _Gate = ({bool joined, bool isMember, bool welcomeSeen, bool helper});
+
+/// A route whose page is always a [MaterialPage], so pushed screens slide
+/// in and, on iOS, close with the back swipe.
+///
+/// go_router picks the page type by looking for a `MaterialApp` above the
+/// router, but it looks for the one in `package:material_ui`, not the one
+/// in `package:flutter/material.dart` this app uses. Not finding it, it
+/// falls back to pages with no transition and no back swipe.
+GoRoute _route({
+  required String path,
+  required GoRouterWidgetBuilder builder,
+  List<RouteBase> routes = const [],
+}) => GoRoute(
+  path: path,
+  routes: routes,
+  pageBuilder: (context, state) => MaterialPage<void>(
+    key: state.pageKey,
+    name: state.name ?? state.path,
+    restorationId: state.pageKey.value,
+    child: builder(context, state),
+  ),
+);
