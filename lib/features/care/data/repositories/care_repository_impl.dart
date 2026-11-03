@@ -115,6 +115,12 @@ class CareRepositoryImpl implements CareRepository {
   Future<void> _onBatch(SyncBatch batch) async {
     try {
       await _events.merge(batch.events);
+      if (batch.unreadable.isNotEmpty) {
+        await _events.keepUnreadable(batch.unreadable);
+        AppLogger.warning(
+          '${batch.unreadable.length} event(s) need a newer app version',
+        );
+      }
       await _syncState.save(cursor: batch.cursor, lastSyncedAt: _clock());
       _isConnected = true;
       _emitStatus();

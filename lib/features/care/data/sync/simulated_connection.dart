@@ -77,10 +77,19 @@ class SimulatedConnection implements SyncGateway, MembershipGateway {
       }
       final batch = _server.eventsAfter(position, deviceId: deviceId);
       position = batch.cursor;
+      final events = <CareEvent>[];
+      final unreadable = <String>[];
+      for (final value in batch.events) {
+        switch (CareEventCodec.tryDecodeString(value)) {
+          case final event?:
+            events.add(event);
+          case null:
+            unreadable.add(value);
+        }
+      }
       controller.add((
-        events: [
-          for (final value in batch.events) CareEventCodec.decodeString(value),
-        ],
+        events: events,
+        unreadable: unreadable,
         cursor: batch.cursor,
       ));
     }

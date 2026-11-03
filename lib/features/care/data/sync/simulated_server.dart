@@ -33,7 +33,7 @@ typedef ServerPushResult = ({
 /// bindings are persisted in Hive so they survive reloads; each event
 /// gets a sequence number (the cursor) and `receivedAt` from the server's
 /// clock. Members are recomputed from the stored log on start: here the
-/// log is the server's own record; Firestore keeps them as documents.
+/// log is the server's own record; Supabase keeps them as tables.
 class SimulatedServer {
   SimulatedServer(
     this._box,
@@ -44,13 +44,19 @@ class SimulatedServer {
     Random? random,
   }) : _random = random ?? Random.secure() {
     for (final value in hiveGuard('Server log', () => _box.values.toList())) {
-      final record = _Record.decode(value);
-      _records.add(record);
-      _byId[record.id] = record;
+      _records.add(_Record.decode(value));
     }
     _records.sort((a, b) => a.sequence.compareTo(b.sequence));
-    for (final record in _records) {
-      final event = CareEventCodec.decodeString(record.event);
+    for (final (index, record) in _records.indexed) {
+      var event = CareEventCodec.decodeString(record.event);
+      // Logs stored before events carried their place get it here.
+      if (event.meta.serverSeq == null) {
+        event = event.copyWith(
+          meta: event.meta.copyWith(serverSeq: record.sequence),
+        );
+        _records[index] = record.withEvent(CareEventCodec.encodeString(event));
+      }
+      _byId[record.id] = _records[index];
       _remember(event);
       _lastReceivedAt = event.meta.receivedAt ?? _lastReceivedAt;
     }
@@ -100,7 +106,8 @@ class SimulatedServer {
   final _authors = <String, String>{};
   final _audiences = <String, Audience>{};
 
-  /// The latest `receivedAt` given, so the next one is always later.
+  /// The latest `receivedAt` given, so the next one is always later
+  /// where the platform keeps microseconds; `serverSeq` orders the log.
   DateTime? _lastReceivedAt;
   final _bindings = <String, _Binding>{};
   final _issued = <String, _Code>{};
@@ -475,6 +482,7 @@ class SimulatedServer {
     final storedEvent = event.copyWith(
       meta: event.meta.copyWith(
         receivedAt: _nextReceivedAt(),
+        serverSeq: sequence,
         fromFormerMember: fromFormerMember,
       ),
     );
@@ -659,6 +667,9 @@ class _Record {
 
   /// The event as encoded by [CareEventCodec], with `receivedAt` set.
   final String event;
+
+  _Record withEvent(String event) =>
+      _Record(sequence: sequence, id: id, event: event);
 
   String encode() => jsonEncode({'seq': sequence, 'id': id, 'event': event});
 }

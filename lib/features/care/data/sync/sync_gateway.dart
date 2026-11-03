@@ -3,14 +3,20 @@ import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 
 /// Events the server has, after a cursor, and the cursor to resume from.
-typedef SyncBatch = ({List<CareEvent> events, String cursor});
+/// `unreadable` holds, encoded as received, events from a newer app
+/// version this one cannot read yet (`CareEventCodec.tryDecodeString`).
+typedef SyncBatch = ({
+  List<CareEvent> events,
+  List<String> unreadable,
+  String cursor,
+});
 
 /// What the server did with each pushed event: one refused event never
 /// holds back the others.
 typedef PushResult = ({List<CareEvent> stored, List<RejectedEvent> rejected});
 
 /// The device's link to the shared log on a server. The simulated remote
-/// implements it today and Firestore will later (`docs/backend.md`);
+/// implements it today and Supabase will later (`docs/backend.md`);
 /// nothing outside `data` knows which one runs.
 ///
 /// Every device belongs to one member, and the server checks each event

@@ -13,10 +13,13 @@ class EventStore {
 
   static String boxName(String deviceId) => 'care_events_$deviceId';
 
+  /// Every event this app version can read: events from a newer one stay
+  /// stored, unread, until an update (see [keepUnreadable]).
+  ///
   /// Throws [StorageException] or [ParsingException].
   List<CareEvent> readAll() => [
     for (final value in hiveGuard('Event log', () => _box.values.toList()))
-      CareEventCodec.decodeString(value),
+      ?CareEventCodec.tryDecodeString(value),
   ];
 
   /// Events not yet received by the server.
@@ -36,16 +39,28 @@ class EventStore {
     final updates = <String, String>{};
     for (final event in events) {
       final stored = hiveGuard('Event log', () => _box.get(event.meta.id));
+      // An unreadable stored copy came from the server, so it is synced.
       final keepStored =
           stored != null &&
           !event.meta.isSynced &&
-          CareEventCodec.decodeString(stored).meta.isSynced;
+          (CareEventCodec.tryDecodeString(stored)?.meta.isSynced ?? true);
       if (!keepStored) {
         updates[event.meta.id] = CareEventCodec.encodeString(event);
       }
     }
     return hiveGuardAsync('Event log', () => _box.putAll(updates));
   }
+
+  /// Stores events from a newer app version as received, so they are
+  /// read once this app is updated without syncing them again.
+  ///
+  /// Throws [StorageException] or [ParsingException].
+  Future<void> keepUnreadable(Iterable<String> encoded) => hiveGuardAsync(
+    'Event log',
+    () => _box.putAll({
+      for (final value in encoded) CareEventCodec.idOf(value): value,
+    }),
+  );
 
   /// Drops events the server refused; they live on in the rejected store.
   ///

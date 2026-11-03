@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/core/error/app_exception.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
@@ -238,11 +240,45 @@ void main() {
     });
   });
 
+  test("keeps the server's place for an event", () {
+    final numbered = everyKind.last.copyWith(
+      meta: meta.copyWith(serverSeq: 42),
+    );
+
+    expect(CareEventCodec.decode(CareEventCodec.encode(numbered)), numbered);
+  });
+
+  group('events from a newer app version', () {
+    Map<String, Object?> valid() => CareEventCodec.encode(everyKind.last);
+
+    test('a new type or format version reads as unknown, not broken', () {
+      expect(
+        CareEventCodec.tryDecode({...valid(), 'type': 'dose_teleported'}),
+        isNull,
+      );
+      expect(CareEventCodec.tryDecode({...valid(), 'v': 2}), isNull);
+    });
+
+    test('still say their id', () {
+      final source = jsonEncode({...valid(), 'type': 'dose_teleported'});
+
+      expect(CareEventCodec.idOf(source), 'e1');
+    });
+
+    test('malformed events still fail', () {
+      expect(
+        () => CareEventCodec.tryDecode({...valid(), 'caregiver_id': 7}),
+        throwsA(isA<ParsingException>()),
+      );
+    });
+  });
+
   group('rejects with a ParsingException', () {
     Map<String, Object?> valid() => CareEventCodec.encode(everyKind.last);
 
     for (final (description, json) in [
-      ('another format version', {...valid(), 'v': 2}),
+      ('an older format version', {...valid(), 'v': 0}),
+      ('a newer format version', {...valid(), 'v': 2}),
       ('an unknown type', {...valid(), 'type': 'dose_teleported'}),
       ('a missing field', {...valid()}..remove('conflict_key')),
       ('a mistyped field', {...valid(), 'caregiver_id': 7}),

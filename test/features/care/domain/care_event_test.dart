@@ -25,6 +25,44 @@ void main() {
     expect([pending, late, early]..sort(compareEvents), [early, late, pending]);
   });
 
+  test("synced events follow the server's numbering, even when their "
+      'times tie', () {
+    // The web keeps milliseconds only: events of one push can share one.
+    EventMeta numbered(String id, int seq) => events
+        .meta(at: morning, id: id, receivedAt: morning)
+        .copyWith(serverSeq: seq);
+    final first = events
+        .given('m1', at: morning)
+        .copyWith(meta: numbered('z', 1));
+    final second = events
+        .given('m1', at: morning)
+        .copyWith(meta: numbered('a', 2));
+
+    expect([second, first]..sort(compareEvents), [first, second]);
+  });
+
+  test('copies synced before numbering come before numbered ones', () {
+    final legacy = events.given(
+      'm1',
+      at: morning,
+      receivedAt: morning.add(_hour),
+    );
+    final numbered = events
+        .given('m1', at: morning, receivedAt: morning)
+        .copyWith(
+          meta: events
+              .meta(at: morning, receivedAt: morning)
+              .copyWith(serverSeq: 1),
+        );
+    final pending = events.given('m1', at: morning);
+
+    expect([pending, numbered, legacy]..sort(compareEvents), [
+      legacy,
+      numbered,
+      pending,
+    ]);
+  });
+
   test('pending events are ordered by device time', () {
     final second = events.given('m1', at: morning.add(_hour));
     final first = events.given('m1', at: morning);

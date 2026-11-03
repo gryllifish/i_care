@@ -20,8 +20,12 @@ mixin _$EventMeta {
 /// writes. The name predates roles; the wire format keeps it.
  String get caregiverId;/// When it happened, by the device clock. Shown to people; never used
 /// to order or resolve anything, since device clocks drift.
- DateTime get occurredAt;/// When the server received it; null until synced. Orders the log.
- DateTime? get receivedAt;/// Set by the server on a fact (a dose or task record) from a device
+ DateTime get occurredAt;/// When the server received it; null until synced. Shown to people.
+ DateTime? get receivedAt;/// The server's position for it in the log, set with [receivedAt].
+/// Orders the log: timestamps cannot, since the web keeps only
+/// milliseconds and events of one push may share one. Null on copies
+/// synced before servers numbered events.
+ int? get serverSeq;/// Set by the server on a fact (a dose or task record) from a device
 /// whose member had left the circle by the time it synced: accepted,
 /// since it may be true, and flagged for admins (`docs/roles.md`).
  bool get fromFormerMember;
@@ -36,20 +40,20 @@ $EventMetaCopyWith<EventMeta> get copyWith => _$EventMetaCopyWithImpl<EventMeta>
 @override
 bool operator ==(Object other) {
   final _this = this as EventMeta;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventMeta&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.caregiverId, _this.caregiverId) || other.caregiverId == _this.caregiverId)&&(identical(other.occurredAt, _this.occurredAt) || other.occurredAt == _this.occurredAt)&&(identical(other.receivedAt, _this.receivedAt) || other.receivedAt == _this.receivedAt)&&(identical(other.fromFormerMember, _this.fromFormerMember) || other.fromFormerMember == _this.fromFormerMember));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventMeta&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.caregiverId, _this.caregiverId) || other.caregiverId == _this.caregiverId)&&(identical(other.occurredAt, _this.occurredAt) || other.occurredAt == _this.occurredAt)&&(identical(other.receivedAt, _this.receivedAt) || other.receivedAt == _this.receivedAt)&&(identical(other.serverSeq, _this.serverSeq) || other.serverSeq == _this.serverSeq)&&(identical(other.fromFormerMember, _this.fromFormerMember) || other.fromFormerMember == _this.fromFormerMember));
 }
 
 
 @override
 int get hashCode {
   final _this = this as EventMeta;
-  return Object.hash(runtimeType,_this.id,_this.caregiverId,_this.occurredAt,_this.receivedAt,_this.fromFormerMember);
+  return Object.hash(runtimeType,_this.id,_this.caregiverId,_this.occurredAt,_this.receivedAt,_this.serverSeq,_this.fromFormerMember);
 }
 
 @override
 String toString() {
   final _this = this as EventMeta;
-  return 'EventMeta(id: ${_this.id}, caregiverId: ${_this.caregiverId}, occurredAt: ${_this.occurredAt}, receivedAt: ${_this.receivedAt}, fromFormerMember: ${_this.fromFormerMember})';
+  return 'EventMeta(id: ${_this.id}, caregiverId: ${_this.caregiverId}, occurredAt: ${_this.occurredAt}, receivedAt: ${_this.receivedAt}, serverSeq: ${_this.serverSeq}, fromFormerMember: ${_this.fromFormerMember})';
 }
 
 
@@ -60,7 +64,7 @@ abstract mixin class $EventMetaCopyWith<$Res>  {
   factory $EventMetaCopyWith(EventMeta value, $Res Function(EventMeta) _then) = _$EventMetaCopyWithImpl;
 @useResult
 $Res call({
- String id, String caregiverId, DateTime occurredAt, DateTime? receivedAt, bool fromFormerMember
+ String id, String caregiverId, DateTime occurredAt, DateTime? receivedAt, int? serverSeq, bool fromFormerMember
 });
 
 
@@ -77,13 +81,14 @@ class _$EventMetaCopyWithImpl<$Res>
 
 /// Create a copy of EventMeta
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? caregiverId = null,Object? occurredAt = null,Object? receivedAt = freezed,Object? fromFormerMember = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? caregiverId = null,Object? occurredAt = null,Object? receivedAt = freezed,Object? serverSeq = freezed,Object? fromFormerMember = null,}) {
   return _then(EventMeta(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,caregiverId: null == caregiverId ? _self.caregiverId : caregiverId // ignore: cast_nullable_to_non_nullable
 as String,occurredAt: null == occurredAt ? _self.occurredAt : occurredAt // ignore: cast_nullable_to_non_nullable
 as DateTime,receivedAt: freezed == receivedAt ? _self.receivedAt : receivedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,fromFormerMember: null == fromFormerMember ? _self.fromFormerMember : fromFormerMember // ignore: cast_nullable_to_non_nullable
+as DateTime?,serverSeq: freezed == serverSeq ? _self.serverSeq : serverSeq // ignore: cast_nullable_to_non_nullable
+as int?,fromFormerMember: null == fromFormerMember ? _self.fromFormerMember : fromFormerMember // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -169,10 +174,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String caregiverId,  DateTime occurredAt,  DateTime? receivedAt,  bool fromFormerMember)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String caregiverId,  DateTime occurredAt,  DateTime? receivedAt,  int? serverSeq,  bool fromFormerMember)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EventMeta() when $default != null:
-return $default(_that.id,_that.caregiverId,_that.occurredAt,_that.receivedAt,_that.fromFormerMember);case _:
+return $default(_that.id,_that.caregiverId,_that.occurredAt,_that.receivedAt,_that.serverSeq,_that.fromFormerMember);case _:
   return orElse();
 
 }
@@ -190,10 +195,10 @@ return $default(_that.id,_that.caregiverId,_that.occurredAt,_that.receivedAt,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String caregiverId,  DateTime occurredAt,  DateTime? receivedAt,  bool fromFormerMember)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String caregiverId,  DateTime occurredAt,  DateTime? receivedAt,  int? serverSeq,  bool fromFormerMember)  $default,) {final _that = this;
 switch (_that) {
 case _EventMeta():
-return $default(_that.id,_that.caregiverId,_that.occurredAt,_that.receivedAt,_that.fromFormerMember);case _:
+return $default(_that.id,_that.caregiverId,_that.occurredAt,_that.receivedAt,_that.serverSeq,_that.fromFormerMember);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -210,10 +215,10 @@ return $default(_that.id,_that.caregiverId,_that.occurredAt,_that.receivedAt,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String caregiverId,  DateTime occurredAt,  DateTime? receivedAt,  bool fromFormerMember)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String caregiverId,  DateTime occurredAt,  DateTime? receivedAt,  int? serverSeq,  bool fromFormerMember)?  $default,) {final _that = this;
 switch (_that) {
 case _EventMeta() when $default != null:
-return $default(_that.id,_that.caregiverId,_that.occurredAt,_that.receivedAt,_that.fromFormerMember);case _:
+return $default(_that.id,_that.caregiverId,_that.occurredAt,_that.receivedAt,_that.serverSeq,_that.fromFormerMember);case _:
   return null;
 
 }
@@ -225,7 +230,7 @@ return $default(_that.id,_that.caregiverId,_that.occurredAt,_that.receivedAt,_th
 
 
 class _EventMeta extends EventMeta {
-  const _EventMeta({required this.id, required this.caregiverId, required this.occurredAt, this.receivedAt, this.fromFormerMember = false}): super._();
+  const _EventMeta({required this.id, required this.caregiverId, required this.occurredAt, this.receivedAt, this.serverSeq, this.fromFormerMember = false}): super._();
   
 
 /// UUID generated on the device, so retries never duplicate an event.
@@ -236,8 +241,13 @@ class _EventMeta extends EventMeta {
 /// When it happened, by the device clock. Shown to people; never used
 /// to order or resolve anything, since device clocks drift.
 @override final  DateTime occurredAt;
-/// When the server received it; null until synced. Orders the log.
+/// When the server received it; null until synced. Shown to people.
 @override final  DateTime? receivedAt;
+/// The server's position for it in the log, set with [receivedAt].
+/// Orders the log: timestamps cannot, since the web keeps only
+/// milliseconds and events of one push may share one. Null on copies
+/// synced before servers numbered events.
+@override final  int? serverSeq;
 /// Set by the server on a fact (a dose or task record) from a device
 /// whose member had left the circle by the time it synced: accepted,
 /// since it may be true, and flagged for admins (`docs/roles.md`).
@@ -253,18 +263,18 @@ _$EventMetaCopyWith<_EventMeta> get copyWith => __$EventMetaCopyWithImpl<_EventM
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EventMeta&&(identical(other.id, id) || other.id == id)&&(identical(other.caregiverId, caregiverId) || other.caregiverId == caregiverId)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.fromFormerMember, fromFormerMember) || other.fromFormerMember == fromFormerMember));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EventMeta&&(identical(other.id, id) || other.id == id)&&(identical(other.caregiverId, caregiverId) || other.caregiverId == caregiverId)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.serverSeq, serverSeq) || other.serverSeq == serverSeq)&&(identical(other.fromFormerMember, fromFormerMember) || other.fromFormerMember == fromFormerMember));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,caregiverId,occurredAt,receivedAt,fromFormerMember);
+    return Object.hash(runtimeType,id,caregiverId,occurredAt,receivedAt,serverSeq,fromFormerMember);
 }
 
 @override
 String toString() {
-    return 'EventMeta(id: $id, caregiverId: $caregiverId, occurredAt: $occurredAt, receivedAt: $receivedAt, fromFormerMember: $fromFormerMember)';
+    return 'EventMeta(id: $id, caregiverId: $caregiverId, occurredAt: $occurredAt, receivedAt: $receivedAt, serverSeq: $serverSeq, fromFormerMember: $fromFormerMember)';
 }
 
 
@@ -275,7 +285,7 @@ abstract mixin class _$EventMetaCopyWith<$Res> implements $EventMetaCopyWith<$Re
   factory _$EventMetaCopyWith(_EventMeta value, $Res Function(_EventMeta) _then) = __$EventMetaCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String caregiverId, DateTime occurredAt, DateTime? receivedAt, bool fromFormerMember
+ String id, String caregiverId, DateTime occurredAt, DateTime? receivedAt, int? serverSeq, bool fromFormerMember
 });
 
 
@@ -292,13 +302,14 @@ class __$EventMetaCopyWithImpl<$Res>
 
 /// Create a copy of EventMeta
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? caregiverId = null,Object? occurredAt = null,Object? receivedAt = freezed,Object? fromFormerMember = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? caregiverId = null,Object? occurredAt = null,Object? receivedAt = freezed,Object? serverSeq = freezed,Object? fromFormerMember = null,}) {
   return _then(_EventMeta(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,caregiverId: null == caregiverId ? _self.caregiverId : caregiverId // ignore: cast_nullable_to_non_nullable
 as String,occurredAt: null == occurredAt ? _self.occurredAt : occurredAt // ignore: cast_nullable_to_non_nullable
 as DateTime,receivedAt: freezed == receivedAt ? _self.receivedAt : receivedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,fromFormerMember: null == fromFormerMember ? _self.fromFormerMember : fromFormerMember // ignore: cast_nullable_to_non_nullable
+as DateTime?,serverSeq: freezed == serverSeq ? _self.serverSeq : serverSeq // ignore: cast_nullable_to_non_nullable
+as int?,fromFormerMember: null == fromFormerMember ? _self.fromFormerMember : fromFormerMember // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

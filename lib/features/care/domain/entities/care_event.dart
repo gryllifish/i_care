@@ -23,8 +23,14 @@ abstract class EventMeta with _$EventMeta {
     /// to order or resolve anything, since device clocks drift.
     required DateTime occurredAt,
 
-    /// When the server received it; null until synced. Orders the log.
+    /// When the server received it; null until synced. Shown to people.
     DateTime? receivedAt,
+
+    /// The server's position for it in the log, set with [receivedAt].
+    /// Orders the log: timestamps cannot, since the web keeps only
+    /// milliseconds and events of one push may share one. Null on copies
+    /// synced before servers numbered events.
+    int? serverSeq,
 
     /// Set by the server on a fact (a dose or task record) from a device
     /// whose member had left the circle by the time it synced: accepted,
@@ -350,16 +356,28 @@ sealed class CareEvent with _$CareEvent {
   }) = ConflictAcknowledged;
 }
 
-/// Log order: synced events by server time, then this device's pending
-/// events by device time (they will reach the server after everything it
-/// already has). Ids break ties so every device sorts alike.
+/// Log order: synced events by their place on the server, then this
+/// device's pending events by device time (they will reach the server
+/// after everything it already has). Copies synced before servers
+/// numbered events come first, by server time: everything numbered was
+/// received after them. Ids break ties so every device sorts alike.
 int compareEvents(CareEvent a, CareEvent b) {
   final (left, right) = (a.meta, b.meta);
-  final byTime = switch ((left.receivedAt, right.receivedAt)) {
-    (final DateTime x, final DateTime y) => x.compareTo(y),
-    (DateTime(), null) => -1,
-    (null, DateTime()) => 1,
-    (null, null) => left.occurredAt.compareTo(right.occurredAt),
+  final byGroup = _orderGroup(left).compareTo(_orderGroup(right));
+  if (byGroup != 0) return byGroup;
+  final byPlace = switch ((left.serverSeq, right.serverSeq)) {
+    (final int x, final int y) => x.compareTo(y),
+    _ => switch ((left.receivedAt, right.receivedAt)) {
+      (final DateTime x, final DateTime y) => x.compareTo(y),
+      _ => left.occurredAt.compareTo(right.occurredAt),
+    },
   };
-  return byTime != 0 ? byTime : left.id.compareTo(right.id);
+  return byPlace != 0 ? byPlace : left.id.compareTo(right.id);
 }
+
+/// Synced before numbering, numbered, pending.
+int _orderGroup(EventMeta meta) => switch (meta) {
+  EventMeta(isSynced: false) => 2,
+  EventMeta(serverSeq: null) => 0,
+  _ => 1,
+};

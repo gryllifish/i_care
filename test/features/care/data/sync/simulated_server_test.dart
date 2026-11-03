@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/core/error/app_exception.dart';
 import 'package:i_care/core/error/failure.dart';
@@ -66,6 +68,18 @@ void main() {
       ];
       // Ids would put the second one first; the server's time must not.
       expect(compareEvents(stored1, stored2), lessThan(0));
+      expect(stored2.meta.serverSeq, stored1.meta.serverSeq! + 1);
+
+      // On the web, times keep milliseconds only and the two tie.
+      DoseGiven onTheWeb(DoseGiven event) =>
+          event.copyWith(meta: event.meta.copyWith(receivedAt: serverTime));
+      expect(
+        compareEvents(
+          onTheWeb(stored1 as DoseGiven),
+          onTheWeb(stored2 as DoseGiven),
+        ),
+        lessThan(0),
+      );
     },
   );
 
@@ -86,6 +100,30 @@ void main() {
     expect(restarted.hasMembers, isTrue);
     final again = await restarted.receive('phone-ana', [encoded(serverTime)]);
     expect(again.rejected, isEmpty);
+  });
+
+  test('numbers events stored before events carried their place', () async {
+    final legacy = events.given('m1', at: serverTime, receivedAt: serverTime);
+    final box = await openBox(SimulatedServer.boxName);
+    await box.put(
+      legacy.meta.id,
+      jsonEncode({
+        'seq': 7,
+        'id': legacy.meta.id,
+        'event': CareEventCodec.encodeString(legacy),
+      }),
+    );
+
+    final server = SimulatedServer(
+      box,
+      await openBox(SimulatedServer.devicesBoxName),
+      await openBox(SimulatedServer.codesBoxName),
+      await openBox(SimulatedServer.settingsBoxName),
+      clock: () => serverTime,
+    );
+
+    final [stored] = server.eventsAfter(null).events;
+    expect(CareEventCodec.decodeString(stored).meta.serverSeq, 7);
   });
 
   test('refuses a device that never joined', () async {

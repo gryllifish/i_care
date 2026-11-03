@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/features/care/data/datasources/event_store.dart';
+import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 
 import '../../helpers/care_events.dart';
 import '../../helpers/hive_boxes.dart';
@@ -32,6 +35,21 @@ void main() {
     await store.merge([synced]);
 
     expect(store.readAll(), [synced]);
+  });
+
+  test('events from a newer app version are kept but not read', () async {
+    final known = events.given('m1', at: eight, receivedAt: eight);
+    final newer = jsonEncode({
+      ...CareEventCodec.encode(known),
+      'id': 'from-the-future',
+      'type': 'dose_teleported',
+    });
+
+    await store.merge([known]);
+    await store.keepUnreadable([newer]);
+
+    expect(store.readAll(), [known]);
+    expect(store.readPending(), isEmpty);
   });
 
   test('a pending copy never replaces a synced one', () async {

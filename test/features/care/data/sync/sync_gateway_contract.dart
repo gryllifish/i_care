@@ -20,7 +20,7 @@ typedef Gateways = ({
 });
 
 /// Behavior every [SyncGateway] must have. Runs against the simulated
-/// remote now and against the Firestore emulator in stage 2
+/// remote now and against a local Supabase stack in stage 2
 /// (`docs/backend.md`).
 void runSyncGatewayContract(Future<Gateways> Function() connect) {
   late Gateways gateways;
@@ -49,6 +49,20 @@ void runSyncGatewayContract(Future<Gateways> Function() connect) {
     expect(stored.meta.receivedAt, isNotNull);
     expect(stored.copyWith(meta: event.meta), event);
   });
+
+  test(
+    'numbers events in the order they arrive, within one push too',
+    () async {
+      final pushed = [
+        events.given('m1', at: eight, id: 'z-first'),
+        events.given('m1', at: eight, id: 'a-second'),
+      ];
+
+      final [first, second] = (await gateways.device.push(pushed)).stored;
+
+      expect(second.meta.serverSeq, greaterThan(first.meta.serverSeq!));
+    },
+  );
 
   test('pushing an event twice stores it once, unchanged', () async {
     final event = events.given('m1', at: eight);

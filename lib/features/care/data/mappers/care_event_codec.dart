@@ -19,21 +19,47 @@ import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 /// Dates are wall-clock ISO 8601 without an offset: the whole circle runs
 /// in the care recipient's time zone (see `.claude/steering/product.md`).
 abstract final class CareEventCodec {
-  /// Bumped on incompatible changes; readers reject other versions.
+  /// Bumped on incompatible changes. Readers keep events of a newer
+  /// version unread (see [tryDecodeString]) and reject older ones.
   static const formatVersion = 1;
 
+  /// Throws [ParsingException], also for an event from a newer app
+  /// version.
+  static CareEvent decodeString(String source) =>
+      tryDecodeString(source) ?? (throw _newerVersion);
+
+  /// [source] decoded, or null when it holds an event from a newer app
+  /// version: a format or type this one does not know. Devices keep such
+  /// events as received and leave them out of the log until an update
+  /// can read them, so one updated device never stops sync for the
+  /// others (`docs/backend.md`).
+  ///
+  /// Throws [ParsingException] when [source] is not a valid event.
+  static CareEvent? tryDecodeString(String source) => switch (_json(source)) {
+    final Map<String, Object?> map => tryDecode(map),
+    _ => throw const ParsingException('Event is not a JSON object'),
+  };
+
+  /// The id of the event in [source], whether or not this version can
+  /// read the rest.
+  ///
   /// Throws [ParsingException].
-  static CareEvent decodeString(String source) {
-    final Object? json;
+  static String idOf(String source) => switch (_json(source)) {
+    {'id': final String id} => id,
+    _ => throw const ParsingException('Event has no id'),
+  };
+
+  static const _newerVersion = ParsingException(
+    'Event from a newer app version',
+  );
+
+  /// Throws [ParsingException].
+  static Object? _json(String source) {
     try {
-      json = jsonDecode(source);
+      return jsonDecode(source);
     } on FormatException catch (error) {
       throw ParsingException('Event is not JSON', cause: error);
     }
-    return switch (json) {
-      final Map<String, Object?> map => decode(map),
-      _ => throw const ParsingException('Event is not a JSON object'),
-    };
   }
 
   static String encodeString(CareEvent event) => jsonEncode(encode(event));
@@ -44,6 +70,7 @@ abstract final class CareEventCodec {
     'caregiver_id': event.meta.caregiverId,
     'occurred_at': _date(event.meta.occurredAt),
     'received_at': event.meta.receivedAt.let(_date),
+    'server_seq': ?event.meta.serverSeq,
     if (event.meta.fromFormerMember) 'from_former_member': true,
     ...switch (event) {
       MedicationCreated() => {
@@ -219,10 +246,20 @@ abstract final class CareEventCodec {
     },
   };
 
+  /// Throws [ParsingException], also for an event from a newer app
+  /// version.
+  static CareEvent decode(Map<String, Object?> json) =>
+      tryDecode(json) ?? (throw _newerVersion);
+
+  /// [json] decoded, or null when it comes from a newer app version (see
+  /// [tryDecodeString]).
+  ///
   /// Throws [ParsingException].
-  static CareEvent decode(Map<String, Object?> json) {
+  static CareEvent? tryDecode(Map<String, Object?> json) {
     try {
       return _decode(_Reader(json));
+    } on _NewerVersion {
+      return null;
     } on FormatException catch (error) {
       throw ParsingException('Malformed event: ${error.message}', cause: error);
     }
@@ -230,6 +267,7 @@ abstract final class CareEventCodec {
 
   static CareEvent _decode(_Reader json) {
     final version = json.integer('v');
+    if (version > formatVersion) throw const _NewerVersion();
     if (version != formatVersion) {
       throw FormatException('unsupported format version $version');
     }
@@ -238,6 +276,7 @@ abstract final class CareEventCodec {
       caregiverId: json.string('caregiver_id'),
       occurredAt: json.date('occurred_at'),
       receivedAt: json.optionalDate('received_at'),
+      serverSeq: json.optionalInteger('server_seq'),
       // Absent before roles existed, and whenever it is false.
       fromFormerMember: json.optionalBool('from_former_member') ?? false,
     );
@@ -422,7 +461,9 @@ abstract final class CareEventCodec {
         meta: meta,
         conflictKey: json.string('conflict_key'),
       ),
-      final type => throw FormatException('unknown event type "$type"'),
+      // Written by a newer app version, not malformed: the format
+      // version only changes for incompatible changes, not new types.
+      _ => throw const _NewerVersion(),
     };
   }
 
@@ -562,6 +603,11 @@ abstract final class CareEventCodec {
     'helper': MemberRole.helper,
     'viewer': MemberRole.viewer,
   };
+}
+
+/// An event this app version cannot read because a newer one wrote it.
+class _NewerVersion implements Exception {
+  const _NewerVersion();
 }
 
 /// Typed access to a JSON object; throws [FormatException] on a missing
