@@ -13,9 +13,9 @@ import '../care/helpers/care_events.dart';
 void main() {
   final now = DateTime(2026, 11, 2, 9);
 
-  FakeCareRepository circle() => FakeCareRepository([
-    EventFactory().created('m1'),
-  ])..status = SyncStatus(lastSyncedAt: now);
+  FakeCareRepository circle() =>
+      FakeCareRepository([EventFactory().created('m1')])
+        ..status = SyncStatus(lastSyncedAt: now);
 
   /// Brings [finder] into view in Settings, which is longer than a screen.
   Future<void> reveal(WidgetTester tester, Finder finder) async {
@@ -38,12 +38,7 @@ void main() {
     tester,
   ) async {
     final prefs = MemoryDevicePrefs({PrefKeys.memberId: 'ana'});
-    await pumpApp(
-      tester,
-      repository: circle(),
-      now: now,
-      prefs: prefs,
-    );
+    await pumpApp(tester, repository: circle(), now: now, prefs: prefs);
 
     expect(find.text('Welcome to ICare'), findsOneWidget);
     expect(find.byType(TodayScreen), findsNothing);
@@ -67,12 +62,7 @@ void main() {
       PrefKeys.welcomeSeen: 'true',
       PrefKeys.memberId: 'ana',
     });
-    await pumpApp(
-      tester,
-      repository: circle(),
-      now: now,
-      prefs: prefs,
-    );
+    await pumpApp(tester, repository: circle(), now: now, prefs: prefs);
 
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();
@@ -89,12 +79,7 @@ void main() {
       PrefKeys.welcomeSeen: 'true',
       PrefKeys.memberId: 'ana',
     });
-    await pumpApp(
-      tester,
-      repository: circle(),
-      now: now,
-      prefs: prefs,
-    );
+    await pumpApp(tester, repository: circle(), now: now, prefs: prefs);
 
     await tester.tap(find.byTooltip('Settings'));
     await tester.pumpAndSettle();
@@ -134,9 +119,7 @@ void main() {
       tester,
       repository: circle(),
       now: now,
-      overrides: [
-        demoResetProvider.overrideWithValue(() async => resets++),
-      ],
+      overrides: [demoResetProvider.overrideWithValue(() async => resets++)],
     );
 
     await tester.tap(find.byTooltip('Settings'));

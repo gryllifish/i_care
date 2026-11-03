@@ -6,9 +6,7 @@ import 'package:i_care/shared/widgets/app_snack_bars.dart';
 void main() {
   Future<ScaffoldMessengerState> pumpMessenger(WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: Scaffold()));
-    return tester.state<ScaffoldMessengerState>(
-      find.byType(ScaffoldMessenger),
-    );
+    return tester.state<ScaffoldMessengerState>(find.byType(ScaffoldMessenger));
   }
 
   testWidgets('a message with an action still goes away on its own', (

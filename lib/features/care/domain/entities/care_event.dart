@@ -56,7 +56,7 @@ enum SkipReason {
   /// Always offered, with room to say what happened.
   other('other');
 
-  const SkipReason(this.id);
+  SkipReason(this.id);
 
   /// As stored in events.
   final String id;

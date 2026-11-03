@@ -86,27 +86,25 @@ void main() {
     expect(find.byType(SettingsScreen), findsOneWidget);
   });
 
-  testWidgets(
-    'a pushed screen closes with the back swipe on iOS',
-    (tester) async {
-      await pump(tester);
-      await tester.tap(find.byTooltip('Settings'));
-      await tester.pumpAndSettle();
-      expect(find.byType(SettingsScreen), findsOneWidget);
+  testWidgets('a pushed screen closes with the back swipe on iOS', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SettingsScreen), findsOneWidget);
 
-      final swipe = await tester.startGesture(const Offset(4, 400));
-      for (var step = 0; step < 15; step++) {
-        await swipe.moveBy(const Offset(20, 0));
-        await tester.pump(const Duration(milliseconds: 16));
-      }
-      await swipe.up();
-      await tester.pumpAndSettle();
+    final swipe = await tester.startGesture(const Offset(4, 400));
+    for (var step = 0; step < 15; step++) {
+      await swipe.moveBy(const Offset(20, 0));
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    await swipe.up();
+    await tester.pumpAndSettle();
 
-      expect(find.byType(SettingsScreen), findsNothing);
-      expect(find.byType(TodayScreen), findsOneWidget);
-    },
-    variant: TargetPlatformVariant.only(TargetPlatform.iOS),
-  );
+    expect(find.byType(SettingsScreen), findsNothing);
+    expect(find.byType(TodayScreen), findsOneWidget);
+  }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
 
   testWidgets('every tab fits at 200 % text size', (tester) async {
     tester.platformDispatcher.textScaleFactorTestValue = 2;

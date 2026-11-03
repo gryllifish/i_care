@@ -91,9 +91,7 @@ void main() {
   test('refuses a device that never joined', () async {
     final server = await openServer();
 
-    final result = await server.receive('phone-unknown', [
-      encoded(serverTime),
-    ]);
+    final result = await server.receive('phone-unknown', [encoded(serverTime)]);
 
     expect(result.rejected.single.reason, RejectionReason.notMember);
   });
@@ -211,9 +209,7 @@ void main() {
       final server = await openServer();
 
       await server.receive('phone-martin', [
-        CareEventCodec.encodeString(
-          events.memberLeft('martin', by: 'martin'),
-        ),
+        CareEventCodec.encodeString(events.memberLeft('martin', by: 'martin')),
       ]);
       await server.receive('phone-ana', [
         CareEventCodec.encodeString(

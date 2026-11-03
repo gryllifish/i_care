@@ -198,10 +198,7 @@ class _DetailContent extends ConsumerWidget {
                 if (details.doctor.isNotEmpty)
                   _InfoRow(icon: Icons.person_outline, text: details.doctor),
                 if (details.location.isNotEmpty)
-                  _InfoRow(
-                    icon: Icons.place_outlined,
-                    text: details.location,
-                  ),
+                  _InfoRow(icon: Icons.place_outlined, text: details.location),
               ],
             ),
           ),
@@ -327,9 +324,7 @@ class _DocumentCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final caregiver = ref.watch(
-      membersByIdProvider,
-    )[document.meta.caregiverId];
+    final caregiver = ref.watch(membersByIdProvider)[document.meta.caregiverId];
     final onRemove = this.onRemove;
     return AppCard(
       onTap: () => _open(context, ref),

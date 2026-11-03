@@ -24,7 +24,7 @@ class MembershipRepositoryImpl implements MembershipRepository {
   @override
   Future<Result<InviteCode>> issueCode(String memberId) async {
     if (await _care.flush() case Err(:final failure)) return Err(failure);
-    return guard(() => _gateway.issueCode(memberId));
+    return await guard(() => _gateway.issueCode(memberId));
   }
 
   @override
@@ -64,7 +64,7 @@ class MembershipRepositoryImpl implements MembershipRepository {
       return Err(failure);
     }
     if (await _care.flush() case Err(:final failure)) return Err(failure);
-    return forget();
+    return await forget();
   }
 
   @override

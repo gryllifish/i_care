@@ -83,11 +83,7 @@ class DoseTile extends ConsumerWidget {
                 ),
               ),
             ),
-            TimelineRail(
-              color: style.color,
-              isFirst: isFirst,
-              isLast: isLast,
-            ),
+            TimelineRail(color: style.color, isFirst: isFirst, isLast: isLast),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.md),

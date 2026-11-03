@@ -107,9 +107,7 @@ class FakeMembershipRepository implements MembershipRepository {
   Future<Result<InviteCode>> issueCode(String memberId) async {
     if (failure case final Failure failure) return Err(failure);
     issuedFor.add(memberId);
-    return Ok(
-      InviteCode(code: validCode, expiresAt: DateTime(2026, 11, 4, 9)),
-    );
+    return Ok(InviteCode(code: validCode, expiresAt: DateTime(2026, 11, 4, 9)));
   }
 
   /// What [createCircle] was asked for.

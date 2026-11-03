@@ -27,10 +27,10 @@ void main() {
 
     final twice = draft.toggleDay(DateTime.monday).toggleDay(DateTime.thursday);
     expect(twice.issues, isEmpty);
-    expect(
-      (twice.toSchedule() as FixedSchedule).weekdays,
-      {DateTime.monday, DateTime.thursday},
-    );
+    expect((twice.toSchedule() as FixedSchedule).weekdays, {
+      DateTime.monday,
+      DateTime.thursday,
+    });
   });
 
   test('every day is stored as no weekdays', () {
@@ -43,18 +43,19 @@ void main() {
   });
 
   test('times stay ascending without repeats', () {
-    final draft = const ScheduleDraft(
-      times: [],
-    ).withTime(1200).withTime(480).withTime(1200);
+    final draft = const ScheduleDraft(times: [])
+        .withTime(1200)
+        .withTime(480)
+        .withTime(1200);
 
     expect(draft.times, [480, 1200]);
     expect(draft.withoutTime(480).times, [1200]);
   });
 
   test('switching kinds keeps the values of each', () {
-    final draft = const ScheduleDraft(
-      times: [540],
-    ).copyWith(isFixed: false, maxPerDay: 3).copyWith(isFixed: true);
+    final draft = const ScheduleDraft(times: [540])
+        .copyWith(isFixed: false, maxPerDay: 3)
+        .copyWith(isFixed: true);
 
     expect(draft.times, [540]);
     expect(draft.maxPerDay, 3);

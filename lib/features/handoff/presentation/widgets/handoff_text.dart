@@ -89,10 +89,7 @@ String handoffText(
       ),
     ],
     if (handoff.notes.isNotEmpty)
-      [
-        l10n.handoffNotes,
-        for (final note in handoff.notes) noteLine(note),
-      ],
+      [l10n.handoffNotes, for (final note in handoff.notes) noteLine(note)],
     if (handoff.given.isNotEmpty)
       [
         l10n.handoffGiven,

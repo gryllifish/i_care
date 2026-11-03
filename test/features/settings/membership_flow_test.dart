@@ -14,9 +14,9 @@ import '../care/helpers/care_events.dart';
 void main() {
   final now = DateTime(2026, 11, 2, 9);
 
-  FakeCareRepository circle() => FakeCareRepository([
-    EventFactory().created('m1'),
-  ])..status = SyncStatus(lastSyncedAt: now);
+  FakeCareRepository circle() =>
+      FakeCareRepository([EventFactory().created('m1')])
+        ..status = SyncStatus(lastSyncedAt: now);
 
   MemoryDevicePrefs phoneOf(String memberId) => MemoryDevicePrefs({
     PrefKeys.welcomeSeen: 'true',

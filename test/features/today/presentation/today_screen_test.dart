@@ -54,10 +54,8 @@ void main() {
   }
 
   /// [text] inside the open dose sheet, not on the screen behind it.
-  Finder inSheet(String text) => find.descendant(
-    of: find.byType(BottomSheet),
-    matching: find.text(text),
-  );
+  Finder inSheet(String text) =>
+      find.descendant(of: find.byType(BottomSheet), matching: find.text(text));
 
   /// Scrolls the timeline until [finder] is built and visible.
   Future<void> scrollTo(WidgetTester tester, Finder finder) =>
@@ -104,10 +102,7 @@ void main() {
     );
 
     expect(find.text('No doses scheduled for today'), findsOneWidget);
-    expect(
-      find.text('Next dose: Enalapril, Tomorrow, 08:00'),
-      findsOneWidget,
-    );
+    expect(find.text('Next dose: Enalapril, Tomorrow, 08:00'), findsOneWidget);
   });
 
   testWidgets("the last day's notes show on Today and open the rest", (
@@ -282,9 +277,7 @@ void main() {
     expect(find.text('Mark as given anyway'), findsOneWidget);
   });
 
-  testWidgets('a dose given earlier is recorded at that time', (
-    tester,
-  ) async {
+  testWidgets('a dose given earlier is recorded at that time', (tester) async {
     final repository = circle();
     await pumpApp(tester, repository: repository, now: now);
 
@@ -349,9 +342,7 @@ void main() {
     expect(find.text('Given twice'), findsOneWidget);
   });
 
-  testWidgets('a third dose given knowingly is not a conflict', (
-    tester,
-  ) async {
+  testWidgets('a third dose given knowingly is not a conflict', (tester) async {
     final martins = events.given('m1', at: eight, slotAt: eight, by: 'martin');
     final rosas = events.given(
       'm1',

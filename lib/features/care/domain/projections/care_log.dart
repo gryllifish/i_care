@@ -175,9 +175,9 @@ class CareLog {
     DoseGiven(:final medicationId) ||
     DoseSkipped(:final medicationId) ||
     StockCounted(:final medicationId) ||
-    StockRefilled(:final medicationId) => medication(
-      medicationId,
-    )?.details.name,
+    StockRefilled(
+      :final medicationId,
+    ) => medication(medicationId)?.details.name,
     DoseUndone(:final targetEventId) => switch (_eventsById[targetEventId]) {
       final CareEvent target => subjectOf(target),
       null => null,
@@ -186,9 +186,9 @@ class CareLog {
     AppointmentCancelled(:final appointmentId) ||
     VisitNoteAdded(:final appointmentId) ||
     DocumentLinked(:final appointmentId) ||
-    DocumentRemoved(:final appointmentId) => appointment(
-      appointmentId,
-    )?.details.title,
+    DocumentRemoved(
+      :final appointmentId,
+    ) => appointment(appointmentId)?.details.title,
     TaskUpdated(:final taskId) ||
     TaskArchived(:final taskId) ||
     TaskDone(:final taskId) ||
@@ -643,9 +643,8 @@ class _Projector {
     final medication = _medications[medicationId];
     if (medication == null) return;
     _recordChange(event, medicationId, baseVersion);
-    _medications[medicationId] = update(
-      medication,
-    ).copyWith(version: medication.version + 1);
+    _medications[medicationId] = update(medication)
+        .copyWith(version: medication.version + 1);
   }
 
   void _changeAppointment(
@@ -657,9 +656,8 @@ class _Projector {
     final appointment = _appointments[appointmentId];
     if (appointment == null) return;
     _recordChange(event, appointmentId, baseVersion);
-    _appointments[appointmentId] = update(
-      appointment,
-    ).copyWith(version: appointment.version + 1);
+    _appointments[appointmentId] = update(appointment)
+        .copyWith(version: appointment.version + 1);
   }
 
   void _changeTask(

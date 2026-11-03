@@ -17,10 +17,7 @@ T hiveGuard<T>(String what, T Function() action) {
 }
 
 /// Like [hiveGuard], for writes, which fail asynchronously.
-Future<void> hiveGuardAsync(
-  String what,
-  Future<void> Function() action,
-) async {
+Future<void> hiveGuardAsync(String what, Future<void> Function() action) async {
   try {
     await action();
     // See hiveGuard.

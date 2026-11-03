@@ -183,9 +183,8 @@ class _DetailContent extends ConsumerWidget {
           title: l10n.scheduleTitle,
           action: isActive
               ? TextButton(
-                  onPressed: () => context.push(
-                    AppRoutes.changeSchedulePath(medication.id),
-                  ),
+                  onPressed: () =>
+                      context.push(AppRoutes.changeSchedulePath(medication.id)),
                   child: Text(l10n.changeSchedule),
                 )
               : null,

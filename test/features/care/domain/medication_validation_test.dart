@@ -15,10 +15,10 @@ void main() {
   });
 
   test('details need a name and positive units', () {
-    expect(
-      validateDetails(details.copyWith(name: '  ', unitsPerDose: 0)),
-      {MedicationIssue.nameMissing, MedicationIssue.unitsPerDoseNotPositive},
-    );
+    expect(validateDetails(details.copyWith(name: '  ', unitsPerDose: 0)), {
+      MedicationIssue.nameMissing,
+      MedicationIssue.unitsPerDoseNotPositive,
+    });
   });
 
   test('fixed schedules need at least one time', () {

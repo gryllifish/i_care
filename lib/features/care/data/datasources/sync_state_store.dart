@@ -18,13 +18,11 @@ class SyncStateStore {
   String? get cursor => hiveGuard('Sync state', () => _box.get(_cursorKey));
 
   /// Throws [StorageException].
-  DateTime? get lastSyncedAt => switch (hiveGuard(
-    'Sync state',
-    () => _box.get(_lastSyncedAtKey),
-  )) {
-    final String value => DateTime.tryParse(value),
-    null => null,
-  };
+  DateTime? get lastSyncedAt =>
+      switch (hiveGuard('Sync state', () => _box.get(_lastSyncedAtKey))) {
+        final String value => DateTime.tryParse(value),
+        null => null,
+      };
 
   /// Throws [StorageException].
   Future<void> save({required DateTime lastSyncedAt, String? cursor}) =>

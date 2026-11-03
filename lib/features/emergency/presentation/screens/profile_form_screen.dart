@@ -203,12 +203,8 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
       allergies: _allergies.text.trim(),
       conditions: _conditions.text.trim(),
       notes: _notes.text.trim(),
-      doctors: [
-        for (final fields in _doctors) ?fields.toContact(),
-      ],
-      contacts: [
-        for (final fields in _contacts) ?fields.toContact(),
-      ],
+      doctors: [for (final fields in _doctors) ?fields.toContact()],
+      contacts: [for (final fields in _contacts) ?fields.toContact()],
     );
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);

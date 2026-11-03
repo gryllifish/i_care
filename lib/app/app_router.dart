@@ -157,21 +157,18 @@ GoRouter appRouter(Ref ref) {
                   ),
                   _route(
                     path: AppRoutes.medication,
-                    builder: (context, state) => MedicationDetailScreen(
-                      medicationId: _idOf(state),
-                    ),
+                    builder: (context, state) =>
+                        MedicationDetailScreen(medicationId: _idOf(state)),
                     routes: [
                       _route(
                         path: AppRoutes.editMedication,
-                        builder: (context, state) => MedicationFormScreen(
-                          medicationId: _idOf(state),
-                        ),
+                        builder: (context, state) =>
+                            MedicationFormScreen(medicationId: _idOf(state)),
                       ),
                       _route(
                         path: AppRoutes.changeSchedule,
-                        builder: (context, state) => ScheduleChangeScreen(
-                          medicationId: _idOf(state),
-                        ),
+                        builder: (context, state) =>
+                            ScheduleChangeScreen(medicationId: _idOf(state)),
                       ),
                     ],
                   ),
@@ -210,15 +207,13 @@ GoRouter appRouter(Ref ref) {
                   ),
                   _route(
                     path: AppRoutes.appointment,
-                    builder: (context, state) => AppointmentDetailScreen(
-                      appointmentId: _idOf(state),
-                    ),
+                    builder: (context, state) =>
+                        AppointmentDetailScreen(appointmentId: _idOf(state)),
                     routes: [
                       _route(
                         path: AppRoutes.editAppointment,
-                        builder: (context, state) => AppointmentFormScreen(
-                          appointmentId: _idOf(state),
-                        ),
+                        builder: (context, state) =>
+                            AppointmentFormScreen(appointmentId: _idOf(state)),
                       ),
                     ],
                   ),

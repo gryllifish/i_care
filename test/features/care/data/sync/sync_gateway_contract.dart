@@ -159,9 +159,7 @@ void runSyncGatewayContract(Future<Gateways> Function() connect) {
         events
             .undone(anas)
             .withAuthor('martin')
-            .copyWith(
-              conflictKey: 'dose:m1:x',
-            ),
+            .copyWith(conflictKey: 'dose:m1:x'),
       ]);
 
       expect(byHelper.rejected.single.reason, RejectionReason.notAllowed);

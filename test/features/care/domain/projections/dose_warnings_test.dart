@@ -120,18 +120,16 @@ void main() {
     ];
     final fivePm = DateTime(2026, 11, 2, 17);
 
-    expect(
-      warn(log, now: fivePm, lastSyncedAt: fivePm, givenAt: eight),
-      [isA<TooSoon>().having((w) => w.lastDose, 'dose', later)],
-    );
+    expect(warn(log, now: fivePm, lastSyncedAt: fivePm, givenAt: eight), [
+      isA<TooSoon>().having((w) => w.lastDose, 'dose', later),
+    ]);
     expect(warn(log, now: fivePm, lastSyncedAt: fivePm), isEmpty);
   });
 
   test('warns when the device is offline, however recently it synced', () {
-    expect(
-      warn([events.created('m1')], slotAt: eight, isConnected: false),
-      [isA<Offline>()],
-    );
+    expect(warn([events.created('m1')], slotAt: eight, isConnected: false), [
+      isA<Offline>(),
+    ]);
   });
 
   test('the doses a warning showed become known when confirming', () {

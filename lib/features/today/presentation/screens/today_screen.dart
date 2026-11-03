@@ -460,14 +460,11 @@ class _DayProgress extends StatelessWidget {
                 color: color,
               ),
               Expanded(
-                child: Text(
-                  switch ((total, isDone)) {
-                    (0, _) => l10n.dayNothingScheduled,
-                    (_, true) => l10n.dayDone,
-                    _ => l10n.dayProgress(done, total),
-                  },
-                  style: AppTextStyles.label,
-                ),
+                child: Text(switch ((total, isDone)) {
+                  (0, _) => l10n.dayNothingScheduled,
+                  (_, true) => l10n.dayDone,
+                  _ => l10n.dayProgress(done, total),
+                }, style: AppTextStyles.label),
               ),
             ],
           ),
@@ -710,18 +707,14 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
             ),
             Text(
               '${Formatters.time(slot.slotAt, locale)} · ${details.name}',
-              style: AppTextStyles.headline.copyWith(
-                color: colors.onHero,
-              ),
+              style: AppTextStyles.headline.copyWith(color: colors.onHero),
             ),
             Text(
               [
                 details.strength,
                 if (details.instructions.isNotEmpty) details.instructions,
               ].join(' · '),
-              style: AppTextStyles.body.copyWith(
-                color: colors.onHeroMuted,
-              ),
+              style: AppTextStyles.body.copyWith(color: colors.onHeroMuted),
             ),
             const SizedBox(height: AppSpacing.sm),
             FilledButton.icon(
@@ -739,9 +732,7 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
             ),
             TextButton(
               onPressed: widget.onOpen,
-              style: TextButton.styleFrom(
-                foregroundColor: colors.onHero,
-              ),
+              style: TextButton.styleFrom(foregroundColor: colors.onHero),
               child: Text(l10n.moreOptions),
             ),
           ],

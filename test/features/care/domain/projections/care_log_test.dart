@@ -184,10 +184,9 @@ void main() {
         events.given('m1', at: yesterdayEight, slotAt: yesterdayEight),
       ]);
 
-      expect(
-        log.fromYesterday(day, now: eight).map((s) => s.slotAt),
-        [DateTime(2026, 11, 1, 20)],
-      );
+      expect(log.fromYesterday(day, now: eight).map((s) => s.slotAt), [
+        DateTime(2026, 11, 1, 20),
+      ]);
     });
 
     test('doses from the day before resolved today stay visible today', () {

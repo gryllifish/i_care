@@ -87,14 +87,8 @@ void main() {
 
     final created = repository.recorded.whereType<MedicationCreated>().single;
     expect(created.details.name, 'Metformin');
-    expect(
-      created.schedule,
-      const DoseSchedule.fixed(minutesOfDay: [8 * 60]),
-    );
-    expect(
-      repository.recorded.whereType<StockCounted>().single.units,
-      60,
-    );
+    expect(created.schedule, const DoseSchedule.fixed(minutesOfDay: [8 * 60]));
+    expect(repository.recorded.whereType<StockCounted>().single.units, 60);
     expect(find.text('2 active medications · Sample data'), findsOneWidget);
     // 08:00 has passed at 09:00, so the first dose is tomorrow's.
     expect(
@@ -120,10 +114,10 @@ void main() {
     await tapAndSettle(tester, find.text('Save'));
 
     final created = repository.recorded.whereType<MedicationCreated>().single;
-    expect(
-      (created.schedule as FixedSchedule).weekdays,
-      {DateTime.monday, DateTime.thursday},
-    );
+    expect((created.schedule as FixedSchedule).weekdays, {
+      DateTime.monday,
+      DateTime.thursday,
+    });
   });
 
   testWidgets('a medication needs a name and a time', (tester) async {

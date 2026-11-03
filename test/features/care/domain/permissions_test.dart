@@ -72,10 +72,7 @@ void main() {
     });
 
     test('only the server writes that someone joined', () {
-      expect(
-        actionOf(events.memberJoined('rosa'), authorId: 'rosa'),
-        isNull,
-      );
+      expect(actionOf(events.memberJoined('rosa'), authorId: 'rosa'), isNull);
     });
   });
 
@@ -92,10 +89,7 @@ void main() {
     expect(audienceOf(events.task('t1')), Audience.care);
     expect(audienceOf(events.memberInvited('lucia')), Audience.care);
     // Helpers take over too: they read the circle's notes.
-    expect(
-      audienceOf(events.careNote('Slept well', at: eight)),
-      Audience.care,
-    );
+    expect(audienceOf(events.careNote('Slept well', at: eight)), Audience.care);
     expect(audienceOf(events.note('a1', 'Same dose')), Audience.team);
     expect(audienceOf(events.document('a1', 'ECG')), Audience.team);
 

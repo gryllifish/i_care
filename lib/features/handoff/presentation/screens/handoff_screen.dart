@@ -183,9 +183,7 @@ class _NoteComposerState extends ConsumerState<_NoteComposer> {
     setState(() => _busy = true);
     final result = await ref
         .read(noteActionsProvider.notifier)
-        .leave(
-          _text.text,
-        );
+        .leave(_text.text);
     if (!mounted) return;
     setState(() => _busy = false);
     switch (result) {

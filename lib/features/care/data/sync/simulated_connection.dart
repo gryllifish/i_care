@@ -109,10 +109,7 @@ class SimulatedConnection implements SyncGateway, MembershipGateway {
     await _travel();
     final issued = await _server.issueCode(deviceId, memberId);
     await _travel();
-    return InviteCode(
-      code: _display(issued.code),
-      expiresAt: issued.expiresAt,
-    );
+    return InviteCode(code: _display(issued.code), expiresAt: issued.expiresAt);
   }
 
   @override

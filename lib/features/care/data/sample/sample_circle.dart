@@ -291,11 +291,8 @@ class _SampleHistory {
             continue;
           }
           _add(
-            (meta) => CareEvent.taskDone(
-              meta: meta,
-              taskId: task.id,
-              slotAt: slotAt,
-            ),
+            (meta) =>
+                CareEvent.taskDone(meta: meta, taskId: task.id, slotAt: slotAt),
             at: doneAt,
             by: caregiver,
           );

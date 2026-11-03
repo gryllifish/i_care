@@ -151,10 +151,7 @@ class _TaskFormState extends ConsumerState<_TaskForm> {
             title: l10n.sectionWhen,
             children: [
               SegmentedControl<bool>(
-                options: {
-                  false: l10n.duringTheDay,
-                  true: l10n.taskAtSetTimes,
-                },
+                options: {false: l10n.duringTheDay, true: l10n.taskAtSetTimes},
                 selected: _draft.atSetTimes,
                 onChanged: (atSetTimes) => setState(
                   () => _draft = _draft.copyWith(atSetTimes: atSetTimes),

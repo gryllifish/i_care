@@ -57,14 +57,8 @@ String eventSentence(
       units(count),
       medication,
     ),
-    AppointmentCreated() => l10n.activityAppointmentCreated(
-      name,
-      appointment,
-    ),
-    AppointmentUpdated() => l10n.activityAppointmentUpdated(
-      name,
-      appointment,
-    ),
+    AppointmentCreated() => l10n.activityAppointmentCreated(name, appointment),
+    AppointmentUpdated() => l10n.activityAppointmentUpdated(name, appointment),
     AppointmentCancelled() => l10n.activityAppointmentCancelled(
       name,
       appointment,

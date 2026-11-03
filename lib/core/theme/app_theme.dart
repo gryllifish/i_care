@@ -153,9 +153,7 @@ abstract final class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.sm),
         ),
-        contentTextStyle: AppTextStyles.body.copyWith(
-          color: colors.onAccent,
-        ),
+        contentTextStyle: AppTextStyles.body.copyWith(color: colors.onAccent),
       ),
     );
   }

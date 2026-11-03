@@ -53,10 +53,7 @@ class SettingsScreen extends ConsumerWidget {
                           style: AppTextStyles.body,
                         ),
                       ),
-                      Icon(
-                        Icons.chevron_right,
-                        color: context.colors.inkMuted,
-                      ),
+                      Icon(Icons.chevron_right, color: context.colors.inkMuted),
                     ],
                   ),
                 ),

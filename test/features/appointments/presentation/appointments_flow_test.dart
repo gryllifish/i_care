@@ -268,9 +268,7 @@ void main() {
     expect(find.text('Cardiology'), findsNothing);
   });
 
-  testWidgets('the appointment screens fit at 200 % text size', (
-    tester,
-  ) async {
+  testWidgets('the appointment screens fit at 200 % text size', (tester) async {
     tester.platformDispatcher.textScaleFactorTestValue = 2;
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     await openTab(tester);

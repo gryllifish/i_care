@@ -247,9 +247,7 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
               if (_choosingReason && slot != null)
                 SkipReasonPicker(
                   title: l10n.skipReasonTitle,
-                  reasonIds: ref.watch(
-                    reasonChoicesProvider(forTask: false),
-                  ),
+                  reasonIds: ref.watch(reasonChoicesProvider(forTask: false)),
                   onPicked: _busy
                       ? null
                       : (reasonId, note) => _skip(detail, slot, reasonId, note),

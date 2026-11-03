@@ -22,11 +22,7 @@ void main() {
     );
     final pending = events.given('m1', at: morning.subtract(_hour));
 
-    expect([pending, late, early]..sort(compareEvents), [
-      early,
-      late,
-      pending,
-    ]);
+    expect([pending, late, early]..sort(compareEvents), [early, late, pending]);
   });
 
   test('pending events are ordered by device time', () {

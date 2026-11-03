@@ -42,7 +42,7 @@ class MembershipActions extends _$MembershipActions {
       ),
     );
     if (invited case Err(:final failure)) return Err(failure);
-    return _membership.issueCode(memberId);
+    return await _membership.issueCode(memberId);
   }
 
   /// A code for [member]'s next device, or a fresh one for an invitation

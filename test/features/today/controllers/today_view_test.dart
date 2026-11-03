@@ -129,9 +129,7 @@ void main() {
       events.task(
         't1',
         name: 'Walk',
-        schedule: const TaskSchedule(
-          minutesOfDay: [8 * 60, 17 * 60],
-        ),
+        schedule: const TaskSchedule(minutesOfDay: [8 * 60, 17 * 60]),
       ),
       events.task('t2', name: 'Check her skin', schedule: const TaskSchedule()),
     ]);

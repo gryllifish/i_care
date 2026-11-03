@@ -72,9 +72,7 @@ Future<void> bootstrap() async {
             eventBoxProvider.overrideWithValue(phone.events),
             rejectedBoxProvider.overrideWithValue(phone.rejected),
             syncStateBoxProvider.overrideWithValue(phone.syncState),
-            devicePrefsProvider.overrideWithValue(
-              HiveDevicePrefs(phone.prefs),
-            ),
+            devicePrefsProvider.overrideWithValue(HiveDevicePrefs(phone.prefs)),
             simulatedServerProvider.overrideWithValue(server),
             demoResetProvider.overrideWithValue(resetDemo),
             demoStartEmptyProvider.overrideWithValue(startEmpty),
@@ -168,9 +166,7 @@ Future<void> _clearAll(SimulatedServer server, List<_Phone> phones) async {
 /// keeps a position from the old log; a phone that had left the circle
 /// is its owner's again.
 Future<void> _reset(SimulatedServer server, List<_Phone> phones) async {
-  final containers = [
-    for (final phone in phones) ?phone.container,
-  ];
+  final containers = [for (final phone in phones) ?phone.container];
   for (final container in containers) {
     await container.read(careRepositoryImplProvider).stop();
   }
@@ -188,9 +184,7 @@ Future<void> _reset(SimulatedServer server, List<_Phone> phones) async {
 /// Clears every phone and the server, leaving them without a circle: the
 /// phones then offer to create one or join one, as on a first install.
 Future<void> _startEmpty(SimulatedServer server, List<_Phone> phones) async {
-  final containers = [
-    for (final phone in phones) ?phone.container,
-  ];
+  final containers = [for (final phone in phones) ?phone.container];
   for (final container in containers) {
     await container.read(careRepositoryImplProvider).stop();
   }
@@ -228,7 +222,7 @@ Future<Box<String>> _openBox(String name) async {
   } catch (error, stackTrace) {
     AppLogger.error('Storage for $name unavailable', error, stackTrace);
     // A distinct name: Hive would hand back the still-pending open instead.
-    return Hive.openBox<String>('${name}_memory', bytes: Uint8List(0));
+    return await Hive.openBox<String>('${name}_memory', bytes: Uint8List(0));
   }
 }
 

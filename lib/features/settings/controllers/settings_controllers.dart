@@ -8,14 +8,11 @@ part 'settings_controllers.g.dart';
 @Riverpod(keepAlive: true)
 class AppLanguage extends _$AppLanguage {
   @override
-  Locale? build() => switch (ref
-      .watch(devicePrefsProvider)
-      .read(
-        PrefKeys.language,
-      )) {
-    final String code => Locale(code),
-    null => null,
-  };
+  Locale? build() =>
+      switch (ref.watch(devicePrefsProvider).read(PrefKeys.language)) {
+        final String code => Locale(code),
+        null => null,
+      };
 
   Future<void> choose(Locale? locale) async {
     state = locale;
@@ -40,10 +37,7 @@ class AppThemeMode extends _$AppThemeMode {
     state = mode;
     await ref
         .read(devicePrefsProvider)
-        .write(
-          PrefKeys.themeMode,
-          mode == ThemeMode.system ? null : mode.name,
-        );
+        .write(PrefKeys.themeMode, mode == ThemeMode.system ? null : mode.name);
   }
 }
 

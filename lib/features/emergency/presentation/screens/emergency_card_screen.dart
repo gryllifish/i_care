@@ -133,10 +133,7 @@ class _CardContent extends ConsumerWidget {
             title: l10n.conditionsTitle,
             children: [
               AppCard(
-                child: Text(
-                  conditions.join('\n'),
-                  style: AppTextStyles.title,
-                ),
+                child: Text(conditions.join('\n'), style: AppTextStyles.title),
               ),
             ],
           ),

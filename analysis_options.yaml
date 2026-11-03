@@ -29,3 +29,6 @@ linter:
     use_setters_to_change_properties: false
     # The tall-style formatter (Dart >= 3.7) manages trailing commas itself.
     require_trailing_commas: false
+    # Constructors keep their class name (`Foo(...)`, not `new(...)`), as
+    # in the rest of the portfolio and most Flutter code today.
+    unnecessary_type_name_in_constructor: false

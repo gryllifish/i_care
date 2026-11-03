@@ -94,10 +94,7 @@ class _StockSheetState extends ConsumerState<_StockSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: AppSpacing.lg,
         children: [
-          Text(
-            widget.medication.details.name,
-            style: AppTextStyles.headline,
-          ),
+          Text(widget.medication.details.name, style: AppTextStyles.headline),
           StockInput(
             controller: _units,
             label: isRecount ? l10n.howManyLeft : l10n.howManyBought,
@@ -115,10 +112,7 @@ class _StockSheetState extends ConsumerState<_StockSheet> {
                   ),
               ],
             ),
-          FilledButton(
-            onPressed: _busy ? null : _save,
-            child: Text(l10n.save),
-          ),
+          FilledButton(onPressed: _busy ? null : _save, child: Text(l10n.save)),
         ],
       ),
     );
