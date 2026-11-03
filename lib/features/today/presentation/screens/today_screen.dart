@@ -276,16 +276,13 @@ class _Header extends ConsumerWidget {
 
 /// The care recipient's initial, which opens their emergency card: one
 /// tap from the first screen, for the moment someone needs it at a
-/// hospital. A medical badge says it can be tapped.
+/// hospital.
 class _RecipientAvatar extends StatelessWidget {
   const _RecipientAvatar({required this.name});
 
   final String name;
 
   static const _size = 52.0;
-  static const _badgeSize = 22.0;
-  static const _badgeIconSize = 14.0;
-  static const _badgeBorder = 2.0;
 
   @override
   Widget build(BuildContext context) {
@@ -298,43 +295,14 @@ class _RecipientAvatar extends StatelessWidget {
         child: InkWell(
           customBorder: const CircleBorder(),
           onTap: () => context.push(AppRoutes.emergency),
-          child: SizedBox.square(
-            dimension: _size,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                CircleAvatar(
-                  radius: _size / 2,
-                  backgroundColor: context.colors.recipient,
-                  child: Text(
-                    name.characters.first.toUpperCase(),
-                    style: AppTextStyles.headline.copyWith(
-                      color: context.colors.onAccent,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: -_badgeBorder,
-                  bottom: -_badgeBorder,
-                  child: Container(
-                    width: _badgeSize,
-                    height: _badgeSize,
-                    decoration: BoxDecoration(
-                      color: context.colors.overdue,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: context.colors.background,
-                        width: _badgeBorder,
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.medical_information,
-                      size: _badgeIconSize,
-                      color: context.colors.onAccent,
-                    ),
-                  ),
-                ),
-              ],
+          child: CircleAvatar(
+            radius: _size / 2,
+            backgroundColor: context.colors.recipient,
+            child: Text(
+              name.characters.first.toUpperCase(),
+              style: AppTextStyles.headline.copyWith(
+                color: context.colors.onAccent,
+              ),
             ),
           ),
         ),
