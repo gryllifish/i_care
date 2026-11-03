@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/features/appointments/presentation/widgets/question_list_field.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
+import 'package:i_care/features/today/presentation/screens/today_screen.dart';
 import 'package:i_care/shared/providers/link_opener.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
 
@@ -81,6 +82,11 @@ void main() {
     expect(find.text('Cardiology'), findsWidgets);
     // Upcoming: no notes to write yet.
     expect(find.text('VISIT NOTES'), findsNothing);
+
+    // Back returns to where it was opened from.
+    await tapAndSettle(tester, find.byType(BackButton));
+    expect(find.byType(TodayScreen), findsOneWidget);
+    expect(find.text('NEXT APPOINTMENT'), findsOneWidget);
   });
 
   testWidgets('adds an appointment, requiring a title', (tester) async {

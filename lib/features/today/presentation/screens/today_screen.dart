@@ -785,7 +785,7 @@ class _NextAppointmentCard extends ConsumerWidget {
     final details = appointment.details;
     final questions = details.questionList.length;
     return AppCard(
-      onTap: () => context.go(AppRoutes.appointmentPath(appointment.id)),
+      onTap: () => context.push(AppRoutes.appointmentPath(appointment.id)),
       child: Row(
         spacing: AppSpacing.md,
         children: [
