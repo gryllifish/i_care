@@ -50,6 +50,19 @@ flutter test
 dart format lib test
 ```
 
+### Backend (stage 2)
+Needs the Supabase CLI and a container runtime (OrbStack on the
+maintainer's Mac; its `docker` lives in `~/.orbstack/bin`).
+```sh
+# Only what the app uses: database, auth, REST and Realtime.
+supabase start -x studio,imgproxy,mailpit,storage-api,edge-runtime,logflare,vector,supavisor,postgres-meta
+supabase test db                        # pgTAP suite in supabase/tests/
+supabase db reset                       # reapply migrations from scratch
+supabase stop
+```
+Local keys printed by `supabase start` are the CLI's fixed demo keys,
+not secrets; real project keys go only in git-ignored `env/*.json`.
+
 ## Environments
 - `env/<env>.json` (git-ignored) holds `APP_ENV`; copy
   from `env/dev.json.example`. Read them only through `core/config/env.dart`.

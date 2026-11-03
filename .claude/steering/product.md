@@ -337,7 +337,7 @@ documented), nursing-home features.
 1. Review design details with the user (screenshots: `scripts/screenshots.sh`).
 2. Stage 2 beta, each step needing the user's approval of its
    dependencies first:
-   1. Supabase schema, RPCs, RLS and pgTAP tests (`supabase/`), run on a
+   1. (done) Supabase schema, functions and pgTAP tests (`supabase/`), on a
       local stack.
    2. `SupabaseSyncGateway` and `SupabaseMembershipGateway`, passing the
       contract suites; gateway chosen by `SYNC_BACKEND`.

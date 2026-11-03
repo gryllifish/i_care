@@ -193,10 +193,12 @@ call RPCs, `SECURITY DEFINER` functions that check the caller:
   `RoleChanged`, `MemberRemoved`, `InvitationRevoked`, `MemberLeft`, the
   last one ending only the calling device's binding), so log and state
   never disagree. The client sends large outboxes in batches.
-- `create_circle`, `issue_code`, `join`: the `MembershipGateway`.
-  Leaving and revoking are events, not calls. `join` counts failed
-  attempts per device and locks out after a few, since six-character
-  codes can be guessed.
+- `create_circle`, `issue_code`, `join_circle`: the
+  `MembershipGateway`. Leaving and revoking are events, not calls.
+  `join_circle` answers a bad code with `{error}` rather than raising,
+  so the failure is counted instead of rolled back: after five, the
+  device waits 15 minutes (`locked`; the app needs a `CodeProblem` for
+  it).
 - `events_after(cursor, page_size)`: what `watch` reads (below).
 - `delete_circle`: admins only; see "Deletion" below.
 
@@ -236,13 +238,16 @@ projects to `ServerException` (all transient, retried by
 `retryPolicy`), `not_member` to `NotMemberException`, and
 membership errors to the exceptions `MembershipGateway` documents.
 
-### Row Level Security
-- `events`: `select` if the caller's device is bound to a current member
-  of the circle whose role includes the event's `audience` (a helper sees
-  only `care`). No other grant.
-- `members`, `circles`: `select` for members of the circle.
-- `invite_codes`, `device_bindings`: no client access.
-- `device_tokens`: each device reads and writes only its own row.
+### Access
+- Tables live in a `private` schema the API does not expose, with RLS on
+  and no policies: clients cannot read or write any table. Every read
+  and write is a function in `public`, granted to `authenticated` only
+  (anonymous devices included), never to `anon`.
+- Audiences are applied inside `events_after`, from the caller's role.
+- `public.current_circle()` gives the device its circle for the Realtime
+  channel; a policy on `realtime.messages` lets only current members
+  hear `circle:<id>`.
+- `device_tokens` (push phase) will be written through a function too.
 
 ### Push notifications
 Sent by FCM (free without Firebase's Blaze plan); Supabase only decides
@@ -276,9 +281,13 @@ also holds its circle's full log, and `push` is idempotent, so devices
 could repopulate an empty server.
 
 ### Tests
-- The gateway contract suite runs against the local stack.
-- SQL tests (pgTAP, `supabase test db`) cover RLS and each RPC,
-  including the permission matrix and the ordering lock.
+- SQL tests (`supabase/tests/`, pgTAP) cover each function, every cell
+  of the permission matrix, audiences, paging, former members, the last
+  admin, code lockout, table access and deletion.
+- The gateway contract suite will run against the same local stack.
+- Schema: `supabase/migrations/`. Malformed events are refused alone as
+  `not_allowed`; events of a newer `formatVersion` too, until the server
+  is updated.
 
 ### Open issues before the beta
 Found reviewing the code against this design on 2026-11-03. Two more
