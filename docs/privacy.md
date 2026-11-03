@@ -36,13 +36,20 @@ Before the family enters real data:
    from every member: what is stored, where (Supabase, Frankfurt), who
    sees it (circle members by role, and the maintainer as operator), that
    it is a beta, and how to ask for a copy or deletion.
-2. **Encrypted local storage** on every device (Hive with a key kept in
-   the platform's secure storage). Already a stated prerequisite in
-   `roles.md`.
+2. **Encrypted local storage** on every device (done): the beta's Hive
+   boxes use AES-256 with a key kept in the platform's secure storage
+   (`StorageKey`), and the Supabase session lives there too
+   (`SecureSessionStorage`), not in plain preferences. Without a key the
+   app keeps data in memory only. Android backups are off, so encrypted
+   files are never restored without their key. On the web, secure
+   storage is the browser's own: it keeps the key out of plain sight,
+   not away from code running on the page.
 3. **Minimal data**: only what the features use; no ID numbers, no
    diagnoses beyond what caregivers choose to note.
-4. **Deletion and export** work end to end: `delete_circle`, and a log
-   export the maintainer can send.
+4. **Deletion and export** work end to end. Deletion is done: an admin
+   deletes the circle for everyone from Settings (beta only), after a
+   confirmation that says it cannot be undone. Still to do: a log export
+   the maintainer can send.
 5. **Backups** encrypted and kept off the repository (`backend.md`).
 6. The app keeps saying what it is: a record of what caregivers did,
    never medical advice (`product.md`, medical disclaimer).

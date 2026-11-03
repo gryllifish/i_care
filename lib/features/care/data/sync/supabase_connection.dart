@@ -202,6 +202,9 @@ class SupabaseConnection implements SyncGateway, MembershipGateway {
     };
   }
 
+  @override
+  Future<void> deleteCircle() => _call('delete_circle');
+
   /// Calls the backend function [name] as this device.
   ///
   /// Throws [NoConnectionException], [RequestTimeoutException],

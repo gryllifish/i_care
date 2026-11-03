@@ -144,6 +144,13 @@ class SimulatedConnection implements SyncGateway, MembershipGateway {
     return memberId;
   }
 
+  @override
+  Future<void> deleteCircle() async {
+    await _travel();
+    await _server.deleteCircle(deviceId);
+    await _travel();
+  }
+
   /// "K7P4QM" as "K7P-4QM": easier to read aloud and type.
   static String _display(String code) =>
       '${code.substring(0, code.length ~/ 2)}-'

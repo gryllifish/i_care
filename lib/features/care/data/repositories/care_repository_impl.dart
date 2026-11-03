@@ -172,6 +172,19 @@ class CareRepositoryImpl implements CareRepository {
     start();
   });
 
+  /// Deletes this device's copy of the log entirely, unsent records
+  /// included, and syncs again from the start: after its circle was
+  /// deleted, those records belong to nothing.
+  Future<Result<void>> erase() => guard(() async {
+    await stop();
+    await _events.clear();
+    await _rejected.clear();
+    await _syncState.clear();
+    _isMember = true;
+    _isConnected = true;
+    start();
+  });
+
   Future<void> _push() => _pushing = _pushing.then((_) => _pushPending());
 
   Future<void> _pushPending() async {

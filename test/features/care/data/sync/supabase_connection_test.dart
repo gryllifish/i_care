@@ -144,6 +144,45 @@ Future<void> main() async {
           );
         });
 
+        test('only an admin deletes the circle, and every phone learns it '
+            'is in none', () async {
+          final admin = newDevice();
+          final member = newDevice();
+          final adminId = await admin.connection.createCircle(
+            creatorName: 'Ana',
+            recipientName: 'Elena',
+          );
+          await admin.connection.push([
+            CareEvent.memberInvited(
+              meta: EventMeta(
+                id: 'invite-luis',
+                caregiverId: adminId,
+                occurredAt: DateTime(2026, 11, 3, 9),
+              ),
+              memberId: 'luis',
+              name: 'Luis',
+              role: MemberRole.caregiver,
+              colorIndex: 1,
+            ),
+          ]);
+          await member.connection.join(
+            (await admin.connection.issueCode('luis')).code,
+          );
+
+          await expectLater(
+            member.connection.deleteCircle(),
+            throwsA(isA<ForbiddenException>()),
+          );
+          await admin.connection.deleteCircle();
+
+          for (final phone in [admin, member]) {
+            await expectLater(
+              phone.connection.watch().first,
+              throwsA(isA<NotMemberException>()),
+            );
+          }
+        });
+
         test('too many wrong codes lock the device out for a while', () async {
           final guesser = newDevice();
           Future<CodeProblem?> attempt() async {

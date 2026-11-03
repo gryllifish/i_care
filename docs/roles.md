@@ -231,7 +231,8 @@ Supabase, as designed in [`backend.md`](backend.md#supabase-stage-2):
 - The simulated server is not security: it runs in the same app as the
   phones. It shows the design, not a guarantee.
 - A removed member's phone that never reconnects keeps its data.
-- Local data is not encrypted yet; needed before real health data.
+- The demo's local data is not encrypted: it is sample data. The beta's
+  is (`privacy.md`).
 
 ## Phases
 

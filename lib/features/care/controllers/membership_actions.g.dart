@@ -50,7 +50,7 @@ final class MembershipActionsProvider
   }
 }
 
-String _$membershipActionsHash() => r'fbe7f14c2162cc54714075ba3c6820db6c479f5d';
+String _$membershipActionsHash() => r'884f4ea38dd8cf3567ca158d67865281f6fde6d5';
 
 /// Who belongs to the circle and which device is whose (`docs/roles.md`).
 /// Changes to members are events, carrying the version they were made on;

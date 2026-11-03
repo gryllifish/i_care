@@ -26,4 +26,12 @@ abstract interface class MembershipGateway {
   ///
   /// Throws [NoConnectionException] or [InvalidCodeException].
   Future<String> join(String code);
+
+  /// Deletes this device's circle with everything in it, for everyone:
+  /// what the person cared for may ask for (`docs/privacy.md`). Admins
+  /// only.
+  ///
+  /// Throws [NoConnectionException], [NotMemberException] or
+  /// [ForbiddenException].
+  Future<void> deleteCircle();
 }

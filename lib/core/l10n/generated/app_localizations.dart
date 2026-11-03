@@ -2641,6 +2641,36 @@ abstract class AppLocalizations {
   /// **'Connect to leave: there are records still to send.'**
   String get leaveOffline;
 
+  /// No description provided for @deleteCircle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the circle and all its data'**
+  String get deleteCircle;
+
+  /// No description provided for @deleteCircleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete everything about {name}?'**
+  String deleteCircleTitle(String name);
+
+  /// No description provided for @deleteCircleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletes the circle for everyone: medications, doses, tasks, notes, appointments and the emergency card. Every phone leaves it. This cannot be undone.'**
+  String get deleteCircleBody;
+
+  /// No description provided for @deleteCircleConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete for everyone'**
+  String get deleteCircleConfirm;
+
+  /// No description provided for @deleteCircleOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to delete the circle.'**
+  String get deleteCircleOffline;
+
   /// No description provided for @conflictNeedsReviewer.
   ///
   /// In en, this message translates to:

@@ -1620,6 +1620,24 @@ class AppLocalizationsEs extends AppLocalizations {
       'Conectate para salir: quedan registros por enviar.';
 
   @override
+  String get deleteCircle => 'Borrar el círculo y todos sus datos';
+
+  @override
+  String deleteCircleTitle(String name) {
+    return '¿Borrar todo sobre $name?';
+  }
+
+  @override
+  String get deleteCircleBody =>
+      'Borra el círculo para todos: medicamentos, tomas, tareas, notas, turnos y la ficha de emergencia. Todos los teléfonos salen de él. No se puede deshacer.';
+
+  @override
+  String get deleteCircleConfirm => 'Borrar para todos';
+
+  @override
+  String get deleteCircleOffline => 'Conectate para borrar el círculo.';
+
+  @override
   String get conflictNeedsReviewer =>
       'Lo va a revisar una persona admin o que cuida a diario.';
 

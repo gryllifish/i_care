@@ -58,6 +58,54 @@ void main() {
     );
   });
 
+  testWidgets('outside the demo an admin deletes the circle for everyone, '
+      'after confirming', (tester) async {
+    final membership = FakeMembershipRepository();
+    await pumpApp(
+      tester,
+      repository: circle(),
+      now: now,
+      prefs: phoneOf('ana'),
+      membership: membership,
+      overrides: [isDemoProvider.overrideWithValue(false)],
+    );
+    await openSettings(tester);
+
+    await tapInSettings(
+      tester,
+      find.text('Delete the circle and all its data'),
+    );
+    expect(find.text('Delete for everyone'), findsOneWidget);
+    await tester.tap(find.text('Delete for everyone'));
+    await tester.pumpAndSettle();
+
+    expect(membership.deleted, 1);
+    expect(find.text('Join a care circle'), findsOneWidget);
+  });
+
+  for (final (who, memberId, isDemo) in [
+    ('a caregiver', 'martin', false),
+    ('an admin in the demo', 'ana', true),
+  ]) {
+    testWidgets('$who is not offered deleting the circle', (tester) async {
+      await pumpApp(
+        tester,
+        repository: circle(),
+        now: now,
+        prefs: phoneOf(memberId),
+        overrides: [isDemoProvider.overrideWithValue(isDemo)],
+      );
+      await openSettings(tester);
+      await centerInList(
+        tester,
+        find.text('Leave the circle on this phone'),
+        list: find.byType(Scrollable).last,
+      );
+
+      expect(find.text('Delete the circle and all its data'), findsNothing);
+    });
+  }
+
   testWidgets('a phone that belongs to nobody joins with a code', (
     tester,
   ) async {

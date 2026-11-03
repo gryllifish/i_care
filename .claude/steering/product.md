@@ -341,7 +341,8 @@ documented), nursing-home features.
       local stack.
    2. (done) `SupabaseConnection` for both gateways, passing the
       contract suite; the beta build chosen by `SYNC_BACKEND`.
-   3. Encrypted local storage and `delete_circle` (`docs/privacy.md`).
+   3. (done) Encrypted local storage and deleting the circle from
+      Settings (`docs/privacy.md`); a log export is still to do.
    4. Push notifications by event (FCM).
    5. Beta build for the family: web/PWA and Android first; iOS needs an
       Apple Developer account.

@@ -306,16 +306,26 @@ select throws_ok(
 
 -- Deleting a circle -------------------------------------------------------------
 
+-- Other circles may exist (the Dart suite's): count only this one.
+reset role;
+select set_config('test.circle', (
+  select circle_id::text from private.device_bindings
+  where uid = '00000000-0000-0000-0000-0000000000a1'
+), true);
 set local role authenticated;
 select pg_temp.act_as('00000000-0000-0000-0000-0000000000a1');
 select lives_ok($$ select public.delete_circle() $$, 'an admin deletes the circle');
 reset role;
 select is(
-  (select count(*) from private.events), 0::bigint,
+  (select count(*) from private.events
+    where circle_id = current_setting('test.circle')::uuid),
+  0::bigint,
   'with every event in it'
 );
 select is(
-  (select count(*) from private.device_bindings), 0::bigint,
+  (select count(*) from private.device_bindings
+    where circle_id = current_setting('test.circle')::uuid),
+  0::bigint,
   'and its devices unbound'
 );
 

@@ -30,4 +30,10 @@ abstract interface class MembershipRepository {
   /// Clears this device's copy of the log once the server said it is no
   /// longer in the circle (and anything pending was sent).
   Future<Result<void>> forget();
+
+  /// Deletes the circle with everything in it, for every member, then
+  /// this device's copy, unsent records included: what the person cared
+  /// for may ask for (`docs/privacy.md`). Admins only; needs a
+  /// connection.
+  Future<Result<void>> deleteCircle();
 }

@@ -1316,6 +1316,18 @@
   "leaveBody": "Anything not sent yet is sent first, then this phone's copy is cleared. Coming back takes a new code.",
   "leave": "Leave",
   "leaveOffline": "Connect to leave: there are records still to send.",
+  "deleteCircle": "Delete the circle and all its data",
+  "deleteCircleTitle": "Delete everything about {name}?",
+  "@deleteCircleTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteCircleBody": "Deletes the circle for everyone: medications, doses, tasks, notes, appointments and the emergency card. Every phone leaves it. This cannot be undone.",
+  "deleteCircleConfirm": "Delete for everyone",
+  "deleteCircleOffline": "Connect to delete the circle.",
   "conflictNeedsReviewer": "An admin or a caregiver will review it.",
   "daySummaryTitle": "Today so far",
   "summaryNothingLate": "Nothing late",

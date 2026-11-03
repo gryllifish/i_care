@@ -278,6 +278,33 @@ void main() {
       },
     );
 
+    test('only an admin deletes the circle, which empties the server and '
+        'this phone, unsent records included', () async {
+      final (martin, _, _) = await joinedPhone('martin');
+      expect(await martin.deleteCircle(), isA<Err<void>>());
+      expect(server.isEmpty, isFalse);
+
+      final (ana, care, connection) = await joinedPhone('ana');
+      connection.isOnline = false;
+      await care.record(events.given('m1', at: eight));
+      connection.isOnline = true;
+      // Sent or not, the record goes with the circle.
+      expect(await ana.deleteCircle(), isA<Ok<void>>());
+
+      expect(server.isEmpty, isTrue);
+      expect(server.isActive('phone-martin'), isFalse);
+      final status = await care.watchSyncStatus().first;
+      expect(status.pendingCount, 0);
+    });
+
+    test('deleting offline fails and deletes nothing', () async {
+      final (ana, _, connection) = await joinedPhone('ana');
+      connection.isOnline = false;
+
+      expect(await ana.deleteCircle(), isA<Err<void>>());
+      expect(server.isEmpty, isFalse);
+    });
+
     test('joining with a code binds this device and starts over', () async {
       final (anaMembership, _, _) = await joinedPhone('ana');
       final code =

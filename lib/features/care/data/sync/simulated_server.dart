@@ -323,6 +323,18 @@ class SimulatedServer {
     return memberId;
   }
 
+  /// Deletes the circle with everything in it, asked by an admin on
+  /// [deviceId]. The demo's server has room for one circle, so it empties
+  /// as when the demo starts without data; every other phone then learns
+  /// it is no longer in a circle.
+  ///
+  /// Throws [NotMemberException], [ForbiddenException] or
+  /// [StorageException].
+  Future<void> deleteCircle(String deviceId) async {
+    _requireAdmin(deviceId);
+    await startEmpty();
+  }
+
   /// Empties everything and remembers that the demo started without data.
   ///
   /// Throws [StorageException].

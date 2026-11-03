@@ -176,7 +176,7 @@ join_attempts   uid, failed_count, locked_until             -- no client access
   server reads only what it checks (type, author, targets) and writes
   `received_at`, `server_seq` and `from_former_member` into it, in the
   codec's formats. `received_at` uses the codec's wall-clock format in
-  the circle's time zone (open issue 4 below).
+  the circle's time zone (open issue 3 below).
 - Every device signs in anonymously; its auth `uid` is the device, and
   `device_bindings` says which member it is (`roles.md`).
 - Members, roles, bindings and codes are server state, as in the
@@ -275,7 +275,9 @@ The log is append-only for caregivers, but the person cared for can ask
 to delete their data (Ley 25.326, art. 16). `delete_circle` removes the
 circle with everything in it (cascade) and unbinds its devices, which
 then clear themselves as a removed device does today. It is the one
-operation that deletes shared data, and it is not an event.
+operation that deletes shared data, and it is not an event. In the app,
+an admin finds it in Settings (beta only); the phone that deletes also
+erases its own copy, unsent records included (`CareRepositoryImpl.erase`).
 
 ### Backups
 The free plan has none. A script runs `pg_dump` to the maintainer's
@@ -311,8 +313,7 @@ demo-only paths in a beta build ("Which gateway runs").
 2. **Browser storage on iPhone.** Safari may delete a website's storage
    after 7 days without a visit, including the unsent outbox. Testers on
    iPhone should install the PWA to the home screen, or use Android.
-3. **Unencrypted local storage** (`privacy.md`).
-4. **Time zone for server-side alerts.** Dates are encoded without an
+3. **Time zone for server-side alerts.** Dates are encoded without an
    offset (local time). Phase 2 alerts need the circle's time zone
    stored on the server.
 

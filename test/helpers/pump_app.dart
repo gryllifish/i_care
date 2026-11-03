@@ -143,6 +143,15 @@ class FakeMembershipRepository implements MembershipRepository {
     forgotten++;
     return const Ok(null);
   }
+
+  int deleted = 0;
+
+  @override
+  Future<Result<void>> deleteCircle() async {
+    if (failure case final Failure failure) return Err(failure);
+    deleted++;
+    return const Ok(null);
+  }
 }
 
 /// Logical size of a typical phone.

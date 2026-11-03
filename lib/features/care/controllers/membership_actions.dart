@@ -110,6 +110,15 @@ class MembershipActions extends _$MembershipActions {
     return left;
   }
 
+  /// Deletes the circle for everyone, then clears this device.
+  Future<Result<void>> deleteCircle() async {
+    final deleted = await _membership.deleteCircle();
+    if (deleted case Ok()) {
+      await ref.read(deviceMembershipProvider.notifier).cleared();
+    }
+    return deleted;
+  }
+
   /// Clears this device once the server said it is not in the circle.
   Future<Result<void>> forget() async {
     final forgotten = await _membership.forget();

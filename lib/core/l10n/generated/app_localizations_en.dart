@@ -1619,6 +1619,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'Connect to leave: there are records still to send.';
 
   @override
+  String get deleteCircle => 'Delete the circle and all its data';
+
+  @override
+  String deleteCircleTitle(String name) {
+    return 'Delete everything about $name?';
+  }
+
+  @override
+  String get deleteCircleBody =>
+      'Deletes the circle for everyone: medications, doses, tasks, notes, appointments and the emergency card. Every phone leaves it. This cannot be undone.';
+
+  @override
+  String get deleteCircleConfirm => 'Delete for everyone';
+
+  @override
+  String get deleteCircleOffline => 'Connect to delete the circle.';
+
+  @override
   String get conflictNeedsReviewer => 'An admin or a caregiver will review it.';
 
   @override
