@@ -1,7 +1,7 @@
 # Backend design
 
 ICare ships with a simulated remote. This document describes the sync
-model both implementations share and the Firestore design the real one
+model both implementations share and the Supabase design the real one
 will follow, so the simulated remote is built against real constraints.
 
 ## Sync model
@@ -34,10 +34,13 @@ feed, the latest version of a medication) is a projection of the log.
 | `SkipReasonHidden` / `SkipReasonShown` | reason id: stops or resumes offering a reason, standard or the circle's ("Other" is always offered) |
 | `RecipientProfileUpdated` | profile snapshot (allergies, conditions, doctors, contacts), `baseVersion` |
 
-Every event carries `id` (UUID v4, generated on the device), `circleId`,
+Every event carries `id` (UUID v4 generated on the device; events the
+server writes and sample data use other unique strings),
 `caregiverId` (the author: a member, or `system`; see `roles.md`),
 `occurredAt` (device clock, shown to users) and
-`receivedAt` (assigned by the server, null until synced).
+`receivedAt` (assigned by the server, null until synced). Events carry
+no circle id: a device belongs to one circle, and the server files each
+event under its device's circle.
 
 ### Why events
 - **Merging is a set union by `id`**: commutative and idempotent, so
@@ -61,13 +64,28 @@ Every event carries `id` (UUID v4, generated on the device), `circleId`,
 - Stock never conflicts: it is counted + refilled − consumed.
 
 ### Ordering and clocks
-Device clocks drift, so they never decide anything. The feed is ordered by
-`receivedAt` (then `occurredAt` for unsynced local events); conflicts are
-detected by slot or `baseVersion`, not by time. The server keeps every
-`receivedAt` later than the one before, so events received in the same
-instant (one push) keep their arrival order instead of falling back to
-their random ids: an invitation and a role change pushed together must
-apply in that order.
+Device clocks drift, so they never decide anything. The log is ordered by
+`serverSeq`, the place the server gave each event (then `occurredAt` for
+unsynced local events); conflicts are detected by slot or `baseVersion`,
+not by time. Events received together (one push) keep their arrival
+order instead of falling back to their random ids: an invitation and a
+role change pushed together must apply in that order.
+
+`receivedAt` is for display only. Timestamps cannot order the log: on
+the web Dart's `DateTime` keeps milliseconds only, so events of one push
+can share one. Copies synced before events carried `serverSeq` sort
+first, by `receivedAt`; the simulated server numbers its old records
+when it loads them.
+
+### App versions
+Devices update at different times (web, APK), so a device may receive
+events from a newer app version: a type it does not know, or a newer
+`formatVersion`. It keeps them as received, leaves them out of the log
+and reads them after updating (`CareEventCodec.tryDecodeString`,
+`EventStore.keepUnreadable`); one updated device never stops sync for
+the others. A newer event the old app cannot see may make its view
+incomplete until it updates. The server is updated before any client
+that writes a new type.
 
 ### Offline
 Each device keeps its log and an outbox locally. The UI shows the last
@@ -80,11 +98,12 @@ it is the goal.
 
 ```dart
 abstract interface class SyncGateway {
-  /// Uploads events; returns them with `receivedAt` set. Idempotent by id.
-  Future<Result<List<CareEvent>>> push(List<CareEvent> events);
+  /// Uploads events; returns the ones stored (`receivedAt` set) and the
+  /// ones rejected with why. Idempotent by id.
+  Future<PushResult> push(List<CareEvent> events);
 
-  /// Events received by the server after [cursor], as they arrive.
-  Stream<List<CareEvent>> watch({required String circleId, Cursor? cursor});
+  /// Events received after [cursor], then new ones, in server order.
+  Stream<SyncBatch> watch({String? cursor});
 }
 ```
 
@@ -100,61 +119,191 @@ Implementations live in `data`; nothing above `data` knows which one runs.
 ### Contract tests
 One suite describes gateway behavior (idempotent push, ordering, cursor
 resume, offline errors) and runs against the simulated remote today and
-against the Firestore emulator in stage 2.
+against a local Supabase stack (`supabase start`) in stage 2.
 
-## Firestore (stage 2)
+### Which gateway runs
+The public web demo keeps the simulated remote: free, always up, and no
+visitor ever sees real data. The beta build selects Supabase through
+`--dart-define-from-file` (`SYNC_BACKEND=supabase` plus the project URL
+and anon key). Nothing above `data` changes.
 
-### Collections
+## Supabase (stage 2)
+
+Chosen on 2026-11-03 over Firebase, Azure and Neon + Render. The beta
+(one family testing for real, see `privacy.md`) needs server-side logic
+for membership and event checks; Supabase runs it as Postgres functions
+on the free plan, without a card. Firebase needs the Blaze plan for Cloud
+Functions; Azure and Neon + Render mean writing and hosting an API,
+realtime and auth ourselves.
+
+| | Supabase | Firebase |
+|---|---|---|
+| Server logic on the free plan | SQL functions, Edge Functions, `pg_cron` | none (Functions need Blaze) |
+| Authorization | Row Level Security, testable SQL | security rules |
+| Offline cache | none (ICare has its own log and outbox) | built in (redundant here) |
+| Lock-in | standard Postgres | proprietary model and rules |
+| Free-plan catch | pauses after 7 idle days; no backups | quotas stop the app when hit |
+
+A paused project degrades to offline mode, not an outage: devices keep
+working on their local log and the outbox uploads everything once the
+project is resumed. A family using it daily never triggers the pause.
+
+### Region
+`eu-central-1` (Frankfurt). Latency barely matters to an offline-first
+app, and the EU is on Argentina's list of countries with adequate
+protection, so storing there is not a restricted international transfer
+under Ley 25.326 (`privacy.md`). Fixed at project creation.
+
+### Schema
 ```
-circles/{circleId}
-  name, recipientName, createdAt
-  members/{uid}          role, memberId, status (see roles.md)
-  events/{eventId}       the CareEvent as JSON, receivedAt = serverTimestamp()
+circles         id, recipient_name, is_sample, next_seq, last_received_at
+members         circle_id, member_id, name, role, status, color_index
+device_bindings uid (auth user), circle_id, member_id, ended_at
+invite_codes    code_hash, circle_id, member_id, expires_at   -- no client access
+events          circle_id, id text, seq, received_at, author, audience,
+                type, payload jsonb, from_former_member
+                -- PK (circle_id, id); unique (circle_id, seq)
+device_tokens   uid, fcm_token, platform, updated_at
+join_attempts   uid, failed_count, locked_until             -- no client access
 ```
-- Event ids are the client UUIDs, so a retried write is the same document
-  (`set` without merge, rejected by rules if it already exists).
-- `watch` is a snapshot listener on `events` ordered by `receivedAt`,
-  starting after the cursor. Firestore's offline cache replaces the local
-  outbox on mobile and web.
+- `events.id` is text, not uuid: server-written events and sample data
+  use readable ids. The key includes the circle, so sample ids can
+  repeat across circles.
+- `payload` is the event exactly as `CareEventCodec` encodes it; the
+  server reads only what it checks (type, author, targets) and writes
+  `received_at`, `server_seq` and `from_former_member` into it, in the
+  codec's formats. `received_at` uses the codec's wall-clock format in
+  the circle's time zone (open issue 5 below).
+- Every device signs in anonymously; its auth `uid` is the device, and
+  `device_bindings` says which member it is (`roles.md`).
+- Members, roles, bindings and codes are server state, as in the
+  simulated server; member changes also go to the log as events.
 - Projections stay client-side; the log per circle is small (hundreds of
-  events a month). Snapshots are an optimization for later.
+  events a month).
 
-### Security rules (draft)
-```
-match /circles/{circleId} {
-  function isMember() {
-    return exists(/databases/$(database)/documents/circles/$(circleId)/members/$(request.auth.uid));
-  }
-  allow read: if isMember();
+### Writes go through functions
+Clients have no `insert`, `update` or `delete` grant on any table. They
+call RPCs, `SECURITY DEFINER` functions that check the caller:
+- `push_events(events jsonb)`: for each event, in order, applies the
+  checks in `roles.md` (author bound to the calling device, permission
+  matrix, last-admin rule, facts from former members accepted and
+  flagged) and returns `{stored, rejected}`. An event id already stored
+  comes back as stored, unchanged. Member tables change in the same
+  transaction as the events that change them (`MemberInvited`,
+  `RoleChanged`, `MemberRemoved`, `InvitationRevoked`, `MemberLeft`, the
+  last one ending only the calling device's binding), so log and state
+  never disagree. The client sends large outboxes in batches.
+- `create_circle`, `issue_code`, `join`: the `MembershipGateway`.
+  Leaving and revoking are events, not calls. `join` counts failed
+  attempts per device and locks out after a few, since six-character
+  codes can be guessed.
+- `events_after(cursor, page_size)`: what `watch` reads (below).
+- `delete_circle`: admins only; see "Deletion" below.
 
-  match /members/{uid} {
-    allow read: if isMember();
-    // Invitations are created by a Cloud Function, not by clients.
-    allow write: if false;
-  }
+The permission matrix (`can(role, action)` in the domain) is written once
+more in SQL. The contract tests cover both copies.
 
-  match /events/{eventId} {
-    allow read: if isMember();
-    allow create: if isMember()
-      && request.resource.data.circleId == circleId
-      && request.resource.data.receivedAt == request.time
-      && request.resource.data.id == eventId;
-    // The log is append-only.
-    allow update, delete: if false;
-  }
-}
-```
+### Ordering
+A Postgres sequence alone is not enough: two concurrent transactions can
+commit out of sequence order, and a reader resuming after cursor 41 could
+miss event 40 committed a moment later. `push_events` instead locks the
+circle's row (`select … for update`), takes `next_seq`, and sets
+`received_at = greatest(now(), last_received_at + 1 µs)`. The lock is held
+until commit, so `seq` order is commit order within a circle, and
+`received_at` keeps strictly increasing even within one push. One family
+never contends for the lock.
 
-### Public demo on Firebase
-Anonymous auth; "Try the demo" seeds a private circle per visitor; App
-Check limits abuse; old demo circles are deleted after 7 days.
+### Watch
+Realtime is the doorbell, the cursor is the truth:
+1. On start and on every reconnect, call `events_after(cursor)` until a
+   page comes back short. It returns the events with `seq > cursor` the
+   caller's role may read, ordered by `seq`, and the new cursor. It
+   raises `not_member` for a device whose binding ended or whose member
+   was removed, which the gateway maps to `NotMemberException`: a plain
+   `select` under RLS would just return nothing, and the device would
+   never learn it was removed.
+2. Subscribe to a private Realtime broadcast channel for the circle;
+   `push_events` sends a ping after commit, which triggers step 1 again.
+
+Realtime may drop messages while a device is offline; re-reading from the
+cursor makes that harmless, and merging by id makes duplicates harmless.
+
+### Errors
+The gateway maps Supabase errors to `AppException` and nothing of
+Supabase leaves `data`: socket and client errors to
+`NoConnectionException`, timeouts to `RequestTimeoutException`, 5xx and paused
+projects to `ServerException` (all transient, retried by
+`retryPolicy`), `not_member` to `NotMemberException`, and
+membership errors to the exceptions `MembershipGateway` documents.
+
+### Row Level Security
+- `events`: `select` if the caller's device is bound to a current member
+  of the circle whose role includes the event's `audience` (a helper sees
+  only `care`). No other grant.
+- `members`, `circles`: `select` for members of the circle.
+- `invite_codes`, `device_bindings`: no client access.
+- `device_tokens`: each device reads and writes only its own row.
+
+### Push notifications
+Sent by FCM (free without Firebase's Blaze plan); Supabase only decides
+when. The Firebase project is used for messaging only, no data.
+- **Phase 1, by event**: a database webhook on new `events` calls an Edge
+  Function that notifies the other members' devices for the events worth
+  it: a note for the circle, a dose given twice, a new or moved
+  appointment. No schedule logic on the server.
+- **Phase 2, overdue doses** (only if the family needs it): `pg_cron`
+  runs an Edge Function every few minutes. It needs the slot logic
+  (schedules, `effectiveFrom`, skips, undos) a second time in
+  TypeScript, so it waits until shared test vectors keep both copies
+  equal.
+- iOS needs APNs, so an Apple Developer account; web push on iPhone works
+  only for a PWA added to the home screen. Android and desktop web work
+  for free.
+- Copy cites what happened ("Ana left a note", "the 9:00 dose of X was
+  recorded twice"); never advice.
+
+### Deletion
+The log is append-only for caregivers, but the person cared for can ask
+to delete their data (Ley 25.326, art. 16). `delete_circle` removes the
+circle with everything in it (cascade) and unbinds its devices, which
+then clear themselves as a removed device does today. It is the one
+operation that deletes shared data, and it is not an event.
+
+### Backups
+The free plan has none. A script runs `pg_dump` to the maintainer's
+machine, encrypted, never to the repository or CI artifacts. Every device
+also holds its circle's full log, and `push` is idempotent, so devices
+could repopulate an empty server.
+
+### Tests
+- The gateway contract suite runs against the local stack.
+- SQL tests (pgTAP, `supabase test db`) cover RLS and each RPC,
+  including the permission matrix and the ordering lock.
+
+### Open issues before the beta
+Found reviewing the code against this design on 2026-11-03. Two more
+were fixed then: ordering ties on the web ("Ordering and clocks") and
+events from newer app versions stopping sync ("App versions").
+1. **Demo-only paths in the beta build.** Bootstrap binds simulated
+   phones, seeds the sample, and Settings offers "Reset demo". A
+   `SYNC_BACKEND=supabase` build needs its own bootstrap (one phone,
+   anonymous sign-in, no seeding) and must hide demo actions.
+2. **Device identity.** Local stores are keyed by `deviceId`; on Supabase
+   it becomes the auth `uid`. Losing the anonymous session (reinstall,
+   cleared browser data) unbinds the device: it needs a new code, and
+   anything unsent on it is lost.
+3. **Browser storage on iPhone.** Safari may delete a website's storage
+   after 7 days without a visit, including the unsent outbox. Testers on
+   iPhone should install the PWA to the home screen, or use Android.
+4. **Unencrypted local storage** (`privacy.md`).
+5. **Time zone for server-side alerts.** Dates are encoded without an
+   offset (local time). Phase 2 alerts need the circle's time zone
+   stored on the server.
 
 ## Stage 3 notes
-- **Region** is fixed at database creation: `europe-west*` for EU users
-  (GDPR treats health data as a special category), `southamerica-east1`
-  for Argentina first (Ley 25.326 treats it as sensitive). Possibly one
-  project per region.
-- **Team alerts**: a scheduled Cloud Function finds overdue slots and
-  notifies every member through FCM. Requires the Blaze plan.
-- Data processing agreements, privacy policy and data export/deletion
-  before any real user.
+- Pro plan once more families use it: daily backups and no pausing.
+- Escalating overdue alerts and quiet hours.
+- A second region (and project) if EU users arrive: GDPR treats health
+  data as a special category.
+- Privacy policy, processor agreements and the AAIP database registry
+  question settled before opening to strangers (`privacy.md`).

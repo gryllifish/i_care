@@ -22,7 +22,7 @@ demo"), but the demo comes first.
 - Users: family caregivers coordinating care, often under stress, tired or
   in a hurry, some of them older adults themselves.
 - Market: Spanish first (Argentina, Rioplatense voseo in `es`), English as
-  second locale. Europe later (`es_ES` and GDPR, see `docs/backend.md`).
+  second locale. Europe later (`es_ES` and GDPR, see `docs/privacy.md`).
 - Demo audience: clients and agencies reviewing the repo and the live web
   demo.
 
@@ -56,11 +56,15 @@ family portal for residents' relatives is a possible later path.
 - Stage 1 (this demo): local persistence (Hive) + a **simulated remote**
   behind `SyncGateway`, with latency, an offline switch and server-assigned
   `receivedAt`. Free, no accounts, always up.
-- Stage 2: a Firestore adapter (Spark plan, free) passing the same
-  contract tests against the Firebase emulator. Domain and UI unchanged.
-- Stage 3 (real users): Blaze plan, Cloud Functions for team alerts on
-  overdue doses, final region, legal work on health data.
-- Design, collections and rules: `docs/backend.md`.
+- Stage 2 (beta): a Supabase adapter (free plan, EU region) passing the
+  same contract tests against a local Supabase stack, used for real by
+  one family. Push notifications by event through FCM. The public demo
+  keeps the simulated remote. Domain and UI unchanged. Chosen on
+  2026-11-03 over Firebase, Azure and Neon + Render.
+- Stage 3 (real users): Pro plan (backups, no pausing), overdue-dose
+  alerts, privacy policy and the rest of the legal work on health data.
+- Design, schema and rules: `docs/backend.md`. Consent, deletion and Ley
+  25.326: `docs/privacy.md`.
 
 ## Scope
 ### In scope (MVP)
@@ -114,7 +118,9 @@ family portal for residents' relatives is a possible later path.
 9. **Two-device mode** on wide screens: two phones side by side (two
    caregivers), each with its own container, router and storage, talking
    only through the simulated remote. Offline switch per device to
-   reproduce a conflict on demand.
+   reproduce a conflict on demand. `?single` in the address opens a
+   one-phone demo instead: Martín (caregiver) alone, on a simulated
+   server of its own, who may reset the demo since no admin is there.
 10. **Emergency card**: allergies, conditions, doctors, emergency
     contacts and active medications on one legible screen, copyable as
     text (for an ER visit). Backed by a `RecipientProfileUpdated` event.
@@ -179,7 +185,8 @@ family portal for residents' relatives is a possible later path.
 - Note tags or threads by concern (sleep, swelling) to show evolution.
 - Dose history export (CSV) for the doctor.
 - Invites through WhatsApp links.
-- Escalating overdue alerts and quiet hours (stage 3).
+- Overdue-dose alerts (stage 2 phase 2 if the beta family needs them),
+  then escalation and quiet hours (stage 3).
 
 ### Out of scope
 Deliberately not built, with the reason:
@@ -192,8 +199,10 @@ Deliberately not built, with the reason:
 - "Grandparent mode": the target recipient depends on others for their
   medication.
 
-Also out: real backend (stage 2), push or local notifications (web can't schedule
-them reliably; server-side alerts come with stage 3), accounts and auth,
+Also out of the demo: real backend and push notifications (stage 2 beta,
+`docs/backend.md`), local notifications (web can't schedule them
+reliably, and they can't know another caregiver already acted), accounts
+and passwords,
 several care recipients, drug database or interactions, dose suggestions,
 photos and attachments, calendar integration, PDF export, multiple time
 zones (everything runs in the care recipient's local time; DST edge cases
@@ -326,6 +335,16 @@ documented), nursing-home features.
 
 ### Next steps, in order
 1. Review design details with the user (screenshots: `scripts/screenshots.sh`).
+2. Stage 2 beta, each step needing the user's approval of its
+   dependencies first:
+   1. Supabase schema, RPCs, RLS and pgTAP tests (`supabase/`), run on a
+      local stack.
+   2. `SupabaseSyncGateway` and `SupabaseMembershipGateway`, passing the
+      contract suites; gateway chosen by `SYNC_BACKEND`.
+   3. Encrypted local storage and `delete_circle` (`docs/privacy.md`).
+   4. Push notifications by event (FCM).
+   5. Beta build for the family: web/PWA and Android first; iOS needs an
+      Apple Developer account.
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.
 
@@ -335,5 +354,5 @@ Each phase ends with `scripts/verify.sh` green and can be deployed.
 - Domain rules (slots, status, stock, conflicts) are fully unit tested
   with an injected clock.
 - The UI stays usable at 200 % text and with a screen reader.
-- Swapping the simulated remote for Firestore needs no changes outside
+- Swapping the simulated remote for Supabase needs no changes outside
   `data`.

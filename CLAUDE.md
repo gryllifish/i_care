@@ -3,7 +3,7 @@
 Flutter portfolio demo: shared care of an older relative between several
 caregivers (medications, who gave each dose and when, stock,
 appointments). Offline-first event log with multi-device sync behind a
-backend-agnostic `SyncGateway` (simulated remote now, Firestore later),
+backend-agnostic `SyncGateway` (simulated remote now, Supabase later),
 on the Mise architecture (Riverpod codegen, repository pattern, freezed,
 go_router, l10n). Product scope and current status:
 `.claude/steering/product.md`. Sync and backend design: `docs/backend.md`.
@@ -51,6 +51,7 @@ messages in English.
 | Writing controllers, repositories, error handling | `.claude/steering/architecture.md` |
 | Touching events, projections, sync or the backend | `docs/backend.md` |
 | Touching members, roles, permissions or joining | `docs/roles.md` |
+| Handling real health data, consent or deletion | `docs/privacy.md` |
 | Unsure about a style rule, writing tests, finishing a task | `.claude/steering/code-style.md` |
 | Committing, branching, PRs | `.claude/steering/git-workflow.md` |
 

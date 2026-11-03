@@ -17,7 +17,8 @@ basics: [`backend.md`](backend.md).
   The demo's server is simulated, so the demo is not secure, but nothing
   here changes when stage 2 replaces it.
 
-Not goals: accounts and passwords (stage 2), a PIN to open the app (a
+Not goals: accounts and passwords (stage 2 uses anonymous device
+sign-in), a PIN to open the app (a
 possible later circle policy), the person cared for as a user.
 
 ## Roles
@@ -125,9 +126,10 @@ Admins can revoke an unused code.
 
 ## Server
 
-What the server does, simulated now and in Firebase later. In the demo,
+What the server does, simulated now and in Supabase later. In the demo,
 `SimulatedServer` holds this state next to the log; in stage 2 it is
-Firestore collections plus Cloud Functions (see [Stage 2](#stage-2)).
+Postgres tables plus `SECURITY DEFINER` functions (see
+[Stage 2](#stage-2)).
 
 **State, not events.** Members, roles, device bindings and invitation
 codes are server state. Rules can check state; they cannot replay a log.
@@ -206,17 +208,22 @@ sends only its audiences.
 
 ## Stage 2
 
-- `circles/{id}/members/{uid}`: role, memberId, status. Written only by
-  Cloud Functions (invite, join, change role, remove), which enforce the
-  last-admin rule in a transaction.
-- `invitations/{code}` outside the circle, readable by no client; a
-  callable function redeems it.
-- `events/{id}` gains `audience`. Rules allow reading an event if the
-  caller's role includes its audience; a helper's listener queries
-  `where('audience', '==', 'care')`, since rules do not filter results.
-- Event rules call the same matrix as `can(role, action)`, written once
-  more in the rules language and covered by the gateway contract tests.
-- Facts from former members: a Cloud Function accepts and flags them, as
+Supabase, as designed in [`backend.md`](backend.md#supabase-stage-2):
+- Each device signs in anonymously; its auth `uid` is the device, and
+  `device_bindings` holds which member it is, including ended bindings.
+- `members` and `invite_codes` are written only by RPCs (`create_circle`,
+  `issue_code`, `join`, and member events such as role changes,
+  removals, revoked invitations and leaving through `push_events`),
+  which enforce the last-admin rule while holding the circle's row lock.
+- `invite_codes` stores hashes and has no client grant; `join` redeems a
+  code and locks a device out after repeated failures.
+- `events` has an `audience` column. Row Level Security returns only the
+  audiences of the caller's role, so a helper's queries and Realtime
+  channel never see the rest.
+- `push_events` checks each event against the same matrix as
+  `can(role, action)`, written once more in SQL and covered by the
+  gateway contract tests and pgTAP.
+- Facts from former members: `push_events` accepts and flags them, as
   the simulated server does.
 
 ## Limitations

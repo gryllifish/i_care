@@ -10,9 +10,12 @@ of an older relative: which medications they take, whether today's doses
 were given, by whom and when, how many pills are left, and upcoming
 doctor's appointments. It works offline and syncs between phones.
 
-[Live demo](https://gryllifish.github.io/i_care/) (web build; on a desktop
-it shows two caregivers' phones side by side, synced through a simulated
-server).
+Live demos (web build):
+[the app](https://gryllifish.github.io/i_care/?single), on a daily
+caregiver's phone, and
+[two phones](https://gryllifish.github.io/i_care/), an admin's and a
+helper's side by side on a desktop, synced through a simulated server.
+Each demo keeps its own sample data.
 
 | Today | Given twice | Notes for the circle |
 |:---:|:---:|:---:|
@@ -87,9 +90,9 @@ Decisions that aren't obvious from the code alone.
 - **The backend is simulated, behind a real contract.** Both phones in
   the demo sync through an in-process server with latency and a network
   switch per phone. It talks to them only through serialized JSON,
-  behind the same `SyncGateway` interface a Firestore implementation
+  behind the same `SyncGateway` interface a Supabase implementation
   will use. One contract test suite describes the gateway, so it can
-  run against the Firestore emulator later. The demo needs no accounts
+  run against a local Supabase stack later. The demo needs no accounts
   and costs nothing to host.
 - **Sample data, regenerated around today.** On first run the server is
   seeded with a fictional care circle (three caregivers, four
