@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 import 'package:i_care/app/demo_shell.dart';
 import 'package:i_care/app/simulated_device.dart';
+import 'package:i_care/core/config/demo_layout.dart';
 import 'package:i_care/core/config/env.dart';
 import 'package:i_care/core/error/retry_policy.dart';
 import 'package:i_care/core/utils/app_logger.dart';
@@ -22,7 +23,7 @@ import 'package:i_care/shared/providers/device_prefs.dart';
 
 /// Sets up error reporting and storage, seeds the simulated server with
 /// sample data on first run, and starts one container per simulated
-/// phone.
+/// phone: two, or one with `?single` in the address ([DemoLayout]).
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -37,19 +38,28 @@ Future<void> bootstrap() async {
   LicenseRegistry.addLicense(_fontLicense);
 
   await _initStorage();
+  final layout = DemoLayout.fromUri(Uri.base);
+  // Both demos share the browser's storage: the one-phone demo keeps a
+  // server of its own, so neither changes the other's circle.
+  final serverPrefix = switch (layout) {
+    DemoLayout.twoPhones => '',
+    DemoLayout.onePhone => 'single_',
+  };
   final server = SimulatedServer(
-    await _openBox(SimulatedServer.boxName),
-    await _openBox(SimulatedServer.devicesBoxName),
-    await _openBox(SimulatedServer.codesBoxName),
-    await _openBox(SimulatedServer.settingsBoxName),
+    await _openBox('$serverPrefix${SimulatedServer.boxName}'),
+    await _openBox('$serverPrefix${SimulatedServer.devicesBoxName}'),
+    await _openBox('$serverPrefix${SimulatedServer.codesBoxName}'),
+    await _openBox('$serverPrefix${SimulatedServer.settingsBoxName}'),
     clock: DateTime.now,
   );
-  final phones = [
+  final owners = switch (layout) {
     // An admin who coordinates and a helper with today's care: the two
     // ends of what roles change (`docs/roles.md`).
-    for (final owner in [SampleCircle.ana, SampleCircle.rosa])
-      await _openPhone(owner),
-  ];
+    DemoLayout.twoPhones => [SampleCircle.ana, SampleCircle.rosa],
+    // A daily caregiver: the app as most of the circle uses it.
+    DemoLayout.onePhone => [SampleCircle.martin],
+  };
+  final phones = [for (final owner in owners) await _openPhone(owner)];
   // The sample on the first start; again for a log saved before circles
   // recorded how they began. An empty server the user asked for stays
   // empty.
@@ -76,6 +86,7 @@ Future<void> bootstrap() async {
             simulatedServerProvider.overrideWithValue(server),
             demoResetProvider.overrideWithValue(resetDemo),
             demoStartEmptyProvider.overrideWithValue(startEmpty),
+            demoLayoutProvider.overrideWithValue(layout),
           ],
         ),
       ),

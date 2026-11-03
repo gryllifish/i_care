@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:i_care/core/config/demo_layout.dart';
 import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
+import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/features/today/presentation/screens/today_screen.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 
@@ -89,6 +91,33 @@ void main() {
       expect(find.text('Reset sample data'), findsNothing);
       expect(find.text('Invite someone'), findsNothing);
     });
+  });
+
+  testWidgets('in the one-phone demo a caregiver can reset it, having no '
+      'admin to ask', (tester) async {
+    await pumpApp(
+      tester,
+      repository: circle(),
+      now: now,
+      prefs: MemoryDevicePrefs({
+        PrefKeys.welcomeSeen: 'true',
+        PrefKeys.memberId: 'martin',
+      }),
+      overrides: [demoLayoutProvider.overrideWithValue(DemoLayout.onePhone)],
+    );
+
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Reset sample data'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(
+      find.text('Deletes everything recorded and loads the sample data again.'),
+      findsOneWidget,
+    );
+    expect(find.text('Invite someone'), findsNothing);
   });
 
   group('a helper', () {

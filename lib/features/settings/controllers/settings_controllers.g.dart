@@ -270,3 +270,97 @@ final class DemoStartEmptyProvider
 }
 
 String _$demoStartEmptyHash() => r'edaadf9ac06440b16fa5b67345dd885858696159';
+
+/// How this demo shows its phones. `bootstrap` provides it.
+
+@ProviderFor(demoLayout)
+final demoLayoutProvider = DemoLayoutProvider._();
+
+/// How this demo shows its phones. `bootstrap` provides it.
+
+final class DemoLayoutProvider
+    extends $FunctionalProvider<DemoLayout, DemoLayout, DemoLayout>
+    with $Provider<DemoLayout> {
+  /// How this demo shows its phones. `bootstrap` provides it.
+  DemoLayoutProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'demoLayoutProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$demoLayoutHash();
+
+  @$internal
+  @override
+  $ProviderElement<DemoLayout> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  DemoLayout create(Ref ref) {
+    return demoLayout(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DemoLayout value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DemoLayout>(value),
+    );
+  }
+}
+
+String _$demoLayoutHash() => r'e7c2c07f473891c19d07f3de2e7f7bf3ccec218f';
+
+/// Whether this phone offers resetting the demo: an admin's, or the one
+/// phone of the one-phone demo, which has no admin to ask.
+
+@ProviderFor(canResetDemo)
+final canResetDemoProvider = CanResetDemoProvider._();
+
+/// Whether this phone offers resetting the demo: an admin's, or the one
+/// phone of the one-phone demo, which has no admin to ask.
+
+final class CanResetDemoProvider extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  /// Whether this phone offers resetting the demo: an admin's, or the one
+  /// phone of the one-phone demo, which has no admin to ask.
+  CanResetDemoProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'canResetDemoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$canResetDemoHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return canResetDemo(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$canResetDemoHash() => r'9f762fd971c8cd1f44c74da08f9cb0d1790c8a6b';

@@ -1879,6 +1879,12 @@ abstract class AppLocalizations {
   /// **'Deletes everything recorded on both phones and loads the sample data again.'**
   String get resetDemoBody;
 
+  /// No description provided for @resetDemoBodyOnePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletes everything recorded and loads the sample data again.'**
+  String get resetDemoBodyOnePhone;
+
   /// No description provided for @resetDemoConfirm.
   ///
   /// In en, this message translates to:
@@ -2437,6 +2443,12 @@ abstract class AppLocalizations {
   /// **'In this demo, an admin makes codes on the other phone: Settings, The circle, tap someone, New code.'**
   String get joinDemoHint;
 
+  /// No description provided for @joinDemoHintOnePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'This demo has one phone, so nobody can give you a code: create a circle, or go back to the sample.'**
+  String get joinDemoHintOnePhone;
+
   /// No description provided for @removedTitle.
   ///
   /// In en, this message translates to:
@@ -2826,6 +2838,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Both phones and the server are cleared. You create your own circle and add everything yourself.'**
   String get startEmptyBody;
+
+  /// No description provided for @startEmptyBodyOnePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything is cleared. You create your own circle and add everything yourself.'**
+  String get startEmptyBodyOnePhone;
 
   /// No description provided for @welcomeDemoChoice.
   ///

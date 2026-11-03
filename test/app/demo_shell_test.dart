@@ -97,6 +97,19 @@ void main() {
     await disposeDevices(tester);
   });
 
+  testWidgets('one phone alone is framed without the sync hint', (
+    tester,
+  ) async {
+    devices.removeLast().container.dispose();
+    await pumpShell(tester, const Size(1200, 1100));
+
+    expect(find.byType(TodayScreen), findsOneWidget);
+    expect(find.text("Ana's phone"), findsOneWidget);
+    expect(find.byType(Switch), findsOneWidget);
+    expect(find.textContaining('Two phones synced'), findsNothing);
+    await disposeDevices(tester);
+  });
+
   testWidgets('phones show only the first phone', (tester) async {
     await pumpShell(tester, phoneSize);
 

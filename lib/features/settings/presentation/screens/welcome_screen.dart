@@ -6,6 +6,7 @@ import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
+import 'package:i_care/features/settings/presentation/widgets/demo_texts.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
@@ -147,7 +148,7 @@ class _DemoChoice extends ConsumerWidget {
     final confirmed = await showConfirmDialog(
       context,
       title: l10n.startEmptyTitle,
-      body: l10n.startEmptyBody,
+      body: startEmptyBody(l10n, ref.read(demoLayoutProvider)),
       cancelLabel: l10n.cancel,
       confirmLabel: l10n.startFromScratch,
     );

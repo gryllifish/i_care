@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:i_care/core/config/demo_layout.dart';
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
@@ -89,7 +90,10 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
                 spacing: AppSpacing.sm,
                 children: [
                   Text(
-                    l10n.joinDemoHint,
+                    switch (ref.watch(demoLayoutProvider)) {
+                      DemoLayout.twoPhones => l10n.joinDemoHint,
+                      DemoLayout.onePhone => l10n.joinDemoHintOnePhone,
+                    },
                     style: AppTextStyles.bodyMuted.copyWith(
                       color: context.colors.inkMuted,
                     ),

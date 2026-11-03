@@ -11,7 +11,8 @@ import 'package:i_care/core/theme/app_theme.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 
 /// Shows every simulated phone side by side when there is room (the web
-/// demo on a desktop), or the first phone alone on a real phone.
+/// demo on a desktop), or the first phone alone on a real phone. With one
+/// phone, it is framed and centered the same way.
 class DemoShell extends StatelessWidget {
   const DemoShell({required this.devices, super.key});
 
@@ -61,14 +62,16 @@ class _SideBySide extends StatelessWidget {
         child: Column(
           spacing: AppSpacing.xl,
           children: [
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: _hintWidth),
-              child: Text(
-                context.l10n.demoHint,
-                style: AppTextStyles.body,
-                textAlign: TextAlign.center,
+            // How to try the sync; one phone alone has nothing to sync with.
+            if (devices.length > 1)
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: _hintWidth),
+                child: Text(
+                  context.l10n.demoHint,
+                  style: AppTextStyles.body,
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,

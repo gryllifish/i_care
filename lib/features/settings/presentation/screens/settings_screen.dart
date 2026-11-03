@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:i_care/core/config/demo_layout.dart';
 import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/core/theme/app_colors.dart';
@@ -10,6 +11,7 @@ import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/features/settings/presentation/widgets/circle_section.dart';
+import 'package:i_care/features/settings/presentation/widgets/demo_texts.dart';
 import 'package:i_care/features/settings/presentation/widgets/not_sent_section.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
@@ -90,12 +92,12 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ],
           ),
-          if (ref.watch(canDoProvider(CareAction.resetDemo)))
+          if (ref.watch(canResetDemoProvider))
             FormSection(
               title: l10n.sectionDemo,
               children: [
                 Text(
-                  l10n.resetDemoBody,
+                  _resetBody(l10n, ref.watch(demoLayoutProvider)),
                   style: AppTextStyles.bodyMuted.copyWith(
                     color: context.colors.inkMuted,
                   ),
@@ -144,6 +146,12 @@ class SettingsScreen extends ConsumerWidget {
 
   static const _system = 'system';
 
+  static String _resetBody(AppLocalizations l10n, DemoLayout layout) =>
+      switch (layout) {
+        DemoLayout.twoPhones => l10n.resetDemoBody,
+        DemoLayout.onePhone => l10n.resetDemoBodyOnePhone,
+      };
+
   Future<void> _reset(BuildContext context, WidgetRef ref) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
@@ -151,7 +159,7 @@ class SettingsScreen extends ConsumerWidget {
     final confirmed = await showConfirmDialog(
       context,
       title: l10n.resetDemo,
-      body: l10n.resetDemoBody,
+      body: _resetBody(l10n, ref.read(demoLayoutProvider)),
       cancelLabel: l10n.cancel,
       confirmLabel: l10n.resetDemoConfirm,
     );
@@ -166,7 +174,7 @@ class SettingsScreen extends ConsumerWidget {
     final confirmed = await showConfirmDialog(
       context,
       title: l10n.startEmptyTitle,
-      body: l10n.startEmptyBody,
+      body: startEmptyBody(l10n, ref.read(demoLayoutProvider)),
       cancelLabel: l10n.cancel,
       confirmLabel: l10n.startFromScratch,
     );

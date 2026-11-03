@@ -952,6 +952,7 @@
   "sectionDemo": "Demo",
   "resetDemo": "Reset sample data",
   "resetDemoBody": "Deletes everything recorded on both phones and loads the sample data again.",
+  "resetDemoBodyOnePhone": "Deletes everything recorded and loads the sample data again.",
   "resetDemoConfirm": "Reset",
   "resetDone": "Sample data loaded again",
   "sectionAbout": "About",
@@ -1254,6 +1255,7 @@
   "fieldCodeHint": "e.g. K7P-4QM",
   "join": "Join",
   "joinDemoHint": "In this demo, an admin makes codes on the other phone: Settings, The circle, tap someone, New code.",
+  "joinDemoHintOnePhone": "This demo has one phone, so nobody can give you a code: create a circle, or go back to the sample.",
   "removedTitle": "This phone is out of the circle",
   "removedBody": "An admin took you out of the circle. Anything this phone had not sent was sent first; what it kept is cleared now.",
   "removedOk": "OK",
@@ -1411,6 +1413,7 @@
   "startFromScratch": "Start from scratch",
   "startEmptyTitle": "Start from scratch?",
   "startEmptyBody": "Both phones and the server are cleared. You create your own circle and add everything yourself.",
+  "startEmptyBodyOnePhone": "Everything is cleared. You create your own circle and add everything yourself.",
   "welcomeDemoChoice": "Only in this demo: try it with sample data, or empty, to add everything yourself.",
   "phoneNumber": "Phone {number}",
   "@phoneNumber": {

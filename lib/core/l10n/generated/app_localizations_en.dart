@@ -1148,6 +1148,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Deletes everything recorded on both phones and loads the sample data again.';
 
   @override
+  String get resetDemoBodyOnePhone =>
+      'Deletes everything recorded and loads the sample data again.';
+
+  @override
   String get resetDemoConfirm => 'Reset';
 
   @override
@@ -1500,6 +1504,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'In this demo, an admin makes codes on the other phone: Settings, The circle, tap someone, New code.';
 
   @override
+  String get joinDemoHintOnePhone =>
+      'This demo has one phone, so nobody can give you a code: create a circle, or go back to the sample.';
+
+  @override
   String get removedTitle => 'This phone is out of the circle';
 
   @override
@@ -1731,6 +1739,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get startEmptyBody =>
       'Both phones and the server are cleared. You create your own circle and add everything yourself.';
+
+  @override
+  String get startEmptyBodyOnePhone =>
+      'Everything is cleared. You create your own circle and add everything yourself.';
 
   @override
   String get welcomeDemoChoice =>
