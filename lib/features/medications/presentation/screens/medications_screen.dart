@@ -5,7 +5,6 @@ import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/core/theme/app_colors.dart';
-import 'package:i_care/core/theme/app_radius.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
@@ -83,6 +82,8 @@ class MedicationsScreen extends ConsumerWidget {
   }
 }
 
+/// A medication in three lines: its name and strength, when it is
+/// given, and how much is left. Instructions are on its detail.
 class _MedicationCard extends StatelessWidget {
   const _MedicationCard({required this.row, required this.needsReview});
 
@@ -97,134 +98,88 @@ class _MedicationCard extends StatelessWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final medication = row.medication;
     final details = medication.details;
+    final muted = AppTextStyles.bodyMuted.copyWith(
+      color: context.colors.inkMuted,
+    );
 
     return AppCard(
       onTap: () => context.push(AppRoutes.medicationPath(medication.id)),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: AppSpacing.md,
         children: [
-          Row(
-            spacing: AppSpacing.md,
-            children: [
-              MedicationIcon(form: details.form),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: AppSpacing.xxs,
+          MedicationIcon(form: details.form),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: AppSpacing.xxs,
+              children: [
+                Wrap(
+                  spacing: AppSpacing.sm,
+                  crossAxisAlignment: WrapCrossAlignment.end,
                   children: [
                     Text(details.name, style: AppTextStyles.title),
-                    Text(
-                      details.strength,
-                      style: AppTextStyles.bodyMuted.copyWith(
-                        color: context.colors.inkMuted,
-                      ),
-                    ),
+                    if (details.strength.isNotEmpty)
+                      Text(details.strength, style: muted),
                   ],
                 ),
-              ),
-              Icon(Icons.chevron_right, color: context.colors.inkMuted),
-            ],
-          ),
-          if (needsReview)
-            StatusPill(
-              icon: Icons.error,
-              label: l10n.medicationConflictBadge,
-              color: context.colors.overdue,
-              background: context.colors.overdueSoft,
-            ),
-          _InfoRow(
-            icon: Icons.schedule,
-            text: medication.schedule.describe(l10n, locale),
-          ),
-          if (details.instructions.isNotEmpty)
-            _InfoRow(icon: Icons.notes, text: details.instructions),
-          _StockRow(stock: row.stock, locale: locale),
-        ],
-      ),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.icon, required this.text});
-
-  final IconData icon;
-  final String text;
-
-  static const _iconSize = 20.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: AppSpacing.sm,
-      children: [
-        Icon(icon, size: _iconSize, color: context.colors.inkMuted),
-        Expanded(child: Text(text, style: AppTextStyles.body)),
-      ],
-    );
-  }
-}
-
-/// Units left on a soft background, flagged when low.
-class _StockRow extends StatelessWidget {
-  const _StockRow({required this.stock, required this.locale});
-
-  final StockLevel? stock;
-  final String locale;
-
-  static const _iconSize = 20.0;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final stock = this.stock;
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
-      decoration: BoxDecoration(
-        color: context.colors.surfaceMuted,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-      ),
-      child: Row(
-        spacing: AppSpacing.sm,
-        children: [
-          Icon(
-            Icons.inventory_2_outlined,
-            size: _iconSize,
-            color: context.colors.inkMuted,
-          ),
-          Expanded(
-            child: Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.xs,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
                 Text(
-                  stock == null
-                      ? l10n.stockNotCounted
-                      : l10n.stockUnitsCount(
-                          Formatters.units(stock.units, locale),
-                        ),
+                  medication.schedule.describe(l10n, locale),
                   style: AppTextStyles.body,
                 ),
-                if (stock case final StockLevel level when level.isLow)
-                  LowStockPill(level: level)
-                else if (stock?.daysLeft case final int days)
-                  Text(
-                    l10n.stockLasts(days),
-                    style: AppTextStyles.bodyMuted.copyWith(
-                      color: context.colors.inkMuted,
+                _StockLine(stock: row.stock, locale: locale),
+                if (needsReview)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.xs),
+                    child: StatusPill(
+                      icon: Icons.error,
+                      label: l10n.medicationConflictBadge,
+                      color: context.colors.overdue,
+                      background: context.colors.overdueSoft,
                     ),
                   ),
               ],
             ),
           ),
+          Icon(Icons.chevron_right, color: context.colors.inkMuted),
         ],
       ),
+    );
+  }
+}
+
+/// Units left and how long they last, or a pill when running low.
+class _StockLine extends StatelessWidget {
+  const _StockLine({required this.stock, required this.locale});
+
+  final StockLevel? stock;
+  final String locale;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final stock = this.stock;
+    final muted = AppTextStyles.bodyMuted.copyWith(
+      color: context.colors.inkMuted,
+    );
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.xs,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(
+          stock == null
+              ? l10n.stockNotCounted
+              : l10n.stockUnitsCount(Formatters.units(stock.units, locale)),
+          style: muted,
+        ),
+        if (stock case final StockLevel level when level.isLow)
+          LowStockPill(level: level)
+        else if (stock?.daysLeft case final int days) ...[
+          Text('·', style: muted),
+          Text(l10n.stockLasts(days), style: muted),
+        ],
+      ],
     );
   }
 }

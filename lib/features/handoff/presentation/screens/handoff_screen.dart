@@ -163,7 +163,11 @@ class _NoteComposerState extends ConsumerState<_NoteComposer> {
                 minLines: 1,
                 maxLines: _maxLines,
                 style: AppTextStyles.body,
-                decoration: InputDecoration(hintText: l10n.noteFieldHint),
+                // Muted, so the field stands out from the white bar.
+                decoration: InputDecoration(
+                  hintText: l10n.noteFieldHint,
+                  fillColor: context.colors.surfaceMuted,
+                ),
               ),
             ),
             IconButton.filled(
