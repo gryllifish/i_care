@@ -14,11 +14,13 @@ doctor's appointments. It works offline and syncs between phones.
 it shows two caregivers' phones side by side, synced through a simulated
 server).
 
-| Today | Given twice | Medications | Appointments | Emergency card |
-|:---:|:---:|:---:|:---:|:---:|
-| <img src="docs/screenshots/today.png" width="160" alt="Today: progress, a late dose from yesterday and the next appointment"> | <img src="docs/screenshots/double_dose.png" width="160" alt="A dose recorded by two caregivers, flagged for review"> | <img src="docs/screenshots/medications.png" width="160" alt="Medications with schedules, instructions and stock left"> | <img src="docs/screenshots/appointments.png" width="160" alt="Upcoming and past appointments with questions and notes"> | <img src="docs/screenshots/emergency.png" width="160" alt="Emergency card with allergies first, conditions and medications"> |
+| Today | Given twice | Notes for the circle |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/today.png" width="200" alt="Today: a dose given twice to review, the next dose and the notes left for whoever takes over"> | <img src="docs/screenshots/double_dose.png" width="200" alt="A dose recorded on two phones, reviewed step by step"> | <img src="docs/screenshots/notes.png" width="200" alt="Notes for the circle, newest first, with a field to leave one"> |
+| **Medications** | **Appointment** | **Emergency card** |
+| <img src="docs/screenshots/medications.png" width="200" alt="Medications with schedules, instructions and stock left"> | <img src="docs/screenshots/appointments.png" width="200" alt="An appointment with questions for the doctor and linked documents"> | <img src="docs/screenshots/emergency.png" width="200" alt="Emergency card with allergies first, conditions and medications"> |
 
-<img src="docs/screenshots/two_phones.png" width="660" alt="Two phones side by side, each with its own network switch, both showing the same double dose">
+<img src="docs/screenshots/two_phones.png" width="660" alt="Ana's phone (admin) and Rosa's (helper) side by side, each with its own network switch, both showing the same double dose">
 
 **ICare does not give medical advice.** It records what caregivers do.
 Every warning cites values entered by the user. Follow the instructions
@@ -155,6 +157,9 @@ simulated server. Widget
 tests run each flow against fake repositories, at 200 % text, and check
 Flutter's accessibility guidelines (tap targets, labels, contrast) on
 every screen and sheet in both themes.
+
+The screenshots above are rendered from the app itself on the sample
+circle: `scripts/screenshots.sh` regenerates them in `docs/screenshots`.
 
 ## App icon
 [`tool/icon/icare.svg`](tool/icon/icare.svg);

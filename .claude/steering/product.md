@@ -321,7 +321,7 @@ documented), nursing-home features.
   either (two apps on one page). Acceptable for the demo.
 
 ### Next steps, in order
-1. Review design details with the user; update README screenshots.
+1. Review design details with the user (screenshots: `scripts/screenshots.sh`).
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.
 
