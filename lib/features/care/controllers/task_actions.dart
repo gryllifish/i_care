@@ -67,11 +67,10 @@ class TaskActions extends _$TaskActions {
 
   Future<Result<TaskDone>> done(TaskSlot slot) => _recorder.record(
     CareEvent.taskDone(
-          meta: _recorder.meta(),
-          taskId: slot.task.id,
-          slotAt: slot.slotAt,
-        )
-        as TaskDone,
+      meta: _recorder.meta(),
+      taskId: slot.task.id,
+      slotAt: slot.slotAt,
+    ) as TaskDone,
   );
 
   /// Records [slot] as not done, for the reason [reasonId], with what
@@ -82,13 +81,12 @@ class TaskActions extends _$TaskActions {
     String? note,
   }) => _recorder.record(
     CareEvent.taskSkipped(
-          meta: _recorder.meta(),
-          taskId: slot.task.id,
-          slotAt: slot.slotAt,
-          reasonId: reasonId,
-          note: note,
-        )
-        as TaskSkipped,
+      meta: _recorder.meta(),
+      taskId: slot.task.id,
+      slotAt: slot.slotAt,
+      reasonId: reasonId,
+      note: note,
+    ) as TaskSkipped,
   );
 
   /// Takes back a [TaskDone] or [TaskSkipped] recorded by mistake.

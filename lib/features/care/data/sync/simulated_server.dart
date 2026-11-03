@@ -545,10 +545,12 @@ class SimulatedServer {
   /// that ended them.
   void _endBindings(String memberId) {
     for (final deviceId in _bindings.keys.toList()) {
-      if (_bindings[deviceId] case _Binding(
-        memberId: final bound,
-        ended: false,
-      ) when bound == memberId) {
+      if (_bindings[deviceId]
+          case _Binding(
+            memberId: final bound,
+            ended: false,
+          )
+          when bound == memberId) {
         _bindings[deviceId] = _Binding(memberId: memberId, ended: true);
       }
     }

@@ -107,14 +107,13 @@ class DoseActions extends _$DoseActions {
     final meta = _meta();
     return _record(
       CareEvent.doseGiven(
-            meta: meta,
-            medicationId: medication.id,
-            slotAt: slotAt,
-            givenAt: givenAt ?? meta.occurredAt,
-            units: medication.details.unitsPerDose,
-            knownDoseIds: knownDoseIds,
-          )
-          as DoseGiven,
+        meta: meta,
+        medicationId: medication.id,
+        slotAt: slotAt,
+        givenAt: givenAt ?? meta.occurredAt,
+        units: medication.details.unitsPerDose,
+        knownDoseIds: knownDoseIds,
+      ) as DoseGiven,
     );
   }
 
@@ -127,13 +126,12 @@ class DoseActions extends _$DoseActions {
     String? note,
   }) => _record(
     CareEvent.doseSkipped(
-          meta: _meta(),
-          medicationId: medication.id,
-          slotAt: slotAt,
-          reasonId: reasonId,
-          note: note,
-        )
-        as DoseSkipped,
+      meta: _meta(),
+      medicationId: medication.id,
+      slotAt: slotAt,
+      reasonId: reasonId,
+      note: note,
+    ) as DoseSkipped,
   );
 
   /// Cancels a dose recorded by mistake, or, with [conflictKey], one
@@ -141,11 +139,10 @@ class DoseActions extends _$DoseActions {
   Future<Result<DoseUndone>> undo(CareEvent dose, {String? conflictKey}) =>
       _record(
         CareEvent.doseUndone(
-              meta: _meta(),
-              targetEventId: dose.meta.id,
-              conflictKey: conflictKey,
-            )
-            as DoseUndone,
+          meta: _meta(),
+          targetEventId: dose.meta.id,
+          conflictKey: conflictKey,
+        ) as DoseUndone,
       );
 
   Future<Result<ConflictAcknowledged>> acknowledge(String conflictKey) =>
