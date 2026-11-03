@@ -134,6 +134,9 @@ flutter run
 The environment defaults to `dev`; to set it explicitly, copy
 `env/dev.json.example` to `env/dev.json` and run with
 `--dart-define-from-file=env/dev.json`.
+To run on a physical iPhone, create `ios/Flutter/Signing.xcconfig`
+(git-ignored) with your Apple development team:
+`DEVELOPMENT_TEAM = <your team id>`.
 Generated code is committed; after changing annotated classes or ARB
 files, run `dart run build_runner build --delete-conflicting-outputs`.
 
