@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'handoff.dart';
@@ -9,6 +9,7 @@ part of 'handoff.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -33,16 +34,21 @@ $HandoffCopyWith<Handoff> get copyWith => _$HandoffCopyWithImpl<Handoff>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Handoff&&(identical(other.at, at) || other.at == at)&&const DeepCollectionEquality().equals(other.given, given)&&const DeepCollectionEquality().equals(other.skipped, skipped)&&const DeepCollectionEquality().equals(other.notes, notes)&&const DeepCollectionEquality().equals(other.notesThisWeek, notesThisWeek)&&const DeepCollectionEquality().equals(other.pending, pending)&&(identical(other.conflicts, conflicts) || other.conflicts == conflicts)&&const DeepCollectionEquality().equals(other.tasksDone, tasksDone)&&const DeepCollectionEquality().equals(other.tasksSkipped, tasksSkipped)&&const DeepCollectionEquality().equals(other.tasksPending, tasksPending)&&const DeepCollectionEquality().equals(other.lowStock, lowStock)&&(identical(other.nextAppointment, nextAppointment) || other.nextAppointment == nextAppointment)&&(identical(other.latestNote, latestNote) || other.latestNote == latestNote));
+  final _this = this as Handoff;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Handoff&&(identical(other.at, _this.at) || other.at == _this.at)&&const DeepCollectionEquality().equals(other.given, _this.given)&&const DeepCollectionEquality().equals(other.skipped, _this.skipped)&&const DeepCollectionEquality().equals(other.notes, _this.notes)&&const DeepCollectionEquality().equals(other.notesThisWeek, _this.notesThisWeek)&&const DeepCollectionEquality().equals(other.pending, _this.pending)&&(identical(other.conflicts, _this.conflicts) || other.conflicts == _this.conflicts)&&const DeepCollectionEquality().equals(other.tasksDone, _this.tasksDone)&&const DeepCollectionEquality().equals(other.tasksSkipped, _this.tasksSkipped)&&const DeepCollectionEquality().equals(other.tasksPending, _this.tasksPending)&&const DeepCollectionEquality().equals(other.lowStock, _this.lowStock)&&(identical(other.nextAppointment, _this.nextAppointment) || other.nextAppointment == _this.nextAppointment)&&(identical(other.latestNote, _this.latestNote) || other.latestNote == _this.latestNote));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,at,const DeepCollectionEquality().hash(given),const DeepCollectionEquality().hash(skipped),const DeepCollectionEquality().hash(notes),const DeepCollectionEquality().hash(notesThisWeek),const DeepCollectionEquality().hash(pending),conflicts,const DeepCollectionEquality().hash(tasksDone),const DeepCollectionEquality().hash(tasksSkipped),const DeepCollectionEquality().hash(tasksPending),const DeepCollectionEquality().hash(lowStock),nextAppointment,latestNote);
+int get hashCode {
+  final _this = this as Handoff;
+  return Object.hash(runtimeType,_this.at,const DeepCollectionEquality().hash(_this.given),const DeepCollectionEquality().hash(_this.skipped),const DeepCollectionEquality().hash(_this.notes),const DeepCollectionEquality().hash(_this.notesThisWeek),const DeepCollectionEquality().hash(_this.pending),_this.conflicts,const DeepCollectionEquality().hash(_this.tasksDone),const DeepCollectionEquality().hash(_this.tasksSkipped),const DeepCollectionEquality().hash(_this.tasksPending),const DeepCollectionEquality().hash(_this.lowStock),_this.nextAppointment,_this.latestNote);
+}
 
 @override
 String toString() {
-  return 'Handoff(at: $at, given: $given, skipped: $skipped, notes: $notes, notesThisWeek: $notesThisWeek, pending: $pending, conflicts: $conflicts, tasksDone: $tasksDone, tasksSkipped: $tasksSkipped, tasksPending: $tasksPending, lowStock: $lowStock, nextAppointment: $nextAppointment, latestNote: $latestNote)';
+  final _this = this as Handoff;
+  return 'Handoff(at: ${_this.at}, given: ${_this.given}, skipped: ${_this.skipped}, notes: ${_this.notes}, notesThisWeek: ${_this.notesThisWeek}, pending: ${_this.pending}, conflicts: ${_this.conflicts}, tasksDone: ${_this.tasksDone}, tasksSkipped: ${_this.tasksSkipped}, tasksPending: ${_this.tasksPending}, lowStock: ${_this.lowStock}, nextAppointment: ${_this.nextAppointment}, latestNote: ${_this.latestNote})';
 }
 
 
@@ -71,7 +77,7 @@ class _$HandoffCopyWithImpl<$Res>
 /// Create a copy of Handoff
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? at = null,Object? given = null,Object? skipped = null,Object? notes = null,Object? notesThisWeek = null,Object? pending = null,Object? conflicts = null,Object? tasksDone = null,Object? tasksSkipped = null,Object? tasksPending = null,Object? lowStock = null,Object? nextAppointment = freezed,Object? latestNote = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(Handoff(
 at: null == at ? _self.at : at // ignore: cast_nullable_to_non_nullable
 as DateTime,given: null == given ? _self.given : given // ignore: cast_nullable_to_non_nullable
 as List<GivenDose>,skipped: null == skipped ? _self.skipped : skipped // ignore: cast_nullable_to_non_nullable
@@ -238,7 +244,7 @@ return $default(_that.at,_that.given,_that.skipped,_that.notes,_that.notesThisWe
 
 
 class _Handoff implements Handoff {
-  const _Handoff({required this.at, final  List<GivenDose> given = const <GivenDose>[], final  List<DoseSlot> skipped = const <DoseSlot>[], final  List<CareNoteAdded> notes = const <CareNoteAdded>[], final  List<CareNoteAdded> notesThisWeek = const <CareNoteAdded>[], final  List<DoseSlot> pending = const <DoseSlot>[], this.conflicts = 0, final  List<TaskSlot> tasksDone = const <TaskSlot>[], final  List<TaskSlot> tasksSkipped = const <TaskSlot>[], final  List<TaskSlot> tasksPending = const <TaskSlot>[], final  List<LowStock> lowStock = const <LowStock>[], this.nextAppointment, this.latestNote}): _given = given,_skipped = skipped,_notes = notes,_notesThisWeek = notesThisWeek,_pending = pending,_tasksDone = tasksDone,_tasksSkipped = tasksSkipped,_tasksPending = tasksPending,_lowStock = lowStock;
+  const _Handoff({required this.at,  List<GivenDose> given = const <GivenDose>[],  List<DoseSlot> skipped = const <DoseSlot>[],  List<CareNoteAdded> notes = const <CareNoteAdded>[],  List<CareNoteAdded> notesThisWeek = const <CareNoteAdded>[],  List<DoseSlot> pending = const <DoseSlot>[], this.conflicts = 0,  List<TaskSlot> tasksDone = const <TaskSlot>[],  List<TaskSlot> tasksSkipped = const <TaskSlot>[],  List<TaskSlot> tasksPending = const <TaskSlot>[],  List<LowStock> lowStock = const <LowStock>[], this.nextAppointment, this.latestNote}): _given = given,_skipped = skipped,_notes = notes,_notesThisWeek = notesThisWeek,_pending = pending,_tasksDone = tasksDone,_tasksSkipped = tasksSkipped,_tasksPending = tasksPending,_lowStock = lowStock;
   
 
 @override final  DateTime at;
@@ -334,16 +340,18 @@ _$HandoffCopyWith<_Handoff> get copyWith => __$HandoffCopyWithImpl<_Handoff>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Handoff&&(identical(other.at, at) || other.at == at)&&const DeepCollectionEquality().equals(other._given, _given)&&const DeepCollectionEquality().equals(other._skipped, _skipped)&&const DeepCollectionEquality().equals(other._notes, _notes)&&const DeepCollectionEquality().equals(other._notesThisWeek, _notesThisWeek)&&const DeepCollectionEquality().equals(other._pending, _pending)&&(identical(other.conflicts, conflicts) || other.conflicts == conflicts)&&const DeepCollectionEquality().equals(other._tasksDone, _tasksDone)&&const DeepCollectionEquality().equals(other._tasksSkipped, _tasksSkipped)&&const DeepCollectionEquality().equals(other._tasksPending, _tasksPending)&&const DeepCollectionEquality().equals(other._lowStock, _lowStock)&&(identical(other.nextAppointment, nextAppointment) || other.nextAppointment == nextAppointment)&&(identical(other.latestNote, latestNote) || other.latestNote == latestNote));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Handoff&&(identical(other.at, at) || other.at == at)&&const DeepCollectionEquality().equals(other.given, _given)&&const DeepCollectionEquality().equals(other.skipped, _skipped)&&const DeepCollectionEquality().equals(other.notes, _notes)&&const DeepCollectionEquality().equals(other.notesThisWeek, _notesThisWeek)&&const DeepCollectionEquality().equals(other.pending, _pending)&&(identical(other.conflicts, conflicts) || other.conflicts == conflicts)&&const DeepCollectionEquality().equals(other.tasksDone, _tasksDone)&&const DeepCollectionEquality().equals(other.tasksSkipped, _tasksSkipped)&&const DeepCollectionEquality().equals(other.tasksPending, _tasksPending)&&const DeepCollectionEquality().equals(other.lowStock, _lowStock)&&(identical(other.nextAppointment, nextAppointment) || other.nextAppointment == nextAppointment)&&(identical(other.latestNote, latestNote) || other.latestNote == latestNote));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,at,const DeepCollectionEquality().hash(_given),const DeepCollectionEquality().hash(_skipped),const DeepCollectionEquality().hash(_notes),const DeepCollectionEquality().hash(_notesThisWeek),const DeepCollectionEquality().hash(_pending),conflicts,const DeepCollectionEquality().hash(_tasksDone),const DeepCollectionEquality().hash(_tasksSkipped),const DeepCollectionEquality().hash(_tasksPending),const DeepCollectionEquality().hash(_lowStock),nextAppointment,latestNote);
+int get hashCode {
+    return Object.hash(runtimeType,at,const DeepCollectionEquality().hash(_given),const DeepCollectionEquality().hash(_skipped),const DeepCollectionEquality().hash(_notes),const DeepCollectionEquality().hash(_notesThisWeek),const DeepCollectionEquality().hash(_pending),conflicts,const DeepCollectionEquality().hash(_tasksDone),const DeepCollectionEquality().hash(_tasksSkipped),const DeepCollectionEquality().hash(_tasksPending),const DeepCollectionEquality().hash(_lowStock),nextAppointment,latestNote);
+}
 
 @override
 String toString() {
-  return 'Handoff(at: $at, given: $given, skipped: $skipped, notes: $notes, notesThisWeek: $notesThisWeek, pending: $pending, conflicts: $conflicts, tasksDone: $tasksDone, tasksSkipped: $tasksSkipped, tasksPending: $tasksPending, lowStock: $lowStock, nextAppointment: $nextAppointment, latestNote: $latestNote)';
+    return 'Handoff(at: $at, given: $given, skipped: $skipped, notes: $notes, notesThisWeek: $notesThisWeek, pending: $pending, conflicts: $conflicts, tasksDone: $tasksDone, tasksSkipped: $tasksSkipped, tasksPending: $tasksPending, lowStock: $lowStock, nextAppointment: $nextAppointment, latestNote: $latestNote)';
 }
 
 

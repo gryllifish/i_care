@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'sync_status.dart';
@@ -9,6 +9,7 @@ part of 'sync_status.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -31,16 +32,21 @@ $SyncStatusCopyWith<SyncStatus> get copyWith => _$SyncStatusCopyWithImpl<SyncSta
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncStatus&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt)&&(identical(other.pendingCount, pendingCount) || other.pendingCount == pendingCount)&&(identical(other.rejectedCount, rejectedCount) || other.rejectedCount == rejectedCount)&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected)&&(identical(other.isMember, isMember) || other.isMember == isMember));
+  final _this = this as SyncStatus;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncStatus&&(identical(other.lastSyncedAt, _this.lastSyncedAt) || other.lastSyncedAt == _this.lastSyncedAt)&&(identical(other.pendingCount, _this.pendingCount) || other.pendingCount == _this.pendingCount)&&(identical(other.rejectedCount, _this.rejectedCount) || other.rejectedCount == _this.rejectedCount)&&(identical(other.isConnected, _this.isConnected) || other.isConnected == _this.isConnected)&&(identical(other.isMember, _this.isMember) || other.isMember == _this.isMember));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lastSyncedAt,pendingCount,rejectedCount,isConnected,isMember);
+int get hashCode {
+  final _this = this as SyncStatus;
+  return Object.hash(runtimeType,_this.lastSyncedAt,_this.pendingCount,_this.rejectedCount,_this.isConnected,_this.isMember);
+}
 
 @override
 String toString() {
-  return 'SyncStatus(lastSyncedAt: $lastSyncedAt, pendingCount: $pendingCount, rejectedCount: $rejectedCount, isConnected: $isConnected, isMember: $isMember)';
+  final _this = this as SyncStatus;
+  return 'SyncStatus(lastSyncedAt: ${_this.lastSyncedAt}, pendingCount: ${_this.pendingCount}, rejectedCount: ${_this.rejectedCount}, isConnected: ${_this.isConnected}, isMember: ${_this.isMember})';
 }
 
 
@@ -69,7 +75,7 @@ class _$SyncStatusCopyWithImpl<$Res>
 /// Create a copy of SyncStatus
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? lastSyncedAt = freezed,Object? pendingCount = null,Object? rejectedCount = null,Object? isConnected = null,Object? isMember = null,}) {
-  return _then(_self.copyWith(
+  return _then(SyncStatus(
 lastSyncedAt: freezed == lastSyncedAt ? _self.lastSyncedAt : lastSyncedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,pendingCount: null == pendingCount ? _self.pendingCount : pendingCount // ignore: cast_nullable_to_non_nullable
 as int,rejectedCount: null == rejectedCount ? _self.rejectedCount : rejectedCount // ignore: cast_nullable_to_non_nullable
@@ -241,16 +247,18 @@ _$SyncStatusCopyWith<_SyncStatus> get copyWith => __$SyncStatusCopyWithImpl<_Syn
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SyncStatus&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt)&&(identical(other.pendingCount, pendingCount) || other.pendingCount == pendingCount)&&(identical(other.rejectedCount, rejectedCount) || other.rejectedCount == rejectedCount)&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected)&&(identical(other.isMember, isMember) || other.isMember == isMember));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SyncStatus&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt)&&(identical(other.pendingCount, pendingCount) || other.pendingCount == pendingCount)&&(identical(other.rejectedCount, rejectedCount) || other.rejectedCount == rejectedCount)&&(identical(other.isConnected, isConnected) || other.isConnected == isConnected)&&(identical(other.isMember, isMember) || other.isMember == isMember));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,lastSyncedAt,pendingCount,rejectedCount,isConnected,isMember);
+int get hashCode {
+    return Object.hash(runtimeType,lastSyncedAt,pendingCount,rejectedCount,isConnected,isMember);
+}
 
 @override
 String toString() {
-  return 'SyncStatus(lastSyncedAt: $lastSyncedAt, pendingCount: $pendingCount, rejectedCount: $rejectedCount, isConnected: $isConnected, isMember: $isMember)';
+    return 'SyncStatus(lastSyncedAt: $lastSyncedAt, pendingCount: $pendingCount, rejectedCount: $rejectedCount, isConnected: $isConnected, isMember: $isMember)';
 }
 
 

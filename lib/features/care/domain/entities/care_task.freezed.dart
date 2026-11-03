@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'care_task.dart';
@@ -9,6 +9,7 @@ part of 'care_task.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -26,16 +27,21 @@ $TaskDetailsCopyWith<TaskDetails> get copyWith => _$TaskDetailsCopyWithImpl<Task
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskDetails&&(identical(other.name, name) || other.name == name)&&(identical(other.note, note) || other.note == note));
+  final _this = this as TaskDetails;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskDetails&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.note, _this.note) || other.note == _this.note));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,note);
+int get hashCode {
+  final _this = this as TaskDetails;
+  return Object.hash(runtimeType,_this.name,_this.note);
+}
 
 @override
 String toString() {
-  return 'TaskDetails(name: $name, note: $note)';
+  final _this = this as TaskDetails;
+  return 'TaskDetails(name: ${_this.name}, note: ${_this.note})';
 }
 
 
@@ -64,7 +70,7 @@ class _$TaskDetailsCopyWithImpl<$Res>
 /// Create a copy of TaskDetails
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? note = null,}) {
-  return _then(_self.copyWith(
+  return _then(TaskDetails(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,note: null == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String,
@@ -225,16 +231,18 @@ _$TaskDetailsCopyWith<_TaskDetails> get copyWith => __$TaskDetailsCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TaskDetails&&(identical(other.name, name) || other.name == name)&&(identical(other.note, note) || other.note == note));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TaskDetails&&(identical(other.name, name) || other.name == name)&&(identical(other.note, note) || other.note == note));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,note);
+int get hashCode {
+    return Object.hash(runtimeType,name,note);
+}
 
 @override
 String toString() {
-  return 'TaskDetails(name: $name, note: $note)';
+    return 'TaskDetails(name: $name, note: $note)';
 }
 
 
@@ -290,16 +298,21 @@ $TaskScheduleCopyWith<TaskSchedule> get copyWith => _$TaskScheduleCopyWithImpl<T
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskSchedule&&const DeepCollectionEquality().equals(other.minutesOfDay, minutesOfDay)&&const DeepCollectionEquality().equals(other.weekdays, weekdays));
+  final _this = this as TaskSchedule;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskSchedule&&const DeepCollectionEquality().equals(other.minutesOfDay, _this.minutesOfDay)&&const DeepCollectionEquality().equals(other.weekdays, _this.weekdays));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(minutesOfDay),const DeepCollectionEquality().hash(weekdays));
+int get hashCode {
+  final _this = this as TaskSchedule;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.minutesOfDay),const DeepCollectionEquality().hash(_this.weekdays));
+}
 
 @override
 String toString() {
-  return 'TaskSchedule(minutesOfDay: $minutesOfDay, weekdays: $weekdays)';
+  final _this = this as TaskSchedule;
+  return 'TaskSchedule(minutesOfDay: ${_this.minutesOfDay}, weekdays: ${_this.weekdays})';
 }
 
 
@@ -328,7 +341,7 @@ class _$TaskScheduleCopyWithImpl<$Res>
 /// Create a copy of TaskSchedule
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? minutesOfDay = null,Object? weekdays = null,}) {
-  return _then(_self.copyWith(
+  return _then(TaskSchedule(
 minutesOfDay: null == minutesOfDay ? _self.minutesOfDay : minutesOfDay // ignore: cast_nullable_to_non_nullable
 as List<int>,weekdays: null == weekdays ? _self.weekdays : weekdays // ignore: cast_nullable_to_non_nullable
 as Set<int>,
@@ -472,7 +485,7 @@ return $default(_that.minutesOfDay,_that.weekdays);case _:
 
 
 class _TaskSchedule extends TaskSchedule {
-  const _TaskSchedule({final  List<int> minutesOfDay = const <int>[], final  Set<int> weekdays = const <int>{}}): _minutesOfDay = minutesOfDay,_weekdays = weekdays,super._();
+  const _TaskSchedule({ List<int> minutesOfDay = const <int>[],  Set<int> weekdays = const <int>{}}): _minutesOfDay = minutesOfDay,_weekdays = weekdays,super._();
   
 
 /// Minutes after midnight, ascending and without repeats; empty means
@@ -506,16 +519,18 @@ _$TaskScheduleCopyWith<_TaskSchedule> get copyWith => __$TaskScheduleCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TaskSchedule&&const DeepCollectionEquality().equals(other._minutesOfDay, _minutesOfDay)&&const DeepCollectionEquality().equals(other._weekdays, _weekdays));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TaskSchedule&&const DeepCollectionEquality().equals(other.minutesOfDay, _minutesOfDay)&&const DeepCollectionEquality().equals(other.weekdays, _weekdays));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_minutesOfDay),const DeepCollectionEquality().hash(_weekdays));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_minutesOfDay),const DeepCollectionEquality().hash(_weekdays));
+}
 
 @override
 String toString() {
-  return 'TaskSchedule(minutesOfDay: $minutesOfDay, weekdays: $weekdays)';
+    return 'TaskSchedule(minutesOfDay: $minutesOfDay, weekdays: $weekdays)';
 }
 
 
@@ -570,16 +585,21 @@ $CareTaskCopyWith<CareTask> get copyWith => _$CareTaskCopyWithImpl<CareTask>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareTask&&(identical(other.id, id) || other.id == id)&&(identical(other.details, details) || other.details == details)&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.isArchived, isArchived) || other.isArchived == isArchived)&&(identical(other.version, version) || other.version == version));
+  final _this = this as CareTask;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareTask&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.details, _this.details) || other.details == _this.details)&&(identical(other.schedule, _this.schedule) || other.schedule == _this.schedule)&&(identical(other.isArchived, _this.isArchived) || other.isArchived == _this.isArchived)&&(identical(other.version, _this.version) || other.version == _this.version));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,details,schedule,isArchived,version);
+int get hashCode {
+  final _this = this as CareTask;
+  return Object.hash(runtimeType,_this.id,_this.details,_this.schedule,_this.isArchived,_this.version);
+}
 
 @override
 String toString() {
-  return 'CareTask(id: $id, details: $details, schedule: $schedule, isArchived: $isArchived, version: $version)';
+  final _this = this as CareTask;
+  return 'CareTask(id: ${_this.id}, details: ${_this.details}, schedule: ${_this.schedule}, isArchived: ${_this.isArchived}, version: ${_this.version})';
 }
 
 
@@ -608,7 +628,7 @@ class _$CareTaskCopyWithImpl<$Res>
 /// Create a copy of CareTask
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? details = null,Object? schedule = null,Object? isArchived = null,Object? version = null,}) {
-  return _then(_self.copyWith(
+  return _then(CareTask(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,details: null == details ? _self.details : details // ignore: cast_nullable_to_non_nullable
 as TaskDetails,schedule: null == schedule ? _self.schedule : schedule // ignore: cast_nullable_to_non_nullable
@@ -794,16 +814,18 @@ _$CareTaskCopyWith<_CareTask> get copyWith => __$CareTaskCopyWithImpl<_CareTask>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareTask&&(identical(other.id, id) || other.id == id)&&(identical(other.details, details) || other.details == details)&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.isArchived, isArchived) || other.isArchived == isArchived)&&(identical(other.version, version) || other.version == version));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareTask&&(identical(other.id, id) || other.id == id)&&(identical(other.details, details) || other.details == details)&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.isArchived, isArchived) || other.isArchived == isArchived)&&(identical(other.version, version) || other.version == version));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,details,schedule,isArchived,version);
+int get hashCode {
+    return Object.hash(runtimeType,id,details,schedule,isArchived,version);
+}
 
 @override
 String toString() {
-  return 'CareTask(id: $id, details: $details, schedule: $schedule, isArchived: $isArchived, version: $version)';
+    return 'CareTask(id: $id, details: $details, schedule: $schedule, isArchived: $isArchived, version: $version)';
 }
 
 

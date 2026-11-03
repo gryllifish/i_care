@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'schedule_draft.dart';
@@ -9,6 +9,7 @@ part of 'schedule_draft.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -28,16 +29,21 @@ $ScheduleDraftCopyWith<ScheduleDraft> get copyWith => _$ScheduleDraftCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleDraft&&(identical(other.isFixed, isFixed) || other.isFixed == isFixed)&&const DeepCollectionEquality().equals(other.times, times)&&(identical(other.everyDay, everyDay) || other.everyDay == everyDay)&&const DeepCollectionEquality().equals(other.days, days)&&(identical(other.fixedMinInterval, fixedMinInterval) || other.fixedMinInterval == fixedMinInterval)&&(identical(other.asNeededInterval, asNeededInterval) || other.asNeededInterval == asNeededInterval)&&(identical(other.maxPerDay, maxPerDay) || other.maxPerDay == maxPerDay));
+  final _this = this as ScheduleDraft;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleDraft&&(identical(other.isFixed, _this.isFixed) || other.isFixed == _this.isFixed)&&const DeepCollectionEquality().equals(other.times, _this.times)&&(identical(other.everyDay, _this.everyDay) || other.everyDay == _this.everyDay)&&const DeepCollectionEquality().equals(other.days, _this.days)&&(identical(other.fixedMinInterval, _this.fixedMinInterval) || other.fixedMinInterval == _this.fixedMinInterval)&&(identical(other.asNeededInterval, _this.asNeededInterval) || other.asNeededInterval == _this.asNeededInterval)&&(identical(other.maxPerDay, _this.maxPerDay) || other.maxPerDay == _this.maxPerDay));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isFixed,const DeepCollectionEquality().hash(times),everyDay,const DeepCollectionEquality().hash(days),fixedMinInterval,asNeededInterval,maxPerDay);
+int get hashCode {
+  final _this = this as ScheduleDraft;
+  return Object.hash(runtimeType,_this.isFixed,const DeepCollectionEquality().hash(_this.times),_this.everyDay,const DeepCollectionEquality().hash(_this.days),_this.fixedMinInterval,_this.asNeededInterval,_this.maxPerDay);
+}
 
 @override
 String toString() {
-  return 'ScheduleDraft(isFixed: $isFixed, times: $times, everyDay: $everyDay, days: $days, fixedMinInterval: $fixedMinInterval, asNeededInterval: $asNeededInterval, maxPerDay: $maxPerDay)';
+  final _this = this as ScheduleDraft;
+  return 'ScheduleDraft(isFixed: ${_this.isFixed}, times: ${_this.times}, everyDay: ${_this.everyDay}, days: ${_this.days}, fixedMinInterval: ${_this.fixedMinInterval}, asNeededInterval: ${_this.asNeededInterval}, maxPerDay: ${_this.maxPerDay})';
 }
 
 
@@ -66,7 +72,7 @@ class _$ScheduleDraftCopyWithImpl<$Res>
 /// Create a copy of ScheduleDraft
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? isFixed = null,Object? times = null,Object? everyDay = null,Object? days = null,Object? fixedMinInterval = freezed,Object? asNeededInterval = null,Object? maxPerDay = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ScheduleDraft(
 isFixed: null == isFixed ? _self.isFixed : isFixed // ignore: cast_nullable_to_non_nullable
 as bool,times: null == times ? _self.times : times // ignore: cast_nullable_to_non_nullable
 as List<int>,everyDay: null == everyDay ? _self.everyDay : everyDay // ignore: cast_nullable_to_non_nullable
@@ -215,7 +221,7 @@ return $default(_that.isFixed,_that.times,_that.everyDay,_that.days,_that.fixedM
 
 
 class _ScheduleDraft extends ScheduleDraft {
-  const _ScheduleDraft({this.isFixed = true, final  List<int> times = const <int>[8 * 60], this.everyDay = true, final  Set<int> days = const <int>{}, this.fixedMinInterval, this.asNeededInterval = const Duration(hours: 6), this.maxPerDay}): _times = times,_days = days,super._();
+  const _ScheduleDraft({this.isFixed = true,  List<int> times = const <int>[8 * 60], this.everyDay = true,  Set<int> days = const <int>{}, this.fixedMinInterval, this.asNeededInterval = const Duration(hours: 6), this.maxPerDay}): _times = times,_days = days,super._();
   
 
 @override@JsonKey() final  bool isFixed;
@@ -253,16 +259,18 @@ _$ScheduleDraftCopyWith<_ScheduleDraft> get copyWith => __$ScheduleDraftCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScheduleDraft&&(identical(other.isFixed, isFixed) || other.isFixed == isFixed)&&const DeepCollectionEquality().equals(other._times, _times)&&(identical(other.everyDay, everyDay) || other.everyDay == everyDay)&&const DeepCollectionEquality().equals(other._days, _days)&&(identical(other.fixedMinInterval, fixedMinInterval) || other.fixedMinInterval == fixedMinInterval)&&(identical(other.asNeededInterval, asNeededInterval) || other.asNeededInterval == asNeededInterval)&&(identical(other.maxPerDay, maxPerDay) || other.maxPerDay == maxPerDay));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScheduleDraft&&(identical(other.isFixed, isFixed) || other.isFixed == isFixed)&&const DeepCollectionEquality().equals(other.times, _times)&&(identical(other.everyDay, everyDay) || other.everyDay == everyDay)&&const DeepCollectionEquality().equals(other.days, _days)&&(identical(other.fixedMinInterval, fixedMinInterval) || other.fixedMinInterval == fixedMinInterval)&&(identical(other.asNeededInterval, asNeededInterval) || other.asNeededInterval == asNeededInterval)&&(identical(other.maxPerDay, maxPerDay) || other.maxPerDay == maxPerDay));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isFixed,const DeepCollectionEquality().hash(_times),everyDay,const DeepCollectionEquality().hash(_days),fixedMinInterval,asNeededInterval,maxPerDay);
+int get hashCode {
+    return Object.hash(runtimeType,isFixed,const DeepCollectionEquality().hash(_times),everyDay,const DeepCollectionEquality().hash(_days),fixedMinInterval,asNeededInterval,maxPerDay);
+}
 
 @override
 String toString() {
-  return 'ScheduleDraft(isFixed: $isFixed, times: $times, everyDay: $everyDay, days: $days, fixedMinInterval: $fixedMinInterval, asNeededInterval: $asNeededInterval, maxPerDay: $maxPerDay)';
+    return 'ScheduleDraft(isFixed: $isFixed, times: $times, everyDay: $everyDay, days: $days, fixedMinInterval: $fixedMinInterval, asNeededInterval: $asNeededInterval, maxPerDay: $maxPerDay)';
 }
 
 

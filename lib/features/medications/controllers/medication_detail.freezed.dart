@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'medication_detail.dart';
@@ -9,6 +9,7 @@ part of 'medication_detail.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -27,16 +28,21 @@ $MedicationDetailCopyWith<MedicationDetail> get copyWith => _$MedicationDetailCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicationDetail&&(identical(other.medication, medication) || other.medication == medication)&&(identical(other.stock, stock) || other.stock == stock)&&const DeepCollectionEquality().equals(other.recentDoses, recentDoses)&&const DeepCollectionEquality().equals(other.conflicts, conflicts));
+  final _this = this as MedicationDetail;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicationDetail&&(identical(other.medication, _this.medication) || other.medication == _this.medication)&&(identical(other.stock, _this.stock) || other.stock == _this.stock)&&const DeepCollectionEquality().equals(other.recentDoses, _this.recentDoses)&&const DeepCollectionEquality().equals(other.conflicts, _this.conflicts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,medication,stock,const DeepCollectionEquality().hash(recentDoses),const DeepCollectionEquality().hash(conflicts));
+int get hashCode {
+  final _this = this as MedicationDetail;
+  return Object.hash(runtimeType,_this.medication,_this.stock,const DeepCollectionEquality().hash(_this.recentDoses),const DeepCollectionEquality().hash(_this.conflicts));
+}
 
 @override
 String toString() {
-  return 'MedicationDetail(medication: $medication, stock: $stock, recentDoses: $recentDoses, conflicts: $conflicts)';
+  final _this = this as MedicationDetail;
+  return 'MedicationDetail(medication: ${_this.medication}, stock: ${_this.stock}, recentDoses: ${_this.recentDoses}, conflicts: ${_this.conflicts})';
 }
 
 
@@ -65,7 +71,7 @@ class _$MedicationDetailCopyWithImpl<$Res>
 /// Create a copy of MedicationDetail
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? medication = null,Object? stock = freezed,Object? recentDoses = null,Object? conflicts = null,}) {
-  return _then(_self.copyWith(
+  return _then(MedicationDetail(
 medication: null == medication ? _self.medication : medication // ignore: cast_nullable_to_non_nullable
 as Medication,stock: freezed == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
 as StockLevel?,recentDoses: null == recentDoses ? _self.recentDoses : recentDoses // ignore: cast_nullable_to_non_nullable
@@ -232,7 +238,7 @@ return $default(_that.medication,_that.stock,_that.recentDoses,_that.conflicts);
 
 
 class _MedicationDetail implements MedicationDetail {
-  const _MedicationDetail({required this.medication, this.stock, final  List<DoseGiven> recentDoses = const <DoseGiven>[], final  List<EditConflict> conflicts = const <EditConflict>[]}): _recentDoses = recentDoses,_conflicts = conflicts;
+  const _MedicationDetail({required this.medication, this.stock,  List<DoseGiven> recentDoses = const <DoseGiven>[],  List<EditConflict> conflicts = const <EditConflict>[]}): _recentDoses = recentDoses,_conflicts = conflicts;
   
 
 @override final  Medication medication;
@@ -266,16 +272,18 @@ _$MedicationDetailCopyWith<_MedicationDetail> get copyWith => __$MedicationDetai
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MedicationDetail&&(identical(other.medication, medication) || other.medication == medication)&&(identical(other.stock, stock) || other.stock == stock)&&const DeepCollectionEquality().equals(other._recentDoses, _recentDoses)&&const DeepCollectionEquality().equals(other._conflicts, _conflicts));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MedicationDetail&&(identical(other.medication, medication) || other.medication == medication)&&(identical(other.stock, stock) || other.stock == stock)&&const DeepCollectionEquality().equals(other.recentDoses, _recentDoses)&&const DeepCollectionEquality().equals(other.conflicts, _conflicts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,medication,stock,const DeepCollectionEquality().hash(_recentDoses),const DeepCollectionEquality().hash(_conflicts));
+int get hashCode {
+    return Object.hash(runtimeType,medication,stock,const DeepCollectionEquality().hash(_recentDoses),const DeepCollectionEquality().hash(_conflicts));
+}
 
 @override
 String toString() {
-  return 'MedicationDetail(medication: $medication, stock: $stock, recentDoses: $recentDoses, conflicts: $conflicts)';
+    return 'MedicationDetail(medication: $medication, stock: $stock, recentDoses: $recentDoses, conflicts: $conflicts)';
 }
 
 

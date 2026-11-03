@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'task_draft.dart';
@@ -9,6 +9,7 @@ part of 'task_draft.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -27,16 +28,21 @@ $TaskDraftCopyWith<TaskDraft> get copyWith => _$TaskDraftCopyWithImpl<TaskDraft>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskDraft&&(identical(other.atSetTimes, atSetTimes) || other.atSetTimes == atSetTimes)&&const DeepCollectionEquality().equals(other.times, times)&&(identical(other.everyDay, everyDay) || other.everyDay == everyDay)&&const DeepCollectionEquality().equals(other.days, days));
+  final _this = this as TaskDraft;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskDraft&&(identical(other.atSetTimes, _this.atSetTimes) || other.atSetTimes == _this.atSetTimes)&&const DeepCollectionEquality().equals(other.times, _this.times)&&(identical(other.everyDay, _this.everyDay) || other.everyDay == _this.everyDay)&&const DeepCollectionEquality().equals(other.days, _this.days));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,atSetTimes,const DeepCollectionEquality().hash(times),everyDay,const DeepCollectionEquality().hash(days));
+int get hashCode {
+  final _this = this as TaskDraft;
+  return Object.hash(runtimeType,_this.atSetTimes,const DeepCollectionEquality().hash(_this.times),_this.everyDay,const DeepCollectionEquality().hash(_this.days));
+}
 
 @override
 String toString() {
-  return 'TaskDraft(atSetTimes: $atSetTimes, times: $times, everyDay: $everyDay, days: $days)';
+  final _this = this as TaskDraft;
+  return 'TaskDraft(atSetTimes: ${_this.atSetTimes}, times: ${_this.times}, everyDay: ${_this.everyDay}, days: ${_this.days})';
 }
 
 
@@ -65,7 +71,7 @@ class _$TaskDraftCopyWithImpl<$Res>
 /// Create a copy of TaskDraft
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? atSetTimes = null,Object? times = null,Object? everyDay = null,Object? days = null,}) {
-  return _then(_self.copyWith(
+  return _then(TaskDraft(
 atSetTimes: null == atSetTimes ? _self.atSetTimes : atSetTimes // ignore: cast_nullable_to_non_nullable
 as bool,times: null == times ? _self.times : times // ignore: cast_nullable_to_non_nullable
 as List<int>,everyDay: null == everyDay ? _self.everyDay : everyDay // ignore: cast_nullable_to_non_nullable
@@ -211,7 +217,7 @@ return $default(_that.atSetTimes,_that.times,_that.everyDay,_that.days);case _:
 
 
 class _TaskDraft extends TaskDraft {
-  const _TaskDraft({this.atSetTimes = false, final  List<int> times = const <int>[10 * 60], this.everyDay = true, final  Set<int> days = const <int>{}}): _times = times,_days = days,super._();
+  const _TaskDraft({this.atSetTimes = false,  List<int> times = const <int>[10 * 60], this.everyDay = true,  Set<int> days = const <int>{}}): _times = times,_days = days,super._();
   
 
 @override@JsonKey() final  bool atSetTimes;
@@ -245,16 +251,18 @@ _$TaskDraftCopyWith<_TaskDraft> get copyWith => __$TaskDraftCopyWithImpl<_TaskDr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TaskDraft&&(identical(other.atSetTimes, atSetTimes) || other.atSetTimes == atSetTimes)&&const DeepCollectionEquality().equals(other._times, _times)&&(identical(other.everyDay, everyDay) || other.everyDay == everyDay)&&const DeepCollectionEquality().equals(other._days, _days));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TaskDraft&&(identical(other.atSetTimes, atSetTimes) || other.atSetTimes == atSetTimes)&&const DeepCollectionEquality().equals(other.times, _times)&&(identical(other.everyDay, everyDay) || other.everyDay == everyDay)&&const DeepCollectionEquality().equals(other.days, _days));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,atSetTimes,const DeepCollectionEquality().hash(_times),everyDay,const DeepCollectionEquality().hash(_days));
+int get hashCode {
+    return Object.hash(runtimeType,atSetTimes,const DeepCollectionEquality().hash(_times),everyDay,const DeepCollectionEquality().hash(_days));
+}
 
 @override
 String toString() {
-  return 'TaskDraft(atSetTimes: $atSetTimes, times: $times, everyDay: $everyDay, days: $days)';
+    return 'TaskDraft(atSetTimes: $atSetTimes, times: $times, everyDay: $everyDay, days: $days)';
 }
 
 

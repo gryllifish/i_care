@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'appointment.dart';
@@ -9,6 +9,7 @@ part of 'appointment.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -28,16 +29,21 @@ $AppointmentDetailsCopyWith<AppointmentDetails> get copyWith => _$AppointmentDet
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentDetails&&(identical(other.title, title) || other.title == title)&&(identical(other.startsAt, startsAt) || other.startsAt == startsAt)&&(identical(other.doctor, doctor) || other.doctor == doctor)&&(identical(other.location, location) || other.location == location)&&(identical(other.questions, questions) || other.questions == questions));
+  final _this = this as AppointmentDetails;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentDetails&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.startsAt, _this.startsAt) || other.startsAt == _this.startsAt)&&(identical(other.doctor, _this.doctor) || other.doctor == _this.doctor)&&(identical(other.location, _this.location) || other.location == _this.location)&&(identical(other.questions, _this.questions) || other.questions == _this.questions));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,startsAt,doctor,location,questions);
+int get hashCode {
+  final _this = this as AppointmentDetails;
+  return Object.hash(runtimeType,_this.title,_this.startsAt,_this.doctor,_this.location,_this.questions);
+}
 
 @override
 String toString() {
-  return 'AppointmentDetails(title: $title, startsAt: $startsAt, doctor: $doctor, location: $location, questions: $questions)';
+  final _this = this as AppointmentDetails;
+  return 'AppointmentDetails(title: ${_this.title}, startsAt: ${_this.startsAt}, doctor: ${_this.doctor}, location: ${_this.location}, questions: ${_this.questions})';
 }
 
 
@@ -66,7 +72,7 @@ class _$AppointmentDetailsCopyWithImpl<$Res>
 /// Create a copy of AppointmentDetails
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? startsAt = null,Object? doctor = null,Object? location = null,Object? questions = null,}) {
-  return _then(_self.copyWith(
+  return _then(AppointmentDetails(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,startsAt: null == startsAt ? _self.startsAt : startsAt // ignore: cast_nullable_to_non_nullable
 as DateTime,doctor: null == doctor ? _self.doctor : doctor // ignore: cast_nullable_to_non_nullable
@@ -235,16 +241,18 @@ _$AppointmentDetailsCopyWith<_AppointmentDetails> get copyWith => __$Appointment
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppointmentDetails&&(identical(other.title, title) || other.title == title)&&(identical(other.startsAt, startsAt) || other.startsAt == startsAt)&&(identical(other.doctor, doctor) || other.doctor == doctor)&&(identical(other.location, location) || other.location == location)&&(identical(other.questions, questions) || other.questions == questions));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppointmentDetails&&(identical(other.title, title) || other.title == title)&&(identical(other.startsAt, startsAt) || other.startsAt == startsAt)&&(identical(other.doctor, doctor) || other.doctor == doctor)&&(identical(other.location, location) || other.location == location)&&(identical(other.questions, questions) || other.questions == questions));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,startsAt,doctor,location,questions);
+int get hashCode {
+    return Object.hash(runtimeType,title,startsAt,doctor,location,questions);
+}
 
 @override
 String toString() {
-  return 'AppointmentDetails(title: $title, startsAt: $startsAt, doctor: $doctor, location: $location, questions: $questions)';
+    return 'AppointmentDetails(title: $title, startsAt: $startsAt, doctor: $doctor, location: $location, questions: $questions)';
 }
 
 
@@ -304,16 +312,21 @@ $AppointmentCopyWith<Appointment> get copyWith => _$AppointmentCopyWithImpl<Appo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Appointment&&(identical(other.id, id) || other.id == id)&&(identical(other.details, details) || other.details == details)&&const DeepCollectionEquality().equals(other.notes, notes)&&const DeepCollectionEquality().equals(other.documents, documents)&&(identical(other.isCancelled, isCancelled) || other.isCancelled == isCancelled)&&(identical(other.version, version) || other.version == version));
+  final _this = this as Appointment;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Appointment&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.details, _this.details) || other.details == _this.details)&&const DeepCollectionEquality().equals(other.notes, _this.notes)&&const DeepCollectionEquality().equals(other.documents, _this.documents)&&(identical(other.isCancelled, _this.isCancelled) || other.isCancelled == _this.isCancelled)&&(identical(other.version, _this.version) || other.version == _this.version));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,details,const DeepCollectionEquality().hash(notes),const DeepCollectionEquality().hash(documents),isCancelled,version);
+int get hashCode {
+  final _this = this as Appointment;
+  return Object.hash(runtimeType,_this.id,_this.details,const DeepCollectionEquality().hash(_this.notes),const DeepCollectionEquality().hash(_this.documents),_this.isCancelled,_this.version);
+}
 
 @override
 String toString() {
-  return 'Appointment(id: $id, details: $details, notes: $notes, documents: $documents, isCancelled: $isCancelled, version: $version)';
+  final _this = this as Appointment;
+  return 'Appointment(id: ${_this.id}, details: ${_this.details}, notes: ${_this.notes}, documents: ${_this.documents}, isCancelled: ${_this.isCancelled}, version: ${_this.version})';
 }
 
 
@@ -342,7 +355,7 @@ class _$AppointmentCopyWithImpl<$Res>
 /// Create a copy of Appointment
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? details = null,Object? notes = null,Object? documents = null,Object? isCancelled = null,Object? version = null,}) {
-  return _then(_self.copyWith(
+  return _then(Appointment(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,details: null == details ? _self.details : details // ignore: cast_nullable_to_non_nullable
 as AppointmentDetails,notes: null == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
@@ -499,7 +512,7 @@ return $default(_that.id,_that.details,_that.notes,_that.documents,_that.isCance
 
 
 class _Appointment extends Appointment {
-  const _Appointment({required this.id, required this.details, final  List<VisitNoteAdded> notes = const <VisitNoteAdded>[], final  List<DocumentLinked> documents = const <DocumentLinked>[], this.isCancelled = false, this.version = 0}): _notes = notes,_documents = documents,super._();
+  const _Appointment({required this.id, required this.details,  List<VisitNoteAdded> notes = const <VisitNoteAdded>[],  List<DocumentLinked> documents = const <DocumentLinked>[], this.isCancelled = false, this.version = 0}): _notes = notes,_documents = documents,super._();
   
 
 @override final  String id;
@@ -538,16 +551,18 @@ _$AppointmentCopyWith<_Appointment> get copyWith => __$AppointmentCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Appointment&&(identical(other.id, id) || other.id == id)&&(identical(other.details, details) || other.details == details)&&const DeepCollectionEquality().equals(other._notes, _notes)&&const DeepCollectionEquality().equals(other._documents, _documents)&&(identical(other.isCancelled, isCancelled) || other.isCancelled == isCancelled)&&(identical(other.version, version) || other.version == version));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Appointment&&(identical(other.id, id) || other.id == id)&&(identical(other.details, details) || other.details == details)&&const DeepCollectionEquality().equals(other.notes, _notes)&&const DeepCollectionEquality().equals(other.documents, _documents)&&(identical(other.isCancelled, isCancelled) || other.isCancelled == isCancelled)&&(identical(other.version, version) || other.version == version));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,details,const DeepCollectionEquality().hash(_notes),const DeepCollectionEquality().hash(_documents),isCancelled,version);
+int get hashCode {
+    return Object.hash(runtimeType,id,details,const DeepCollectionEquality().hash(_notes),const DeepCollectionEquality().hash(_documents),isCancelled,version);
+}
 
 @override
 String toString() {
-  return 'Appointment(id: $id, details: $details, notes: $notes, documents: $documents, isCancelled: $isCancelled, version: $version)';
+    return 'Appointment(id: $id, details: $details, notes: $notes, documents: $documents, isCancelled: $isCancelled, version: $version)';
 }
 
 

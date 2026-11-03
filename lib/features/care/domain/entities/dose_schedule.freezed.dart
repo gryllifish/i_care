@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'dose_schedule.dart';
@@ -9,6 +9,7 @@ part of 'dose_schedule.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -26,16 +27,21 @@ $DoseScheduleCopyWith<DoseSchedule> get copyWith => _$DoseScheduleCopyWithImpl<D
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseSchedule&&(identical(other.minInterval, minInterval) || other.minInterval == minInterval));
+  final _this = this as DoseSchedule;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseSchedule&&(identical(other.minInterval, _this.minInterval) || other.minInterval == _this.minInterval));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,minInterval);
+int get hashCode {
+  final _this = this as DoseSchedule;
+  return Object.hash(runtimeType,_this.minInterval);
+}
 
 @override
 String toString() {
-  return 'DoseSchedule(minInterval: $minInterval)';
+  final _this = this as DoseSchedule;
+  return 'DoseSchedule(minInterval: ${_this.minInterval})';
 }
 
 
@@ -207,7 +213,7 @@ return asNeeded(_that.minInterval,_that.maxPerDay);case _:
 
 
 class FixedSchedule extends DoseSchedule {
-  const FixedSchedule({required final  List<int> minutesOfDay, final  Set<int> weekdays = const <int>{}, this.minInterval}): _minutesOfDay = minutesOfDay,_weekdays = weekdays,super._();
+  const FixedSchedule({required  List<int> minutesOfDay,  Set<int> weekdays = const <int>{}, this.minInterval}): _minutesOfDay = minutesOfDay,_weekdays = weekdays,super._();
   
 
 /// Minutes after midnight, ascending and without repeats.
@@ -241,16 +247,18 @@ $FixedScheduleCopyWith<FixedSchedule> get copyWith => _$FixedScheduleCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FixedSchedule&&const DeepCollectionEquality().equals(other._minutesOfDay, _minutesOfDay)&&const DeepCollectionEquality().equals(other._weekdays, _weekdays)&&(identical(other.minInterval, minInterval) || other.minInterval == minInterval));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FixedSchedule&&const DeepCollectionEquality().equals(other.minutesOfDay, _minutesOfDay)&&const DeepCollectionEquality().equals(other.weekdays, _weekdays)&&(identical(other.minInterval, minInterval) || other.minInterval == minInterval));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_minutesOfDay),const DeepCollectionEquality().hash(_weekdays),minInterval);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_minutesOfDay),const DeepCollectionEquality().hash(_weekdays),minInterval);
+}
 
 @override
 String toString() {
-  return 'DoseSchedule.fixed(minutesOfDay: $minutesOfDay, weekdays: $weekdays, minInterval: $minInterval)';
+    return 'DoseSchedule.fixed(minutesOfDay: $minutesOfDay, weekdays: $weekdays, minInterval: $minInterval)';
 }
 
 
@@ -310,16 +318,18 @@ $AsNeededScheduleCopyWith<AsNeededSchedule> get copyWith => _$AsNeededScheduleCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AsNeededSchedule&&(identical(other.minInterval, minInterval) || other.minInterval == minInterval)&&(identical(other.maxPerDay, maxPerDay) || other.maxPerDay == maxPerDay));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AsNeededSchedule&&(identical(other.minInterval, minInterval) || other.minInterval == minInterval)&&(identical(other.maxPerDay, maxPerDay) || other.maxPerDay == maxPerDay));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,minInterval,maxPerDay);
+int get hashCode {
+    return Object.hash(runtimeType,minInterval,maxPerDay);
+}
 
 @override
 String toString() {
-  return 'DoseSchedule.asNeeded(minInterval: $minInterval, maxPerDay: $maxPerDay)';
+    return 'DoseSchedule.asNeeded(minInterval: $minInterval, maxPerDay: $maxPerDay)';
 }
 
 
@@ -372,16 +382,21 @@ $ScheduleVersionCopyWith<ScheduleVersion> get copyWith => _$ScheduleVersionCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleVersion&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.effectiveFrom, effectiveFrom) || other.effectiveFrom == effectiveFrom));
+  final _this = this as ScheduleVersion;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleVersion&&(identical(other.schedule, _this.schedule) || other.schedule == _this.schedule)&&(identical(other.effectiveFrom, _this.effectiveFrom) || other.effectiveFrom == _this.effectiveFrom));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,schedule,effectiveFrom);
+int get hashCode {
+  final _this = this as ScheduleVersion;
+  return Object.hash(runtimeType,_this.schedule,_this.effectiveFrom);
+}
 
 @override
 String toString() {
-  return 'ScheduleVersion(schedule: $schedule, effectiveFrom: $effectiveFrom)';
+  final _this = this as ScheduleVersion;
+  return 'ScheduleVersion(schedule: ${_this.schedule}, effectiveFrom: ${_this.effectiveFrom})';
 }
 
 
@@ -410,7 +425,7 @@ class _$ScheduleVersionCopyWithImpl<$Res>
 /// Create a copy of ScheduleVersion
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? schedule = null,Object? effectiveFrom = null,}) {
-  return _then(_self.copyWith(
+  return _then(ScheduleVersion(
 schedule: null == schedule ? _self.schedule : schedule // ignore: cast_nullable_to_non_nullable
 as DoseSchedule,effectiveFrom: null == effectiveFrom ? _self.effectiveFrom : effectiveFrom // ignore: cast_nullable_to_non_nullable
 as DateTime,
@@ -579,16 +594,18 @@ _$ScheduleVersionCopyWith<_ScheduleVersion> get copyWith => __$ScheduleVersionCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScheduleVersion&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.effectiveFrom, effectiveFrom) || other.effectiveFrom == effectiveFrom));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScheduleVersion&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.effectiveFrom, effectiveFrom) || other.effectiveFrom == effectiveFrom));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,schedule,effectiveFrom);
+int get hashCode {
+    return Object.hash(runtimeType,schedule,effectiveFrom);
+}
 
 @override
 String toString() {
-  return 'ScheduleVersion(schedule: $schedule, effectiveFrom: $effectiveFrom)';
+    return 'ScheduleVersion(schedule: $schedule, effectiveFrom: $effectiveFrom)';
 }
 
 

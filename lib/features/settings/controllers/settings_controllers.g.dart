@@ -52,7 +52,7 @@ abstract class _$AppLanguage extends $Notifier<Locale?> {
   Locale? build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<Locale?, Locale?>;
     final element =
         ref.element
@@ -62,7 +62,7 @@ abstract class _$AppLanguage extends $Notifier<Locale?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -110,7 +110,7 @@ abstract class _$AppThemeMode extends $Notifier<ThemeMode> {
   ThemeMode build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<ThemeMode, ThemeMode>;
     final element =
         ref.element
@@ -120,7 +120,7 @@ abstract class _$AppThemeMode extends $Notifier<ThemeMode> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -167,7 +167,7 @@ abstract class _$WelcomeSeen extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element =
         ref.element
@@ -177,7 +177,7 @@ abstract class _$WelcomeSeen extends $Notifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 

@@ -1,7 +1,7 @@
 # Tech stack
 
 ## Versions
-- Flutter 3.47 (stable) / Dart 3.12. Material 3.
+- Flutter 3.47 (stable) / Dart 3.13. Material 3.
 - Platforms: iOS, Android, Web.
 
 ## Packages
@@ -32,9 +32,8 @@
 - **`fpdart`**: `Result` is a small sealed class in `core/error/`.
 
 ### Version pins
-- `freezed` stays on `^3.2.5`: freezed 4 (stable) requires Dart ≥ 3.13.
-  Upgrade freezed, `riverpod_generator` and `json_serializable` together
-  after upgrading Flutter.
+- `freezed`, `riverpod_generator` and `json_serializable` share the
+  `analyzer`: upgrade them together, never one alone.
 
 ## Commands
 ```sh

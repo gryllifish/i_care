@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'task_slot.dart';
@@ -9,6 +9,7 @@ part of 'task_slot.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -28,16 +29,21 @@ $TaskSlotCopyWith<TaskSlot> get copyWith => _$TaskSlotCopyWithImpl<TaskSlot>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskSlot&&(identical(other.task, task) || other.task == task)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.done, done)&&const DeepCollectionEquality().equals(other.skipped, skipped));
+  final _this = this as TaskSlot;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskSlot&&(identical(other.task, _this.task) || other.task == _this.task)&&(identical(other.slotAt, _this.slotAt) || other.slotAt == _this.slotAt)&&(identical(other.status, _this.status) || other.status == _this.status)&&const DeepCollectionEquality().equals(other.done, _this.done)&&const DeepCollectionEquality().equals(other.skipped, _this.skipped));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,task,slotAt,status,const DeepCollectionEquality().hash(done),const DeepCollectionEquality().hash(skipped));
+int get hashCode {
+  final _this = this as TaskSlot;
+  return Object.hash(runtimeType,_this.task,_this.slotAt,_this.status,const DeepCollectionEquality().hash(_this.done),const DeepCollectionEquality().hash(_this.skipped));
+}
 
 @override
 String toString() {
-  return 'TaskSlot(task: $task, slotAt: $slotAt, status: $status, done: $done, skipped: $skipped)';
+  final _this = this as TaskSlot;
+  return 'TaskSlot(task: ${_this.task}, slotAt: ${_this.slotAt}, status: ${_this.status}, done: ${_this.done}, skipped: ${_this.skipped})';
 }
 
 
@@ -66,7 +72,7 @@ class _$TaskSlotCopyWithImpl<$Res>
 /// Create a copy of TaskSlot
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? task = null,Object? slotAt = null,Object? status = null,Object? done = null,Object? skipped = null,}) {
-  return _then(_self.copyWith(
+  return _then(TaskSlot(
 task: null == task ? _self.task : task // ignore: cast_nullable_to_non_nullable
 as CareTask,slotAt: null == slotAt ? _self.slotAt : slotAt // ignore: cast_nullable_to_non_nullable
 as DateTime,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -222,7 +228,7 @@ return $default(_that.task,_that.slotAt,_that.status,_that.done,_that.skipped);c
 
 
 class _TaskSlot extends TaskSlot {
-  const _TaskSlot({required this.task, required this.slotAt, required this.status, final  List<TaskDone> done = const <TaskDone>[], final  List<TaskSkipped> skipped = const <TaskSkipped>[]}): _done = done,_skipped = skipped,super._();
+  const _TaskSlot({required this.task, required this.slotAt, required this.status,  List<TaskDone> done = const <TaskDone>[],  List<TaskSkipped> skipped = const <TaskSkipped>[]}): _done = done,_skipped = skipped,super._();
   
 
 @override final  CareTask task;
@@ -258,16 +264,18 @@ _$TaskSlotCopyWith<_TaskSlot> get copyWith => __$TaskSlotCopyWithImpl<_TaskSlot>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TaskSlot&&(identical(other.task, task) || other.task == task)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._done, _done)&&const DeepCollectionEquality().equals(other._skipped, _skipped));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TaskSlot&&(identical(other.task, task) || other.task == task)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.done, _done)&&const DeepCollectionEquality().equals(other.skipped, _skipped));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,task,slotAt,status,const DeepCollectionEquality().hash(_done),const DeepCollectionEquality().hash(_skipped));
+int get hashCode {
+    return Object.hash(runtimeType,task,slotAt,status,const DeepCollectionEquality().hash(_done),const DeepCollectionEquality().hash(_skipped));
+}
 
 @override
 String toString() {
-  return 'TaskSlot(task: $task, slotAt: $slotAt, status: $status, done: $done, skipped: $skipped)';
+    return 'TaskSlot(task: $task, slotAt: $slotAt, status: $status, done: $done, skipped: $skipped)';
 }
 
 

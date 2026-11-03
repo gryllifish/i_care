@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'recipient_profile.dart';
@@ -9,6 +9,7 @@ part of 'recipient_profile.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -26,16 +27,21 @@ $CareContactCopyWith<CareContact> get copyWith => _$CareContactCopyWithImpl<Care
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareContact&&(identical(other.name, name) || other.name == name)&&(identical(other.role, role) || other.role == role)&&(identical(other.phone, phone) || other.phone == phone));
+  final _this = this as CareContact;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareContact&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.role, _this.role) || other.role == _this.role)&&(identical(other.phone, _this.phone) || other.phone == _this.phone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,role,phone);
+int get hashCode {
+  final _this = this as CareContact;
+  return Object.hash(runtimeType,_this.name,_this.role,_this.phone);
+}
 
 @override
 String toString() {
-  return 'CareContact(name: $name, role: $role, phone: $phone)';
+  final _this = this as CareContact;
+  return 'CareContact(name: ${_this.name}, role: ${_this.role}, phone: ${_this.phone})';
 }
 
 
@@ -64,7 +70,7 @@ class _$CareContactCopyWithImpl<$Res>
 /// Create a copy of CareContact
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? role = null,Object? phone = null,}) {
-  return _then(_self.copyWith(
+  return _then(CareContact(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,role: null == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$CareContactCopyWith<_CareContact> get copyWith => __$CareContactCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareContact&&(identical(other.name, name) || other.name == name)&&(identical(other.role, role) || other.role == role)&&(identical(other.phone, phone) || other.phone == phone));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CareContact&&(identical(other.name, name) || other.name == name)&&(identical(other.role, role) || other.role == role)&&(identical(other.phone, phone) || other.phone == phone));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,role,phone);
+int get hashCode {
+    return Object.hash(runtimeType,name,role,phone);
+}
 
 @override
 String toString() {
-  return 'CareContact(name: $name, role: $role, phone: $phone)';
+    return 'CareContact(name: $name, role: $role, phone: $phone)';
 }
 
 
@@ -291,16 +299,21 @@ $RecipientProfileCopyWith<RecipientProfile> get copyWith => _$RecipientProfileCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecipientProfile&&(identical(other.name, name) || other.name == name)&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.allergies, allergies) || other.allergies == allergies)&&(identical(other.conditions, conditions) || other.conditions == conditions)&&const DeepCollectionEquality().equals(other.doctors, doctors)&&const DeepCollectionEquality().equals(other.contacts, contacts)&&(identical(other.notes, notes) || other.notes == notes));
+  final _this = this as RecipientProfile;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecipientProfile&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.birthDate, _this.birthDate) || other.birthDate == _this.birthDate)&&(identical(other.allergies, _this.allergies) || other.allergies == _this.allergies)&&(identical(other.conditions, _this.conditions) || other.conditions == _this.conditions)&&const DeepCollectionEquality().equals(other.doctors, _this.doctors)&&const DeepCollectionEquality().equals(other.contacts, _this.contacts)&&(identical(other.notes, _this.notes) || other.notes == _this.notes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,birthDate,allergies,conditions,const DeepCollectionEquality().hash(doctors),const DeepCollectionEquality().hash(contacts),notes);
+int get hashCode {
+  final _this = this as RecipientProfile;
+  return Object.hash(runtimeType,_this.name,_this.birthDate,_this.allergies,_this.conditions,const DeepCollectionEquality().hash(_this.doctors),const DeepCollectionEquality().hash(_this.contacts),_this.notes);
+}
 
 @override
 String toString() {
-  return 'RecipientProfile(name: $name, birthDate: $birthDate, allergies: $allergies, conditions: $conditions, doctors: $doctors, contacts: $contacts, notes: $notes)';
+  final _this = this as RecipientProfile;
+  return 'RecipientProfile(name: ${_this.name}, birthDate: ${_this.birthDate}, allergies: ${_this.allergies}, conditions: ${_this.conditions}, doctors: ${_this.doctors}, contacts: ${_this.contacts}, notes: ${_this.notes})';
 }
 
 
@@ -329,7 +342,7 @@ class _$RecipientProfileCopyWithImpl<$Res>
 /// Create a copy of RecipientProfile
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? birthDate = freezed,Object? allergies = null,Object? conditions = null,Object? doctors = null,Object? contacts = null,Object? notes = null,}) {
-  return _then(_self.copyWith(
+  return _then(RecipientProfile(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,birthDate: freezed == birthDate ? _self.birthDate : birthDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,allergies: null == allergies ? _self.allergies : allergies // ignore: cast_nullable_to_non_nullable
@@ -478,7 +491,7 @@ return $default(_that.name,_that.birthDate,_that.allergies,_that.conditions,_tha
 
 
 class _RecipientProfile extends RecipientProfile {
-  const _RecipientProfile({required this.name, this.birthDate, this.allergies = '', this.conditions = '', final  List<CareContact> doctors = const <CareContact>[], final  List<CareContact> contacts = const <CareContact>[], this.notes = ''}): _doctors = doctors,_contacts = contacts,super._();
+  const _RecipientProfile({required this.name, this.birthDate, this.allergies = '', this.conditions = '',  List<CareContact> doctors = const <CareContact>[],  List<CareContact> contacts = const <CareContact>[], this.notes = ''}): _doctors = doctors,_contacts = contacts,super._();
   
 
 @override final  String name;
@@ -512,16 +525,18 @@ _$RecipientProfileCopyWith<_RecipientProfile> get copyWith => __$RecipientProfil
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecipientProfile&&(identical(other.name, name) || other.name == name)&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.allergies, allergies) || other.allergies == allergies)&&(identical(other.conditions, conditions) || other.conditions == conditions)&&const DeepCollectionEquality().equals(other._doctors, _doctors)&&const DeepCollectionEquality().equals(other._contacts, _contacts)&&(identical(other.notes, notes) || other.notes == notes));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecipientProfile&&(identical(other.name, name) || other.name == name)&&(identical(other.birthDate, birthDate) || other.birthDate == birthDate)&&(identical(other.allergies, allergies) || other.allergies == allergies)&&(identical(other.conditions, conditions) || other.conditions == conditions)&&const DeepCollectionEquality().equals(other.doctors, _doctors)&&const DeepCollectionEquality().equals(other.contacts, _contacts)&&(identical(other.notes, notes) || other.notes == notes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,birthDate,allergies,conditions,const DeepCollectionEquality().hash(_doctors),const DeepCollectionEquality().hash(_contacts),notes);
+int get hashCode {
+    return Object.hash(runtimeType,name,birthDate,allergies,conditions,const DeepCollectionEquality().hash(_doctors),const DeepCollectionEquality().hash(_contacts),notes);
+}
 
 @override
 String toString() {
-  return 'RecipientProfile(name: $name, birthDate: $birthDate, allergies: $allergies, conditions: $conditions, doctors: $doctors, contacts: $contacts, notes: $notes)';
+    return 'RecipientProfile(name: $name, birthDate: $birthDate, allergies: $allergies, conditions: $conditions, doctors: $doctors, contacts: $contacts, notes: $notes)';
 }
 
 

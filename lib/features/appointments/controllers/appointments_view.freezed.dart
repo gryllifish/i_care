@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'appointments_view.dart';
@@ -9,6 +9,7 @@ part of 'appointments_view.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -29,16 +30,21 @@ $AppointmentsViewCopyWith<AppointmentsView> get copyWith => _$AppointmentsViewCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentsView&&const DeepCollectionEquality().equals(other.upcoming, upcoming)&&const DeepCollectionEquality().equals(other.past, past)&&const DeepCollectionEquality().equals(other.missingNotes, missingNotes)&&const DeepCollectionEquality().equals(other.needReview, needReview));
+  final _this = this as AppointmentsView;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentsView&&const DeepCollectionEquality().equals(other.upcoming, _this.upcoming)&&const DeepCollectionEquality().equals(other.past, _this.past)&&const DeepCollectionEquality().equals(other.missingNotes, _this.missingNotes)&&const DeepCollectionEquality().equals(other.needReview, _this.needReview));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(upcoming),const DeepCollectionEquality().hash(past),const DeepCollectionEquality().hash(missingNotes),const DeepCollectionEquality().hash(needReview));
+int get hashCode {
+  final _this = this as AppointmentsView;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.upcoming),const DeepCollectionEquality().hash(_this.past),const DeepCollectionEquality().hash(_this.missingNotes),const DeepCollectionEquality().hash(_this.needReview));
+}
 
 @override
 String toString() {
-  return 'AppointmentsView(upcoming: $upcoming, past: $past, missingNotes: $missingNotes, needReview: $needReview)';
+  final _this = this as AppointmentsView;
+  return 'AppointmentsView(upcoming: ${_this.upcoming}, past: ${_this.past}, missingNotes: ${_this.missingNotes}, needReview: ${_this.needReview})';
 }
 
 
@@ -67,7 +73,7 @@ class _$AppointmentsViewCopyWithImpl<$Res>
 /// Create a copy of AppointmentsView
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? upcoming = null,Object? past = null,Object? missingNotes = null,Object? needReview = null,}) {
-  return _then(_self.copyWith(
+  return _then(AppointmentsView(
 upcoming: null == upcoming ? _self.upcoming : upcoming // ignore: cast_nullable_to_non_nullable
 as List<Appointment>,past: null == past ? _self.past : past // ignore: cast_nullable_to_non_nullable
 as List<Appointment>,missingNotes: null == missingNotes ? _self.missingNotes : missingNotes // ignore: cast_nullable_to_non_nullable
@@ -213,7 +219,7 @@ return $default(_that.upcoming,_that.past,_that.missingNotes,_that.needReview);c
 
 
 class _AppointmentsView implements AppointmentsView {
-  const _AppointmentsView({final  List<Appointment> upcoming = const <Appointment>[], final  List<Appointment> past = const <Appointment>[], final  Set<String> missingNotes = const <String>{}, final  Set<String> needReview = const <String>{}}): _upcoming = upcoming,_past = past,_missingNotes = missingNotes,_needReview = needReview;
+  const _AppointmentsView({ List<Appointment> upcoming = const <Appointment>[],  List<Appointment> past = const <Appointment>[],  Set<String> missingNotes = const <String>{},  Set<String> needReview = const <String>{}}): _upcoming = upcoming,_past = past,_missingNotes = missingNotes,_needReview = needReview;
   
 
 /// Soonest first.
@@ -263,16 +269,18 @@ _$AppointmentsViewCopyWith<_AppointmentsView> get copyWith => __$AppointmentsVie
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppointmentsView&&const DeepCollectionEquality().equals(other._upcoming, _upcoming)&&const DeepCollectionEquality().equals(other._past, _past)&&const DeepCollectionEquality().equals(other._missingNotes, _missingNotes)&&const DeepCollectionEquality().equals(other._needReview, _needReview));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppointmentsView&&const DeepCollectionEquality().equals(other.upcoming, _upcoming)&&const DeepCollectionEquality().equals(other.past, _past)&&const DeepCollectionEquality().equals(other.missingNotes, _missingNotes)&&const DeepCollectionEquality().equals(other.needReview, _needReview));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_upcoming),const DeepCollectionEquality().hash(_past),const DeepCollectionEquality().hash(_missingNotes),const DeepCollectionEquality().hash(_needReview));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_upcoming),const DeepCollectionEquality().hash(_past),const DeepCollectionEquality().hash(_missingNotes),const DeepCollectionEquality().hash(_needReview));
+}
 
 @override
 String toString() {
-  return 'AppointmentsView(upcoming: $upcoming, past: $past, missingNotes: $missingNotes, needReview: $needReview)';
+    return 'AppointmentsView(upcoming: $upcoming, past: $past, missingNotes: $missingNotes, needReview: $needReview)';
 }
 
 

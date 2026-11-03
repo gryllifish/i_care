@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'conflict.dart';
@@ -9,6 +9,7 @@ part of 'conflict.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $ConflictCopyWith<Conflict> get copyWith => _$ConflictCopyWithImpl<Conflict>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Conflict&&(identical(other.key, key) || other.key == key));
+  final _this = this as Conflict;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Conflict&&(identical(other.key, _this.key) || other.key == _this.key));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key);
+int get hashCode {
+  final _this = this as Conflict;
+  return Object.hash(runtimeType,_this.key);
+}
 
 @override
 String toString() {
-  return 'Conflict(key: $key)';
+  final _this = this as Conflict;
+  return 'Conflict(key: ${_this.key})';
 }
 
 
@@ -206,7 +212,7 @@ return edit(_that.key,_that.entityId,_that.changes);case _:
 
 
 class DoseConflict implements Conflict {
-  const DoseConflict({required this.key, required this.medicationId, required final  List<DoseGiven> doses}): _doses = doses;
+  const DoseConflict({required this.key, required this.medicationId, required  List<DoseGiven> doses}): _doses = doses;
   
 
 @override final  String key;
@@ -229,16 +235,18 @@ $DoseConflictCopyWith<DoseConflict> get copyWith => _$DoseConflictCopyWithImpl<D
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseConflict&&(identical(other.key, key) || other.key == key)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&const DeepCollectionEquality().equals(other._doses, _doses));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseConflict&&(identical(other.key, key) || other.key == key)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&const DeepCollectionEquality().equals(other.doses, _doses));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,medicationId,const DeepCollectionEquality().hash(_doses));
+int get hashCode {
+    return Object.hash(runtimeType,key,medicationId,const DeepCollectionEquality().hash(_doses));
+}
 
 @override
 String toString() {
-  return 'Conflict.dose(key: $key, medicationId: $medicationId, doses: $doses)';
+    return 'Conflict.dose(key: $key, medicationId: $medicationId, doses: $doses)';
 }
 
 
@@ -282,7 +290,7 @@ as List<DoseGiven>,
 
 
 class EditConflict implements Conflict {
-  const EditConflict({required this.key, required this.entityId, required final  List<CareEvent> changes}): _changes = changes;
+  const EditConflict({required this.key, required this.entityId, required  List<CareEvent> changes}): _changes = changes;
   
 
 @override final  String key;
@@ -306,16 +314,18 @@ $EditConflictCopyWith<EditConflict> get copyWith => _$EditConflictCopyWithImpl<E
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EditConflict&&(identical(other.key, key) || other.key == key)&&(identical(other.entityId, entityId) || other.entityId == entityId)&&const DeepCollectionEquality().equals(other._changes, _changes));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is EditConflict&&(identical(other.key, key) || other.key == key)&&(identical(other.entityId, entityId) || other.entityId == entityId)&&const DeepCollectionEquality().equals(other.changes, _changes));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,key,entityId,const DeepCollectionEquality().hash(_changes));
+int get hashCode {
+    return Object.hash(runtimeType,key,entityId,const DeepCollectionEquality().hash(_changes));
+}
 
 @override
 String toString() {
-  return 'Conflict.edit(key: $key, entityId: $entityId, changes: $changes)';
+    return 'Conflict.edit(key: $key, entityId: $entityId, changes: $changes)';
 }
 
 

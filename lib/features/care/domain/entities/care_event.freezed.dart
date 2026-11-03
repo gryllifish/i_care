@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'care_event.dart';
@@ -9,6 +9,7 @@ part of 'care_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -34,16 +35,21 @@ $EventMetaCopyWith<EventMeta> get copyWith => _$EventMetaCopyWithImpl<EventMeta>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventMeta&&(identical(other.id, id) || other.id == id)&&(identical(other.caregiverId, caregiverId) || other.caregiverId == caregiverId)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.fromFormerMember, fromFormerMember) || other.fromFormerMember == fromFormerMember));
+  final _this = this as EventMeta;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventMeta&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.caregiverId, _this.caregiverId) || other.caregiverId == _this.caregiverId)&&(identical(other.occurredAt, _this.occurredAt) || other.occurredAt == _this.occurredAt)&&(identical(other.receivedAt, _this.receivedAt) || other.receivedAt == _this.receivedAt)&&(identical(other.fromFormerMember, _this.fromFormerMember) || other.fromFormerMember == _this.fromFormerMember));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,caregiverId,occurredAt,receivedAt,fromFormerMember);
+int get hashCode {
+  final _this = this as EventMeta;
+  return Object.hash(runtimeType,_this.id,_this.caregiverId,_this.occurredAt,_this.receivedAt,_this.fromFormerMember);
+}
 
 @override
 String toString() {
-  return 'EventMeta(id: $id, caregiverId: $caregiverId, occurredAt: $occurredAt, receivedAt: $receivedAt, fromFormerMember: $fromFormerMember)';
+  final _this = this as EventMeta;
+  return 'EventMeta(id: ${_this.id}, caregiverId: ${_this.caregiverId}, occurredAt: ${_this.occurredAt}, receivedAt: ${_this.receivedAt}, fromFormerMember: ${_this.fromFormerMember})';
 }
 
 
@@ -72,7 +78,7 @@ class _$EventMetaCopyWithImpl<$Res>
 /// Create a copy of EventMeta
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? caregiverId = null,Object? occurredAt = null,Object? receivedAt = freezed,Object? fromFormerMember = null,}) {
-  return _then(_self.copyWith(
+  return _then(EventMeta(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,caregiverId: null == caregiverId ? _self.caregiverId : caregiverId // ignore: cast_nullable_to_non_nullable
 as String,occurredAt: null == occurredAt ? _self.occurredAt : occurredAt // ignore: cast_nullable_to_non_nullable
@@ -247,16 +253,18 @@ _$EventMetaCopyWith<_EventMeta> get copyWith => __$EventMetaCopyWithImpl<_EventM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EventMeta&&(identical(other.id, id) || other.id == id)&&(identical(other.caregiverId, caregiverId) || other.caregiverId == caregiverId)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.fromFormerMember, fromFormerMember) || other.fromFormerMember == fromFormerMember));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EventMeta&&(identical(other.id, id) || other.id == id)&&(identical(other.caregiverId, caregiverId) || other.caregiverId == caregiverId)&&(identical(other.occurredAt, occurredAt) || other.occurredAt == occurredAt)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.fromFormerMember, fromFormerMember) || other.fromFormerMember == fromFormerMember));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,caregiverId,occurredAt,receivedAt,fromFormerMember);
+int get hashCode {
+    return Object.hash(runtimeType,id,caregiverId,occurredAt,receivedAt,fromFormerMember);
+}
 
 @override
 String toString() {
-  return 'EventMeta(id: $id, caregiverId: $caregiverId, occurredAt: $occurredAt, receivedAt: $receivedAt, fromFormerMember: $fromFormerMember)';
+    return 'EventMeta(id: $id, caregiverId: $caregiverId, occurredAt: $occurredAt, receivedAt: $receivedAt, fromFormerMember: $fromFormerMember)';
 }
 
 
@@ -312,16 +320,21 @@ $CareEventCopyWith<CareEvent> get copyWith => _$CareEventCopyWithImpl<CareEvent>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareEvent&&(identical(other.meta, meta) || other.meta == meta));
+  final _this = this as CareEvent;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareEvent&&(identical(other.meta, _this.meta) || other.meta == _this.meta));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta);
+int get hashCode {
+  final _this = this as CareEvent;
+  return Object.hash(runtimeType,_this.meta);
+}
 
 @override
 String toString() {
-  return 'CareEvent(meta: $meta)';
+  final _this = this as CareEvent;
+  return 'CareEvent(meta: ${_this.meta})';
 }
 
 
@@ -707,16 +720,18 @@ $MedicationCreatedCopyWith<MedicationCreated> get copyWith => _$MedicationCreate
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicationCreated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.details, details) || other.details == details)&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.effectiveFrom, effectiveFrom) || other.effectiveFrom == effectiveFrom));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicationCreated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.details, details) || other.details == details)&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.effectiveFrom, effectiveFrom) || other.effectiveFrom == effectiveFrom));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,medicationId,details,schedule,effectiveFrom);
+int get hashCode {
+    return Object.hash(runtimeType,meta,medicationId,details,schedule,effectiveFrom);
+}
 
 @override
 String toString() {
-  return 'CareEvent.medicationCreated(meta: $meta, medicationId: $medicationId, details: $details, schedule: $schedule, effectiveFrom: $effectiveFrom)';
+    return 'CareEvent.medicationCreated(meta: $meta, medicationId: $medicationId, details: $details, schedule: $schedule, effectiveFrom: $effectiveFrom)';
 }
 
 
@@ -807,16 +822,18 @@ $MedicationUpdatedCopyWith<MedicationUpdated> get copyWith => _$MedicationUpdate
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicationUpdated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.details, details) || other.details == details));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicationUpdated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.details, details) || other.details == details));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,medicationId,baseVersion,details);
+int get hashCode {
+    return Object.hash(runtimeType,meta,medicationId,baseVersion,details);
+}
 
 @override
 String toString() {
-  return 'CareEvent.medicationUpdated(meta: $meta, medicationId: $medicationId, baseVersion: $baseVersion, details: $details)';
+    return 'CareEvent.medicationUpdated(meta: $meta, medicationId: $medicationId, baseVersion: $baseVersion, details: $details)';
 }
 
 
@@ -898,16 +915,18 @@ $ScheduleChangedCopyWith<ScheduleChanged> get copyWith => _$ScheduleChangedCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleChanged&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.effectiveFrom, effectiveFrom) || other.effectiveFrom == effectiveFrom));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleChanged&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.schedule, schedule) || other.schedule == schedule)&&(identical(other.effectiveFrom, effectiveFrom) || other.effectiveFrom == effectiveFrom));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,medicationId,baseVersion,schedule,effectiveFrom);
+int get hashCode {
+    return Object.hash(runtimeType,meta,medicationId,baseVersion,schedule,effectiveFrom);
+}
 
 @override
 String toString() {
-  return 'CareEvent.scheduleChanged(meta: $meta, medicationId: $medicationId, baseVersion: $baseVersion, schedule: $schedule, effectiveFrom: $effectiveFrom)';
+    return 'CareEvent.scheduleChanged(meta: $meta, medicationId: $medicationId, baseVersion: $baseVersion, schedule: $schedule, effectiveFrom: $effectiveFrom)';
 }
 
 
@@ -988,16 +1007,18 @@ $MedicationArchivedCopyWith<MedicationArchived> get copyWith => _$MedicationArch
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicationArchived&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicationArchived&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,medicationId,baseVersion);
+int get hashCode {
+    return Object.hash(runtimeType,meta,medicationId,baseVersion);
+}
 
 @override
 String toString() {
-  return 'CareEvent.medicationArchived(meta: $meta, medicationId: $medicationId, baseVersion: $baseVersion)';
+    return 'CareEvent.medicationArchived(meta: $meta, medicationId: $medicationId, baseVersion: $baseVersion)';
 }
 
 
@@ -1050,7 +1071,7 @@ $EventMetaCopyWith<$Res> get meta {
 
 
 class DoseGiven implements CareEvent {
-  const DoseGiven({required this.meta, required this.medicationId, required this.slotAt, required this.givenAt, required this.units, final  List<String> knownDoseIds = const <String>[], this.note}): _knownDoseIds = knownDoseIds;
+  const DoseGiven({required this.meta, required this.medicationId, required this.slotAt, required this.givenAt, required this.units,  List<String> knownDoseIds = const <String>[], this.note}): _knownDoseIds = knownDoseIds;
   
 
 @override final  EventMeta meta;
@@ -1087,16 +1108,18 @@ $DoseGivenCopyWith<DoseGiven> get copyWith => _$DoseGivenCopyWithImpl<DoseGiven>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseGiven&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.givenAt, givenAt) || other.givenAt == givenAt)&&(identical(other.units, units) || other.units == units)&&const DeepCollectionEquality().equals(other._knownDoseIds, _knownDoseIds)&&(identical(other.note, note) || other.note == note));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseGiven&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.givenAt, givenAt) || other.givenAt == givenAt)&&(identical(other.units, units) || other.units == units)&&const DeepCollectionEquality().equals(other.knownDoseIds, _knownDoseIds)&&(identical(other.note, note) || other.note == note));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,medicationId,slotAt,givenAt,units,const DeepCollectionEquality().hash(_knownDoseIds),note);
+int get hashCode {
+    return Object.hash(runtimeType,meta,medicationId,slotAt,givenAt,units,const DeepCollectionEquality().hash(_knownDoseIds),note);
+}
 
 @override
 String toString() {
-  return 'CareEvent.doseGiven(meta: $meta, medicationId: $medicationId, slotAt: $slotAt, givenAt: $givenAt, units: $units, knownDoseIds: $knownDoseIds, note: $note)';
+    return 'CareEvent.doseGiven(meta: $meta, medicationId: $medicationId, slotAt: $slotAt, givenAt: $givenAt, units: $units, knownDoseIds: $knownDoseIds, note: $note)';
 }
 
 
@@ -1174,16 +1197,18 @@ $DoseSkippedCopyWith<DoseSkipped> get copyWith => _$DoseSkippedCopyWithImpl<Dose
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseSkipped&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId)&&(identical(other.note, note) || other.note == note));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseSkipped&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId)&&(identical(other.note, note) || other.note == note));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,medicationId,slotAt,reasonId,note);
+int get hashCode {
+    return Object.hash(runtimeType,meta,medicationId,slotAt,reasonId,note);
+}
 
 @override
 String toString() {
-  return 'CareEvent.doseSkipped(meta: $meta, medicationId: $medicationId, slotAt: $slotAt, reasonId: $reasonId, note: $note)';
+    return 'CareEvent.doseSkipped(meta: $meta, medicationId: $medicationId, slotAt: $slotAt, reasonId: $reasonId, note: $note)';
 }
 
 
@@ -1257,16 +1282,18 @@ $DoseUndoneCopyWith<DoseUndone> get copyWith => _$DoseUndoneCopyWithImpl<DoseUnd
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseUndone&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.targetEventId, targetEventId) || other.targetEventId == targetEventId)&&(identical(other.conflictKey, conflictKey) || other.conflictKey == conflictKey));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseUndone&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.targetEventId, targetEventId) || other.targetEventId == targetEventId)&&(identical(other.conflictKey, conflictKey) || other.conflictKey == conflictKey));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,targetEventId,conflictKey);
+int get hashCode {
+    return Object.hash(runtimeType,meta,targetEventId,conflictKey);
+}
 
 @override
 String toString() {
-  return 'CareEvent.doseUndone(meta: $meta, targetEventId: $targetEventId, conflictKey: $conflictKey)';
+    return 'CareEvent.doseUndone(meta: $meta, targetEventId: $targetEventId, conflictKey: $conflictKey)';
 }
 
 
@@ -1336,16 +1363,18 @@ $StockCountedCopyWith<StockCounted> get copyWith => _$StockCountedCopyWithImpl<S
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StockCounted&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.units, units) || other.units == units));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StockCounted&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.units, units) || other.units == units));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,medicationId,units);
+int get hashCode {
+    return Object.hash(runtimeType,meta,medicationId,units);
+}
 
 @override
 String toString() {
-  return 'CareEvent.stockCounted(meta: $meta, medicationId: $medicationId, units: $units)';
+    return 'CareEvent.stockCounted(meta: $meta, medicationId: $medicationId, units: $units)';
 }
 
 
@@ -1415,16 +1444,18 @@ $StockRefilledCopyWith<StockRefilled> get copyWith => _$StockRefilledCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StockRefilled&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.units, units) || other.units == units));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is StockRefilled&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.medicationId, medicationId) || other.medicationId == medicationId)&&(identical(other.units, units) || other.units == units));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,medicationId,units);
+int get hashCode {
+    return Object.hash(runtimeType,meta,medicationId,units);
+}
 
 @override
 String toString() {
-  return 'CareEvent.stockRefilled(meta: $meta, medicationId: $medicationId, units: $units)';
+    return 'CareEvent.stockRefilled(meta: $meta, medicationId: $medicationId, units: $units)';
 }
 
 
@@ -1494,16 +1525,18 @@ $AppointmentCreatedCopyWith<AppointmentCreated> get copyWith => _$AppointmentCre
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentCreated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.details, details) || other.details == details));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentCreated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.details, details) || other.details == details));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,appointmentId,details);
+int get hashCode {
+    return Object.hash(runtimeType,meta,appointmentId,details);
+}
 
 @override
 String toString() {
-  return 'CareEvent.appointmentCreated(meta: $meta, appointmentId: $appointmentId, details: $details)';
+    return 'CareEvent.appointmentCreated(meta: $meta, appointmentId: $appointmentId, details: $details)';
 }
 
 
@@ -1583,16 +1616,18 @@ $AppointmentUpdatedCopyWith<AppointmentUpdated> get copyWith => _$AppointmentUpd
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentUpdated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.details, details) || other.details == details));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentUpdated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.details, details) || other.details == details));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,appointmentId,baseVersion,details);
+int get hashCode {
+    return Object.hash(runtimeType,meta,appointmentId,baseVersion,details);
+}
 
 @override
 String toString() {
-  return 'CareEvent.appointmentUpdated(meta: $meta, appointmentId: $appointmentId, baseVersion: $baseVersion, details: $details)';
+    return 'CareEvent.appointmentUpdated(meta: $meta, appointmentId: $appointmentId, baseVersion: $baseVersion, details: $details)';
 }
 
 
@@ -1672,16 +1707,18 @@ $AppointmentCancelledCopyWith<AppointmentCancelled> get copyWith => _$Appointmen
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentCancelled&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is AppointmentCancelled&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,appointmentId,baseVersion);
+int get hashCode {
+    return Object.hash(runtimeType,meta,appointmentId,baseVersion);
+}
 
 @override
 String toString() {
-  return 'CareEvent.appointmentCancelled(meta: $meta, appointmentId: $appointmentId, baseVersion: $baseVersion)';
+    return 'CareEvent.appointmentCancelled(meta: $meta, appointmentId: $appointmentId, baseVersion: $baseVersion)';
 }
 
 
@@ -1751,16 +1788,18 @@ $VisitNoteAddedCopyWith<VisitNoteAdded> get copyWith => _$VisitNoteAddedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VisitNoteAdded&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.text, text) || other.text == text));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is VisitNoteAdded&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.text, text) || other.text == text));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,appointmentId,text);
+int get hashCode {
+    return Object.hash(runtimeType,meta,appointmentId,text);
+}
 
 @override
 String toString() {
-  return 'CareEvent.visitNoteAdded(meta: $meta, appointmentId: $appointmentId, text: $text)';
+    return 'CareEvent.visitNoteAdded(meta: $meta, appointmentId: $appointmentId, text: $text)';
 }
 
 
@@ -1829,16 +1868,18 @@ $CareNoteAddedCopyWith<CareNoteAdded> get copyWith => _$CareNoteAddedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CareNoteAdded&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.text, text) || other.text == text));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CareNoteAdded&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.text, text) || other.text == text));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,text);
+int get hashCode {
+    return Object.hash(runtimeType,meta,text);
+}
 
 @override
 String toString() {
-  return 'CareEvent.careNoteAdded(meta: $meta, text: $text)';
+    return 'CareEvent.careNoteAdded(meta: $meta, text: $text)';
 }
 
 
@@ -1909,16 +1950,18 @@ $DocumentLinkedCopyWith<DocumentLinked> get copyWith => _$DocumentLinkedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DocumentLinked&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.title, title) || other.title == title)&&(identical(other.url, url) || other.url == url));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DocumentLinked&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.title, title) || other.title == title)&&(identical(other.url, url) || other.url == url));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,appointmentId,title,url);
+int get hashCode {
+    return Object.hash(runtimeType,meta,appointmentId,title,url);
+}
 
 @override
 String toString() {
-  return 'CareEvent.documentLinked(meta: $meta, appointmentId: $appointmentId, title: $title, url: $url)';
+    return 'CareEvent.documentLinked(meta: $meta, appointmentId: $appointmentId, title: $title, url: $url)';
 }
 
 
@@ -1990,16 +2033,18 @@ $DocumentRemovedCopyWith<DocumentRemoved> get copyWith => _$DocumentRemovedCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DocumentRemoved&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.documentId, documentId) || other.documentId == documentId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DocumentRemoved&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.appointmentId, appointmentId) || other.appointmentId == appointmentId)&&(identical(other.documentId, documentId) || other.documentId == documentId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,appointmentId,documentId);
+int get hashCode {
+    return Object.hash(runtimeType,meta,appointmentId,documentId);
+}
 
 @override
 String toString() {
-  return 'CareEvent.documentRemoved(meta: $meta, appointmentId: $appointmentId, documentId: $documentId)';
+    return 'CareEvent.documentRemoved(meta: $meta, appointmentId: $appointmentId, documentId: $documentId)';
 }
 
 
@@ -2069,16 +2114,18 @@ $RecipientProfileUpdatedCopyWith<RecipientProfileUpdated> get copyWith => _$Reci
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecipientProfileUpdated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.profile, profile) || other.profile == profile));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RecipientProfileUpdated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.profile, profile) || other.profile == profile));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,baseVersion,profile);
+int get hashCode {
+    return Object.hash(runtimeType,meta,baseVersion,profile);
+}
 
 @override
 String toString() {
-  return 'CareEvent.recipientProfileUpdated(meta: $meta, baseVersion: $baseVersion, profile: $profile)';
+    return 'CareEvent.recipientProfileUpdated(meta: $meta, baseVersion: $baseVersion, profile: $profile)';
 }
 
 
@@ -2158,16 +2205,18 @@ $TaskCreatedCopyWith<TaskCreated> get copyWith => _$TaskCreatedCopyWithImpl<Task
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskCreated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.details, details) || other.details == details)&&(identical(other.schedule, schedule) || other.schedule == schedule));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskCreated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.details, details) || other.details == details)&&(identical(other.schedule, schedule) || other.schedule == schedule));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,taskId,details,schedule);
+int get hashCode {
+    return Object.hash(runtimeType,meta,taskId,details,schedule);
+}
 
 @override
 String toString() {
-  return 'CareEvent.taskCreated(meta: $meta, taskId: $taskId, details: $details, schedule: $schedule)';
+    return 'CareEvent.taskCreated(meta: $meta, taskId: $taskId, details: $details, schedule: $schedule)';
 }
 
 
@@ -2258,16 +2307,18 @@ $TaskUpdatedCopyWith<TaskUpdated> get copyWith => _$TaskUpdatedCopyWithImpl<Task
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskUpdated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.details, details) || other.details == details)&&(identical(other.schedule, schedule) || other.schedule == schedule));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskUpdated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.details, details) || other.details == details)&&(identical(other.schedule, schedule) || other.schedule == schedule));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,taskId,baseVersion,details,schedule);
+int get hashCode {
+    return Object.hash(runtimeType,meta,taskId,baseVersion,details,schedule);
+}
 
 @override
 String toString() {
-  return 'CareEvent.taskUpdated(meta: $meta, taskId: $taskId, baseVersion: $baseVersion, details: $details, schedule: $schedule)';
+    return 'CareEvent.taskUpdated(meta: $meta, taskId: $taskId, baseVersion: $baseVersion, details: $details, schedule: $schedule)';
 }
 
 
@@ -2357,16 +2408,18 @@ $TaskArchivedCopyWith<TaskArchived> get copyWith => _$TaskArchivedCopyWithImpl<T
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskArchived&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskArchived&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,taskId,baseVersion);
+int get hashCode {
+    return Object.hash(runtimeType,meta,taskId,baseVersion);
+}
 
 @override
 String toString() {
-  return 'CareEvent.taskArchived(meta: $meta, taskId: $taskId, baseVersion: $baseVersion)';
+    return 'CareEvent.taskArchived(meta: $meta, taskId: $taskId, baseVersion: $baseVersion)';
 }
 
 
@@ -2438,16 +2491,18 @@ $TaskDoneCopyWith<TaskDone> get copyWith => _$TaskDoneCopyWithImpl<TaskDone>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskDone&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskDone&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,taskId,slotAt);
+int get hashCode {
+    return Object.hash(runtimeType,meta,taskId,slotAt);
+}
 
 @override
 String toString() {
-  return 'CareEvent.taskDone(meta: $meta, taskId: $taskId, slotAt: $slotAt)';
+    return 'CareEvent.taskDone(meta: $meta, taskId: $taskId, slotAt: $slotAt)';
 }
 
 
@@ -2520,16 +2575,18 @@ $TaskSkippedCopyWith<TaskSkipped> get copyWith => _$TaskSkippedCopyWithImpl<Task
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskSkipped&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId)&&(identical(other.note, note) || other.note == note));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskSkipped&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId)&&(identical(other.note, note) || other.note == note));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,taskId,slotAt,reasonId,note);
+int get hashCode {
+    return Object.hash(runtimeType,meta,taskId,slotAt,reasonId,note);
+}
 
 @override
 String toString() {
-  return 'CareEvent.taskSkipped(meta: $meta, taskId: $taskId, slotAt: $slotAt, reasonId: $reasonId, note: $note)';
+    return 'CareEvent.taskSkipped(meta: $meta, taskId: $taskId, slotAt: $slotAt, reasonId: $reasonId, note: $note)';
 }
 
 
@@ -2603,16 +2660,18 @@ $CircleCreatedCopyWith<CircleCreated> get copyWith => _$CircleCreatedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CircleCreated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.recipientName, recipientName) || other.recipientName == recipientName)&&(identical(other.isSample, isSample) || other.isSample == isSample));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CircleCreated&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.recipientName, recipientName) || other.recipientName == recipientName)&&(identical(other.isSample, isSample) || other.isSample == isSample));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,recipientName,isSample);
+int get hashCode {
+    return Object.hash(runtimeType,meta,recipientName,isSample);
+}
 
 @override
 String toString() {
-  return 'CareEvent.circleCreated(meta: $meta, recipientName: $recipientName, isSample: $isSample)';
+    return 'CareEvent.circleCreated(meta: $meta, recipientName: $recipientName, isSample: $isSample)';
 }
 
 
@@ -2682,16 +2741,18 @@ $SkipReasonAddedCopyWith<SkipReasonAdded> get copyWith => _$SkipReasonAddedCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipReasonAdded&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId)&&(identical(other.label, label) || other.label == label));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipReasonAdded&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId)&&(identical(other.label, label) || other.label == label));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,reasonId,label);
+int get hashCode {
+    return Object.hash(runtimeType,meta,reasonId,label);
+}
 
 @override
 String toString() {
-  return 'CareEvent.skipReasonAdded(meta: $meta, reasonId: $reasonId, label: $label)';
+    return 'CareEvent.skipReasonAdded(meta: $meta, reasonId: $reasonId, label: $label)';
 }
 
 
@@ -2760,16 +2821,18 @@ $SkipReasonHiddenCopyWith<SkipReasonHidden> get copyWith => _$SkipReasonHiddenCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipReasonHidden&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipReasonHidden&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,reasonId);
+int get hashCode {
+    return Object.hash(runtimeType,meta,reasonId);
+}
 
 @override
 String toString() {
-  return 'CareEvent.skipReasonHidden(meta: $meta, reasonId: $reasonId)';
+    return 'CareEvent.skipReasonHidden(meta: $meta, reasonId: $reasonId)';
 }
 
 
@@ -2837,16 +2900,18 @@ $SkipReasonShownCopyWith<SkipReasonShown> get copyWith => _$SkipReasonShownCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipReasonShown&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SkipReasonShown&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.reasonId, reasonId) || other.reasonId == reasonId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,reasonId);
+int get hashCode {
+    return Object.hash(runtimeType,meta,reasonId);
+}
 
 @override
 String toString() {
-  return 'CareEvent.skipReasonShown(meta: $meta, reasonId: $reasonId)';
+    return 'CareEvent.skipReasonShown(meta: $meta, reasonId: $reasonId)';
 }
 
 
@@ -2917,16 +2982,18 @@ $MemberInvitedCopyWith<MemberInvited> get copyWith => _$MemberInvitedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberInvited&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.name, name) || other.name == name)&&(identical(other.role, role) || other.role == role)&&(identical(other.colorIndex, colorIndex) || other.colorIndex == colorIndex));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberInvited&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.name, name) || other.name == name)&&(identical(other.role, role) || other.role == role)&&(identical(other.colorIndex, colorIndex) || other.colorIndex == colorIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,memberId,name,role,colorIndex);
+int get hashCode {
+    return Object.hash(runtimeType,meta,memberId,name,role,colorIndex);
+}
 
 @override
 String toString() {
-  return 'CareEvent.memberInvited(meta: $meta, memberId: $memberId, name: $name, role: $role, colorIndex: $colorIndex)';
+    return 'CareEvent.memberInvited(meta: $meta, memberId: $memberId, name: $name, role: $role, colorIndex: $colorIndex)';
 }
 
 
@@ -2997,16 +3064,18 @@ $InvitationRevokedCopyWith<InvitationRevoked> get copyWith => _$InvitationRevoke
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InvitationRevoked&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is InvitationRevoked&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,memberId);
+int get hashCode {
+    return Object.hash(runtimeType,meta,memberId);
+}
 
 @override
 String toString() {
-  return 'CareEvent.invitationRevoked(meta: $meta, memberId: $memberId)';
+    return 'CareEvent.invitationRevoked(meta: $meta, memberId: $memberId)';
 }
 
 
@@ -3074,16 +3143,18 @@ $MemberJoinedCopyWith<MemberJoined> get copyWith => _$MemberJoinedCopyWithImpl<M
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberJoined&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberJoined&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,memberId);
+int get hashCode {
+    return Object.hash(runtimeType,meta,memberId);
+}
 
 @override
 String toString() {
-  return 'CareEvent.memberJoined(meta: $meta, memberId: $memberId)';
+    return 'CareEvent.memberJoined(meta: $meta, memberId: $memberId)';
 }
 
 
@@ -3153,16 +3224,18 @@ $RoleChangedCopyWith<RoleChanged> get copyWith => _$RoleChangedCopyWithImpl<Role
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoleChanged&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.role, role) || other.role == role));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is RoleChanged&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion)&&(identical(other.role, role) || other.role == role));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,memberId,baseVersion,role);
+int get hashCode {
+    return Object.hash(runtimeType,meta,memberId,baseVersion,role);
+}
 
 @override
 String toString() {
-  return 'CareEvent.roleChanged(meta: $meta, memberId: $memberId, baseVersion: $baseVersion, role: $role)';
+    return 'CareEvent.roleChanged(meta: $meta, memberId: $memberId, baseVersion: $baseVersion, role: $role)';
 }
 
 
@@ -3233,16 +3306,18 @@ $MemberRemovedCopyWith<MemberRemoved> get copyWith => _$MemberRemovedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberRemoved&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberRemoved&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId)&&(identical(other.baseVersion, baseVersion) || other.baseVersion == baseVersion));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,memberId,baseVersion);
+int get hashCode {
+    return Object.hash(runtimeType,meta,memberId,baseVersion);
+}
 
 @override
 String toString() {
-  return 'CareEvent.memberRemoved(meta: $meta, memberId: $memberId, baseVersion: $baseVersion)';
+    return 'CareEvent.memberRemoved(meta: $meta, memberId: $memberId, baseVersion: $baseVersion)';
 }
 
 
@@ -3311,16 +3386,18 @@ $MemberLeftCopyWith<MemberLeft> get copyWith => _$MemberLeftCopyWithImpl<MemberL
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberLeft&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberLeft&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.memberId, memberId) || other.memberId == memberId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,memberId);
+int get hashCode {
+    return Object.hash(runtimeType,meta,memberId);
+}
 
 @override
 String toString() {
-  return 'CareEvent.memberLeft(meta: $meta, memberId: $memberId)';
+    return 'CareEvent.memberLeft(meta: $meta, memberId: $memberId)';
 }
 
 
@@ -3388,16 +3465,18 @@ $ConflictAcknowledgedCopyWith<ConflictAcknowledged> get copyWith => _$ConflictAc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConflictAcknowledged&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.conflictKey, conflictKey) || other.conflictKey == conflictKey));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ConflictAcknowledged&&(identical(other.meta, meta) || other.meta == meta)&&(identical(other.conflictKey, conflictKey) || other.conflictKey == conflictKey));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,meta,conflictKey);
+int get hashCode {
+    return Object.hash(runtimeType,meta,conflictKey);
+}
 
 @override
 String toString() {
-  return 'CareEvent.conflictAcknowledged(meta: $meta, conflictKey: $conflictKey)';
+    return 'CareEvent.conflictAcknowledged(meta: $meta, conflictKey: $conflictKey)';
 }
 
 

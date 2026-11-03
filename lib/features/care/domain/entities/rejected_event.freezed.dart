@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'rejected_event.dart';
@@ -9,6 +9,7 @@ part of 'rejected_event.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $RejectedEventCopyWith<RejectedEvent> get copyWith => _$RejectedEventCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RejectedEvent&&(identical(other.event, event) || other.event == event)&&(identical(other.reason, reason) || other.reason == reason));
+  final _this = this as RejectedEvent;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RejectedEvent&&(identical(other.event, _this.event) || other.event == _this.event)&&(identical(other.reason, _this.reason) || other.reason == _this.reason));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,event,reason);
+int get hashCode {
+  final _this = this as RejectedEvent;
+  return Object.hash(runtimeType,_this.event,_this.reason);
+}
 
 @override
 String toString() {
-  return 'RejectedEvent(event: $event, reason: $reason)';
+  final _this = this as RejectedEvent;
+  return 'RejectedEvent(event: ${_this.event}, reason: ${_this.reason})';
 }
 
 
@@ -63,7 +69,7 @@ class _$RejectedEventCopyWithImpl<$Res>
 /// Create a copy of RejectedEvent
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? event = null,Object? reason = null,}) {
-  return _then(_self.copyWith(
+  return _then(RejectedEvent(
 event: null == event ? _self.event : event // ignore: cast_nullable_to_non_nullable
 as CareEvent,reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
 as RejectionReason,
@@ -232,16 +238,18 @@ _$RejectedEventCopyWith<_RejectedEvent> get copyWith => __$RejectedEventCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RejectedEvent&&(identical(other.event, event) || other.event == event)&&(identical(other.reason, reason) || other.reason == reason));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RejectedEvent&&(identical(other.event, event) || other.event == event)&&(identical(other.reason, reason) || other.reason == reason));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,event,reason);
+int get hashCode {
+    return Object.hash(runtimeType,event,reason);
+}
 
 @override
 String toString() {
-  return 'RejectedEvent(event: $event, reason: $reason)';
+    return 'RejectedEvent(event: $event, reason: $reason)';
 }
 
 

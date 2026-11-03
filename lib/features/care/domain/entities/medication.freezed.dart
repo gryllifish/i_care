@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'medication.dart';
@@ -9,6 +9,7 @@ part of 'medication.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -29,16 +30,21 @@ $MedicationDetailsCopyWith<MedicationDetails> get copyWith => _$MedicationDetail
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicationDetails&&(identical(other.name, name) || other.name == name)&&(identical(other.strength, strength) || other.strength == strength)&&(identical(other.form, form) || other.form == form)&&(identical(other.instructions, instructions) || other.instructions == instructions)&&(identical(other.unitsPerDose, unitsPerDose) || other.unitsPerDose == unitsPerDose)&&(identical(other.lowStockDays, lowStockDays) || other.lowStockDays == lowStockDays));
+  final _this = this as MedicationDetails;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MedicationDetails&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.strength, _this.strength) || other.strength == _this.strength)&&(identical(other.form, _this.form) || other.form == _this.form)&&(identical(other.instructions, _this.instructions) || other.instructions == _this.instructions)&&(identical(other.unitsPerDose, _this.unitsPerDose) || other.unitsPerDose == _this.unitsPerDose)&&(identical(other.lowStockDays, _this.lowStockDays) || other.lowStockDays == _this.lowStockDays));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,strength,form,instructions,unitsPerDose,lowStockDays);
+int get hashCode {
+  final _this = this as MedicationDetails;
+  return Object.hash(runtimeType,_this.name,_this.strength,_this.form,_this.instructions,_this.unitsPerDose,_this.lowStockDays);
+}
 
 @override
 String toString() {
-  return 'MedicationDetails(name: $name, strength: $strength, form: $form, instructions: $instructions, unitsPerDose: $unitsPerDose, lowStockDays: $lowStockDays)';
+  final _this = this as MedicationDetails;
+  return 'MedicationDetails(name: ${_this.name}, strength: ${_this.strength}, form: ${_this.form}, instructions: ${_this.instructions}, unitsPerDose: ${_this.unitsPerDose}, lowStockDays: ${_this.lowStockDays})';
 }
 
 
@@ -67,7 +73,7 @@ class _$MedicationDetailsCopyWithImpl<$Res>
 /// Create a copy of MedicationDetails
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? strength = null,Object? form = null,Object? instructions = null,Object? unitsPerDose = null,Object? lowStockDays = null,}) {
-  return _then(_self.copyWith(
+  return _then(MedicationDetails(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,strength: null == strength ? _self.strength : strength // ignore: cast_nullable_to_non_nullable
 as String,form: null == form ? _self.form : form // ignore: cast_nullable_to_non_nullable
@@ -239,16 +245,18 @@ _$MedicationDetailsCopyWith<_MedicationDetails> get copyWith => __$MedicationDet
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MedicationDetails&&(identical(other.name, name) || other.name == name)&&(identical(other.strength, strength) || other.strength == strength)&&(identical(other.form, form) || other.form == form)&&(identical(other.instructions, instructions) || other.instructions == instructions)&&(identical(other.unitsPerDose, unitsPerDose) || other.unitsPerDose == unitsPerDose)&&(identical(other.lowStockDays, lowStockDays) || other.lowStockDays == lowStockDays));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MedicationDetails&&(identical(other.name, name) || other.name == name)&&(identical(other.strength, strength) || other.strength == strength)&&(identical(other.form, form) || other.form == form)&&(identical(other.instructions, instructions) || other.instructions == instructions)&&(identical(other.unitsPerDose, unitsPerDose) || other.unitsPerDose == unitsPerDose)&&(identical(other.lowStockDays, lowStockDays) || other.lowStockDays == lowStockDays));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,name,strength,form,instructions,unitsPerDose,lowStockDays);
+int get hashCode {
+    return Object.hash(runtimeType,name,strength,form,instructions,unitsPerDose,lowStockDays);
+}
 
 @override
 String toString() {
-  return 'MedicationDetails(name: $name, strength: $strength, form: $form, instructions: $instructions, unitsPerDose: $unitsPerDose, lowStockDays: $lowStockDays)';
+    return 'MedicationDetails(name: $name, strength: $strength, form: $form, instructions: $instructions, unitsPerDose: $unitsPerDose, lowStockDays: $lowStockDays)';
 }
 
 
@@ -308,16 +316,21 @@ $MedicationCopyWith<Medication> get copyWith => _$MedicationCopyWithImpl<Medicat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Medication&&(identical(other.id, id) || other.id == id)&&(identical(other.details, details) || other.details == details)&&const DeepCollectionEquality().equals(other.schedules, schedules)&&(identical(other.isArchived, isArchived) || other.isArchived == isArchived)&&(identical(other.version, version) || other.version == version));
+  final _this = this as Medication;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Medication&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.details, _this.details) || other.details == _this.details)&&const DeepCollectionEquality().equals(other.schedules, _this.schedules)&&(identical(other.isArchived, _this.isArchived) || other.isArchived == _this.isArchived)&&(identical(other.version, _this.version) || other.version == _this.version));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,details,const DeepCollectionEquality().hash(schedules),isArchived,version);
+int get hashCode {
+  final _this = this as Medication;
+  return Object.hash(runtimeType,_this.id,_this.details,const DeepCollectionEquality().hash(_this.schedules),_this.isArchived,_this.version);
+}
 
 @override
 String toString() {
-  return 'Medication(id: $id, details: $details, schedules: $schedules, isArchived: $isArchived, version: $version)';
+  final _this = this as Medication;
+  return 'Medication(id: ${_this.id}, details: ${_this.details}, schedules: ${_this.schedules}, isArchived: ${_this.isArchived}, version: ${_this.version})';
 }
 
 
@@ -346,7 +359,7 @@ class _$MedicationCopyWithImpl<$Res>
 /// Create a copy of Medication
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? details = null,Object? schedules = null,Object? isArchived = null,Object? version = null,}) {
-  return _then(_self.copyWith(
+  return _then(Medication(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,details: null == details ? _self.details : details // ignore: cast_nullable_to_non_nullable
 as MedicationDetails,schedules: null == schedules ? _self.schedules : schedules // ignore: cast_nullable_to_non_nullable
@@ -502,7 +515,7 @@ return $default(_that.id,_that.details,_that.schedules,_that.isArchived,_that.ve
 
 
 class _Medication extends Medication {
-  const _Medication({required this.id, required this.details, required final  List<ScheduleVersion> schedules, this.isArchived = false, this.version = 0}): _schedules = schedules,super._();
+  const _Medication({required this.id, required this.details, required  List<ScheduleVersion> schedules, this.isArchived = false, this.version = 0}): _schedules = schedules,super._();
   
 
 @override final  String id;
@@ -531,16 +544,18 @@ _$MedicationCopyWith<_Medication> get copyWith => __$MedicationCopyWithImpl<_Med
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Medication&&(identical(other.id, id) || other.id == id)&&(identical(other.details, details) || other.details == details)&&const DeepCollectionEquality().equals(other._schedules, _schedules)&&(identical(other.isArchived, isArchived) || other.isArchived == isArchived)&&(identical(other.version, version) || other.version == version));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Medication&&(identical(other.id, id) || other.id == id)&&(identical(other.details, details) || other.details == details)&&const DeepCollectionEquality().equals(other.schedules, _schedules)&&(identical(other.isArchived, isArchived) || other.isArchived == isArchived)&&(identical(other.version, version) || other.version == version));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,details,const DeepCollectionEquality().hash(_schedules),isArchived,version);
+int get hashCode {
+    return Object.hash(runtimeType,id,details,const DeepCollectionEquality().hash(_schedules),isArchived,version);
+}
 
 @override
 String toString() {
-  return 'Medication(id: $id, details: $details, schedules: $schedules, isArchived: $isArchived, version: $version)';
+    return 'Medication(id: $id, details: $details, schedules: $schedules, isArchived: $isArchived, version: $version)';
 }
 
 

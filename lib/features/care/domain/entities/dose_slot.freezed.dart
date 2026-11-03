@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'dose_slot.dart';
@@ -9,6 +9,7 @@ part of 'dose_slot.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -28,16 +29,21 @@ $DoseSlotCopyWith<DoseSlot> get copyWith => _$DoseSlotCopyWithImpl<DoseSlot>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseSlot&&(identical(other.medication, medication) || other.medication == medication)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.given, given)&&const DeepCollectionEquality().equals(other.skipped, skipped)&&(identical(other.hasConflict, hasConflict) || other.hasConflict == hasConflict));
+  final _this = this as DoseSlot;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DoseSlot&&(identical(other.medication, _this.medication) || other.medication == _this.medication)&&(identical(other.slotAt, _this.slotAt) || other.slotAt == _this.slotAt)&&(identical(other.status, _this.status) || other.status == _this.status)&&const DeepCollectionEquality().equals(other.given, _this.given)&&const DeepCollectionEquality().equals(other.skipped, _this.skipped)&&(identical(other.hasConflict, _this.hasConflict) || other.hasConflict == _this.hasConflict));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,medication,slotAt,status,const DeepCollectionEquality().hash(given),const DeepCollectionEquality().hash(skipped),hasConflict);
+int get hashCode {
+  final _this = this as DoseSlot;
+  return Object.hash(runtimeType,_this.medication,_this.slotAt,_this.status,const DeepCollectionEquality().hash(_this.given),const DeepCollectionEquality().hash(_this.skipped),_this.hasConflict);
+}
 
 @override
 String toString() {
-  return 'DoseSlot(medication: $medication, slotAt: $slotAt, status: $status, given: $given, skipped: $skipped, hasConflict: $hasConflict)';
+  final _this = this as DoseSlot;
+  return 'DoseSlot(medication: ${_this.medication}, slotAt: ${_this.slotAt}, status: ${_this.status}, given: ${_this.given}, skipped: ${_this.skipped}, hasConflict: ${_this.hasConflict})';
 }
 
 
@@ -66,7 +72,7 @@ class _$DoseSlotCopyWithImpl<$Res>
 /// Create a copy of DoseSlot
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? medication = null,Object? slotAt = null,Object? status = null,Object? given = null,Object? skipped = null,Object? hasConflict = null,}) {
-  return _then(_self.copyWith(
+  return _then(DoseSlot(
 medication: null == medication ? _self.medication : medication // ignore: cast_nullable_to_non_nullable
 as Medication,slotAt: null == slotAt ? _self.slotAt : slotAt // ignore: cast_nullable_to_non_nullable
 as DateTime,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -223,7 +229,7 @@ return $default(_that.medication,_that.slotAt,_that.status,_that.given,_that.ski
 
 
 class _DoseSlot extends DoseSlot {
-  const _DoseSlot({required this.medication, required this.slotAt, required this.status, final  List<DoseGiven> given = const <DoseGiven>[], final  List<DoseSkipped> skipped = const <DoseSkipped>[], this.hasConflict = false}): _given = given,_skipped = skipped,super._();
+  const _DoseSlot({required this.medication, required this.slotAt, required this.status,  List<DoseGiven> given = const <DoseGiven>[],  List<DoseSkipped> skipped = const <DoseSkipped>[], this.hasConflict = false}): _given = given,_skipped = skipped,super._();
   
 
 @override final  Medication medication;
@@ -260,16 +266,18 @@ _$DoseSlotCopyWith<_DoseSlot> get copyWith => __$DoseSlotCopyWithImpl<_DoseSlot>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DoseSlot&&(identical(other.medication, medication) || other.medication == medication)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._given, _given)&&const DeepCollectionEquality().equals(other._skipped, _skipped)&&(identical(other.hasConflict, hasConflict) || other.hasConflict == hasConflict));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DoseSlot&&(identical(other.medication, medication) || other.medication == medication)&&(identical(other.slotAt, slotAt) || other.slotAt == slotAt)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.given, _given)&&const DeepCollectionEquality().equals(other.skipped, _skipped)&&(identical(other.hasConflict, hasConflict) || other.hasConflict == hasConflict));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,medication,slotAt,status,const DeepCollectionEquality().hash(_given),const DeepCollectionEquality().hash(_skipped),hasConflict);
+int get hashCode {
+    return Object.hash(runtimeType,medication,slotAt,status,const DeepCollectionEquality().hash(_given),const DeepCollectionEquality().hash(_skipped),hasConflict);
+}
 
 @override
 String toString() {
-  return 'DoseSlot(medication: $medication, slotAt: $slotAt, status: $status, given: $given, skipped: $skipped, hasConflict: $hasConflict)';
+    return 'DoseSlot(medication: $medication, slotAt: $slotAt, status: $status, given: $given, skipped: $skipped, hasConflict: $hasConflict)';
 }
 
 

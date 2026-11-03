@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'emergency_card.dart';
@@ -9,6 +9,7 @@ part of 'emergency_card.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -27,16 +28,21 @@ $EmergencyCardCopyWith<EmergencyCard> get copyWith => _$EmergencyCardCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmergencyCard&&(identical(other.profile, profile) || other.profile == profile)&&(identical(other.profileVersion, profileVersion) || other.profileVersion == profileVersion)&&const DeepCollectionEquality().equals(other.medications, medications)&&const DeepCollectionEquality().equals(other.conflicts, conflicts));
+  final _this = this as EmergencyCard;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmergencyCard&&(identical(other.profile, _this.profile) || other.profile == _this.profile)&&(identical(other.profileVersion, _this.profileVersion) || other.profileVersion == _this.profileVersion)&&const DeepCollectionEquality().equals(other.medications, _this.medications)&&const DeepCollectionEquality().equals(other.conflicts, _this.conflicts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,profile,profileVersion,const DeepCollectionEquality().hash(medications),const DeepCollectionEquality().hash(conflicts));
+int get hashCode {
+  final _this = this as EmergencyCard;
+  return Object.hash(runtimeType,_this.profile,_this.profileVersion,const DeepCollectionEquality().hash(_this.medications),const DeepCollectionEquality().hash(_this.conflicts));
+}
 
 @override
 String toString() {
-  return 'EmergencyCard(profile: $profile, profileVersion: $profileVersion, medications: $medications, conflicts: $conflicts)';
+  final _this = this as EmergencyCard;
+  return 'EmergencyCard(profile: ${_this.profile}, profileVersion: ${_this.profileVersion}, medications: ${_this.medications}, conflicts: ${_this.conflicts})';
 }
 
 
@@ -65,7 +71,7 @@ class _$EmergencyCardCopyWithImpl<$Res>
 /// Create a copy of EmergencyCard
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? profile = freezed,Object? profileVersion = null,Object? medications = null,Object? conflicts = null,}) {
-  return _then(_self.copyWith(
+  return _then(EmergencyCard(
 profile: freezed == profile ? _self.profile : profile // ignore: cast_nullable_to_non_nullable
 as RecipientProfile?,profileVersion: null == profileVersion ? _self.profileVersion : profileVersion // ignore: cast_nullable_to_non_nullable
 as int,medications: null == medications ? _self.medications : medications // ignore: cast_nullable_to_non_nullable
@@ -223,7 +229,7 @@ return $default(_that.profile,_that.profileVersion,_that.medications,_that.confl
 
 
 class _EmergencyCard implements EmergencyCard {
-  const _EmergencyCard({this.profile, this.profileVersion = 0, final  List<Medication> medications = const <Medication>[], final  List<EditConflict> conflicts = const <EditConflict>[]}): _medications = medications,_conflicts = conflicts;
+  const _EmergencyCard({this.profile, this.profileVersion = 0,  List<Medication> medications = const <Medication>[],  List<EditConflict> conflicts = const <EditConflict>[]}): _medications = medications,_conflicts = conflicts;
   
 
 /// Null until someone fills it in.
@@ -256,16 +262,18 @@ _$EmergencyCardCopyWith<_EmergencyCard> get copyWith => __$EmergencyCardCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EmergencyCard&&(identical(other.profile, profile) || other.profile == profile)&&(identical(other.profileVersion, profileVersion) || other.profileVersion == profileVersion)&&const DeepCollectionEquality().equals(other._medications, _medications)&&const DeepCollectionEquality().equals(other._conflicts, _conflicts));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EmergencyCard&&(identical(other.profile, profile) || other.profile == profile)&&(identical(other.profileVersion, profileVersion) || other.profileVersion == profileVersion)&&const DeepCollectionEquality().equals(other.medications, _medications)&&const DeepCollectionEquality().equals(other.conflicts, _conflicts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,profile,profileVersion,const DeepCollectionEquality().hash(_medications),const DeepCollectionEquality().hash(_conflicts));
+int get hashCode {
+    return Object.hash(runtimeType,profile,profileVersion,const DeepCollectionEquality().hash(_medications),const DeepCollectionEquality().hash(_conflicts));
+}
 
 @override
 String toString() {
-  return 'EmergencyCard(profile: $profile, profileVersion: $profileVersion, medications: $medications, conflicts: $conflicts)';
+    return 'EmergencyCard(profile: $profile, profileVersion: $profileVersion, medications: $medications, conflicts: $conflicts)';
 }
 
 

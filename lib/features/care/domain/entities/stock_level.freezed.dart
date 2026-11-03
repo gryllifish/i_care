@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'stock_level.dart';
@@ -9,6 +9,7 @@ part of 'stock_level.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -27,16 +28,21 @@ $StockLevelCopyWith<StockLevel> get copyWith => _$StockLevelCopyWithImpl<StockLe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StockLevel&&(identical(other.units, units) || other.units == units)&&(identical(other.daysLeft, daysLeft) || other.daysLeft == daysLeft)&&(identical(other.isLow, isLow) || other.isLow == isLow));
+  final _this = this as StockLevel;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StockLevel&&(identical(other.units, _this.units) || other.units == _this.units)&&(identical(other.daysLeft, _this.daysLeft) || other.daysLeft == _this.daysLeft)&&(identical(other.isLow, _this.isLow) || other.isLow == _this.isLow));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,units,daysLeft,isLow);
+int get hashCode {
+  final _this = this as StockLevel;
+  return Object.hash(runtimeType,_this.units,_this.daysLeft,_this.isLow);
+}
 
 @override
 String toString() {
-  return 'StockLevel(units: $units, daysLeft: $daysLeft, isLow: $isLow)';
+  final _this = this as StockLevel;
+  return 'StockLevel(units: ${_this.units}, daysLeft: ${_this.daysLeft}, isLow: ${_this.isLow})';
 }
 
 
@@ -65,7 +71,7 @@ class _$StockLevelCopyWithImpl<$Res>
 /// Create a copy of StockLevel
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? units = null,Object? daysLeft = freezed,Object? isLow = null,}) {
-  return _then(_self.copyWith(
+  return _then(StockLevel(
 units: null == units ? _self.units : units // ignore: cast_nullable_to_non_nullable
 as double,daysLeft: freezed == daysLeft ? _self.daysLeft : daysLeft // ignore: cast_nullable_to_non_nullable
 as int?,isLow: null == isLow ? _self.isLow : isLow // ignore: cast_nullable_to_non_nullable
@@ -229,16 +235,18 @@ _$StockLevelCopyWith<_StockLevel> get copyWith => __$StockLevelCopyWithImpl<_Sto
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StockLevel&&(identical(other.units, units) || other.units == units)&&(identical(other.daysLeft, daysLeft) || other.daysLeft == daysLeft)&&(identical(other.isLow, isLow) || other.isLow == isLow));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _StockLevel&&(identical(other.units, units) || other.units == units)&&(identical(other.daysLeft, daysLeft) || other.daysLeft == daysLeft)&&(identical(other.isLow, isLow) || other.isLow == isLow));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,units,daysLeft,isLow);
+int get hashCode {
+    return Object.hash(runtimeType,units,daysLeft,isLow);
+}
 
 @override
 String toString() {
-  return 'StockLevel(units: $units, daysLeft: $daysLeft, isLow: $isLow)';
+    return 'StockLevel(units: $units, daysLeft: $daysLeft, isLow: $isLow)';
 }
 
 
