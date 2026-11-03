@@ -2,27 +2,32 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 import 'package:i_care/app/app.dart';
 import 'package:i_care/app/demo_shell.dart';
 import 'package:i_care/app/simulated_device.dart';
 import 'package:i_care/core/config/demo_layout.dart';
 import 'package:i_care/core/config/env.dart';
+import 'package:i_care/core/error/app_exception.dart';
 import 'package:i_care/core/error/retry_policy.dart';
 import 'package:i_care/core/utils/app_logger.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/data/care_providers.dart';
 import 'package:i_care/features/care/data/datasources/event_store.dart';
 import 'package:i_care/features/care/data/datasources/rejected_store.dart';
+import 'package:i_care/features/care/data/datasources/storage_key.dart';
 import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
+import 'package:i_care/features/care/data/sync/secure_session_storage.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
 import 'package:i_care/features/care/data/sync/supabase_connection.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'
+    show FlutterAuthClientOptions, Supabase;
 
 /// Sets up error reporting and storage, then starts the demo or, in a
 /// build for the beta ([SyncBackend.supabase]), this phone alone.
@@ -53,12 +58,30 @@ Future<void> bootstrap() async {
 
 /// This phone alone, syncing with the Supabase project the build names
 /// (`docs/backend.md`): no sample data, no demo actions. It starts
-/// offline too; the device signs in on its first request.
+/// offline too; the device signs in on its first request. Its stores and
+/// session hold real health data, so they are encrypted and kept in
+/// secure storage (`docs/privacy.md`).
 Future<void> _runBeta() async {
-  final phone = await _openStores(_betaDeviceId);
+  const secure = FlutterSecureStorage();
+  HiveCipher? cipher;
+  try {
+    cipher = await const StorageKey(secure).cipher();
+  } on StorageException catch (error, stackTrace) {
+    // Never health data on disk unencrypted: this run keeps it in memory,
+    // and what is not sent before closing is lost.
+    AppLogger.error('Storage key unavailable', error, stackTrace);
+  }
+  final phone = await _openStores(
+    _betaDeviceId,
+    cipher: cipher,
+    inMemory: cipher == null,
+  );
   await Supabase.initialize(
     url: Env.supabaseUrl,
     publishableKey: Env.supabasePublishableKey,
+    authOptions: const FlutterAuthClientOptions(
+      localStorage: SecureSessionStorage(secure),
+    ),
   );
   final connection = SupabaseConnection(Supabase.instance.client);
   final container = ProviderContainer(
@@ -171,7 +194,8 @@ Future<_Phone> _openPhone(Member owner) async {
   );
 }
 
-/// One phone's boxes, named after [deviceId].
+/// One phone's boxes, named after [deviceId]; encrypted with [cipher],
+/// or kept in memory only.
 Future<
   ({
     Box<String> events,
@@ -180,12 +204,18 @@ Future<
     Box<String> prefs,
   })
 >
-_openStores(String deviceId) async {
+_openStores(
+  String deviceId, {
+  HiveCipher? cipher,
+  bool inMemory = false,
+}) async {
+  Future<Box<String>> open(String name) =>
+      inMemory ? _openMemoryBox(name) : _openBox(name, cipher: cipher);
   final (events, rejected, syncState, prefs) = await (
-    _openBox(EventStore.boxName(deviceId)),
-    _openBox(RejectedStore.boxName(deviceId)),
-    _openBox(SyncStateStore.boxName(deviceId)),
-    _openBox(HiveDevicePrefs.boxName(deviceId)),
+    open(EventStore.boxName(deviceId)),
+    open(RejectedStore.boxName(deviceId)),
+    open(SyncStateStore.boxName(deviceId)),
+    open(HiveDevicePrefs.boxName(deviceId)),
   ).wait;
   return (
     events: events,
@@ -296,17 +326,24 @@ Future<void> _initStorage() async {
 /// hanging, e.g. in private windows), falls back to an in-memory box after
 /// [_storageTimeout]: the app still starts, and changes last until it
 /// closes.
-Future<Box<String>> _openBox(String name) async {
+Future<Box<String>> _openBox(String name, {HiveCipher? cipher}) async {
   try {
-    return await Hive.openBox<String>(name).timeout(_storageTimeout);
+    return await Hive.openBox<String>(
+      name,
+      encryptionCipher: cipher,
+    ).timeout(_storageTimeout);
     // See _initStorage.
     // ignore: avoid_catches_without_on_clauses
   } catch (error, stackTrace) {
     AppLogger.error('Storage for $name unavailable', error, stackTrace);
-    // A distinct name: Hive would hand back the still-pending open instead.
-    return await Hive.openBox<String>('${name}_memory', bytes: Uint8List(0));
+    return await _openMemoryBox(name);
   }
 }
+
+/// A box that lives until the app closes.
+Future<Box<String>> _openMemoryBox(String name) =>
+    // A distinct name: Hive would hand back a still-pending open instead.
+    Hive.openBox<String>('${name}_memory', bytes: Uint8List(0));
 
 const _storageTimeout = Duration(seconds: 4);
 

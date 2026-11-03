@@ -14,6 +14,7 @@
 | `flutter_localizations` + `intl` | i18n via ARB files (`en`, `es`) and locale-aware formatting. |
 | `hive_ce` + `hive_ce_flutter` | Local event log, outbox and the simulated remote (IndexedDB on web). Boxes of JSON strings; no type adapters. |
 | `uuid` | Event ids generated on the device, unique across devices without a server (`docs/backend.md`). |
+| `flutter_secure_storage` | The beta's storage key and Supabase session in Keychain / Android Keystore (`docs/privacy.md`). |
 | `supabase_flutter` | Stage 2 beta backend: anonymous sign-in, calls to the backend's functions, Realtime pings, session kept across restarts. Used only in `data/sync/supabase_connection.dart` and `bootstrap`. |
 | `mocktail` (dev) | Mocks without codegen. |
 | `fake_async` (dev) | Deterministic time for sync latency and undo windows. |
