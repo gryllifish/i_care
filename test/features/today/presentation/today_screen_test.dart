@@ -86,6 +86,30 @@ void main() {
     expect(find.text('Due now'), findsOneWidget);
   });
 
+  testWidgets('a medication added after its time says when it starts', (
+    tester,
+  ) async {
+    final added = DateTime(2026, 11, 2, 9, 45);
+    await pumpApp(
+      tester,
+      repository: FakeCareRepository([
+        events.created(
+          'm1',
+          schedule: const DoseSchedule.fixed(minutesOfDay: [8 * 60]),
+          effectiveFrom: added,
+        ),
+      ])..status = SyncStatus(lastSyncedAt: added),
+      now: added,
+      prefs: martinsPhone(),
+    );
+
+    expect(find.text('No doses scheduled for today'), findsOneWidget);
+    expect(
+      find.text('Next dose: Enalapril, Tomorrow, 08:00'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('recording a dose names the caregiver and offers undo', (
     tester,
   ) async {

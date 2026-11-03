@@ -17,6 +17,8 @@ import 'package:i_care/features/medications/controllers/schedule_draft.dart';
 import 'package:i_care/features/medications/presentation/widgets/schedule_editor.dart';
 import 'package:i_care/features/medications/presentation/widgets/stock_input.dart';
 import 'package:i_care/shared/l10n/care_labels.dart';
+import 'package:i_care/shared/l10n/date_texts.dart';
+import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/form_section.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
@@ -257,6 +259,7 @@ class _MedicationFormState extends ConsumerState<_MedicationForm> {
     final messenger = ScaffoldMessenger.of(context);
     final actions = ref.read(medicationActionsProvider.notifier);
     setState(() => _busy = true);
+    final locale = Localizations.localeOf(context).toLanguageTag();
     final result = editing == null
         ? await actions.create(
             details: details,
@@ -267,6 +270,19 @@ class _MedicationFormState extends ConsumerState<_MedicationForm> {
     if (!mounted) return;
     setState(() => _busy = false);
     switch (result) {
+      case Ok(value: (id: _, firstDose: final DateTime firstDose)):
+        messenger.showMessage(
+          l10n.medicationSavedFirstDose(
+            details.name,
+            appointmentWhen(
+              l10n,
+              firstDose,
+              now: ref.read(nowProvider),
+              locale: locale,
+            ),
+          ),
+        );
+        context.pop();
       case Ok():
         messenger.showMessage(l10n.medicationSaved(details.name));
         context.pop();

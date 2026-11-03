@@ -40,6 +40,10 @@ sealed class DoseSchedule with _$DoseSchedule {
     _ => const [],
   };
 
+  /// The first scheduled time at or after [from] within a week; null when
+  /// as needed.
+  DateTime? firstSlotFrom(DateTime from) => firstScheduledFrom(from, slotsOn);
+
   /// Average doses per day, or null when it depends on need.
   double? get dosesPerDay => switch (this) {
     FixedSchedule(:final minutesOfDay, :final weekdays) =>
@@ -48,6 +52,23 @@ sealed class DoseSchedule with _$DoseSchedule {
           DateTime.daysPerWeek,
     AsNeededSchedule() => null,
   };
+}
+
+/// The first time [slotsOn] gives at or after [from], looking a week
+/// ahead, so every weekday comes up once; null when there is none.
+/// [slotsOn] gives each day's times in ascending order.
+DateTime? firstScheduledFrom(
+  DateTime from,
+  List<DateTime> Function(DateTime day) slotsOn,
+) {
+  for (var offset = 0; offset <= DateTime.daysPerWeek; offset++) {
+    final day = DateTime(from.year, from.month, from.day + offset);
+    if (slotsOn(day).where((slot) => !slot.isBefore(from)).firstOrNull
+        case final slot?) {
+      return slot;
+    }
+  }
+  return null;
 }
 
 /// A schedule and the moment it took effect. Older versions keep

@@ -69,6 +69,10 @@ abstract class TodayView with _$TodayView {
     /// the next upcoming one; null when the day is done.
     DoseSlot? next,
 
+    /// When [next] is null, the first dose on a later day within a week,
+    /// so a day with nothing left still says what comes next.
+    ({Medication medication, DateTime at})? nextLater,
+
     /// Yesterday's doses still unresolved, or resolved today.
     @Default(<DoseSlot>[]) List<DoseSlot> fromYesterday,
 
@@ -122,6 +126,10 @@ TodayView buildTodayView(CareLog log, DateTime now) {
     ),
   ];
 
+  final next =
+      pending.firstOrNull ??
+      slots.where((slot) => slot.status == DoseStatus.upcoming).firstOrNull;
+
   final lastRecord =
       [
         for (final event in log.events)
@@ -164,9 +172,10 @@ TodayView buildTodayView(CareLog log, DateTime now) {
               slot.status == DoseStatus.skipped,
         )
         .length,
-    next:
-        pending.firstOrNull ??
-        slots.where((slot) => slot.status == DoseStatus.upcoming).firstOrNull,
+    next: next,
+    nextLater: next == null
+        ? _firstDoseFrom(log, DateTime(day.year, day.month, day.day + 1))
+        : null,
     fromYesterday: fromYesterday,
     byDayPart: {
       for (final part in DayPart.values)
@@ -216,6 +225,21 @@ TodayView buildTodayView(CareLog log, DateTime now) {
 /// rather than record, and viewers, who cannot record.
 bool showsDaySummary(MemberRole role) =>
     role == MemberRole.admin || role == MemberRole.viewer;
+
+/// The first scheduled dose at or after [from], by time then name.
+({Medication medication, DateTime at})? _firstDoseFrom(
+  CareLog log,
+  DateTime from,
+) {
+  ({Medication medication, DateTime at})? first;
+  for (final medication in log.medications) {
+    final at = medication.firstSlotFrom(from);
+    if (at != null && (first == null || at.isBefore(first.at))) {
+      first = (medication: medication, at: at);
+    }
+  }
+  return first;
+}
 
 bool _isSameDay(DateTime a, DateTime b) =>
     a.year == b.year && a.month == b.month && a.day == b.day;

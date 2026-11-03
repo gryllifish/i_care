@@ -1213,6 +1213,24 @@ abstract class AppLocalizations {
   /// **'{medication} saved'**
   String medicationSaved(String medication);
 
+  /// No description provided for @medicationSavedFirstDose.
+  ///
+  /// In en, this message translates to:
+  /// **'{medication} saved · First dose: {when}'**
+  String medicationSavedFirstDose(String medication, String when);
+
+  /// No description provided for @nextDoseLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Next dose: {medication}, {when}'**
+  String nextDoseLater(String medication, String when);
+
+  /// No description provided for @dayNothingScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'No doses scheduled for today'**
+  String get dayNothingScheduled;
+
   /// No description provided for @editConflictTitle.
   ///
   /// In en, this message translates to:

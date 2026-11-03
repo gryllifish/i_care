@@ -52,6 +52,63 @@ void main() {
     expect(view.next?.status, DoseStatus.upcoming);
   });
 
+  test('a medication added after its time today starts tomorrow', () {
+    final added = DateTime(2026, 11, 2, 9, 45);
+    final view = buildTodayView(
+      CareLog([
+        events.created(
+          'm1',
+          schedule: const DoseSchedule.fixed(minutesOfDay: [8 * 60]),
+          effectiveFrom: added,
+        ),
+      ]),
+      added,
+    );
+
+    expect(view.totalToday, 0);
+    expect(view.next, isNull);
+    expect(view.nextLater?.medication.id, 'm1');
+    expect(view.nextLater?.at, DateTime(2026, 11, 3, 8));
+  });
+
+  test('a day with doses left has no later dose to mention', () {
+    final view = viewAt(DateTime(2026, 11, 2, 9));
+
+    expect(view.nextLater, isNull);
+  });
+
+  test('the later dose is the earliest one across medications', () {
+    final evening = DateTime(2026, 11, 2, 21);
+    final view = buildTodayView(
+      CareLog([
+        events.created(
+          'm1',
+          schedule: const DoseSchedule.fixed(minutesOfDay: [9 * 60]),
+          effectiveFrom: evening,
+        ),
+        events.created(
+          'm2',
+          name: 'Aspirin',
+          schedule: const DoseSchedule.fixed(
+            minutesOfDay: [10 * 60],
+            weekdays: {DateTime.thursday},
+          ),
+          effectiveFrom: evening,
+        ),
+        events.created(
+          'm3',
+          name: 'Metformin',
+          schedule: const DoseSchedule.fixed(minutesOfDay: [7 * 60]),
+          effectiveFrom: evening,
+        ),
+      ]),
+      evening,
+    );
+
+    expect(view.nextLater?.medication.id, 'm3');
+    expect(view.nextLater?.at, DateTime(2026, 11, 3, 7));
+  });
+
   test('doses are grouped by part of the day, empty parts left out', () {
     final view = viewAt(DateTime(2026, 11, 2, 9));
 

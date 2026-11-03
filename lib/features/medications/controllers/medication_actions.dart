@@ -21,20 +21,22 @@ class MedicationActions extends _$MedicationActions {
   CareRecorder get _recorder => ref.read(careRecorderProvider);
 
   /// Adds a medication whose [schedule] starts now, with [initialStock]
-  /// counted when given. Returns the new medication's id.
-  Future<Result<String>> create({
+  /// counted when given. Returns the new medication's id and its first
+  /// scheduled dose: a time already past today starts tomorrow.
+  Future<Result<({String id, DateTime? firstDose})>> create({
     required MedicationDetails details,
     required DoseSchedule schedule,
     double? initialStock,
   }) async {
     final id = ref.read(newIdProvider)();
     final created = _recorder.meta();
+    final normalized = normalizeSchedule(schedule);
     final result = await _recorder.recordAll([
       CareEvent.medicationCreated(
         meta: created,
         medicationId: id,
         details: details,
-        schedule: normalizeSchedule(schedule),
+        schedule: normalized,
         effectiveFrom: created.occurredAt,
       ),
       if (initialStock != null)
@@ -45,7 +47,10 @@ class MedicationActions extends _$MedicationActions {
         ),
     ]);
     return switch (result) {
-      Ok() => Ok(id),
+      Ok() => Ok((
+        id: id,
+        firstDose: normalized.firstSlotFrom(created.occurredAt),
+      )),
       Err(:final failure) => Err(failure),
     };
   }

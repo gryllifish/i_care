@@ -18,6 +18,7 @@ import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
+import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
 import 'package:i_care/features/today/controllers/dose_controller.dart';
@@ -136,18 +137,24 @@ class _TodayContent extends ConsumerWidget {
           _DaySummaryCard(view: view),
         ] else
           _NextDoseSwitcher(
-            child: next == null
-                ? null
-                : Padding(
-                    // One card per dose: a new one animates in.
-                    key: ValueKey((next.medication.id, next.slotAt)),
-                    padding: const EdgeInsets.only(top: AppSpacing.lg),
-                    child: _NextDoseCard(
-                      slot: next,
-                      isFromYesterday: next.slotAt.isBefore(view.day),
-                      onOpen: () => open(next),
-                    ),
-                  ),
+            child: switch ((next, view.nextLater)) {
+              (final DoseSlot next, _) => Padding(
+                // One card per dose: a new one animates in.
+                key: ValueKey((next.medication.id, next.slotAt)),
+                padding: const EdgeInsets.only(top: AppSpacing.lg),
+                child: _NextDoseCard(
+                  slot: next,
+                  isFromYesterday: next.slotAt.isBefore(view.day),
+                  onOpen: () => open(next),
+                ),
+              ),
+              (null, (:final medication, :final at)) => Padding(
+                key: ValueKey((medication.id, at)),
+                padding: const EdgeInsets.only(top: AppSpacing.lg),
+                child: _NextLaterCard(medication: medication, at: at),
+              ),
+              (null, null) => null,
+            },
           ),
         if (view.nextAppointment case final appointment?) ...[
           const SizedBox(height: AppSpacing.lg),
@@ -469,7 +476,11 @@ class _DayProgress extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  isDone ? l10n.dayDone : l10n.dayProgress(done, total),
+                  switch ((total, isDone)) {
+                    (0, _) => l10n.dayNothingScheduled,
+                    (_, true) => l10n.dayDone,
+                    _ => l10n.dayProgress(done, total),
+                  },
                   style: AppTextStyles.label,
                 ),
               ),
@@ -831,6 +842,42 @@ class _NextAppointmentCard extends ConsumerWidget {
             ),
           ),
           Icon(Icons.chevron_right, color: context.colors.inkMuted),
+        ],
+      ),
+    );
+  }
+}
+
+/// The first dose on a later day, when today has none left to give: a
+/// medication added after today's times starts tomorrow.
+class _NextLaterCard extends ConsumerWidget {
+  const _NextLaterCard({required this.medication, required this.at});
+
+  final Medication medication;
+  final DateTime at;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    return AppCard(
+      child: Row(
+        spacing: AppSpacing.md,
+        children: [
+          Icon(Icons.schedule, color: context.colors.teal),
+          Expanded(
+            child: Text(
+              l10n.nextDoseLater(
+                medication.details.name,
+                appointmentWhen(
+                  l10n,
+                  at,
+                  now: ref.watch(nowProvider),
+                  locale: Localizations.localeOf(context).toLanguageTag(),
+                ),
+              ),
+              style: AppTextStyles.label,
+            ),
+          ),
         ],
       ),
     );

@@ -50,7 +50,7 @@ final class MedicationActionsProvider
   }
 }
 
-String _$medicationActionsHash() => r'1ae78786fc5abb4c3a34afdfe33289171bb02004';
+String _$medicationActionsHash() => r'46381c2140a9c7053b573701f8eaacce107ca9ea';
 
 /// Changes to medications. Each one appends events carrying the version
 /// it was made on, so concurrent edits are flagged instead of lost.

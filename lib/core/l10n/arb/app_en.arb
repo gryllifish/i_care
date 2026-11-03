@@ -668,6 +668,29 @@
       }
     }
   },
+  "medicationSavedFirstDose": "{medication} saved · First dose: {when}",
+  "@medicationSavedFirstDose": {
+    "placeholders": {
+      "medication": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "nextDoseLater": "Next dose: {medication}, {when}",
+  "@nextDoseLater": {
+    "placeholders": {
+      "medication": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "dayNothingScheduled": "No doses scheduled for today",
   "editConflictTitle": "Changed by more than one person at the same time",
   "editConflictBody": "The last change received is the one in use. Choose which one to keep.",
   "keepThis": "Keep this one",

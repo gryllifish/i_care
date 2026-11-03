@@ -748,6 +748,19 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String medicationSavedFirstDose(String medication, String when) {
+    return '$medication: guardado · Primera toma: $when';
+  }
+
+  @override
+  String nextDoseLater(String medication, String when) {
+    return 'Próxima toma: $medication, $when';
+  }
+
+  @override
+  String get dayNothingScheduled => 'No hay tomas programadas para hoy';
+
+  @override
   String get editConflictTitle =>
       'Cambiado por más de una persona al mismo tiempo';
 

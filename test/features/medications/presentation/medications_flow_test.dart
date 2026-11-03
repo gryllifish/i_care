@@ -96,6 +96,11 @@ void main() {
       60,
     );
     expect(find.text('2 active medications · Sample data'), findsOneWidget);
+    // 08:00 has passed at 09:00, so the first dose is tomorrow's.
+    expect(
+      find.text('Metformin saved · First dose: Tomorrow, 08:00'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('a medication can be scheduled on chosen days only', (

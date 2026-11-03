@@ -74,4 +74,8 @@ abstract class Medication with _$Medication {
                 slot.isBefore(schedules[index + 1].effectiveFrom)))
           slot,
   ];
+
+  /// The first scheduled time at or after [from] within a week, from the
+  /// schedule version in effect then; null when as needed.
+  DateTime? firstSlotFrom(DateTime from) => firstScheduledFrom(from, slotsOn);
 }

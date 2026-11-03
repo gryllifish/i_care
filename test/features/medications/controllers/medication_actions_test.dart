@@ -57,7 +57,9 @@ void main() {
         initialStock: 30,
       );
 
-      final id = (result as Ok<String>).value;
+      final (:id, :firstDose) =
+          (result as Ok<({String id, DateTime? firstDose})>).value;
+      expect(firstDose, DateTime(2026, 11, 2, 20));
       final medication = log().medication(id);
       expect(medication?.details, details);
       expect(medication?.schedules.single.effectiveFrom, now);
