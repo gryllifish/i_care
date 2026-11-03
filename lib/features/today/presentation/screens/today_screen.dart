@@ -266,7 +266,6 @@ class _Header extends ConsumerWidget {
         spacing: AppSpacing.sm,
         runSpacing: AppSpacing.sm,
         children: [
-          const _EmergencyCardButton(),
           const SyncBanner(),
           if (ref.watch(isSampleCircleProvider)) const _SampleDataPill(),
         ],
@@ -275,72 +274,67 @@ class _Header extends ConsumerWidget {
   }
 }
 
+/// The care recipient's initial, which opens their emergency card: one
+/// tap from the first screen, for the moment someone needs it at a
+/// hospital. A medical badge says it can be tapped.
 class _RecipientAvatar extends StatelessWidget {
   const _RecipientAvatar({required this.name});
 
   final String name;
 
   static const _size = 52.0;
+  static const _badgeSize = 22.0;
+  static const _badgeIconSize = 14.0;
+  static const _badgeBorder = 2.0;
 
   @override
   Widget build(BuildContext context) {
-    return ExcludeSemantics(
-      child: CircleAvatar(
-        radius: _size / 2,
-        backgroundColor: context.colors.recipient,
-        child: Text(
-          name.characters.first.toUpperCase(),
-          style: AppTextStyles.headline.copyWith(
-            color: context.colors.onAccent,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Opens the emergency card: one tap from the first screen, for the
-/// moment someone needs it at a hospital.
-class _EmergencyCardButton extends StatelessWidget {
-  const _EmergencyCardButton();
-
-  static const _iconSize = 18.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      child: Material(
-        color: context.colors.overdueSoft,
-        shape: const StadiumBorder(),
+    return Tooltip(
+      message: context.l10n.emergencyCard,
+      child: Semantics(
+        button: true,
+        label: context.l10n.emergencyCard,
+        excludeSemantics: true,
         child: InkWell(
-          customBorder: const StadiumBorder(),
+          customBorder: const CircleBorder(),
           onTap: () => context.push(AppRoutes.emergency),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              minHeight: kMinInteractiveDimension,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: AppSpacing.xs,
-                children: [
-                  Icon(
-                    Icons.medical_information,
-                    size: _iconSize,
-                    color: context.colors.overdue,
-                  ),
-                  Flexible(
-                    child: Text(
-                      context.l10n.emergencyCard,
-                      style: AppTextStyles.pill.copyWith(
-                        color: context.colors.overdue,
-                      ),
+          child: SizedBox.square(
+            dimension: _size,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                CircleAvatar(
+                  radius: _size / 2,
+                  backgroundColor: context.colors.recipient,
+                  child: Text(
+                    name.characters.first.toUpperCase(),
+                    style: AppTextStyles.headline.copyWith(
+                      color: context.colors.onAccent,
                     ),
                   ),
-                ],
-              ),
+                ),
+                Positioned(
+                  right: -_badgeBorder,
+                  bottom: -_badgeBorder,
+                  child: Container(
+                    width: _badgeSize,
+                    height: _badgeSize,
+                    decoration: BoxDecoration(
+                      color: context.colors.overdue,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: context.colors.background,
+                        width: _badgeBorder,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.medical_information,
+                      size: _badgeIconSize,
+                      color: context.colors.onAccent,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

@@ -39,7 +39,7 @@ void main() {
         }),
       ],
     );
-    await tester.tap(find.text('Emergency card'));
+    await tester.tap(find.byTooltip('Emergency card'));
     await tester.pumpAndSettle();
     return repository;
   }
