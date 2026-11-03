@@ -1067,14 +1067,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remove => 'Remove';
 
   @override
-  String get handoffTitle => 'Handoff';
+  String get handoffTitle => 'Notes for the circle';
 
   @override
-  String get handoffSubtitle => 'A summary for whoever takes over';
+  String get handoffSubtitle =>
+      'For whoever takes over. Everyone in the circle sees them.';
 
   @override
   String handoffHeader(String name, String day, String time) {
-    return 'Handoff for $name · $day, $time';
+    return '$name\'s day · $day, $time';
   }
 
   @override
@@ -1115,13 +1116,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get handoffCopied => 'Copied. Paste it in your family chat.';
 
   @override
-  String get handoffNote => 'Also:';
+  String get handoffNotes => 'Notes:';
 
   @override
-  String get handoffNoteField => 'Anything else to tell (optional)';
+  String get noteFieldHint => 'Write something for whoever\'s next';
 
   @override
-  String get handoffNoteHint => 'e.g. Ate little at lunch';
+  String get leaveNote => 'Leave note';
+
+  @override
+  String get notesEmpty =>
+      'No notes yet. What you write here, everyone in the circle sees.';
+
+  @override
+  String get recentNotesTitle => 'Left for you';
+
+  @override
+  String get copySummary => 'Copy the day\'s summary';
+
+  @override
+  String activityCareNote(String name, String text) {
+    return '$name left a note: $text';
+  }
+
+  @override
+  String yesterdayAt(String time) {
+    return 'Yesterday, $time';
+  }
 
   @override
   String get copy => 'Copy';

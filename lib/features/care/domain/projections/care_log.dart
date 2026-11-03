@@ -10,6 +10,9 @@ import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
 
+/// How long a note left for the circle shows on Today.
+const recentNotesWindow = Duration(hours: 24);
+
 /// Current state of the care circle, projected from its event log.
 ///
 /// Built once per change of the log; queries that depend on the time take
@@ -37,6 +40,7 @@ class CareLog {
     required this._doses,
     required this._stock,
     required this.conflicts,
+    required this.careNotes,
   });
 
   /// The whole log in projection order.
@@ -44,6 +48,22 @@ class CareLog {
 
   /// Conflicts nobody has reviewed yet, in log order.
   final List<Conflict> conflicts;
+
+  /// Notes left for the circle, in log order: never by the device clock
+  /// they were written with.
+  final List<CareNoteAdded> careNotes;
+
+  /// Notes written within [recentNotesWindow] before [now], newest
+  /// first: what Today and the day's summary show.
+  List<CareNoteAdded> recentNotes({required DateTime now}) =>
+      notesWithin(recentNotesWindow, now: now);
+
+  /// Notes written within [window] before [now], newest first. Which ones
+  /// are recent goes by when each says it was written, as shown with it.
+  List<CareNoteAdded> notesWithin(Duration window, {required DateTime now}) => [
+    for (final note in careNotes.reversed)
+      if (now.difference(note.meta.occurredAt) <= window) note,
+  ];
 
   final Map<String, Medication> _medications;
   final Map<String, Appointment> _appointments;
@@ -180,6 +200,7 @@ class CareLog {
     MemberLeft(:final memberId) => _members[memberId]?.name,
     RecipientProfileUpdated() ||
     ConflictAcknowledged() ||
+    CareNoteAdded() ||
     CircleCreated() ||
     SkipReasonHidden() ||
     SkipReasonShown() => null,
@@ -411,6 +432,7 @@ class _Projector {
   final _stock = <String, double>{};
   final _conflicts = <Conflict>[];
   final _acknowledged = <String>{};
+  final _careNotes = <CareNoteAdded>[];
 
   CareLog project() {
     _events.forEach(_apply);
@@ -432,6 +454,7 @@ class _Projector {
       conflicts: List.unmodifiable(
         _conflicts.where((conflict) => !_acknowledged.contains(conflict.key)),
       ),
+      careNotes: List.unmodifiable(_careNotes),
     );
   }
 
@@ -492,6 +515,8 @@ class _Projector {
         _changeAppointment(event, appointmentId, baseVersion, (appointment) {
           return appointment.copyWith(isCancelled: true);
         });
+      case CareNoteAdded():
+        _careNotes.add(event);
       case VisitNoteAdded(:final appointmentId):
         if (_appointments[appointmentId] case final appointment?) {
           _appointments[appointmentId] = appointment.copyWith(

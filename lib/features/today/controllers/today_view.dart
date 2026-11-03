@@ -96,6 +96,9 @@ abstract class TodayView with _$TodayView {
     /// The next appointment if it is within [upcomingAppointmentWindow].
     Appointment? nextAppointment,
 
+    /// Notes left within [recentNotesWindow], newest first.
+    @Default(<CareNoteAdded>[]) List<CareNoteAdded> recentNotes,
+
     /// Stock per medication, for low-stock badges.
     @Default(<String, StockLevel>{}) Map<String, StockLevel> stock,
 
@@ -196,6 +199,7 @@ TodayView buildTodayView(CareLog log, DateTime now) {
             stock: log.stockOf(medication.id),
           ),
     ],
+    recentNotes: log.recentNotes(now: now),
     stock: {
       for (final medication in log.medications)
         if (log.stockOf(medication.id) case final StockLevel level)

@@ -23,3 +23,21 @@ String appointmentWhen(
     _ => l10n.dayAt(Formatters.shortDate(startsAt, locale), time),
   };
 }
+
+/// "Today, 10:30", "Yesterday, 21:00", or "Nov 12, 10:30" before: when
+/// something was written.
+String recentWhen(
+  AppLocalizations l10n,
+  DateTime at, {
+  required DateTime now,
+  required String locale,
+}) {
+  final time = Formatters.time(at, locale);
+  final today = DateTime(now.year, now.month, now.day);
+  final day = DateTime(at.year, at.month, at.day);
+  return switch (today.difference(day).inDays) {
+    0 => l10n.todayAt(time),
+    1 => l10n.yesterdayAt(time),
+    _ => l10n.dayAt(Formatters.shortDate(at, locale), time),
+  };
+}

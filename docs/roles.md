@@ -37,6 +37,7 @@ Labels describe what a person does and carry no grammatical gender.
 |---|---|---|---|---|
 | Record a dose or task as given/done or skipped | ✓ | ✓ | ✓ | |
 | Remove one's own record | ✓ | ✓ | ✓ | |
+| Leave a note for the circle | ✓ | ✓ | ✓ | |
 | Remove someone else's record | ✓ | | | |
 | Review a dose conflict (see below) | ✓ | ✓ | | |
 | Medications, schedules, stock | ✓ | ✓ | | |
@@ -75,7 +76,7 @@ Every event has an **audience**, derived from its type when it is written:
 
 | Audience | Event types | Synced to |
 |---|---|---|
-| `care` | medications, schedules, stock, doses, undos, care tasks and their records, emergency card, conflict reviews, members and invitations (names and roles only) | everyone |
+| `care` | medications, schedules, stock, doses, undos, care tasks and their records, notes left for the circle, emergency card, conflict reviews, members and invitations (names and roles only) | everyone |
 | `team` | appointments, visit notes, documents | admin, caregiver, viewer |
 
 When a helper's role goes up, their phone syncs again from the start.

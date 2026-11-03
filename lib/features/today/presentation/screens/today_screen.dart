@@ -18,10 +18,12 @@ import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
+import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
+import 'package:i_care/features/handoff/presentation/widgets/care_note_card.dart';
 import 'package:i_care/features/today/controllers/dose_controller.dart';
 import 'package:i_care/features/today/controllers/today_view.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_sheet.dart';
@@ -172,6 +174,10 @@ class _TodayContent extends ConsumerWidget {
                 (null, null) => null,
               },
             ),
+          if (view.recentNotes.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.lg),
+            _RecentNotesCard(notes: view.recentNotes),
+          ],
           if (view.nextAppointment case final appointment?) ...[
             const SizedBox(height: AppSpacing.lg),
             _NextAppointmentCard(appointment: appointment),
@@ -999,6 +1005,47 @@ class _Section extends StatelessWidget {
 }
 
 /// Opens the handoff summary for whoever takes over next.
+/// The latest notes left for the circle, so whoever takes over reads them
+/// first; opens every note of the week.
+class _RecentNotesCard extends StatelessWidget {
+  const _RecentNotesCard({required this.notes});
+
+  /// Newest first.
+  final List<CareNoteAdded> notes;
+
+  static const _shown = 2;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AppCard(
+      onTap: () => context.push(AppRoutes.handoff),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: AppSpacing.md,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.recentNotesTitle.toUpperCase(),
+                  semanticsLabel: l10n.recentNotesTitle,
+                  style: AppTextStyles.overline.copyWith(
+                    color: context.colors.inkMuted,
+                  ),
+                ),
+              ),
+              Icon(Icons.chevron_right, color: context.colors.inkMuted),
+            ],
+          ),
+          for (final note in notes.take(_shown))
+            CareNoteCard(note: note, raised: false),
+        ],
+      ),
+    );
+  }
+}
+
 class _HandoffCard extends StatelessWidget {
   const _HandoffCard();
 

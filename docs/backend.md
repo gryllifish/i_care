@@ -23,6 +23,7 @@ feed, the latest version of a medication) is a projection of the log.
 | `AppointmentCreated` / `AppointmentUpdated` | snapshot (title, `startsAt`, doctor, place, questions), `baseVersion` on updates |
 | `AppointmentCancelled` | `appointmentId`, `baseVersion` |
 | `VisitNoteAdded` | `appointmentId`, text |
+| `CareNoteAdded` | text: a note left for the circle ("te dejo dicho"); never edited, a later note says what changed |
 | `DocumentLinked` | `appointmentId`, title, http(s) URL; the event id is the document's |
 | `DocumentRemoved` | `appointmentId`, `documentId` |
 | `TaskCreated` / `TaskUpdated` | details (name, note) and schedule (times, or none for "during the day"; weekdays), `baseVersion` on updates |

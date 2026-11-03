@@ -191,6 +191,14 @@ sealed class CareEvent with _$CareEvent {
     required String text,
   }) = VisitNoteAdded;
 
+  /// Something to tell the rest of the circle ("te dejo dicho"): how the
+  /// day went, what to watch for. Notes are never edited or removed; a
+  /// later one says what changed.
+  const factory CareEvent.careNoteAdded({
+    required EventMeta meta,
+    required String text,
+  }) = CareNoteAdded;
+
   /// A link to a study, result or report, kept with an appointment. Files
   /// are not stored: the link points to wherever they already live (a
   /// lab's portal, a shared folder).

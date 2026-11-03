@@ -1069,11 +1069,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get handoffTitle => 'Te dejo dicho';
 
   @override
-  String get handoffSubtitle => 'Un resumen para quien sigue';
+  String get handoffSubtitle =>
+      'Notas para quien sigue. Las ve todo el círculo.';
 
   @override
   String handoffHeader(String name, String day, String time) {
-    return 'Relevo de $name · $day, $time';
+    return 'El día de $name · $day, $time';
   }
 
   @override
@@ -1114,13 +1115,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get handoffCopied => 'Copiado. Pegalo en el chat de la familia.';
 
   @override
-  String get handoffNote => 'Además:';
+  String get handoffNotes => 'Notas:';
 
   @override
-  String get handoffNoteField => 'Algo más que contar (opcional)';
+  String get noteFieldHint => 'Escribí algo para quien sigue';
 
   @override
-  String get handoffNoteHint => 'Ej.: comió poco al mediodía';
+  String get leaveNote => 'Dejar nota';
+
+  @override
+  String get notesEmpty =>
+      'Todavía no hay notas. Lo que escribas acá lo ve todo el círculo.';
+
+  @override
+  String get recentNotesTitle => 'Te dejaron dicho';
+
+  @override
+  String get copySummary => 'Copiar resumen del día';
+
+  @override
+  String activityCareNote(String name, String text) {
+    return '$name dejó dicho: $text';
+  }
+
+  @override
+  String yesterdayAt(String time) {
+    return 'Ayer, $time';
+  }
 
   @override
   String get copy => 'Copiar';

@@ -21,6 +21,7 @@ void main() {
 
     expect(allowed(CareAction.recordCare), {admin, caregiver, helper});
     expect(allowed(CareAction.removeOwnRecord), {admin, caregiver, helper});
+    expect(allowed(CareAction.leaveNote), {admin, caregiver, helper});
     expect(allowed(CareAction.removeAnyRecord), {admin});
     expect(allowed(CareAction.reviewConflict), {admin, caregiver});
     expect(allowed(CareAction.manageMedications), {admin, caregiver});
@@ -41,6 +42,10 @@ void main() {
       expect(
         actionOf(events.document('a1', 'ECG'), authorId: 'ana'),
         CareAction.manageAppointments,
+      );
+      expect(
+        actionOf(events.careNote('Slept well', at: eight), authorId: 'rosa'),
+        CareAction.leaveNote,
       );
     });
 
@@ -86,6 +91,11 @@ void main() {
     expect(audienceOf(events.given('m1', at: eight)), Audience.care);
     expect(audienceOf(events.task('t1')), Audience.care);
     expect(audienceOf(events.memberInvited('lucia')), Audience.care);
+    // Helpers take over too: they read the circle's notes.
+    expect(
+      audienceOf(events.careNote('Slept well', at: eight)),
+      Audience.care,
+    );
     expect(audienceOf(events.note('a1', 'Same dose')), Audience.team);
     expect(audienceOf(events.document('a1', 'ECG')), Audience.team);
 

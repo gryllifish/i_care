@@ -116,10 +116,13 @@ family portal for residents' relatives is a possible later path.
 10. **Emergency card**: allergies, conditions, doctors, emergency
     contacts and active medications on one legible screen, copyable as
     text (for an ER visit). Backed by a `RecipientProfileUpdated` event.
-11. **Handoff summary** ("te dejo dicho"): pending doses, last doses
-    given, low stock, next appointment and recent notes, plus a note the
-    caregiver writes (not stored), copied as text to paste into
-    WhatsApp. Clipboard only, no share dependency.
+11. **Notes for the circle** ("te dejo dicho"): anyone who gives care
+    leaves a short note (`CareNoteAdded`), synced to everyone, helpers
+    included. Today shows the last 24 hours' notes; the notes screen the
+    last week; Activity all of them. The day's summary (pending doses,
+    last doses given, low stock, next appointment, recent notes) is a
+    secondary action, copied as text to paste into WhatsApp. Clipboard
+    only, no share dependency.
 12. **Settings**: language (en/es), identity, simulation controls, medical
     disclaimer, reset demo data.
 

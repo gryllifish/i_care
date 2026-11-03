@@ -24,6 +24,9 @@ enum CareAction {
 
   /// The circle's reasons for not giving a dose or doing a task.
   manageReasons,
+
+  /// Leave a note for the rest of the circle.
+  leaveNote,
   editEmergencyCard,
 
   /// Invite, revoke, change roles, remove.
@@ -37,7 +40,9 @@ enum CareAction {
 /// The one permission rule, used by the UI to offer actions and by the
 /// server to accept events.
 bool can(MemberRole role, CareAction action) => switch (action) {
-  CareAction.recordCare || CareAction.removeOwnRecord => switch (role) {
+  CareAction.recordCare ||
+  CareAction.removeOwnRecord ||
+  CareAction.leaveNote => switch (role) {
     MemberRole.admin || MemberRole.caregiver || MemberRole.helper => true,
     MemberRole.viewer => false,
   },
@@ -86,6 +91,7 @@ CareAction? actionOf(
   DocumentLinked() ||
   DocumentRemoved() => CareAction.manageAppointments,
   RecipientProfileUpdated() => CareAction.editEmergencyCard,
+  CareNoteAdded() => CareAction.leaveNote,
   SkipReasonAdded() ||
   SkipReasonHidden() ||
   SkipReasonShown() => CareAction.manageReasons,

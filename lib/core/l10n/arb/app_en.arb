@@ -894,9 +894,9 @@
   "fieldRelationship": "Relationship",
   "fieldPhone": "Phone",
   "remove": "Remove",
-  "handoffTitle": "Handoff",
-  "handoffSubtitle": "A summary for whoever takes over",
-  "handoffHeader": "Handoff for {name} · {day}, {time}",
+  "handoffTitle": "Notes for the circle",
+  "handoffSubtitle": "For whoever takes over. Everyone in the circle sees them.",
+  "handoffHeader": "{name}'s day · {day}, {time}",
   "@handoffHeader": {
     "placeholders": {
       "name": {
@@ -936,9 +936,31 @@
     }
   },
   "handoffCopied": "Copied. Paste it in your family chat.",
-  "handoffNote": "Also:",
-  "handoffNoteField": "Anything else to tell (optional)",
-  "handoffNoteHint": "e.g. Ate little at lunch",
+  "handoffNotes": "Notes:",
+  "noteFieldHint": "Write something for whoever's next",
+  "leaveNote": "Leave note",
+  "notesEmpty": "No notes yet. What you write here, everyone in the circle sees.",
+  "recentNotesTitle": "Left for you",
+  "copySummary": "Copy the day's summary",
+  "activityCareNote": "{name} left a note: {text}",
+  "@activityCareNote": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "yesterdayAt": "Yesterday, {time}",
+  "@yesterdayAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "copy": "Copy",
   "settingsTitle": "Settings",
   "sectionLanguage": "Language",

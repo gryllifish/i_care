@@ -124,7 +124,40 @@ class _SampleHistory {
     _addTasks();
     _addAppointments();
     _addProfile();
+    _addNotes();
     return _events;
+  }
+
+  /// Notes left for the circle: Rosa's from last night, and Martín's
+  /// from this morning once the morning has come.
+  void _addNotes() {
+    final spanish = language == 'es';
+    final notes = [
+      (
+        at: DateTime(today.year, today.month, today.day - 1, 21),
+        by: SampleCircle.rosa.id,
+        text: spanish
+            ? 'Cenó bien y se durmió temprano.'
+            : 'Ate a good dinner and went to bed early.',
+      ),
+      (
+        at: DateTime(today.year, today.month, today.day, 8, 15),
+        by: SampleCircle.martin.id,
+        text: spanish
+            ? 'Le molestaba la rodilla izquierda al levantarse. Avisame si '
+                  'sigue a la tarde.'
+            : 'Her left knee bothered her when she got up. Let me know if '
+                  'it still does this afternoon.',
+      ),
+    ];
+    for (final note in notes) {
+      if (note.at.isAfter(now)) continue;
+      _add(
+        (meta) => CareEvent.careNoteAdded(meta: meta, text: note.text),
+        at: note.at,
+        by: note.by,
+      );
+    }
   }
 
   /// The emergency card. Phone numbers use the 555 range reserved for

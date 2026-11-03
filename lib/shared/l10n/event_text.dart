@@ -70,6 +70,7 @@ String eventSentence(
       appointment,
     ),
     VisitNoteAdded() => l10n.activityVisitNote(name, appointment),
+    CareNoteAdded(:final text) => l10n.activityCareNote(name, text),
     DocumentLinked(title: final document) => l10n.activityDocumentLinked(
       name,
       document,

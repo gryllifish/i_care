@@ -6,10 +6,12 @@ import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
 import 'package:i_care/features/handoff/controllers/handoff.dart';
 import 'package:i_care/features/handoff/presentation/widgets/handoff_text.dart';
+import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import '../../helpers/pump_app.dart';
@@ -79,7 +81,7 @@ void main() {
 
     expect(
       text,
-      'Handoff for Elena · Thu, Oct 29, 18:00\n'
+      "Elena's day · Thu, Oct 29, 18:00\n"
       '\n'
       'Given today:\n'
       '- Enalapril 10 mg, 08:04 (Martín)\n'
@@ -204,60 +206,144 @@ void main() {
     expect(text, contains('Nothing left to give today.'));
   });
 
-  test('a note goes right after the header; a blank one is left out', () {
-    final handoff = buildHandoff(CareLog([events.created('m1')]), now);
-    String textWith(String note) => handoffText(
+  test('the summary quotes the last day of notes, newest first', () {
+    final handoff = buildHandoff(
+      CareLog([
+        events.created('m1'),
+        events.careNote('Old news', at: DateTime(2026, 10, 28, 17)),
+        events.careNote(
+          'Slept well',
+          at: DateTime(2026, 10, 28, 21),
+          by: 'rosa',
+        ),
+        events.careNote('Knee hurts', at: DateTime(2026, 10, 29, 8, 15)),
+      ]),
+      now,
+    );
+    final text = handoffText(
       handoff,
       l10n,
       recipientName: 'Elena',
-      caregivers: const {},
+      caregivers: {
+        for (final member in SampleCircle.members) member.id: member,
+      },
       locale: 'en',
       customReasons: const {},
-      note: note,
     );
 
-    final sections = textWith('  Ate little at lunch \n').split('\n\n');
-    expect(sections[1], 'Also:\nAte little at lunch');
-    expect(textWith('   '), isNot(contains('Also:')));
+    expect(
+      text.split('\n\n')[1],
+      'Notes:\n- Knee hurts (Ana, 08:15)\n- Slept well (Rosa, 21:00)',
+    );
+    expect(handoff.notesThisWeek.map((note) => note.text), [
+      'Knee hurts',
+      'Slept well',
+      'Old news',
+    ]);
   });
 
-  testWidgets('opens from Today and copies the text with a note', (
-    tester,
-  ) async {
-    // Tests have no platform clipboard; answer its calls like one.
-    String? copied;
-    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-      SystemChannels.platform,
-      (call) async {
-        if (call.method == 'Clipboard.setData') {
-          copied = (call.arguments as Map<Object?, Object?>)['text'] as String?;
-        }
-        return null;
-      },
-    );
-    addTearDown(
-      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+  group('notes screen', () {
+    Future<FakeCareRepository> open(
+      WidgetTester tester, {
+      List<CareEvent> extra = const [],
+      String memberId = 'ana',
+    }) async {
+      final repository = FakeCareRepository([...circle(), ...extra])
+        ..status = SyncStatus(lastSyncedAt: now);
+      await pumpApp(
+        tester,
+        repository: repository,
+        now: now,
+        prefs: MemoryDevicePrefs({
+          PrefKeys.welcomeSeen: 'true',
+          PrefKeys.memberId: memberId,
+        }),
+      );
+      final card = find.text(
+        'For whoever takes over. Everyone in the circle sees them.',
+      );
+      await centerInList(tester, card, list: find.byType(Scrollable).first);
+      await tester.tap(card);
+      await tester.pumpAndSettle();
+      return repository;
+    }
+
+    testWidgets('a note is left for the circle and listed', (tester) async {
+      final repository = await open(tester);
+      expect(
+        find.text(
+          'No notes yet. What you write here, everyone in the circle sees.',
+        ),
+        findsOneWidget,
+      );
+      final send = find.byTooltip('Leave note');
+      IconButton button() => tester.widget<IconButton>(
+        find.ancestor(of: send, matching: find.byType(IconButton)),
+      );
+      expect(button().onPressed, isNull);
+
+      await tester.enterText(find.byType(TextField), '  Ate little at lunch ');
+      await tester.pump();
+      await tester.tap(send);
+      await tester.pumpAndSettle();
+
+      final note = repository.recorded.single as CareNoteAdded;
+      expect(note.text, 'Ate little at lunch');
+      expect(find.text('Ate little at lunch'), findsOneWidget);
+      expect(find.text('Ana · Today, 18:00'), findsOneWidget);
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller?.text,
+        isEmpty,
+      );
+    });
+
+    testWidgets('a viewer reads the notes but leaves none', (tester) async {
+      await open(
+        tester,
+        memberId: 'lucia',
+        extra: [
+          events.memberInvited('lucia', role: MemberRole.viewer),
+          events.careNote('Slept well', at: DateTime(2026, 10, 29, 7)),
+        ],
+      );
+
+      expect(find.text('Slept well'), findsOneWidget);
+      expect(find.byType(TextField), findsNothing);
+    });
+
+    testWidgets("copies the day's summary with the notes", (tester) async {
+      // Tests have no platform clipboard; answer its calls like one.
+      String? copied;
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
         SystemChannels.platform,
-        null,
-      ),
-    );
-    final repository = FakeCareRepository(circle())
-      ..status = SyncStatus(lastSyncedAt: now);
-    await pumpApp(tester, repository: repository, now: now);
+        (call) async {
+          if (call.method == 'Clipboard.setData') {
+            final arguments = call.arguments as Map<Object?, Object?>;
+            copied = arguments['text'] as String?;
+          }
+          return null;
+        },
+      );
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        ),
+      );
+      await open(
+        tester,
+        extra: [events.careNote('Slept well', at: DateTime(2026, 10, 29, 7))],
+      );
 
-    final card = find.text('A summary for whoever takes over');
-    await centerInList(tester, card, list: find.byType(Scrollable).first);
-    await tester.tap(card);
-    await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip("Copy the day's summary"));
+      await tester.pumpAndSettle();
 
-    expect(find.textContaining('Still to give:'), findsOneWidget);
-    await tester.enterText(find.byType(TextField), 'Ate little at lunch');
-    await tester.pump();
-    expect(find.textContaining('Also:\nAte little at lunch'), findsOneWidget);
-
-    await tester.tap(find.text('Copy'));
-    await tester.pumpAndSettle();
-    expect(find.text('Copied. Paste it in your family chat.'), findsOneWidget);
-    expect(copied, contains('Also:\nAte little at lunch'));
+      expect(
+        find.text('Copied. Paste it in your family chat.'),
+        findsOneWidget,
+      );
+      expect(copied, contains('Still to give:'));
+      expect(copied, contains('Notes:\n- Slept well (Ana, 07:00)'));
+    });
   });
 }

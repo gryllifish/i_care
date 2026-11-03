@@ -12,6 +12,18 @@ import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 class EventFactory {
   var _next = 0;
 
+  /// A note left for the circle.
+  CareNoteAdded careNote(
+    String text, {
+    required DateTime at,
+    String by = 'ana',
+  }) =>
+      CareEvent.careNoteAdded(
+            meta: meta(at: at, by: by),
+            text: text,
+          )
+          as CareNoteAdded;
+
   EventMeta meta({
     required DateTime at,
     String by = 'ana',

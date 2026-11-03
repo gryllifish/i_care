@@ -1756,19 +1756,19 @@ abstract class AppLocalizations {
   /// No description provided for @handoffTitle.
   ///
   /// In en, this message translates to:
-  /// **'Handoff'**
+  /// **'Notes for the circle'**
   String get handoffTitle;
 
   /// No description provided for @handoffSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'A summary for whoever takes over'**
+  /// **'For whoever takes over. Everyone in the circle sees them.'**
   String get handoffSubtitle;
 
   /// No description provided for @handoffHeader.
   ///
   /// In en, this message translates to:
-  /// **'Handoff for {name} · {day}, {time}'**
+  /// **'{name}\'s day · {day}, {time}'**
   String handoffHeader(String name, String day, String time);
 
   /// No description provided for @handoffGiven.
@@ -1825,23 +1825,53 @@ abstract class AppLocalizations {
   /// **'Copied. Paste it in your family chat.'**
   String get handoffCopied;
 
-  /// No description provided for @handoffNote.
+  /// No description provided for @handoffNotes.
   ///
   /// In en, this message translates to:
-  /// **'Also:'**
-  String get handoffNote;
+  /// **'Notes:'**
+  String get handoffNotes;
 
-  /// No description provided for @handoffNoteField.
+  /// No description provided for @noteFieldHint.
   ///
   /// In en, this message translates to:
-  /// **'Anything else to tell (optional)'**
-  String get handoffNoteField;
+  /// **'Write something for whoever\'s next'**
+  String get noteFieldHint;
 
-  /// No description provided for @handoffNoteHint.
+  /// No description provided for @leaveNote.
   ///
   /// In en, this message translates to:
-  /// **'e.g. Ate little at lunch'**
-  String get handoffNoteHint;
+  /// **'Leave note'**
+  String get leaveNote;
+
+  /// No description provided for @notesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes yet. What you write here, everyone in the circle sees.'**
+  String get notesEmpty;
+
+  /// No description provided for @recentNotesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Left for you'**
+  String get recentNotesTitle;
+
+  /// No description provided for @copySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the day\'s summary'**
+  String get copySummary;
+
+  /// No description provided for @activityCareNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} left a note: {text}'**
+  String activityCareNote(String name, String text);
+
+  /// No description provided for @yesterdayAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday, {time}'**
+  String yesterdayAt(String time);
 
   /// No description provided for @copy.
   ///

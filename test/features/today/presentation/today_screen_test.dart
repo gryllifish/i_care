@@ -110,6 +110,35 @@ void main() {
     );
   });
 
+  testWidgets("the last day's notes show on Today and open the rest", (
+    tester,
+  ) async {
+    await pumpApp(
+      tester,
+      repository: circle([
+        events.careNote('Too old', at: DateTime(2026, 11, 1, 7)),
+        events.careNote(
+          'Slept well',
+          at: DateTime(2026, 11, 1, 21),
+          by: 'rosa',
+        ),
+        events.careNote('Knee hurts', at: DateTime(2026, 11, 2, 8, 5)),
+      ]),
+      now: now,
+      prefs: martinsPhone(),
+    );
+
+    final title = find.text('LEFT FOR YOU');
+    await centerInList(tester, title, list: find.byType(Scrollable).first);
+    expect(find.text('Knee hurts'), findsOneWidget);
+    expect(find.text('Rosa · Yesterday, 21:00'), findsOneWidget);
+    expect(find.text('Too old'), findsNothing);
+
+    await tester.tap(title);
+    await tester.pumpAndSettle();
+    expect(find.text('Too old'), findsOneWidget);
+  });
+
   testWidgets('pulling down syncs now', (tester) async {
     final repository = circle();
     await pumpApp(tester, repository: repository, now: now);

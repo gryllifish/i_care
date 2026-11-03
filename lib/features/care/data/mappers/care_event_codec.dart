@@ -123,6 +123,7 @@ abstract final class CareEventCodec {
         'appointment_id': event.appointmentId,
         'text': event.text,
       },
+      CareNoteAdded() => {'type': 'care_note_added', 'text': event.text},
       DocumentLinked() => {
         'type': 'document_linked',
         'appointment_id': event.appointmentId,
@@ -317,6 +318,10 @@ abstract final class CareEventCodec {
       'visit_note_added' => CareEvent.visitNoteAdded(
         meta: meta,
         appointmentId: json.string('appointment_id'),
+        text: json.string('text'),
+      ),
+      'care_note_added' => CareEvent.careNoteAdded(
+        meta: meta,
         text: json.string('text'),
       ),
       'document_linked' => CareEvent.documentLinked(

@@ -927,7 +927,8 @@ mixin _$TodayView {
 /// resolved (yesterday's too), today's tasks and how many are done or
 /// skipped, and the latest dose or task record made today.
  int get lateCount; int get tasksToday; int get tasksResolvedToday; CareEvent? get lastRecord; List<AsNeededItem> get asNeeded;/// The next appointment if it is within [upcomingAppointmentWindow].
- Appointment? get nextAppointment;/// Stock per medication, for low-stock badges.
+ Appointment? get nextAppointment;/// Notes left within [recentNotesWindow], newest first.
+ List<CareNoteAdded> get recentNotes;/// Stock per medication, for low-stock badges.
  Map<String, StockLevel> get stock;/// Dose conflicts nobody has reviewed. Edit conflicts are shown with
 /// the medication they affect.
  List<ConflictItem> get conflicts;
@@ -941,16 +942,16 @@ $TodayViewCopyWith<TodayView> get copyWith => _$TodayViewCopyWithImpl<TodayView>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.day, day) || other.day == day)&&(identical(other.totalToday, totalToday) || other.totalToday == totalToday)&&(identical(other.resolvedToday, resolvedToday) || other.resolvedToday == resolvedToday)&&(identical(other.next, next) || other.next == next)&&(identical(other.nextLater, nextLater) || other.nextLater == nextLater)&&const DeepCollectionEquality().equals(other.fromYesterday, fromYesterday)&&const DeepCollectionEquality().equals(other.byDayPart, byDayPart)&&const DeepCollectionEquality().equals(other.anyTimeTasks, anyTimeTasks)&&(identical(other.lateCount, lateCount) || other.lateCount == lateCount)&&(identical(other.tasksToday, tasksToday) || other.tasksToday == tasksToday)&&(identical(other.tasksResolvedToday, tasksResolvedToday) || other.tasksResolvedToday == tasksResolvedToday)&&(identical(other.lastRecord, lastRecord) || other.lastRecord == lastRecord)&&const DeepCollectionEquality().equals(other.asNeeded, asNeeded)&&(identical(other.nextAppointment, nextAppointment) || other.nextAppointment == nextAppointment)&&const DeepCollectionEquality().equals(other.stock, stock)&&const DeepCollectionEquality().equals(other.conflicts, conflicts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.day, day) || other.day == day)&&(identical(other.totalToday, totalToday) || other.totalToday == totalToday)&&(identical(other.resolvedToday, resolvedToday) || other.resolvedToday == resolvedToday)&&(identical(other.next, next) || other.next == next)&&(identical(other.nextLater, nextLater) || other.nextLater == nextLater)&&const DeepCollectionEquality().equals(other.fromYesterday, fromYesterday)&&const DeepCollectionEquality().equals(other.byDayPart, byDayPart)&&const DeepCollectionEquality().equals(other.anyTimeTasks, anyTimeTasks)&&(identical(other.lateCount, lateCount) || other.lateCount == lateCount)&&(identical(other.tasksToday, tasksToday) || other.tasksToday == tasksToday)&&(identical(other.tasksResolvedToday, tasksResolvedToday) || other.tasksResolvedToday == tasksResolvedToday)&&(identical(other.lastRecord, lastRecord) || other.lastRecord == lastRecord)&&const DeepCollectionEquality().equals(other.asNeeded, asNeeded)&&(identical(other.nextAppointment, nextAppointment) || other.nextAppointment == nextAppointment)&&const DeepCollectionEquality().equals(other.recentNotes, recentNotes)&&const DeepCollectionEquality().equals(other.stock, stock)&&const DeepCollectionEquality().equals(other.conflicts, conflicts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,day,totalToday,resolvedToday,next,nextLater,const DeepCollectionEquality().hash(fromYesterday),const DeepCollectionEquality().hash(byDayPart),const DeepCollectionEquality().hash(anyTimeTasks),lateCount,tasksToday,tasksResolvedToday,lastRecord,const DeepCollectionEquality().hash(asNeeded),nextAppointment,const DeepCollectionEquality().hash(stock),const DeepCollectionEquality().hash(conflicts));
+int get hashCode => Object.hash(runtimeType,day,totalToday,resolvedToday,next,nextLater,const DeepCollectionEquality().hash(fromYesterday),const DeepCollectionEquality().hash(byDayPart),const DeepCollectionEquality().hash(anyTimeTasks),lateCount,tasksToday,tasksResolvedToday,lastRecord,const DeepCollectionEquality().hash(asNeeded),nextAppointment,const DeepCollectionEquality().hash(recentNotes),const DeepCollectionEquality().hash(stock),const DeepCollectionEquality().hash(conflicts));
 
 @override
 String toString() {
-  return 'TodayView(day: $day, totalToday: $totalToday, resolvedToday: $resolvedToday, next: $next, nextLater: $nextLater, fromYesterday: $fromYesterday, byDayPart: $byDayPart, anyTimeTasks: $anyTimeTasks, lateCount: $lateCount, tasksToday: $tasksToday, tasksResolvedToday: $tasksResolvedToday, lastRecord: $lastRecord, asNeeded: $asNeeded, nextAppointment: $nextAppointment, stock: $stock, conflicts: $conflicts)';
+  return 'TodayView(day: $day, totalToday: $totalToday, resolvedToday: $resolvedToday, next: $next, nextLater: $nextLater, fromYesterday: $fromYesterday, byDayPart: $byDayPart, anyTimeTasks: $anyTimeTasks, lateCount: $lateCount, tasksToday: $tasksToday, tasksResolvedToday: $tasksResolvedToday, lastRecord: $lastRecord, asNeeded: $asNeeded, nextAppointment: $nextAppointment, recentNotes: $recentNotes, stock: $stock, conflicts: $conflicts)';
 }
 
 
@@ -961,7 +962,7 @@ abstract mixin class $TodayViewCopyWith<$Res>  {
   factory $TodayViewCopyWith(TodayView value, $Res Function(TodayView) _then) = _$TodayViewCopyWithImpl;
 @useResult
 $Res call({
- DateTime day, int totalToday, int resolvedToday, DoseSlot? next, ({Medication medication, DateTime at})? nextLater, List<DoseSlot> fromYesterday, Map<DayPart, List<TimelineEntry>> byDayPart, List<TaskSlot> anyTimeTasks, int lateCount, int tasksToday, int tasksResolvedToday, CareEvent? lastRecord, List<AsNeededItem> asNeeded, Appointment? nextAppointment, Map<String, StockLevel> stock, List<ConflictItem> conflicts
+ DateTime day, int totalToday, int resolvedToday, DoseSlot? next, ({Medication medication, DateTime at})? nextLater, List<DoseSlot> fromYesterday, Map<DayPart, List<TimelineEntry>> byDayPart, List<TaskSlot> anyTimeTasks, int lateCount, int tasksToday, int tasksResolvedToday, CareEvent? lastRecord, List<AsNeededItem> asNeeded, Appointment? nextAppointment, List<CareNoteAdded> recentNotes, Map<String, StockLevel> stock, List<ConflictItem> conflicts
 });
 
 
@@ -978,7 +979,7 @@ class _$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? day = null,Object? totalToday = null,Object? resolvedToday = null,Object? next = freezed,Object? nextLater = freezed,Object? fromYesterday = null,Object? byDayPart = null,Object? anyTimeTasks = null,Object? lateCount = null,Object? tasksToday = null,Object? tasksResolvedToday = null,Object? lastRecord = freezed,Object? asNeeded = null,Object? nextAppointment = freezed,Object? stock = null,Object? conflicts = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? day = null,Object? totalToday = null,Object? resolvedToday = null,Object? next = freezed,Object? nextLater = freezed,Object? fromYesterday = null,Object? byDayPart = null,Object? anyTimeTasks = null,Object? lateCount = null,Object? tasksToday = null,Object? tasksResolvedToday = null,Object? lastRecord = freezed,Object? asNeeded = null,Object? nextAppointment = freezed,Object? recentNotes = null,Object? stock = null,Object? conflicts = null,}) {
   return _then(_self.copyWith(
 day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
 as DateTime,totalToday: null == totalToday ? _self.totalToday : totalToday // ignore: cast_nullable_to_non_nullable
@@ -994,7 +995,8 @@ as int,tasksResolvedToday: null == tasksResolvedToday ? _self.tasksResolvedToday
 as int,lastRecord: freezed == lastRecord ? _self.lastRecord : lastRecord // ignore: cast_nullable_to_non_nullable
 as CareEvent?,asNeeded: null == asNeeded ? _self.asNeeded : asNeeded // ignore: cast_nullable_to_non_nullable
 as List<AsNeededItem>,nextAppointment: freezed == nextAppointment ? _self.nextAppointment : nextAppointment // ignore: cast_nullable_to_non_nullable
-as Appointment?,stock: null == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
+as Appointment?,recentNotes: null == recentNotes ? _self.recentNotes : recentNotes // ignore: cast_nullable_to_non_nullable
+as List<CareNoteAdded>,stock: null == stock ? _self.stock : stock // ignore: cast_nullable_to_non_nullable
 as Map<String, StockLevel>,conflicts: null == conflicts ? _self.conflicts : conflicts // ignore: cast_nullable_to_non_nullable
 as List<ConflictItem>,
   ));
@@ -1117,10 +1119,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DateTime day,  int totalToday,  int resolvedToday,  DoseSlot? next,  ({Medication medication, DateTime at})? nextLater,  List<DoseSlot> fromYesterday,  Map<DayPart, List<TimelineEntry>> byDayPart,  List<TaskSlot> anyTimeTasks,  int lateCount,  int tasksToday,  int tasksResolvedToday,  CareEvent? lastRecord,  List<AsNeededItem> asNeeded,  Appointment? nextAppointment,  Map<String, StockLevel> stock,  List<ConflictItem> conflicts)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DateTime day,  int totalToday,  int resolvedToday,  DoseSlot? next,  ({Medication medication, DateTime at})? nextLater,  List<DoseSlot> fromYesterday,  Map<DayPart, List<TimelineEntry>> byDayPart,  List<TaskSlot> anyTimeTasks,  int lateCount,  int tasksToday,  int tasksResolvedToday,  CareEvent? lastRecord,  List<AsNeededItem> asNeeded,  Appointment? nextAppointment,  List<CareNoteAdded> recentNotes,  Map<String, StockLevel> stock,  List<ConflictItem> conflicts)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.day,_that.totalToday,_that.resolvedToday,_that.next,_that.nextLater,_that.fromYesterday,_that.byDayPart,_that.anyTimeTasks,_that.lateCount,_that.tasksToday,_that.tasksResolvedToday,_that.lastRecord,_that.asNeeded,_that.nextAppointment,_that.stock,_that.conflicts);case _:
+return $default(_that.day,_that.totalToday,_that.resolvedToday,_that.next,_that.nextLater,_that.fromYesterday,_that.byDayPart,_that.anyTimeTasks,_that.lateCount,_that.tasksToday,_that.tasksResolvedToday,_that.lastRecord,_that.asNeeded,_that.nextAppointment,_that.recentNotes,_that.stock,_that.conflicts);case _:
   return orElse();
 
 }
@@ -1138,10 +1140,10 @@ return $default(_that.day,_that.totalToday,_that.resolvedToday,_that.next,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DateTime day,  int totalToday,  int resolvedToday,  DoseSlot? next,  ({Medication medication, DateTime at})? nextLater,  List<DoseSlot> fromYesterday,  Map<DayPart, List<TimelineEntry>> byDayPart,  List<TaskSlot> anyTimeTasks,  int lateCount,  int tasksToday,  int tasksResolvedToday,  CareEvent? lastRecord,  List<AsNeededItem> asNeeded,  Appointment? nextAppointment,  Map<String, StockLevel> stock,  List<ConflictItem> conflicts)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DateTime day,  int totalToday,  int resolvedToday,  DoseSlot? next,  ({Medication medication, DateTime at})? nextLater,  List<DoseSlot> fromYesterday,  Map<DayPart, List<TimelineEntry>> byDayPart,  List<TaskSlot> anyTimeTasks,  int lateCount,  int tasksToday,  int tasksResolvedToday,  CareEvent? lastRecord,  List<AsNeededItem> asNeeded,  Appointment? nextAppointment,  List<CareNoteAdded> recentNotes,  Map<String, StockLevel> stock,  List<ConflictItem> conflicts)  $default,) {final _that = this;
 switch (_that) {
 case _TodayView():
-return $default(_that.day,_that.totalToday,_that.resolvedToday,_that.next,_that.nextLater,_that.fromYesterday,_that.byDayPart,_that.anyTimeTasks,_that.lateCount,_that.tasksToday,_that.tasksResolvedToday,_that.lastRecord,_that.asNeeded,_that.nextAppointment,_that.stock,_that.conflicts);case _:
+return $default(_that.day,_that.totalToday,_that.resolvedToday,_that.next,_that.nextLater,_that.fromYesterday,_that.byDayPart,_that.anyTimeTasks,_that.lateCount,_that.tasksToday,_that.tasksResolvedToday,_that.lastRecord,_that.asNeeded,_that.nextAppointment,_that.recentNotes,_that.stock,_that.conflicts);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1158,10 +1160,10 @@ return $default(_that.day,_that.totalToday,_that.resolvedToday,_that.next,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DateTime day,  int totalToday,  int resolvedToday,  DoseSlot? next,  ({Medication medication, DateTime at})? nextLater,  List<DoseSlot> fromYesterday,  Map<DayPart, List<TimelineEntry>> byDayPart,  List<TaskSlot> anyTimeTasks,  int lateCount,  int tasksToday,  int tasksResolvedToday,  CareEvent? lastRecord,  List<AsNeededItem> asNeeded,  Appointment? nextAppointment,  Map<String, StockLevel> stock,  List<ConflictItem> conflicts)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DateTime day,  int totalToday,  int resolvedToday,  DoseSlot? next,  ({Medication medication, DateTime at})? nextLater,  List<DoseSlot> fromYesterday,  Map<DayPart, List<TimelineEntry>> byDayPart,  List<TaskSlot> anyTimeTasks,  int lateCount,  int tasksToday,  int tasksResolvedToday,  CareEvent? lastRecord,  List<AsNeededItem> asNeeded,  Appointment? nextAppointment,  List<CareNoteAdded> recentNotes,  Map<String, StockLevel> stock,  List<ConflictItem> conflicts)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.day,_that.totalToday,_that.resolvedToday,_that.next,_that.nextLater,_that.fromYesterday,_that.byDayPart,_that.anyTimeTasks,_that.lateCount,_that.tasksToday,_that.tasksResolvedToday,_that.lastRecord,_that.asNeeded,_that.nextAppointment,_that.stock,_that.conflicts);case _:
+return $default(_that.day,_that.totalToday,_that.resolvedToday,_that.next,_that.nextLater,_that.fromYesterday,_that.byDayPart,_that.anyTimeTasks,_that.lateCount,_that.tasksToday,_that.tasksResolvedToday,_that.lastRecord,_that.asNeeded,_that.nextAppointment,_that.recentNotes,_that.stock,_that.conflicts);case _:
   return null;
 
 }
@@ -1173,7 +1175,7 @@ return $default(_that.day,_that.totalToday,_that.resolvedToday,_that.next,_that.
 
 
 class _TodayView implements TodayView {
-  const _TodayView({required this.day, this.totalToday = 0, this.resolvedToday = 0, this.next, this.nextLater, final  List<DoseSlot> fromYesterday = const <DoseSlot>[], final  Map<DayPart, List<TimelineEntry>> byDayPart = const <DayPart, List<TimelineEntry>>{}, final  List<TaskSlot> anyTimeTasks = const <TaskSlot>[], this.lateCount = 0, this.tasksToday = 0, this.tasksResolvedToday = 0, this.lastRecord, final  List<AsNeededItem> asNeeded = const <AsNeededItem>[], this.nextAppointment, final  Map<String, StockLevel> stock = const <String, StockLevel>{}, final  List<ConflictItem> conflicts = const <ConflictItem>[]}): _fromYesterday = fromYesterday,_byDayPart = byDayPart,_anyTimeTasks = anyTimeTasks,_asNeeded = asNeeded,_stock = stock,_conflicts = conflicts;
+  const _TodayView({required this.day, this.totalToday = 0, this.resolvedToday = 0, this.next, this.nextLater, final  List<DoseSlot> fromYesterday = const <DoseSlot>[], final  Map<DayPart, List<TimelineEntry>> byDayPart = const <DayPart, List<TimelineEntry>>{}, final  List<TaskSlot> anyTimeTasks = const <TaskSlot>[], this.lateCount = 0, this.tasksToday = 0, this.tasksResolvedToday = 0, this.lastRecord, final  List<AsNeededItem> asNeeded = const <AsNeededItem>[], this.nextAppointment, final  List<CareNoteAdded> recentNotes = const <CareNoteAdded>[], final  Map<String, StockLevel> stock = const <String, StockLevel>{}, final  List<ConflictItem> conflicts = const <ConflictItem>[]}): _fromYesterday = fromYesterday,_byDayPart = byDayPart,_anyTimeTasks = anyTimeTasks,_asNeeded = asNeeded,_recentNotes = recentNotes,_stock = stock,_conflicts = conflicts;
   
 
 @override final  DateTime day;
@@ -1231,6 +1233,15 @@ class _TodayView implements TodayView {
 
 /// The next appointment if it is within [upcomingAppointmentWindow].
 @override final  Appointment? nextAppointment;
+/// Notes left within [recentNotesWindow], newest first.
+ final  List<CareNoteAdded> _recentNotes;
+/// Notes left within [recentNotesWindow], newest first.
+@override@JsonKey() List<CareNoteAdded> get recentNotes {
+  if (_recentNotes is EqualUnmodifiableListView) return _recentNotes;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_recentNotes);
+}
+
 /// Stock per medication, for low-stock badges.
  final  Map<String, StockLevel> _stock;
 /// Stock per medication, for low-stock badges.
@@ -1262,16 +1273,16 @@ _$TodayViewCopyWith<_TodayView> get copyWith => __$TodayViewCopyWithImpl<_TodayV
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.day, day) || other.day == day)&&(identical(other.totalToday, totalToday) || other.totalToday == totalToday)&&(identical(other.resolvedToday, resolvedToday) || other.resolvedToday == resolvedToday)&&(identical(other.next, next) || other.next == next)&&(identical(other.nextLater, nextLater) || other.nextLater == nextLater)&&const DeepCollectionEquality().equals(other._fromYesterday, _fromYesterday)&&const DeepCollectionEquality().equals(other._byDayPart, _byDayPart)&&const DeepCollectionEquality().equals(other._anyTimeTasks, _anyTimeTasks)&&(identical(other.lateCount, lateCount) || other.lateCount == lateCount)&&(identical(other.tasksToday, tasksToday) || other.tasksToday == tasksToday)&&(identical(other.tasksResolvedToday, tasksResolvedToday) || other.tasksResolvedToday == tasksResolvedToday)&&(identical(other.lastRecord, lastRecord) || other.lastRecord == lastRecord)&&const DeepCollectionEquality().equals(other._asNeeded, _asNeeded)&&(identical(other.nextAppointment, nextAppointment) || other.nextAppointment == nextAppointment)&&const DeepCollectionEquality().equals(other._stock, _stock)&&const DeepCollectionEquality().equals(other._conflicts, _conflicts));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.day, day) || other.day == day)&&(identical(other.totalToday, totalToday) || other.totalToday == totalToday)&&(identical(other.resolvedToday, resolvedToday) || other.resolvedToday == resolvedToday)&&(identical(other.next, next) || other.next == next)&&(identical(other.nextLater, nextLater) || other.nextLater == nextLater)&&const DeepCollectionEquality().equals(other._fromYesterday, _fromYesterday)&&const DeepCollectionEquality().equals(other._byDayPart, _byDayPart)&&const DeepCollectionEquality().equals(other._anyTimeTasks, _anyTimeTasks)&&(identical(other.lateCount, lateCount) || other.lateCount == lateCount)&&(identical(other.tasksToday, tasksToday) || other.tasksToday == tasksToday)&&(identical(other.tasksResolvedToday, tasksResolvedToday) || other.tasksResolvedToday == tasksResolvedToday)&&(identical(other.lastRecord, lastRecord) || other.lastRecord == lastRecord)&&const DeepCollectionEquality().equals(other._asNeeded, _asNeeded)&&(identical(other.nextAppointment, nextAppointment) || other.nextAppointment == nextAppointment)&&const DeepCollectionEquality().equals(other._recentNotes, _recentNotes)&&const DeepCollectionEquality().equals(other._stock, _stock)&&const DeepCollectionEquality().equals(other._conflicts, _conflicts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,day,totalToday,resolvedToday,next,nextLater,const DeepCollectionEquality().hash(_fromYesterday),const DeepCollectionEquality().hash(_byDayPart),const DeepCollectionEquality().hash(_anyTimeTasks),lateCount,tasksToday,tasksResolvedToday,lastRecord,const DeepCollectionEquality().hash(_asNeeded),nextAppointment,const DeepCollectionEquality().hash(_stock),const DeepCollectionEquality().hash(_conflicts));
+int get hashCode => Object.hash(runtimeType,day,totalToday,resolvedToday,next,nextLater,const DeepCollectionEquality().hash(_fromYesterday),const DeepCollectionEquality().hash(_byDayPart),const DeepCollectionEquality().hash(_anyTimeTasks),lateCount,tasksToday,tasksResolvedToday,lastRecord,const DeepCollectionEquality().hash(_asNeeded),nextAppointment,const DeepCollectionEquality().hash(_recentNotes),const DeepCollectionEquality().hash(_stock),const DeepCollectionEquality().hash(_conflicts));
 
 @override
 String toString() {
-  return 'TodayView(day: $day, totalToday: $totalToday, resolvedToday: $resolvedToday, next: $next, nextLater: $nextLater, fromYesterday: $fromYesterday, byDayPart: $byDayPart, anyTimeTasks: $anyTimeTasks, lateCount: $lateCount, tasksToday: $tasksToday, tasksResolvedToday: $tasksResolvedToday, lastRecord: $lastRecord, asNeeded: $asNeeded, nextAppointment: $nextAppointment, stock: $stock, conflicts: $conflicts)';
+  return 'TodayView(day: $day, totalToday: $totalToday, resolvedToday: $resolvedToday, next: $next, nextLater: $nextLater, fromYesterday: $fromYesterday, byDayPart: $byDayPart, anyTimeTasks: $anyTimeTasks, lateCount: $lateCount, tasksToday: $tasksToday, tasksResolvedToday: $tasksResolvedToday, lastRecord: $lastRecord, asNeeded: $asNeeded, nextAppointment: $nextAppointment, recentNotes: $recentNotes, stock: $stock, conflicts: $conflicts)';
 }
 
 
@@ -1282,7 +1293,7 @@ abstract mixin class _$TodayViewCopyWith<$Res> implements $TodayViewCopyWith<$Re
   factory _$TodayViewCopyWith(_TodayView value, $Res Function(_TodayView) _then) = __$TodayViewCopyWithImpl;
 @override @useResult
 $Res call({
- DateTime day, int totalToday, int resolvedToday, DoseSlot? next, ({Medication medication, DateTime at})? nextLater, List<DoseSlot> fromYesterday, Map<DayPart, List<TimelineEntry>> byDayPart, List<TaskSlot> anyTimeTasks, int lateCount, int tasksToday, int tasksResolvedToday, CareEvent? lastRecord, List<AsNeededItem> asNeeded, Appointment? nextAppointment, Map<String, StockLevel> stock, List<ConflictItem> conflicts
+ DateTime day, int totalToday, int resolvedToday, DoseSlot? next, ({Medication medication, DateTime at})? nextLater, List<DoseSlot> fromYesterday, Map<DayPart, List<TimelineEntry>> byDayPart, List<TaskSlot> anyTimeTasks, int lateCount, int tasksToday, int tasksResolvedToday, CareEvent? lastRecord, List<AsNeededItem> asNeeded, Appointment? nextAppointment, List<CareNoteAdded> recentNotes, Map<String, StockLevel> stock, List<ConflictItem> conflicts
 });
 
 
@@ -1299,7 +1310,7 @@ class __$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? day = null,Object? totalToday = null,Object? resolvedToday = null,Object? next = freezed,Object? nextLater = freezed,Object? fromYesterday = null,Object? byDayPart = null,Object? anyTimeTasks = null,Object? lateCount = null,Object? tasksToday = null,Object? tasksResolvedToday = null,Object? lastRecord = freezed,Object? asNeeded = null,Object? nextAppointment = freezed,Object? stock = null,Object? conflicts = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? day = null,Object? totalToday = null,Object? resolvedToday = null,Object? next = freezed,Object? nextLater = freezed,Object? fromYesterday = null,Object? byDayPart = null,Object? anyTimeTasks = null,Object? lateCount = null,Object? tasksToday = null,Object? tasksResolvedToday = null,Object? lastRecord = freezed,Object? asNeeded = null,Object? nextAppointment = freezed,Object? recentNotes = null,Object? stock = null,Object? conflicts = null,}) {
   return _then(_TodayView(
 day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
 as DateTime,totalToday: null == totalToday ? _self.totalToday : totalToday // ignore: cast_nullable_to_non_nullable
@@ -1315,7 +1326,8 @@ as int,tasksResolvedToday: null == tasksResolvedToday ? _self.tasksResolvedToday
 as int,lastRecord: freezed == lastRecord ? _self.lastRecord : lastRecord // ignore: cast_nullable_to_non_nullable
 as CareEvent?,asNeeded: null == asNeeded ? _self._asNeeded : asNeeded // ignore: cast_nullable_to_non_nullable
 as List<AsNeededItem>,nextAppointment: freezed == nextAppointment ? _self.nextAppointment : nextAppointment // ignore: cast_nullable_to_non_nullable
-as Appointment?,stock: null == stock ? _self._stock : stock // ignore: cast_nullable_to_non_nullable
+as Appointment?,recentNotes: null == recentNotes ? _self._recentNotes : recentNotes // ignore: cast_nullable_to_non_nullable
+as List<CareNoteAdded>,stock: null == stock ? _self._stock : stock // ignore: cast_nullable_to_non_nullable
 as Map<String, StockLevel>,conflicts: null == conflicts ? _self._conflicts : conflicts // ignore: cast_nullable_to_non_nullable
 as List<ConflictItem>,
   ));

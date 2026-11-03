@@ -107,6 +107,7 @@ void main() {
       baseVersion: 2,
     ),
     CareEvent.visitNoteAdded(meta: meta, appointmentId: 'a1', text: 'OK'),
+    CareEvent.careNoteAdded(meta: meta, text: 'Ate little at lunch'),
     CareEvent.documentLinked(
       meta: meta,
       appointmentId: 'a1',

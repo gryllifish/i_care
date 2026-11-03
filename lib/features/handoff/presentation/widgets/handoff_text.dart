@@ -20,10 +20,6 @@ String handoffText(
   required Map<String, Member> caregivers,
   required String locale,
   required Map<String, String> customReasons,
-
-  /// What the caregiver wrote to add, right after the header; left out
-  /// when blank.
-  String note = '',
 }) {
   final at = handoff.at;
   final today = DateTime(at.year, at.month, at.day);
@@ -73,6 +69,11 @@ String handoffText(
         '(${nameOf(record.meta.caregiverId)})';
   }
 
+  String noteLine(CareNoteAdded note) {
+    final who = nameOf(note.meta.caregiverId);
+    return '- ${note.text} ($who, ${time(note.meta.occurredAt)})';
+  }
+
   String taskSkippedLine(TaskSlot slot) =>
       '- ${slot.task.details.name}: ${skipOf(slot.skipped.first)}';
 
@@ -87,7 +88,11 @@ String handoffText(
         time(at),
       ),
     ],
-    if (note.trim().isNotEmpty) [l10n.handoffNote, note.trim()],
+    if (handoff.notes.isNotEmpty)
+      [
+        l10n.handoffNotes,
+        for (final note in handoff.notes) noteLine(note),
+      ],
     if (handoff.given.isNotEmpty)
       [
         l10n.handoffGiven,
