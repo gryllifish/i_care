@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Builds the web app and captures a headless Chrome screenshot at phone size.
 # Usage: screenshot.sh [route] [output.png] [width] [height]
+# Extra build flags go in BUILD_ARGS, e.g. for the beta:
+#   BUILD_ARGS=--dart-define-from-file=env/beta.json screenshot.sh
 #
 # Headless Chrome on macOS won't make windows narrower than ~500px, so the
 # app is rendered inside an iframe of the requested size.
@@ -14,7 +16,8 @@ height="${4:-852}"
 chrome="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 port=8765
 
-flutter build web --release --no-wasm-dry-run >/dev/null
+# shellcheck disable=SC2086 # BUILD_ARGS holds several flags.
+flutter build web --release --no-wasm-dry-run ${BUILD_ARGS:-} >/dev/null
 mkdir -p "$(dirname "$output")"
 # Chrome needs an absolute path.
 case "$output" in /*) output_path="$output" ;; *) output_path="$PWD/$output" ;; esac
