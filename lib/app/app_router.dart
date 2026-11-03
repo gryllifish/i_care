@@ -18,6 +18,7 @@ import 'package:i_care/features/medications/presentation/screens/schedule_change
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/features/settings/presentation/screens/create_circle_screen.dart';
 import 'package:i_care/features/settings/presentation/screens/join_screen.dart';
+import 'package:i_care/features/settings/presentation/screens/reasons_screen.dart';
 import 'package:i_care/features/settings/presentation/screens/removed_screen.dart';
 import 'package:i_care/features/settings/presentation/screens/settings_screen.dart';
 import 'package:i_care/features/settings/presentation/screens/welcome_screen.dart';
@@ -113,6 +114,10 @@ GoRouter appRouter(Ref ref) {
       _route(
         path: AppRoutes.settings,
         builder: (context, state) => const SettingsScreen(),
+      ),
+      _route(
+        path: AppRoutes.reasons,
+        builder: (context, state) => const ReasonsScreen(),
       ),
       // Outside the shell, so they cover the tab bar.
       _route(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:i_care/core/l10n/l10n.dart';
+import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
@@ -9,7 +11,6 @@ import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/features/settings/presentation/widgets/circle_section.dart';
 import 'package:i_care/features/settings/presentation/widgets/not_sent_section.dart';
-import 'package:i_care/features/settings/presentation/widgets/reasons_section.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
@@ -37,7 +38,30 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           const NotSentSection(),
           const CircleSection(),
-          const ReasonsSection(),
+          if (ref.watch(canDoProvider(CareAction.manageReasons)))
+            FormSection(
+              title: l10n.sectionReasons,
+              children: [
+                AppCard(
+                  onTap: () => context.push(AppRoutes.reasons),
+                  child: Row(
+                    spacing: AppSpacing.md,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          l10n.editReasons,
+                          style: AppTextStyles.body,
+                        ),
+                      ),
+                      Icon(
+                        Icons.chevron_right,
+                        color: context.colors.inkMuted,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           FormSection(
             title: l10n.sectionLanguage,
             children: [

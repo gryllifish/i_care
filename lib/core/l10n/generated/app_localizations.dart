@@ -2755,6 +2755,12 @@ abstract class AppLocalizations {
   /// **'Add reason'**
   String get addReason;
 
+  /// No description provided for @editReasons.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit reasons'**
+  String get editReasons;
+
   /// No description provided for @reasonExists.
   ///
   /// In en, this message translates to:

@@ -1392,6 +1392,7 @@
   "fieldNewReason": "New reason",
   "fieldNewReasonHint": "e.g. At the hospital",
   "addReason": "Add reason",
+  "editReasons": "Edit reasons",
   "reasonExists": "Enter a reason that is not on the list.",
   "activityCircleCreated": "The circle for {recipient} began",
   "@activityCircleCreated": {

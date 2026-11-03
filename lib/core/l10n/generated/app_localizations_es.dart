@@ -1691,6 +1691,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addReason => 'Agregar motivo';
 
   @override
+  String get editReasons => 'Editar motivos';
+
+  @override
   String get reasonExists => 'Escribí un motivo que no esté en la lista.';
 
   @override

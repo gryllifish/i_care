@@ -442,6 +442,7 @@
   "fieldNewReason": "Motivo nuevo",
   "fieldNewReasonHint": "Ej.: En el hospital",
   "addReason": "Agregar motivo",
+  "editReasons": "Editar motivos",
   "reasonExists": "Escribí un motivo que no esté en la lista.",
   "activityCircleCreated": "Empezó el círculo de {recipient}",
   "theRecipient": "la persona que cuidás",

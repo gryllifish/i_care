@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:i_care/core/l10n/l10n.dart';
+import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
 
@@ -86,6 +89,15 @@ class _SkipReasonPickerState extends ConsumerState<SkipReasonPicker> {
             ),
             child: Text(
               reasonLabel(l10n, reasonId, customReasons: customReasons),
+            ),
+          ),
+        if (ref.watch(canDoProvider(CareAction.manageReasons)))
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              onPressed: () => context.push(AppRoutes.reasons),
+              icon: const Icon(Icons.edit_outlined),
+              label: Text(l10n.editReasons),
             ),
           ),
       ],

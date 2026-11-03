@@ -148,8 +148,9 @@ family portal for residents' relatives is a possible later path.
 16. **Skip reasons the circle sets**: the standard reasons (translated)
     can be hidden, the circle adds its own (kept as written), and
     "Other" is always offered with room to write what happened. Events
-    store reasons by id, so old records keep theirs. Managed in Settings
-    by admins and caregivers.
+    store reasons by id, so old records keep theirs. Managed on their
+    own screen, opened from Settings and from the reason picker, by
+    admins and caregivers.
 
 17. **Demo without data**: on first run the welcome offers the sample
     circle or starting from scratch (demo only; also in Settings → Demo).

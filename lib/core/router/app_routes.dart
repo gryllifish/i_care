@@ -49,6 +49,10 @@ abstract final class AppRoutes {
 
   static const settings = '/settings';
 
+  /// Full screen: which reasons for not giving or doing are offered. Top
+  /// level, so back from the reason picker returns to the picker.
+  static const reasons = '/reasons';
+
   /// Shown instead of everything else until the welcome was seen.
   static const welcome = '/welcome';
 

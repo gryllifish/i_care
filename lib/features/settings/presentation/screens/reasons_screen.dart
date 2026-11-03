@@ -10,24 +10,40 @@ import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/controllers/reason_actions.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/permissions.dart';
+import 'package:i_care/features/care/domain/projections/care_log.dart';
 import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
-import 'package:i_care/shared/widgets/form_section.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
 
 /// Which reasons are offered when a dose is not given or a task not done,
-/// and the circle's own. For whoever manages them; absent otherwise.
-class ReasonsSection extends ConsumerWidget {
-  const ReasonsSection({super.key});
+/// and the circle's own. Opened from Settings and from the reason picker,
+/// by whoever manages them; empty for anyone else.
+class ReasonsScreen extends ConsumerWidget {
+  const ReasonsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final log = ref.watch(careLogProvider).value;
-    if (log == null || !ref.watch(canDoProvider(CareAction.manageReasons))) {
-      return const SizedBox.shrink();
-    }
+    final canManage = ref.watch(canDoProvider(CareAction.manageReasons));
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.sectionReasons)),
+      body: log == null || !canManage
+          ? const SizedBox.shrink()
+          : _Reasons(log: log),
+    );
+  }
+}
+
+class _Reasons extends ConsumerWidget {
+  const _Reasons({required this.log});
+
+  final CareLog log;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final hidden = log.hiddenReasons;
     final customReasons = log.customReasonLabels;
     // Every reason a circle can switch: "Other" is always offered.
@@ -37,8 +53,13 @@ class ReasonsSection extends ConsumerWidget {
       ...customReasons.keys,
     ];
 
-    return FormSection(
-      title: l10n.sectionReasons,
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.screenHorizontal,
+        0,
+        AppSpacing.screenHorizontal,
+        AppSpacing.xxl,
+      ),
       children: [
         Text(
           l10n.reasonsNote,
@@ -46,6 +67,7 @@ class ReasonsSection extends ConsumerWidget {
             color: context.colors.inkMuted,
           ),
         ),
+        const SizedBox(height: AppSpacing.md),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
@@ -72,6 +94,7 @@ class ReasonsSection extends ConsumerWidget {
             ],
           ),
         ),
+        const SizedBox(height: AppSpacing.xl),
         const _AddReason(),
       ],
     );

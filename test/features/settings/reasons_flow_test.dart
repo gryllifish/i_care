@@ -118,7 +118,7 @@ void main() {
       await tester.tap(find.byTooltip('Settings'));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(
-        find.text('Add reason'),
+        find.text('Edit reasons'),
         200,
         scrollable: find
             .descendant(
@@ -127,6 +127,7 @@ void main() {
             )
             .first,
       );
+      await tester.tap(find.text('Edit reasons'));
       await tester.pumpAndSettle();
     }
 
@@ -191,7 +192,42 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('REASONS FOR NOT GIVING OR DOING'), findsNothing);
-      expect(find.text('Add reason'), findsNothing);
+      expect(find.text('Edit reasons'), findsNothing);
+    });
+  });
+
+  group('from the reason picker', () {
+    testWidgets('an admin edits the reasons and comes back to pick one', (
+      tester,
+    ) async {
+      await pumpApp(tester, repository: circle(), now: now);
+      await openTask(tester);
+
+      await tester.ensureVisible(find.text('Edit reasons'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Edit reasons'));
+      await tester.pumpAndSettle();
+      expect(find.text('Add reason'), findsOneWidget);
+
+      await tester.tap(find.byType(BackButton));
+      await tester.pumpAndSettle();
+      expect(find.text('At the day center'), findsOneWidget);
+    });
+
+    testWidgets('a helper only picks', (tester) async {
+      await pumpApp(
+        tester,
+        repository: circle(),
+        now: now,
+        prefs: MemoryDevicePrefs({
+          PrefKeys.welcomeSeen: 'true',
+          PrefKeys.memberId: 'rosa',
+        }),
+      );
+      await openTask(tester);
+
+      expect(find.text('At the day center'), findsOneWidget);
+      expect(find.text('Edit reasons'), findsNothing);
     });
   });
 }
