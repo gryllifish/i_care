@@ -118,6 +118,32 @@ void main() {
     expect(server.eventsAfter(null).events, hasLength(members + 1));
   });
 
+  test(
+    'syncing now sends what is pending; offline it is not a failure',
+    () async {
+      final (repository, connection) = await device('ana');
+      connection.isOnline = false;
+      await repository.record(events.given('m1', at: eight));
+
+      expect(await repository.syncNow(), isA<Ok<void>>());
+      expect(
+        await repository.watchSyncStatus().first,
+        isA<SyncStatus>()
+            .having((s) => s.isConnected, 'isConnected', isFalse)
+            .having((s) => s.pendingCount, 'pendingCount', 1),
+      );
+
+      connection.isOnline = true;
+      expect(await repository.syncNow(), isA<Ok<void>>());
+      expect(
+        await repository.watchSyncStatus().first,
+        isA<SyncStatus>()
+            .having((s) => s.isConnected, 'isConnected', isTrue)
+            .having((s) => s.pendingCount, 'pendingCount', 0),
+      );
+    },
+  );
+
   test('after a stop and a reset, syncing restarts from the new log', () async {
     final (repository, _) = await device('ana');
     await repository.record(events.given('m1', at: eight));

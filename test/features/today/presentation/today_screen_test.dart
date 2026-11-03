@@ -110,6 +110,20 @@ void main() {
     );
   });
 
+  testWidgets('pulling down syncs now', (tester) async {
+    final repository = circle();
+    await pumpApp(tester, repository: repository, now: now);
+
+    await tester.fling(
+      find.byType(Scrollable).first,
+      const Offset(0, 400),
+      1000,
+    );
+    await tester.pumpAndSettle();
+
+    expect(repository.syncRequests, 1);
+  });
+
   testWidgets('recording a dose names the caregiver and offers undo', (
     tester,
   ) async {

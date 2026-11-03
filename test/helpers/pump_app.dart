@@ -74,6 +74,15 @@ class FakeCareRepository implements CareRepository {
   @override
   Stream<List<RejectedEvent>> watchRejected() => Stream.value(rejected);
 
+  /// How many times someone asked to sync now.
+  int syncRequests = 0;
+
+  @override
+  Future<Result<void>> syncNow() async {
+    syncRequests++;
+    return const Ok(null);
+  }
+
   @override
   Future<Result<void>> dismissRejected(String eventId) async {
     rejected.removeWhere((item) => item.event.meta.id == eventId);

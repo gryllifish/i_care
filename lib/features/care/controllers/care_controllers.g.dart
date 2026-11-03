@@ -188,6 +188,63 @@ abstract class _$RejectedActions extends $Notifier<void> {
   }
 }
 
+/// Syncing on request, besides the sync that runs on its own.
+
+@ProviderFor(SyncActions)
+final syncActionsProvider = SyncActionsProvider._();
+
+/// Syncing on request, besides the sync that runs on its own.
+final class SyncActionsProvider extends $NotifierProvider<SyncActions, void> {
+  /// Syncing on request, besides the sync that runs on its own.
+  SyncActionsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'syncActionsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$syncActionsHash();
+
+  @$internal
+  @override
+  SyncActions create() => SyncActions();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<void>(value),
+    );
+  }
+}
+
+String _$syncActionsHash() => r'4f832fde3af3e9b21b5dd6750b847bcf9a8bcfad';
+
+/// Syncing on request, besides the sync that runs on its own.
+
+abstract class _$SyncActions extends $Notifier<void> {
+  void build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<void, void>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<void, void>,
+              void,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
 /// Members of the circle not removed, admins first.
 
 @ProviderFor(members)

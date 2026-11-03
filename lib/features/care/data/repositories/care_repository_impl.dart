@@ -86,6 +86,13 @@ class CareRepositoryImpl implements CareRepository {
   });
 
   @override
+  Future<Result<void>> syncNow() => guard(() async {
+    await stop();
+    start();
+    await _pushing;
+  });
+
+  @override
   Stream<SyncStatus> watchSyncStatus() async* {
     yield _status();
     yield* _statusChanges.stream;

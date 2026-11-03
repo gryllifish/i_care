@@ -16,6 +16,11 @@ abstract interface class CareRepository {
   /// is not a failure.
   Future<Result<void>> record(CareEvent event);
 
+  /// Reconnects to the server and sends what is pending, for someone who
+  /// asks to be up to date now. Being offline is not a failure: the sync
+  /// state says so.
+  Future<Result<void>> syncNow();
+
   /// The sync state, now and after every change.
   Stream<SyncStatus> watchSyncStatus();
 

@@ -37,6 +37,15 @@ class RejectedActions extends _$RejectedActions {
       ref.read(careRepositoryProvider).dismissRejected(rejected.event.meta.id);
 }
 
+/// Syncing on request, besides the sync that runs on its own.
+@Riverpod(keepAlive: true)
+class SyncActions extends _$SyncActions {
+  @override
+  void build() {}
+
+  Future<Result<void>> syncNow() => ref.read(careRepositoryProvider).syncNow();
+}
+
 /// Members of the circle not removed, admins first.
 @Riverpod(keepAlive: true)
 List<Member> members(Ref ref) =>

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:i_care/core/constants/app_durations.dart';
+import 'package:i_care/core/error/result.dart';
 import 'package:i_care/core/l10n/duration_text.dart';
 import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
@@ -117,94 +118,110 @@ class _TodayContent extends ConsumerWidget {
       slotAt: slot.slotAt,
     );
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.screenHorizontal,
-        AppSpacing.lg,
-        AppSpacing.screenHorizontal,
-        AppSpacing.xxl,
-      ),
-      children: [
-        _Header(day: view.day),
-        const SizedBox(height: AppSpacing.lg),
-        _DayProgress(done: view.resolvedToday, total: view.totalToday),
-        for (final item in view.conflicts) ...[
-          const SizedBox(height: AppSpacing.md),
-          _ConflictCard(item: item, onTap: () => _openConflict(context, item)),
-        ],
-        if (summary) ...[
+    Future<void> syncNow() async {
+      final messenger = ScaffoldMessenger.of(context);
+      final result = await ref.read(syncActionsProvider.notifier).syncNow();
+      if (result case Err(:final failure)) {
+        messenger.showError(failure.message(l10n));
+      }
+    }
+
+    return RefreshIndicator.adaptive(
+      onRefresh: syncNow,
+      child: ListView(
+        // Pulls to sync even when the day fits on screen.
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.screenHorizontal,
+          AppSpacing.lg,
+          AppSpacing.screenHorizontal,
+          AppSpacing.xxl,
+        ),
+        children: [
+          _Header(day: view.day),
           const SizedBox(height: AppSpacing.lg),
-          _DaySummaryCard(view: view),
-        ] else
-          _NextDoseSwitcher(
-            child: switch ((next, view.nextLater)) {
-              (final DoseSlot next, _) => Padding(
-                // One card per dose: a new one animates in.
-                key: ValueKey((next.medication.id, next.slotAt)),
-                padding: const EdgeInsets.only(top: AppSpacing.lg),
-                child: _NextDoseCard(
-                  slot: next,
-                  isFromYesterday: next.slotAt.isBefore(view.day),
-                  onOpen: () => open(next),
-                ),
-              ),
-              (null, (:final medication, :final at)) => Padding(
-                key: ValueKey((medication.id, at)),
-                padding: const EdgeInsets.only(top: AppSpacing.lg),
-                child: _NextLaterCard(medication: medication, at: at),
-              ),
-              (null, null) => null,
-            },
-          ),
-        if (view.nextAppointment case final appointment?) ...[
-          const SizedBox(height: AppSpacing.lg),
-          _NextAppointmentCard(appointment: appointment),
-        ],
-        if (view.fromYesterday.isNotEmpty)
-          _Timeline(
-            title: l10n.fromYesterday,
-            entries: [
-              for (final slot in view.fromYesterday) TimelineEntry.dose(slot),
-            ],
-            stock: view.stock,
-            onOpen: open,
-          ),
-        if (view.anyTimeTasks.isNotEmpty)
-          _Section(
-            title: l10n.duringTheDay,
-            children: [
-              for (final slot in view.anyTimeTasks)
-                TaskCard(slot: slot, onTap: () => _openTask(context, slot)),
-            ],
-          ),
-        for (final MapEntry(key: part, value: entries)
-            in view.byDayPart.entries)
-          _Timeline(
-            title: part.label(l10n),
-            entries: entries,
-            stock: view.stock,
-            onOpen: open,
-          ),
-        if (view.asNeeded.isNotEmpty)
-          _Section(
-            title: l10n.asNeeded,
-            children: [
-              for (final item in view.asNeeded)
-                AsNeededTile(
-                  item: item,
-                  onTap: () => showDoseSheet(
-                    context,
-                    medicationId: item.medication.id,
-                    slotAt: null,
+          _DayProgress(done: view.resolvedToday, total: view.totalToday),
+          for (final item in view.conflicts) ...[
+            const SizedBox(height: AppSpacing.md),
+            _ConflictCard(
+              item: item,
+              onTap: () => _openConflict(context, item),
+            ),
+          ],
+          if (summary) ...[
+            const SizedBox(height: AppSpacing.lg),
+            _DaySummaryCard(view: view),
+          ] else
+            _NextDoseSwitcher(
+              child: switch ((next, view.nextLater)) {
+                (final DoseSlot next, _) => Padding(
+                  // One card per dose: a new one animates in.
+                  key: ValueKey((next.medication.id, next.slotAt)),
+                  padding: const EdgeInsets.only(top: AppSpacing.lg),
+                  child: _NextDoseCard(
+                    slot: next,
+                    isFromYesterday: next.slotAt.isBefore(view.day),
+                    onOpen: () => open(next),
                   ),
                 ),
-            ],
-          ),
-        const SizedBox(height: AppSpacing.xl),
-        const _HandoffCard(),
-        const SizedBox(height: AppSpacing.md),
-        const _Disclaimer(),
-      ],
+                (null, (:final medication, :final at)) => Padding(
+                  key: ValueKey((medication.id, at)),
+                  padding: const EdgeInsets.only(top: AppSpacing.lg),
+                  child: _NextLaterCard(medication: medication, at: at),
+                ),
+                (null, null) => null,
+              },
+            ),
+          if (view.nextAppointment case final appointment?) ...[
+            const SizedBox(height: AppSpacing.lg),
+            _NextAppointmentCard(appointment: appointment),
+          ],
+          if (view.fromYesterday.isNotEmpty)
+            _Timeline(
+              title: l10n.fromYesterday,
+              entries: [
+                for (final slot in view.fromYesterday) TimelineEntry.dose(slot),
+              ],
+              stock: view.stock,
+              onOpen: open,
+            ),
+          if (view.anyTimeTasks.isNotEmpty)
+            _Section(
+              title: l10n.duringTheDay,
+              children: [
+                for (final slot in view.anyTimeTasks)
+                  TaskCard(slot: slot, onTap: () => _openTask(context, slot)),
+              ],
+            ),
+          for (final MapEntry(key: part, value: entries)
+              in view.byDayPart.entries)
+            _Timeline(
+              title: part.label(l10n),
+              entries: entries,
+              stock: view.stock,
+              onOpen: open,
+            ),
+          if (view.asNeeded.isNotEmpty)
+            _Section(
+              title: l10n.asNeeded,
+              children: [
+                for (final item in view.asNeeded)
+                  AsNeededTile(
+                    item: item,
+                    onTap: () => showDoseSheet(
+                      context,
+                      medicationId: item.medication.id,
+                      slotAt: null,
+                    ),
+                  ),
+              ],
+            ),
+          const SizedBox(height: AppSpacing.xl),
+          const _HandoffCard(),
+          const SizedBox(height: AppSpacing.md),
+          const _Disclaimer(),
+        ],
+      ),
     );
   }
 }
