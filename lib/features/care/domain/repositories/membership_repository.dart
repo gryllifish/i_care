@@ -10,6 +10,14 @@ abstract interface class MembershipRepository {
   /// connection.
   Future<Result<InviteCode>> issueCode(String memberId);
 
+  /// Creates a circle for [recipientName] with this device's person,
+  /// [creatorName], as its first admin; returns their member id. Starts
+  /// this device's copy of the log over.
+  Future<Result<String>> createCircle({
+    required String creatorName,
+    required String recipientName,
+  });
+
   /// Joins this device with [code]; returns the member's id. Starts this
   /// device's copy of the log over.
   Future<Result<String>> join(String code);

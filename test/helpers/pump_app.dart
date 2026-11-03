@@ -27,7 +27,7 @@ class FakeCareRepository implements CareRepository {
   FakeCareRepository([List<CareEvent> events = const []])
     : events = [
         if (!events.any((event) => event is MemberInvited))
-          ...SampleCircle.memberEvents(DateTime(2025)),
+          ...SampleCircle.circleEvents(DateTime(2025)),
         ...events,
       ];
 
@@ -101,6 +101,19 @@ class FakeMembershipRepository implements MembershipRepository {
     return Ok(
       InviteCode(code: validCode, expiresAt: DateTime(2026, 11, 4, 9)),
     );
+  }
+
+  /// What [createCircle] was asked for.
+  final created = <({String creatorName, String recipientName})>[];
+
+  @override
+  Future<Result<String>> createCircle({
+    required String creatorName,
+    required String recipientName,
+  }) async {
+    if (failure case final Failure failure) return Err(failure);
+    created.add((creatorName: creatorName, recipientName: recipientName));
+    return Ok(joinsAs);
   }
 
   @override

@@ -11,6 +11,16 @@ abstract interface class MembershipGateway {
   /// [ForbiddenException] or [NotFoundException].
   Future<InviteCode> issueCode(String memberId);
 
+  /// Creates a circle for [recipientName], with this device joined as
+  /// its first admin, [creatorName]; returns their member id.
+  ///
+  /// Throws [NoConnectionException] or [ForbiddenException] (a circle
+  /// already exists).
+  Future<String> createCircle({
+    required String creatorName,
+    required String recipientName,
+  });
+
   /// Joins this device as the member [code] was issued for; returns
   /// their id.
   ///

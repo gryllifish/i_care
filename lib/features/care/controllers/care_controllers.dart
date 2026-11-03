@@ -47,6 +47,17 @@ List<Member> members(Ref ref) =>
 Map<String, Member> membersById(Ref ref) =>
     ref.watch(careLogProvider).value?.membersById ?? const {};
 
+/// How the app names the person cared for, as the circle was created;
+/// null until the log has it.
+@Riverpod(keepAlive: true)
+String? recipientName(Ref ref) =>
+    ref.watch(careLogProvider).value?.circle?.recipientName;
+
+/// Whether this is the demo's sample circle, labeled as such.
+@Riverpod(keepAlive: true)
+bool isSampleCircle(Ref ref) =>
+    ref.watch(careLogProvider).value?.circle?.isSample ?? false;
+
 /// The circle's own skip reasons by id, to say why a dose or task was
 /// skipped.
 @Riverpod(keepAlive: true)

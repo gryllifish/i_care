@@ -151,6 +151,13 @@ family portal for residents' relatives is a possible later path.
     store reasons by id, so old records keep theirs. Managed in Settings
     by admins and caregivers.
 
+17. **Demo without data**: on first run the welcome offers the sample
+    circle or starting from scratch (demo only; also in Settings → Demo).
+    From scratch, both phones and the server are cleared and the phones
+    offer to create a circle (one's name, the name of the person cared
+    for) or join one. The person cared for is named from the circle
+    everywhere; "Sample data" shows only for the sample circle.
+
 ### Later candidates (after the MVP)
 - Uploaded files (PDFs, photos) for appointment documents: with the
   stage 2 backend and file storage, and only once local data is
@@ -288,6 +295,8 @@ documented), nursing-home features.
   helper's Today-only app, read-only viewers, a day summary for admins,
   and the demo with Ana (admin) and Rosa (helper).
 - Skip reasons the circle sets (scope item 16), and a note with "Other".
+- Demo without data (scope item 17): creating a circle, the welcome's
+  demo choice, the recipient's name from the circle.
 
 ### Known gaps
 - Routers use `routerNeglect`, so the browser back button never moves

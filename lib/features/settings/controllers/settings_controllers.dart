@@ -68,3 +68,10 @@ typedef DemoReset = Future<void> Function();
 @Riverpod(keepAlive: true)
 DemoReset demoReset(Ref ref) =>
     () => throw UnimplementedError('Override demoResetProvider at startup');
+
+/// Clears everything on every simulated phone and on the server, leaving
+/// no circle: the demo as a first install. `bootstrap` provides it.
+@Riverpod(keepAlive: true)
+DemoReset demoStartEmpty(Ref ref) =>
+    () =>
+        throw UnimplementedError('Override demoStartEmptyProvider at startup');

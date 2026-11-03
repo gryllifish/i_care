@@ -90,6 +90,11 @@ caregiver") without the review actions.
 
 A phone belongs to one member of one circle. There is no "Who are you?".
 
+0. **Create.** On a phone that belongs to nobody, "Create a circle" asks
+   for one's name and the name of the person cared for. The server writes
+   `CircleCreated` and makes that person the first admin, joined on that
+   phone (all `system` events). The demo has room for one circle.
+
 1. **Invite.** An admin adds a person (name and role) in Settings →
    Members. The server creates the member and a one-time code (for
    example `K7P-4QM`) that expires 48 hours later by the server's clock.

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
+import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/care/controllers/membership_actions.dart';
+import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
 
@@ -23,6 +26,8 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
   final _code = TextEditingController();
   String? _error;
   var _busy = false;
+
+  static const _buttonHeight = 48.0;
 
   @override
   void dispose() {
@@ -63,21 +68,50 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
               onPressed: _busy ? null : _join,
               child: Text(l10n.join),
             ),
+            const SizedBox(height: AppSpacing.xxl),
+            Text(l10n.createCircleLead, style: AppTextStyles.title),
+            const SizedBox(height: AppSpacing.xs),
+            Text(l10n.createCircleBody, style: AppTextStyles.body),
+            const SizedBox(height: AppSpacing.md),
+            OutlinedButton(
+              onPressed: () => context.push(AppRoutes.createCircle),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size.fromHeight(_buttonHeight),
+              ),
+              child: Text(l10n.createCircle),
+            ),
             const SizedBox(height: AppSpacing.xl),
             AppCard(
               raised: false,
               color: context.colors.surfaceMuted,
-              child: Text(
-                l10n.joinDemoHint,
-                style: AppTextStyles.bodyMuted.copyWith(
-                  color: context.colors.inkMuted,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: AppSpacing.sm,
+                children: [
+                  Text(
+                    l10n.joinDemoHint,
+                    style: AppTextStyles.bodyMuted.copyWith(
+                      color: context.colors.inkMuted,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: _busy ? null : _exploreSample,
+                    child: Text(l10n.exploreSample),
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  /// Back to the demo's sample circle, each phone its owner's again.
+  Future<void> _exploreSample() async {
+    setState(() => _busy = true);
+    await ref.read(demoResetProvider)();
+    if (mounted) setState(() => _busy = false);
   }
 
   Future<void> _join() async {

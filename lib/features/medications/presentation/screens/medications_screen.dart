@@ -56,7 +56,7 @@ class MedicationsScreen extends ConsumerWidget {
                 title: l10n.navMedications,
                 subtitle: [
                   l10n.medicationsCount(value.length),
-                  l10n.sampleData,
+                  if (ref.watch(isSampleCircleProvider)) l10n.sampleData,
                 ].join(' · '),
               ),
               const SizedBox(height: AppSpacing.lg),

@@ -9,7 +9,6 @@ import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
-import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/permissions.dart';
@@ -181,7 +180,7 @@ class _DoseSheetState extends ConsumerState<DoseSheet> {
             else ...[
               Text(
                 l10n.conflictQuestion(
-                  SampleCircle.recipientName,
+                  ref.watch(recipientNameProvider) ?? l10n.theRecipient,
                   _conflictDoseCount(detail),
                 ),
                 style: AppTextStyles.title,

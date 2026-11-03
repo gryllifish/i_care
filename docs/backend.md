@@ -28,6 +28,7 @@ feed, the latest version of a medication) is a projection of the log.
 | `TaskCreated` / `TaskUpdated` | details (name, note) and schedule (times, or none for "during the day"; weekdays), `baseVersion` on updates |
 | `TaskArchived` | `taskId`, `baseVersion` |
 | `TaskDone` / `TaskSkipped` | `taskId`, `slotAt` (start of the day when untimed); reason id and note when skipped |
+| `CircleCreated` | recipient name, whether it is the demo's sample; written by the server when someone creates the circle |
 | `SkipReasonAdded` | reason id, label: one of the circle's own reasons |
 | `SkipReasonHidden` / `SkipReasonShown` | reason id: stops or resumes offering a reason, standard or the circle's ("Other" is always offered) |
 | `RecipientProfileUpdated` | profile snapshot (allergies, conditions, doctors, contacts), `baseVersion` |

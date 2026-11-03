@@ -90,6 +90,9 @@ String eventSentence(
         customReasons: customReasons,
       ),
     ),
+    CircleCreated(:final recipientName) => l10n.activityCircleCreated(
+      recipientName,
+    ),
     SkipReasonAdded(:final label) => l10n.activityReasonAdded(name, label),
     SkipReasonHidden(:final reasonId) => l10n.activityReasonHidden(
       name,

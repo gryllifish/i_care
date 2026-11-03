@@ -55,7 +55,7 @@ void main() {
     expect(find.text('Admin'), findsOneWidget);
     expect(find.text('Helper'), findsOneWidget);
 
-    await tester.tap(find.text('Got it'));
+    await tester.tap(find.text('Explore with sample data'));
     await tester.pumpAndSettle();
 
     expect(find.byType(TodayScreen), findsOneWidget);

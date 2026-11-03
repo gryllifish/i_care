@@ -286,6 +286,100 @@ final class MembersByIdProvider
 
 String _$membersByIdHash() => r'183825e4ef4eebb38704a5b74430901c47d016b3';
 
+/// How the app names the person cared for, as the circle was created;
+/// null until the log has it.
+
+@ProviderFor(recipientName)
+final recipientNameProvider = RecipientNameProvider._();
+
+/// How the app names the person cared for, as the circle was created;
+/// null until the log has it.
+
+final class RecipientNameProvider
+    extends $FunctionalProvider<String?, String?, String?>
+    with $Provider<String?> {
+  /// How the app names the person cared for, as the circle was created;
+  /// null until the log has it.
+  RecipientNameProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'recipientNameProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$recipientNameHash();
+
+  @$internal
+  @override
+  $ProviderElement<String?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String? create(Ref ref) {
+    return recipientName(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String?>(value),
+    );
+  }
+}
+
+String _$recipientNameHash() => r'084207db2ceac90225f07b1d8837cd7c06e31d67';
+
+/// Whether this is the demo's sample circle, labeled as such.
+
+@ProviderFor(isSampleCircle)
+final isSampleCircleProvider = IsSampleCircleProvider._();
+
+/// Whether this is the demo's sample circle, labeled as such.
+
+final class IsSampleCircleProvider extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  /// Whether this is the demo's sample circle, labeled as such.
+  IsSampleCircleProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'isSampleCircleProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$isSampleCircleHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return isSampleCircle(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$isSampleCircleHash() => r'169d7ec83fb718d8c9191d31c586dd26affe7eb4';
+
 /// The circle's own skip reasons by id, to say why a dose or task was
 /// skipped.
 

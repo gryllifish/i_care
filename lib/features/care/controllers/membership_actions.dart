@@ -73,9 +73,24 @@ class MembershipActions extends _$MembershipActions {
     CareEvent.invitationRevoked(meta: _recorder.meta(), memberId: member.id),
   );
 
+  /// Creates a circle for [recipientName] with this device's person,
+  /// [creatorName], as its first admin. Callers check neither is blank.
+  Future<Result<void>> createCircle({
+    required String creatorName,
+    required String recipientName,
+  }) => _joined(
+    _membership.createCircle(
+      creatorName: creatorName.trim(),
+      recipientName: recipientName.trim(),
+    ),
+  );
+
   /// Joins this device with [code].
-  Future<Result<void>> join(String code) async {
-    switch (await _membership.join(code)) {
+  Future<Result<void>> join(String code) => _joined(_membership.join(code));
+
+  /// Remembers the member [joining] resolves to on this device.
+  Future<Result<void>> _joined(Future<Result<String>> joining) async {
+    switch (await joining) {
       case Ok(value: final memberId):
         await ref.read(deviceMembershipProvider.notifier).joined(memberId);
         return const Ok(null);

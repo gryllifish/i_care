@@ -16,6 +16,7 @@ import 'package:i_care/features/medications/presentation/screens/medication_form
 import 'package:i_care/features/medications/presentation/screens/medications_screen.dart';
 import 'package:i_care/features/medications/presentation/screens/schedule_change_screen.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
+import 'package:i_care/features/settings/presentation/screens/create_circle_screen.dart';
 import 'package:i_care/features/settings/presentation/screens/join_screen.dart';
 import 'package:i_care/features/settings/presentation/screens/removed_screen.dart';
 import 'package:i_care/features/settings/presentation/screens/settings_screen.dart';
@@ -69,8 +70,17 @@ GoRouter appRouter(Ref ref) {
         _ => null,
       };
       final at = state.matchedLocation;
-      if (required != null) return at == required ? null : required;
-      const gates = {AppRoutes.join, AppRoutes.removed, AppRoutes.welcome};
+      // Creating a circle is part of joining one.
+      final atRequired =
+          at == required ||
+          (required == AppRoutes.join && at == AppRoutes.createCircle);
+      if (required != null) return atRequired ? null : required;
+      const gates = {
+        AppRoutes.join,
+        AppRoutes.createCircle,
+        AppRoutes.removed,
+        AppRoutes.welcome,
+      };
       if (gates.contains(at)) return AppRoutes.today;
       // A helper's app is today's care only (`docs/roles.md`).
       const helpersAway = [
@@ -87,6 +97,10 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: AppRoutes.join,
         builder: (context, state) => const JoinScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.createCircle,
+        builder: (context, state) => const CreateCircleScreen(),
       ),
       GoRoute(
         path: AppRoutes.removed,

@@ -32,10 +32,11 @@ void main() {
       await openBox(SimulatedServer.boxName),
       await openBox(SimulatedServer.devicesBoxName),
       await openBox(SimulatedServer.codesBoxName),
+      await openBox(SimulatedServer.settingsBoxName),
       clock: () => now,
     );
     await server.seed([
-      for (final event in SampleCircle.memberEvents(DateTime(2025)))
+      for (final event in SampleCircle.circleEvents(DateTime(2025)))
         CareEventCodec.encodeString(event),
     ]);
   });
@@ -148,4 +149,48 @@ void main() {
 
     await until('the note leaves', () => logs.last == 0);
   });
+
+  test(
+    'from scratch: a phone creates the circle and invites the other',
+    () async {
+      await server.startEmpty();
+      final first = await phone('ana');
+      final second = await phone('rosa');
+      // Neither belongs to anyone after an empty start.
+      for (final container in [first, second]) {
+        await container.read(deviceMembershipProvider.notifier).cleared();
+      }
+      first.listen(careLogProvider, (_, _) {});
+
+      expect(
+        await first
+            .read(membershipActionsProvider.notifier)
+            .createCircle(creatorName: 'Lucía', recipientName: 'Abuela Rosa'),
+        isA<Ok<void>>(),
+      );
+      final lucia = first.read(deviceMembershipProvider);
+      expect(lucia, isNotNull);
+
+      for (
+        var i = 0;
+        i < 100 && first.read(currentMemberProvider) == null;
+        i++
+      ) {
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+      }
+      expect(first.read(currentMemberProvider)?.role, MemberRole.admin);
+      expect(first.read(recipientNameProvider), 'Abuela Rosa');
+      expect(first.read(isSampleCircleProvider), isFalse);
+
+      final invited = await first
+          .read(membershipActionsProvider.notifier)
+          .invite(name: 'Tomás', role: MemberRole.caregiver);
+      final code = (invited as Ok<InviteCode>).value.code;
+      expect(
+        await second.read(membershipActionsProvider.notifier).join(code),
+        isA<Ok<void>>(),
+      );
+      expect(second.read(deviceMembershipProvider), isNot(lucia));
+    },
+  );
 }

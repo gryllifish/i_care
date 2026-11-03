@@ -7,7 +7,6 @@ import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
-import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/handoff/controllers/handoff.dart';
 import 'package:i_care/features/handoff/presentation/widgets/handoff_text.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
@@ -28,7 +27,8 @@ class HandoffScreen extends ConsumerWidget {
           text: handoffText(
             value,
             l10n,
-            recipientName: SampleCircle.recipientName,
+            recipientName:
+                ref.watch(recipientNameProvider) ?? l10n.theRecipient,
             caregivers: ref.watch(membersByIdProvider),
             locale: Localizations.localeOf(context).toLanguageTag(),
             customReasons: ref.watch(customReasonsProvider),

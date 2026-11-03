@@ -169,6 +169,11 @@ abstract final class CareEventCodec {
         'reason': event.reasonId,
         if (event.note case final String note) 'note': note,
       },
+      CircleCreated() => {
+        'type': 'circle_created',
+        'recipient_name': event.recipientName,
+        if (event.isSample) 'is_sample': true,
+      },
       SkipReasonAdded() => {
         'type': 'skip_reason_added',
         'reason_id': event.reasonId,
@@ -359,6 +364,11 @@ abstract final class CareEventCodec {
         slotAt: json.date('slot_at'),
         reasonId: json.string('reason'),
         note: json.optionalString('note'),
+      ),
+      'circle_created' => CareEvent.circleCreated(
+        meta: meta,
+        recipientName: json.string('recipient_name'),
+        isSample: json.optionalBool('is_sample') ?? false,
       ),
       'skip_reason_added' => CareEvent.skipReasonAdded(
         meta: meta,

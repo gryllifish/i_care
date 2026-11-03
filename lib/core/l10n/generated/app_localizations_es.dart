@@ -1484,7 +1484,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get joinDemoHint =>
-      'En esta demo, creá un código en el teléfono de Ana: Ajustes, El círculo, tocá a alguien, Código nuevo.';
+      'En esta demo, una persona admin crea códigos en el otro teléfono: Ajustes, El círculo, tocá a alguien, Código nuevo.';
 
   @override
   String get removedTitle => 'Este teléfono ya no está en el círculo';
@@ -1673,4 +1673,57 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get reasonExists => 'Escribí un motivo que no esté en la lista.';
+
+  @override
+  String activityCircleCreated(String recipient) {
+    return 'Empezó el círculo de $recipient';
+  }
+
+  @override
+  String get theRecipient => 'la persona que cuidás';
+
+  @override
+  String get createCircle => 'Crear un círculo';
+
+  @override
+  String get createCircleLead => '¿Empezás un círculo nuevo?';
+
+  @override
+  String get createCircleBody =>
+      'Vas a ser su admin, e invitar a los demás desde Ajustes.';
+
+  @override
+  String get fieldYourName => 'Tu nombre';
+
+  @override
+  String get fieldRecipientName => '¿A quién cuidás?';
+
+  @override
+  String get fieldRecipientHint => 'Su nombre, ej.: Elena';
+
+  @override
+  String get circleExists =>
+      'Esta demo ya tiene un círculo. Unite con un código de su admin.';
+
+  @override
+  String get exploreSample => 'Explorar con datos de ejemplo';
+
+  @override
+  String get startFromScratch => 'Empezar desde cero';
+
+  @override
+  String get startEmptyTitle => '¿Empezar desde cero?';
+
+  @override
+  String get startEmptyBody =>
+      'Se borran los dos teléfonos y el servidor. Creás tu propio círculo y cargás todo vos.';
+
+  @override
+  String get welcomeDemoChoice =>
+      'Solo en esta demo: probala con datos de ejemplo, o vacía, para cargar todo vos.';
+
+  @override
+  String phoneNumber(int number) {
+    return 'Teléfono $number';
+  }
 }

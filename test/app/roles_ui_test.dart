@@ -26,7 +26,7 @@ void main() {
   /// only follows along.
   FakeCareRepository circle([List<CareEvent> extra = const []]) =>
       FakeCareRepository([
-        ...SampleCircle.memberEvents(DateTime(2025)),
+        ...SampleCircle.circleEvents(DateTime(2025)),
         events.memberInvited(
           'pablo',
           name: 'Pablo',

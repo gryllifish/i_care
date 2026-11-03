@@ -94,7 +94,7 @@ CareAction? actionOf(
   RoleChanged() ||
   MemberRemoved() => CareAction.manageMembers,
   MemberLeft() => CareAction.leaveCircle,
-  MemberJoined() => null,
+  MemberJoined() || CircleCreated() => null,
 };
 
 /// Whether [action] records what happened to the person cared for: a dose

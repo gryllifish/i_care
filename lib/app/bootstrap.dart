@@ -41,6 +41,7 @@ Future<void> bootstrap() async {
     await _openBox(SimulatedServer.boxName),
     await _openBox(SimulatedServer.devicesBoxName),
     await _openBox(SimulatedServer.codesBoxName),
+    await _openBox(SimulatedServer.settingsBoxName),
     clock: DateTime.now,
   );
   final phones = [
@@ -49,14 +50,17 @@ Future<void> bootstrap() async {
     for (final owner in [SampleCircle.ana, SampleCircle.rosa])
       await _openPhone(owner),
   ];
-  // A log without members was saved before roles existed: phones there
-  // belong to nobody, so the demo starts over.
-  if (server.isEmpty || !server.hasMembers) {
+  // The sample on the first start; again for a log saved before circles
+  // recorded how they began. An empty server the user asked for stays
+  // empty.
+  final firstStart = server.isEmpty && !server.startedEmpty;
+  if (firstStart || (!server.isEmpty && !server.hasCircle)) {
     await _clearAll(server, phones);
     await _seed(server, phones);
   }
   await _restoreMembers(server, phones);
   Future<void> resetDemo() => _reset(server, phones);
+  Future<void> startEmpty() => _startEmpty(server, phones);
   final devices = [
     for (final phone in phones)
       SimulatedDevice(
@@ -73,6 +77,7 @@ Future<void> bootstrap() async {
             ),
             simulatedServerProvider.overrideWithValue(server),
             demoResetProvider.overrideWithValue(resetDemo),
+            demoStartEmptyProvider.overrideWithValue(startEmpty),
           ],
         ),
       ),
@@ -137,7 +142,8 @@ Future<void> _restoreMembers(
   for (final phone in phones) {
     final prefs = HiveDevicePrefs(phone.prefs);
     if (prefs.read(PrefKeys.memberId) != null) continue;
-    if (!server.knowsDevice(phone.deviceId)) {
+    if (!server.knowsDevice(phone.deviceId) &&
+        server.hasMember(phone.owner.id)) {
       await server.bind(phone.deviceId, phone.owner.id);
     }
     if (server.activeMemberOf(phone.deviceId) case final String memberId) {
@@ -175,6 +181,23 @@ Future<void> _reset(SimulatedServer server, List<_Phone> phones) async {
         .read(deviceMembershipProvider.notifier)
         .joined(phones[index].owner.id);
     await container.read(welcomeSeenProvider.notifier).markSeen();
+    await container.read(careRepositoryImplProvider).restart();
+  }
+}
+
+/// Clears every phone and the server, leaving them without a circle: the
+/// phones then offer to create one or join one, as on a first install.
+Future<void> _startEmpty(SimulatedServer server, List<_Phone> phones) async {
+  final containers = [
+    for (final phone in phones) ?phone.container,
+  ];
+  for (final container in containers) {
+    await container.read(careRepositoryImplProvider).stop();
+  }
+  await _clearAll(server, phones);
+  await server.startEmpty();
+  for (final container in containers) {
+    await container.read(deviceMembershipProvider.notifier).cleared();
     await container.read(careRepositoryImplProvider).restart();
   }
 }

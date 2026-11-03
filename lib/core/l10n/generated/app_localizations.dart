@@ -2422,7 +2422,7 @@ abstract class AppLocalizations {
   /// No description provided for @joinDemoHint.
   ///
   /// In en, this message translates to:
-  /// **'In this demo, make a code on Ana\'s phone: Settings, The circle, tap someone, New code.'**
+  /// **'In this demo, an admin makes codes on the other phone: Settings, The circle, tap someone, New code.'**
   String get joinDemoHint;
 
   /// No description provided for @removedTitle.
@@ -2730,6 +2730,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter a reason that is not on the list.'**
   String get reasonExists;
+
+  /// No description provided for @activityCircleCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'The circle for {recipient} began'**
+  String activityCircleCreated(String recipient);
+
+  /// No description provided for @theRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'the person you care for'**
+  String get theRecipient;
+
+  /// No description provided for @createCircle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a circle'**
+  String get createCircle;
+
+  /// No description provided for @createCircleLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting a new circle?'**
+  String get createCircleLead;
+
+  /// No description provided for @createCircleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You will be its admin, and invite the others from Settings.'**
+  String get createCircleBody;
+
+  /// No description provided for @fieldYourName.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get fieldYourName;
+
+  /// No description provided for @fieldRecipientName.
+  ///
+  /// In en, this message translates to:
+  /// **'Who do you care for?'**
+  String get fieldRecipientName;
+
+  /// No description provided for @fieldRecipientHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Their first name, e.g. Elena'**
+  String get fieldRecipientHint;
+
+  /// No description provided for @circleExists.
+  ///
+  /// In en, this message translates to:
+  /// **'This demo already has a circle. Join it with a code from its admin.'**
+  String get circleExists;
+
+  /// No description provided for @exploreSample.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore with sample data'**
+  String get exploreSample;
+
+  /// No description provided for @startFromScratch.
+  ///
+  /// In en, this message translates to:
+  /// **'Start from scratch'**
+  String get startFromScratch;
+
+  /// No description provided for @startEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start from scratch?'**
+  String get startEmptyTitle;
+
+  /// No description provided for @startEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Both phones and the server are cleared. You create your own circle and add everything yourself.'**
+  String get startEmptyBody;
+
+  /// No description provided for @welcomeDemoChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Only in this demo: try it with sample data, or empty, to add everything yourself.'**
+  String get welcomeDemoChoice;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone {number}'**
+  String phoneNumber(int number);
 }
 
 class _AppLocalizationsDelegate

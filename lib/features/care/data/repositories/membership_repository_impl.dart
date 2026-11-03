@@ -28,8 +28,25 @@ class MembershipRepositoryImpl implements MembershipRepository {
   }
 
   @override
-  Future<Result<String>> join(String code) async {
-    final joined = await guard(() => _gateway.join(code));
+  Future<Result<String>> createCircle({
+    required String creatorName,
+    required String recipientName,
+  }) => _startingOver(
+    () => _gateway.createCircle(
+      creatorName: creatorName,
+      recipientName: recipientName,
+    ),
+  );
+
+  @override
+  Future<Result<String>> join(String code) =>
+      _startingOver(() => _gateway.join(code));
+
+  /// Runs [request], then starts this device's copy of the log over.
+  Future<Result<String>> _startingOver(
+    Future<String> Function() request,
+  ) async {
+    final joined = await guard(request);
     if (joined case Ok()) {
       if (await _care.restart() case Err(:final failure)) return Err(failure);
     }

@@ -116,6 +116,21 @@ class SimulatedConnection implements SyncGateway, MembershipGateway {
   }
 
   @override
+  Future<String> createCircle({
+    required String creatorName,
+    required String recipientName,
+  }) async {
+    await _travel();
+    final memberId = await _server.createCircle(
+      deviceId,
+      creatorName: creatorName,
+      recipientName: recipientName,
+    );
+    await _travel();
+    return memberId;
+  }
+
+  @override
   Future<String> join(String code) async {
     await _travel();
     final memberId = await _server.join(deviceId, code);

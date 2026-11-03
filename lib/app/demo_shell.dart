@@ -74,16 +74,13 @@ class _SideBySide extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: DemoShell._gap,
               children: [
-                for (final device in devices)
+                for (final (index, device) in devices.indexed)
                   _DeviceScope(
                     device: device,
                     child: Column(
                       spacing: AppSpacing.md,
                       children: [
-                        Text(
-                          context.l10n.phoneOf(device.owner.name),
-                          style: AppTextStyles.title,
-                        ),
+                        _PhoneTitle(number: index + 1),
                         PhoneFrame(
                           maxHeight: height - _chromeHeight,
                           child: const App(),
@@ -110,6 +107,24 @@ class _DeviceScope extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       UncontrolledProviderScope(container: device.container, child: child);
+}
+
+/// Whose phone this is, or its number while it belongs to nobody (the
+/// demo started without data).
+class _PhoneTitle extends ConsumerWidget {
+  const _PhoneTitle({required this.number});
+
+  final int number;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final member = ref.watch(currentMemberProvider);
+    return Text(
+      member == null ? l10n.phoneNumber(number) : l10n.phoneOf(member.name),
+      style: AppTextStyles.title,
+    );
+  }
 }
 
 /// Turns this phone's simulated network on and off.

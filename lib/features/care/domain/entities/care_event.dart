@@ -261,6 +261,18 @@ sealed class CareEvent with _$CareEvent {
     String? note,
   }) = TaskSkipped;
 
+  /// The circle began: written by the server ([systemAuthor]) when
+  /// someone creates it, before its first member.
+  const factory CareEvent.circleCreated({
+    required EventMeta meta,
+
+    /// How the app names the person cared for ("Caring for Elena").
+    required String recipientName,
+
+    /// The demo's sample circle, labeled as such in the app.
+    @Default(false) bool isSample,
+  }) = CircleCreated;
+
   /// A reason of the circle's own, offered next to the standard ones.
   const factory CareEvent.skipReasonAdded({
     required EventMeta meta,

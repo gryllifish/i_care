@@ -38,7 +38,9 @@ class ActivityScreen extends ConsumerWidget {
               sliver: SliverToBoxAdapter(
                 child: ScreenHeader(
                   title: l10n.navActivity,
-                  subtitle: l10n.sampleData,
+                  subtitle: ref.watch(isSampleCircleProvider)
+                      ? l10n.sampleData
+                      : null,
                 ),
               ),
             ),

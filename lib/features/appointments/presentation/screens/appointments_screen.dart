@@ -51,7 +51,9 @@ class AppointmentsScreen extends ConsumerWidget {
             children: [
               ScreenHeader(
                 title: l10n.navAppointments,
-                subtitle: l10n.sampleData,
+                subtitle: ref.watch(isSampleCircleProvider)
+                    ? l10n.sampleData
+                    : null,
               ),
               if (value.upcoming.isEmpty && value.past.isEmpty)
                 Padding(

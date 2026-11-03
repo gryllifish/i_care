@@ -21,10 +21,11 @@ void main() {
       await openBox(SimulatedServer.boxName),
       await openBox(SimulatedServer.devicesBoxName),
       await openBox(SimulatedServer.codesBoxName),
+      await openBox(SimulatedServer.settingsBoxName),
       clock: () => serverTime,
     );
     await server.seed([
-      for (final event in SampleCircle.memberEvents(DateTime(2025)))
+      for (final event in SampleCircle.circleEvents(DateTime(2025)))
         CareEventCodec.encodeString(event),
     ]);
     await server.bind('phone-ana', 'ana');
@@ -71,12 +72,13 @@ void main() {
   test('keeps its log, members and devices across restarts', () async {
     final first = await openServer();
     await first.receive('phone-ana', [encoded(serverTime)]);
-    final members = SampleCircle.memberEvents(DateTime(2025)).length;
+    final members = SampleCircle.circleEvents(DateTime(2025)).length;
 
     final restarted = SimulatedServer(
       await openBox(SimulatedServer.boxName),
       await openBox(SimulatedServer.devicesBoxName),
       await openBox(SimulatedServer.codesBoxName),
+      await openBox(SimulatedServer.settingsBoxName),
       clock: () => serverTime,
     );
 
@@ -163,10 +165,11 @@ void main() {
         await openBox(SimulatedServer.boxName),
         await openBox(SimulatedServer.devicesBoxName),
         await openBox(SimulatedServer.codesBoxName),
+        await openBox(SimulatedServer.settingsBoxName),
         clock: () => now,
       );
       await server.seed([
-        for (final event in SampleCircle.memberEvents(DateTime(2025)))
+        for (final event in SampleCircle.circleEvents(DateTime(2025)))
           CareEventCodec.encodeString(event),
       ]);
       await server.bind('phone-ana', 'ana');
@@ -229,4 +232,62 @@ void main() {
       expect(server.knowsDevice('phone-unknown'), isFalse);
     },
   );
+
+  group('creating a circle', () {
+    Future<SimulatedServer> emptyServer() async => SimulatedServer(
+      await openBox(SimulatedServer.boxName),
+      await openBox(SimulatedServer.devicesBoxName),
+      await openBox(SimulatedServer.codesBoxName),
+      await openBox(SimulatedServer.settingsBoxName),
+      clock: () => serverTime,
+    );
+
+    test('makes its creator the first admin, on their device', () async {
+      final server = await emptyServer();
+
+      final memberId = await server.createCircle(
+        'phone-1',
+        creatorName: 'Lucía',
+        recipientName: 'Abuela Rosa',
+      );
+
+      expect(server.activeMemberOf('phone-1'), memberId);
+      expect(server.hasCircle, isTrue);
+      final events = [
+        for (final value in server.eventsAfter(null).events)
+          CareEventCodec.decodeString(value),
+      ];
+      expect(events.first, isA<CircleCreated>());
+      expect((events.first as CircleCreated).recipientName, 'Abuela Rosa');
+      // The admin can invite at once.
+      await server.issueCode('phone-1', memberId);
+    });
+
+    test('is refused while the server has a circle', () async {
+      final server = await openServer();
+
+      await expectLater(
+        server.createCircle(
+          'phone-new',
+          creatorName: 'Lucía',
+          recipientName: 'Abuela Rosa',
+        ),
+        throwsA(isA<ForbiddenException>()),
+      );
+    });
+
+    test(
+      'an empty start is remembered, and a sample reset forgets it',
+      () async {
+        final server = await openServer();
+
+        await server.startEmpty();
+        expect(server.isEmpty, isTrue);
+        expect(server.startedEmpty, isTrue);
+
+        await server.clear();
+        expect(server.startedEmpty, isFalse);
+      },
+    );
+  });
 }

@@ -1484,7 +1484,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get joinDemoHint =>
-      'In this demo, make a code on Ana\'s phone: Settings, The circle, tap someone, New code.';
+      'In this demo, an admin makes codes on the other phone: Settings, The circle, tap someone, New code.';
 
   @override
   String get removedTitle => 'This phone is out of the circle';
@@ -1671,4 +1671,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reasonExists => 'Enter a reason that is not on the list.';
+
+  @override
+  String activityCircleCreated(String recipient) {
+    return 'The circle for $recipient began';
+  }
+
+  @override
+  String get theRecipient => 'the person you care for';
+
+  @override
+  String get createCircle => 'Create a circle';
+
+  @override
+  String get createCircleLead => 'Starting a new circle?';
+
+  @override
+  String get createCircleBody =>
+      'You will be its admin, and invite the others from Settings.';
+
+  @override
+  String get fieldYourName => 'Your name';
+
+  @override
+  String get fieldRecipientName => 'Who do you care for?';
+
+  @override
+  String get fieldRecipientHint => 'Their first name, e.g. Elena';
+
+  @override
+  String get circleExists =>
+      'This demo already has a circle. Join it with a code from its admin.';
+
+  @override
+  String get exploreSample => 'Explore with sample data';
+
+  @override
+  String get startFromScratch => 'Start from scratch';
+
+  @override
+  String get startEmptyTitle => 'Start from scratch?';
+
+  @override
+  String get startEmptyBody =>
+      'Both phones and the server are cleared. You create your own circle and add everything yourself.';
+
+  @override
+  String get welcomeDemoChoice =>
+      'Only in this demo: try it with sample data, or empty, to add everything yourself.';
+
+  @override
+  String phoneNumber(int number) {
+    return 'Phone $number';
+  }
 }

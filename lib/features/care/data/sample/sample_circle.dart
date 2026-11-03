@@ -42,10 +42,20 @@ abstract final class SampleCircle {
   static List<CareEvent> events(DateTime now, {required String language}) =>
       _SampleHistory(now, language).build();
 
-  /// The circle's members as of [at]: Ana created it (the server invites
-  /// whoever creates a circle), invited the others, and everyone joined.
-  /// Ids sort before the rest of the sample's, so members come first.
-  static List<CareEvent> memberEvents(DateTime at) => [
+  /// How the sample circle began, as of [at]: the server created it for
+  /// Elena (marked as the sample) and invited Ana, who created it; Ana
+  /// invited the others, and everyone joined. Ids sort before the rest of
+  /// the sample's, so these come first.
+  static List<CareEvent> circleEvents(DateTime at) => [
+    CareEvent.circleCreated(
+      meta: EventMeta(
+        id: 'circle-0-created',
+        caregiverId: systemAuthor,
+        occurredAt: at,
+      ),
+      recipientName: recipientName,
+      isSample: true,
+    ),
     for (final member in members) ...[
       CareEvent.memberInvited(
         meta: EventMeta(
@@ -86,7 +96,7 @@ class _SampleHistory {
   final _events = <CareEvent>[];
 
   List<CareEvent> build() {
-    _events.addAll(SampleCircle.memberEvents(start));
+    _events.addAll(SampleCircle.circleEvents(start));
     for (final medication in _medications) {
       _add(
         (meta) => CareEvent.medicationCreated(

@@ -29,10 +29,11 @@ void main() {
       await openBox(SimulatedServer.boxName),
       await openBox(SimulatedServer.devicesBoxName),
       await openBox(SimulatedServer.codesBoxName),
+      await openBox(SimulatedServer.settingsBoxName),
       clock: () => now,
     );
     await server.seed([
-      for (final event in SampleCircle.memberEvents(DateTime(2025)))
+      for (final event in SampleCircle.circleEvents(DateTime(2025)))
         CareEventCodec.encodeString(event),
     ]);
   });
@@ -52,7 +53,7 @@ void main() {
     return (repository, connection);
   }
 
-  /// The first log emitted whose records (the circle's members left out)
+  /// The first log emitted whose records (how the circle began left out)
   /// satisfy [matches]; those records.
   Future<List<CareEvent>> logWhere(
     CareRepositoryImpl repository,
@@ -62,7 +63,10 @@ void main() {
       .map(
         (log) => [
           for (final event in log)
-            if (event is! MemberInvited && event is! MemberJoined) event,
+            if (event is! CircleCreated &&
+                event is! MemberInvited &&
+                event is! MemberJoined)
+              event,
         ],
       )
       .firstWhere(matches);
@@ -110,7 +114,7 @@ void main() {
     connection.isOnline = true;
 
     await logWhere(repository, allSynced);
-    final members = SampleCircle.memberEvents(DateTime(2025)).length;
+    final members = SampleCircle.circleEvents(DateTime(2025)).length;
     expect(server.eventsAfter(null).events, hasLength(members + 1));
   });
 
@@ -127,7 +131,7 @@ void main() {
     await SyncStateStore(syncBox).clear();
     final fresh = events.given('m2', at: eight);
     await server.seed([
-      for (final event in SampleCircle.memberEvents(DateTime(2025)))
+      for (final event in SampleCircle.circleEvents(DateTime(2025)))
         CareEventCodec.encodeString(event),
       CareEventCodec.encodeString(fresh),
     ]);

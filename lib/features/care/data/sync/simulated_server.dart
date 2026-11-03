@@ -38,7 +38,8 @@ class SimulatedServer {
   SimulatedServer(
     this._box,
     this._devices,
-    this._codes, {
+    this._codes,
+    this._settings, {
     required this._clock,
     Random? random,
   }) : _random = random ?? Random.secure() {
@@ -70,6 +71,8 @@ class SimulatedServer {
   static const boxName = 'simulated_server';
   static const devicesBoxName = 'simulated_server_devices';
   static const codesBoxName = 'simulated_server_codes';
+  static const settingsBoxName = 'simulated_server_settings';
+  static const _startedEmptyKey = 'started_empty';
 
   /// How long an invitation code can be used (`docs/roles.md`).
   static const codeLifetime = Duration(hours: 48);
@@ -84,6 +87,9 @@ class SimulatedServer {
 
   /// Invitation codes: a secret the log never holds.
   final Box<String> _codes;
+
+  /// The demo's own switches, such as having started without data.
+  final Box<String> _settings;
   final DateTime Function() _clock;
   final Random _random;
   final _records = <_Record>[];
@@ -103,6 +109,20 @@ class SimulatedServer {
 
   /// Whether the log has any member: logs from before roles have none.
   bool get hasMembers => _members.isNotEmpty;
+
+  /// Whether the log says how the circle began: logs from before circles
+  /// recorded it do not.
+  bool get hasCircle => _hasCircle;
+  var _hasCircle = false;
+
+  /// Whether the demo was asked to start without data, so an empty log
+  /// is not filled with the sample on the next start.
+  bool get startedEmpty =>
+      hiveGuard('Server settings', () => _settings.get(_startedEmptyKey)) ==
+      'true';
+
+  /// Whether [memberId] belongs to the circle now.
+  bool hasMember(String memberId) => _members[memberId]?.removed == false;
 
   /// Checks and stores [encodedEvents] pushed by [deviceId], in order, so
   /// each event is checked against the state the ones before it left.
@@ -252,6 +272,61 @@ class SimulatedServer {
     return issued.memberId;
   }
 
+  /// Creates the circle for [recipientName] and makes [creatorName] its
+  /// first admin, joined on [deviceId]: what a real app does on its first
+  /// run. Returns the new member's id.
+  ///
+  /// Throws [ForbiddenException] when the server already has a circle
+  /// (the demo has room for one), or [StorageException].
+  Future<String> createCircle(
+    String deviceId, {
+    required String creatorName,
+    required String recipientName,
+  }) async {
+    if (_hasCircle || _members.isNotEmpty) {
+      throw const ForbiddenException('This server already has a circle');
+    }
+    final at = _clock();
+    final stamp = at.microsecondsSinceEpoch;
+    final memberId = 'member-$stamp';
+    EventMeta meta(String what) => EventMeta(
+      id: 'system-$stamp-$what',
+      caregiverId: systemAuthor,
+      occurredAt: at,
+    );
+    final events = [
+      CareEvent.circleCreated(
+        meta: meta('1-circle'),
+        recipientName: recipientName,
+      ),
+      CareEvent.memberInvited(
+        meta: meta('2-invited'),
+        memberId: memberId,
+        name: creatorName,
+        role: MemberRole.admin,
+        colorIndex: 0,
+      ),
+      CareEvent.memberJoined(meta: meta('3-joined'), memberId: memberId),
+    ];
+    _bindings[deviceId] = _Binding(memberId: memberId);
+    await _persist([
+      for (final (index, event) in events.indexed)
+        _store(event, sequence: _lastSequence + index + 1),
+    ]);
+    return memberId;
+  }
+
+  /// Empties everything and remembers that the demo started without data.
+  ///
+  /// Throws [StorageException].
+  Future<void> startEmpty() async {
+    await clear();
+    await hiveGuardAsync(
+      'Server settings',
+      () => _settings.put(_startedEmptyKey, 'true'),
+    );
+  }
+
   /// [code] as stored: upper case, without spaces or dashes, so "k7p 4qm"
   /// works as well as "K7P-4QM".
   static String normalizeCode(String code) =>
@@ -297,11 +372,13 @@ class SimulatedServer {
     _authors.clear();
     _audiences.clear();
     _lastReceivedAt = null;
+    _hasCircle = false;
     _bindings.clear();
     _issued.clear();
     await hiveGuardAsync('Server log', _box.clear);
     await hiveGuardAsync('Server devices', _devices.clear);
     await hiveGuardAsync('Server codes', _codes.clear);
+    await hiveGuardAsync('Server settings', _settings.clear);
   }
 
   Future<void> dispose() => _appended.close();
@@ -444,6 +521,7 @@ class SimulatedServer {
   void _remember(CareEvent event) {
     _authors[event.meta.id] = event.meta.caregiverId;
     _audiences[event.meta.id] = audienceOf(event);
+    if (event is CircleCreated) _hasCircle = true;
     switch (event) {
       case MemberInvited(:final memberId, :final role)
           when !_members.containsKey(memberId):

@@ -50,7 +50,7 @@ class TasksScreen extends ConsumerWidget {
                 title: l10n.navTasks,
                 subtitle: [
                   l10n.tasksCount(value.length),
-                  l10n.sampleData,
+                  if (ref.watch(isSampleCircleProvider)) l10n.sampleData,
                 ].join(' · '),
               ),
               const SizedBox(height: AppSpacing.lg),

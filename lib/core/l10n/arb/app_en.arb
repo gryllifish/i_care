@@ -1231,7 +1231,7 @@
   "fieldCode": "Code",
   "fieldCodeHint": "e.g. K7P-4QM",
   "join": "Join",
-  "joinDemoHint": "In this demo, make a code on Ana's phone: Settings, The circle, tap someone, New code.",
+  "joinDemoHint": "In this demo, an admin makes codes on the other phone: Settings, The circle, tap someone, New code.",
   "removedTitle": "This phone is out of the circle",
   "removedBody": "An admin took you out of the circle. Anything this phone had not sent was sent first; what it kept is cleared now.",
   "removedOk": "OK",
@@ -1367,5 +1367,34 @@
   "fieldNewReason": "New reason",
   "fieldNewReasonHint": "e.g. At the hospital",
   "addReason": "Add reason",
-  "reasonExists": "Enter a reason that is not on the list."
+  "reasonExists": "Enter a reason that is not on the list.",
+  "activityCircleCreated": "The circle for {recipient} began",
+  "@activityCircleCreated": {
+    "placeholders": {
+      "recipient": {
+        "type": "String"
+      }
+    }
+  },
+  "theRecipient": "the person you care for",
+  "createCircle": "Create a circle",
+  "createCircleLead": "Starting a new circle?",
+  "createCircleBody": "You will be its admin, and invite the others from Settings.",
+  "fieldYourName": "Your name",
+  "fieldRecipientName": "Who do you care for?",
+  "fieldRecipientHint": "Their first name, e.g. Elena",
+  "circleExists": "This demo already has a circle. Join it with a code from its admin.",
+  "exploreSample": "Explore with sample data",
+  "startFromScratch": "Start from scratch",
+  "startEmptyTitle": "Start from scratch?",
+  "startEmptyBody": "Both phones and the server are cleared. You create your own circle and add everything yourself.",
+  "welcomeDemoChoice": "Only in this demo: try it with sample data, or empty, to add everything yourself.",
+  "phoneNumber": "Phone {number}",
+  "@phoneNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
 }

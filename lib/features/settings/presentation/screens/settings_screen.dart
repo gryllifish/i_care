@@ -87,6 +87,11 @@ class SettingsScreen extends ConsumerWidget {
                   icon: const Icon(Icons.restart_alt),
                   label: Text(l10n.resetDemo),
                 ),
+                OutlinedButton.icon(
+                  onPressed: () => _startEmpty(context, ref),
+                  icon: const Icon(Icons.layers_clear_outlined),
+                  label: Text(l10n.startFromScratch),
+                ),
               ],
             ),
           FormSection(
@@ -132,5 +137,20 @@ class SettingsScreen extends ConsumerWidget {
     if (!confirmed) return;
     await reset();
     messenger.showMessage(l10n.resetDone);
+  }
+
+  Future<void> _startEmpty(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    final startEmpty = ref.read(demoStartEmptyProvider);
+    final confirmed = await showConfirmDialog(
+      context,
+      title: l10n.startEmptyTitle,
+      body: l10n.startEmptyBody,
+      cancelLabel: l10n.cancel,
+      confirmLabel: l10n.startFromScratch,
+    );
+    if (!confirmed) return;
+    // The phones then offer to create a circle or join one.
+    await startEmpty();
   }
 }

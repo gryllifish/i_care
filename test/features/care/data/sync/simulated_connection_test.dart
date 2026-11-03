@@ -16,10 +16,11 @@ void main() {
         await openBox(SimulatedServer.boxName),
         await openBox(SimulatedServer.devicesBoxName),
         await openBox(SimulatedServer.codesBoxName),
+        await openBox(SimulatedServer.settingsBoxName),
         clock: DateTime.now,
       );
       await server.seed([
-        for (final event in SampleCircle.memberEvents(DateTime(2025)))
+        for (final event in SampleCircle.circleEvents(DateTime(2025)))
           CareEventCodec.encodeString(event),
       ]);
       for (final member in SampleCircle.members) {

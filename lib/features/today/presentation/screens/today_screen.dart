@@ -16,7 +16,6 @@ import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
-import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/appointment.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
@@ -212,19 +211,20 @@ extension on DayPart {
   };
 }
 
-class _Header extends StatelessWidget {
+class _Header extends ConsumerWidget {
   const _Header({required this.day});
 
   final DateTime day;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
+    final name = ref.watch(recipientNameProvider) ?? l10n.theRecipient;
     return ScreenHeader(
-      leading: const _RecipientAvatar(),
+      leading: _RecipientAvatar(name: name),
       overline: l10n.caringFor,
-      title: SampleCircle.recipientName,
+      title: name,
       subtitle: Formatters.longDay(day, locale),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -237,18 +237,24 @@ class _Header extends StatelessWidget {
           ),
         ],
       ),
-      footer: const Wrap(
+      footer: Wrap(
         crossAxisAlignment: WrapCrossAlignment.center,
         spacing: AppSpacing.sm,
         runSpacing: AppSpacing.sm,
-        children: [_EmergencyCardButton(), SyncBanner(), _SampleDataPill()],
+        children: [
+          const _EmergencyCardButton(),
+          const SyncBanner(),
+          if (ref.watch(isSampleCircleProvider)) const _SampleDataPill(),
+        ],
       ),
     );
   }
 }
 
 class _RecipientAvatar extends StatelessWidget {
-  const _RecipientAvatar();
+  const _RecipientAvatar({required this.name});
+
+  final String name;
 
   static const _size = 52.0;
 
@@ -259,7 +265,7 @@ class _RecipientAvatar extends StatelessWidget {
         radius: _size / 2,
         backgroundColor: context.colors.recipient,
         child: Text(
-          SampleCircle.recipientName.characters.first,
+          name.characters.first.toUpperCase(),
           style: AppTextStyles.headline.copyWith(
             color: context.colors.onAccent,
           ),

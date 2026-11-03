@@ -48,6 +48,7 @@ void main() {
     'settings': AppRoutes.settings,
     'welcome': AppRoutes.welcome,
     'join': AppRoutes.join,
+    'create circle': AppRoutes.createCircle,
   };
 
   /// Pumps the app on the sample circle in [language] and opens [path],
@@ -70,7 +71,8 @@ void main() {
       prefs: MemoryDevicePrefs({
         // Until the phone joins, every route leads to joining; then, until
         // the welcome is seen, to the welcome.
-        if (path != AppRoutes.join) PrefKeys.memberId: member,
+        if (path != AppRoutes.join && path != AppRoutes.createCircle)
+          PrefKeys.memberId: member,
         if (path != AppRoutes.welcome) PrefKeys.welcomeSeen: 'true',
         PrefKeys.language: language,
         PrefKeys.themeMode: theme,

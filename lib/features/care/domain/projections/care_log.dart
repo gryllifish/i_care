@@ -29,6 +29,7 @@ class CareLog {
     required this._tasks,
     required this._taskRecords,
     required this._members,
+    required this.circle,
     required this.customReasonLabels,
     required this.hiddenReasons,
     required this.profile,
@@ -48,6 +49,10 @@ class CareLog {
   final Map<String, Appointment> _appointments;
   final Map<String, CareTask> _tasks;
   final Map<String, Member> _members;
+
+  /// How the circle began; null in a log saved before circles recorded
+  /// it.
+  final CircleCreated? circle;
 
   /// The circle's own skip reasons by id, hidden ones included, so old
   /// records still say why.
@@ -175,6 +180,7 @@ class CareLog {
     MemberLeft(:final memberId) => _members[memberId]?.name,
     RecipientProfileUpdated() ||
     ConflictAcknowledged() ||
+    CircleCreated() ||
     SkipReasonHidden() ||
     SkipReasonShown() => null,
     SkipReasonAdded(:final label) => label,
@@ -392,6 +398,7 @@ class _Projector {
   final _tasks = <String, CareTask>{};
   final _members = <String, Member>{};
   final _customReasons = <String, String>{};
+  CircleCreated? _circle;
   final _hiddenReasons = <String>{};
   RecipientProfile? _profile;
   var _profileVersion = 0;
@@ -415,6 +422,7 @@ class _Projector {
       tasks: _tasks,
       taskRecords: _taskRecords,
       members: _members,
+      circle: _circle,
       customReasonLabels: Map.unmodifiable(_customReasons),
       hiddenReasons: Set.unmodifiable(_hiddenReasons),
       profile: _profile,
@@ -545,6 +553,9 @@ class _Projector {
       case TaskDone(:final taskId) || TaskSkipped(:final taskId)
           when !_undone.contains(event.meta.id):
         (_taskRecords[taskId] ??= []).add(event);
+      case CircleCreated():
+        // A circle begins once: a repeated one changes nothing.
+        _circle ??= event;
       case SkipReasonAdded(:final reasonId, :final label):
         _customReasons.putIfAbsent(reasonId, () => label);
       case SkipReasonHidden(:final reasonId)

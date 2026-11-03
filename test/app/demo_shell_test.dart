@@ -27,6 +27,7 @@ void main() {
       await Hive.openBox<String>('demo_shell_test', bytes: Uint8List(0)),
       await Hive.openBox<String>('demo_shell_devices', bytes: Uint8List(0)),
       await Hive.openBox<String>('demo_shell_codes', bytes: Uint8List(0)),
+      await Hive.openBox<String>('demo_shell_settings', bytes: Uint8List(0)),
       clock: () => now,
     );
     devices = [

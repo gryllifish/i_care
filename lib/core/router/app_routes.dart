@@ -55,6 +55,9 @@ abstract final class AppRoutes {
   /// Shown instead of everything else while the phone belongs to nobody.
   static const join = '/join';
 
+  /// From joining: a phone that belongs to nobody starts a circle.
+  static const createCircle = '/create';
+
   /// Shown once the server says this phone is out of the circle.
   static const removed = '/removed';
 

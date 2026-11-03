@@ -221,3 +221,52 @@ final class DemoResetProvider
 }
 
 String _$demoResetHash() => r'cea7277252f8d34940a8469fec82785e2082acab';
+
+/// Clears everything on every simulated phone and on the server, leaving
+/// no circle: the demo as a first install. `bootstrap` provides it.
+
+@ProviderFor(demoStartEmpty)
+final demoStartEmptyProvider = DemoStartEmptyProvider._();
+
+/// Clears everything on every simulated phone and on the server, leaving
+/// no circle: the demo as a first install. `bootstrap` provides it.
+
+final class DemoStartEmptyProvider
+    extends $FunctionalProvider<DemoReset, DemoReset, DemoReset>
+    with $Provider<DemoReset> {
+  /// Clears everything on every simulated phone and on the server, leaving
+  /// no circle: the demo as a first install. `bootstrap` provides it.
+  DemoStartEmptyProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'demoStartEmptyProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$demoStartEmptyHash();
+
+  @$internal
+  @override
+  $ProviderElement<DemoReset> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  DemoReset create(Ref ref) {
+    return demoStartEmpty(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DemoReset value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DemoReset>(value),
+    );
+  }
+}
+
+String _$demoStartEmptyHash() => r'edaadf9ac06440b16fa5b67345dd885858696159';
