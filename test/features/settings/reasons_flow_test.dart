@@ -4,7 +4,6 @@ import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
-import 'package:i_care/features/today/presentation/widgets/task_tile.dart';
 import 'package:i_care/shared/l10n/care_labels.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 
@@ -37,12 +36,9 @@ void main() {
       ])..status = SyncStatus(lastSyncedAt: now);
 
   Future<void> openTask(WidgetTester tester) async {
-    final card = find.ancestor(
-      of: find.text('Check the skin'),
-      matching: find.byType(TaskCard),
-    );
-    await centerInList(tester, card, list: find.byType(Scrollable).first);
-    await tester.tap(card);
+    final task = find.text('Check the skin');
+    await centerInList(tester, task, list: find.byType(Scrollable).first);
+    await tester.tap(task);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Not done'));
     await tester.pumpAndSettle();

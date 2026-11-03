@@ -71,11 +71,12 @@ family portal for residents' relatives is a possible later path.
    (`effectiveFrom`): fixed times on chosen weekdays, or as needed with
    minimum interval and max per day. Fixed schedules may also set a
    minimum interval. Medications are archived, never deleted.
-3. **Today**: next dose highlighted; doses grouped by time of day with
-   status: upcoming, due (±30 min), overdue, given (who, when), given
-   twice (conflict), skipped (reason). Doses from yesterday stay in a
-   "From yesterday" section while unresolved, and for the rest of the day
-   once resolved, so whoever resolved them sees the result ("today at").
+3. **Today**: answers "what do I do now?". The one dose to attend to
+   first, then one list of the day by time with status: upcoming, due
+   (±30 min), overdue, given (who, when), given twice (conflict),
+   skipped (reason). What is resolved folds into one line ("3 done")
+   that opens it. Doses from yesterday lead the list while unresolved,
+   and join what is done once resolved today ("today at").
    As-needed medications show "Last dose: 3 h ago, by Ana". Doses
    recorded on this device but not yet synced show a "Not synced yet"
    badge.
@@ -94,7 +95,8 @@ family portal for residents' relatives is a possible later path.
    always warns, and its confirmation says the record is saved on the
    phone until the connection is back.
    **Conflicts** (doses recorded twice unseen) interrupt when they arrive
-   with a sync, stay as cards at the top of Today, and open a guided
+   with a sync, stay as one line at the top of Today ("1 thing to
+   review", a list when several), and open a guided
    review: "Did Elena get both doses?" → "No, only one" cancels the
    repeated records; "Yes" keeps the double dose on record with a
    pointer to the doctor or pharmacist; "I don't know yet" leaves it
@@ -131,7 +133,7 @@ family portal for residents' relatives is a possible later path.
     note, and a schedule: times on chosen weekdays, or "during the day"
     with no set time. Marked done or skipped (with a reason) by whoever
     did it, removable like dose records, and listed with the doses on
-    Today by time; "during the day" tasks get their own group. A Tasks
+    Today by time; "during the day" tasks show as chips after them. A Tasks
     tab lists them, with add, edit and archive. No stock, warnings or
     conflicts: a task done twice shows both records but is harmless.
     A task missed yesterday does not carry over. Concurrent edits are
@@ -205,11 +207,13 @@ documented), nursing-home features.
   controls, plain language, no time pressure except the undo window.
 - Bottom navigation bar with only tabs that have real content: Today,
   Medications, Activity (Appointments joins in phase 3).
-- Today: header (recipient, date, team avatars, sync and sample-data
-  pills), day progress, conflict cards, a filled next-dose card with a
-  one-tap "Mark as given" (opens the sheet instead when there is a
-  warning), and a vertical timeline per part of the day with status
-  pills.
+- Today, simplified after the device round (2026-11-03): header
+  (recipient, short date, sync pill), one line for anything to review,
+  a filled next-dose card with a one-tap "Mark as given" (opens the
+  sheet instead when there is a warning), notes and the next
+  appointment a line each, then one timeline of the day with what is
+  done folded. The team, the sample-data label and the medical
+  disclaimer live in Settings; progress is a count beside "Today".
 - Rounded surfaces (20–28 px), soft shadows, stadium buttons and chips.
 - Forms (inspired by DoseSync): white fields with the label above, on
   the tinted background, grouped under small uppercase section titles;

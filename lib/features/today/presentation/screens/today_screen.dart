@@ -17,13 +17,10 @@ import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/core/utils/formatters.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
-import 'package:i_care/features/care/domain/entities/appointment.dart';
-import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/dose_slot.dart';
 import 'package:i_care/features/care/domain/entities/medication.dart';
-import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
-import 'package:i_care/features/handoff/presentation/widgets/care_note_card.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/today/controllers/dose_controller.dart';
 import 'package:i_care/features/today/controllers/today_view.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_sheet.dart';
@@ -37,10 +34,7 @@ import 'package:i_care/shared/l10n/event_text.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
-import 'package:i_care/shared/widgets/date_badge.dart';
 import 'package:i_care/shared/widgets/error_view.dart';
-import 'package:i_care/shared/widgets/member_avatar.dart';
-import 'package:i_care/shared/widgets/member_list.dart';
 import 'package:i_care/shared/widgets/screen_header.dart';
 import 'package:i_care/shared/widgets/status_pill.dart';
 
@@ -102,6 +96,9 @@ Future<void> _openConflict(BuildContext context, ConflictItem item) =>
       slotAt: item.slotAt,
     );
 
+/// Today in order of what to do: anything to review, the one thing to do
+/// now, notes and the next appointment in a line each, then the day's
+/// list.
 class _TodayContent extends ConsumerWidget {
   const _TodayContent({required this.view});
 
@@ -141,14 +138,9 @@ class _TodayContent extends ConsumerWidget {
         ),
         children: [
           _Header(day: view.day),
-          const SizedBox(height: AppSpacing.lg),
-          _DayProgress(done: view.resolvedToday, total: view.totalToday),
-          for (final item in view.conflicts) ...[
-            const SizedBox(height: AppSpacing.md),
-            _ConflictCard(
-              item: item,
-              onTap: () => _openConflict(context, item),
-            ),
+          if (view.conflicts.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.lg),
+            _ToReview(items: view.conflicts),
           ],
           if (summary) ...[
             const SizedBox(height: AppSpacing.lg),
@@ -174,39 +166,14 @@ class _TodayContent extends ConsumerWidget {
                 (null, null) => null,
               },
             ),
-          if (view.recentNotes.isNotEmpty) ...[
-            const SizedBox(height: AppSpacing.lg),
-            _RecentNotesCard(notes: view.recentNotes),
-          ],
-          if (view.nextAppointment case final appointment?) ...[
-            const SizedBox(height: AppSpacing.lg),
-            _NextAppointmentCard(appointment: appointment),
-          ],
-          if (view.fromYesterday.isNotEmpty)
-            _Timeline(
-              title: l10n.fromYesterday,
-              entries: [
-                for (final slot in view.fromYesterday) TimelineEntry.dose(slot),
-              ],
-              stock: view.stock,
-              onOpen: open,
-            ),
-          if (view.anyTimeTasks.isNotEmpty)
-            _Section(
-              title: l10n.duringTheDay,
-              children: [
-                for (final slot in view.anyTimeTasks)
-                  TaskCard(slot: slot, onTap: () => _openTask(context, slot)),
-              ],
-            ),
-          for (final MapEntry(key: part, value: entries)
-              in view.byDayPart.entries)
-            _Timeline(
-              title: part.label(l10n),
-              entries: entries,
-              stock: view.stock,
-              onOpen: open,
-            ),
+          const SizedBox(height: AppSpacing.lg),
+          _Links(view: view),
+          _DayList(
+            view: view,
+            // Already the focus above: listing it again is noise.
+            focused: summary ? null : next,
+            onOpenDose: open,
+          ),
           if (view.asNeeded.isNotEmpty)
             _Section(
               title: l10n.asNeeded,
@@ -222,23 +189,10 @@ class _TodayContent extends ConsumerWidget {
                   ),
               ],
             ),
-          const SizedBox(height: AppSpacing.xl),
-          const _HandoffCard(),
-          const SizedBox(height: AppSpacing.md),
-          const _Disclaimer(),
         ],
       ),
     );
   }
-}
-
-extension on DayPart {
-  String label(AppLocalizations l10n) => switch (this) {
-    DayPart.morning => l10n.dayPartMorning,
-    DayPart.midday => l10n.dayPartMidday,
-    DayPart.afternoon => l10n.dayPartAfternoon,
-    DayPart.night => l10n.dayPartNight,
-  };
 }
 
 class _Header extends ConsumerWidget {
@@ -255,27 +209,13 @@ class _Header extends ConsumerWidget {
       leading: _RecipientAvatar(name: name),
       overline: l10n.caringFor,
       title: name,
-      subtitle: Formatters.longDay(day, locale),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const _TeamButton(),
-          IconButton(
-            tooltip: l10n.settingsTitle,
-            onPressed: () => context.push(AppRoutes.settings),
-            icon: const Icon(Icons.settings_outlined),
-          ),
-        ],
+      subtitle: Formatters.weekdayAndDate(day, locale),
+      trailing: IconButton(
+        tooltip: l10n.settingsTitle,
+        onPressed: () => context.push(AppRoutes.settings),
+        icon: const Icon(Icons.settings_outlined),
       ),
-      footer: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: AppSpacing.sm,
-        runSpacing: AppSpacing.sm,
-        children: [
-          const SyncBanner(),
-          if (ref.watch(isSampleCircleProvider)) const _SampleDataPill(),
-        ],
-      ),
+      footer: const SyncBanner(),
     );
   }
 }
@@ -312,172 +252,6 @@ class _RecipientAvatar extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _SampleDataPill extends StatelessWidget {
-  const _SampleDataPill();
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      container: true,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: context.colors.surfaceMuted,
-          borderRadius: AppRadius.pillBorder,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.xs + AppSpacing.xxs,
-          ),
-          child: Text(
-            context.l10n.sampleData,
-            style: AppTextStyles.pill.copyWith(color: context.colors.inkMuted),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// The circle's members as overlapping avatars, this phone's first.
-/// Tapping shows the circle with everyone's role.
-class _TeamButton extends ConsumerWidget {
-  const _TeamButton();
-
-  static const _avatarSize = 40.0;
-  static const _overlap = 12.0;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final current = ref.watch(currentMemberProvider);
-    final members = [
-      ?current,
-      for (final member in ref.watch(membersProvider))
-        if (member != current) member,
-    ];
-    if (members.isEmpty) return const SizedBox.shrink();
-    const step = _avatarSize - _overlap;
-
-    return Semantics(
-      label: context.l10n.circleButtonLabel(current?.name ?? ''),
-      button: true,
-      excludeSemantics: true,
-      child: InkWell(
-        customBorder: const StadiumBorder(),
-        onTap: () => showModalBottomSheet<void>(
-          context: context,
-          isScrollControlled: true,
-          useSafeArea: true,
-          builder: (_) => const _CircleSheet(),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.xs),
-          child: SizedBox(
-            width: _avatarSize + (members.length - 1) * step,
-            height: _avatarSize,
-            child: Stack(
-              children: [
-                // Painted last to first, so this phone's member is on top.
-                for (final (index, member) in members.indexed.toList().reversed)
-                  Positioned(
-                    left: index * step,
-                    child: Container(
-                      padding: const EdgeInsets.all(AppSpacing.xxs),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: context.colors.background,
-                      ),
-                      child: MemberAvatar(
-                        member: member,
-                        size: _avatarSize - AppSpacing.xs,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CircleSheet extends StatelessWidget {
-  const _CircleSheet();
-
-  @override
-  Widget build(BuildContext context) {
-    // Scrolls when large text makes the list taller than the screen.
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg,
-        0,
-        AppSpacing.lg,
-        AppSpacing.lg,
-      ),
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: AppSpacing.sm,
-          children: [
-            Text(context.l10n.circleTitle, style: AppTextStyles.headline),
-            const MemberList(),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _DayProgress extends StatelessWidget {
-  const _DayProgress({required this.done, required this.total});
-
-  final int done;
-  final int total;
-
-  static const _barHeight = 10.0;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final isDone = total > 0 && done >= total;
-    final color = isDone ? context.colors.given : context.colors.teal;
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: AppSpacing.md,
-        children: [
-          Row(
-            spacing: AppSpacing.sm,
-            children: [
-              Icon(
-                isDone ? Icons.check_circle : Icons.donut_large,
-                color: color,
-              ),
-              Expanded(
-                child: Text(switch ((total, isDone)) {
-                  (0, _) => l10n.dayNothingScheduled,
-                  (_, true) => l10n.dayDone,
-                  _ => l10n.dayProgress(done, total),
-                }, style: AppTextStyles.label),
-              ),
-            ],
-          ),
-          ClipRRect(
-            borderRadius: AppRadius.pillBorder,
-            child: LinearProgressIndicator(
-              value: total == 0 ? 0 : done / total,
-              minHeight: _barHeight,
-              color: color,
-              backgroundColor: context.colors.surfaceMuted,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -769,61 +543,6 @@ class _NextDoseCardState extends ConsumerState<_NextDoseCard> {
   }
 }
 
-/// The next appointment, when it is close; opens it in its tab.
-class _NextAppointmentCard extends ConsumerWidget {
-  const _NextAppointmentCard({required this.appointment});
-
-  final Appointment appointment;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.l10n;
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    final details = appointment.details;
-    final questions = details.questionList.length;
-    return AppCard(
-      onTap: () => context.push(AppRoutes.appointmentPath(appointment.id)),
-      child: Row(
-        spacing: AppSpacing.md,
-        children: [
-          DateBadge(day: appointment.startsAt),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: AppSpacing.xxs,
-              children: [
-                Text(
-                  l10n.nextAppointment.toUpperCase(),
-                  semanticsLabel: l10n.nextAppointment,
-                  style: AppTextStyles.overline.copyWith(
-                    color: context.colors.inkMuted,
-                  ),
-                ),
-                Text(details.title, style: AppTextStyles.title),
-                Text(
-                  [
-                    appointmentWhen(
-                      l10n,
-                      appointment.startsAt,
-                      now: ref.watch(nowProvider),
-                      locale: locale,
-                    ),
-                    if (questions > 0) l10n.questionsCount(questions),
-                  ].join(' · '),
-                  style: AppTextStyles.bodyMuted.copyWith(
-                    color: context.colors.inkMuted,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Icon(Icons.chevron_right, color: context.colors.inkMuted),
-        ],
-      ),
-    );
-  }
-}
-
 /// The first dose on a later day, when today has none left to give: a
 /// medication added after today's times starts tomorrow.
 class _NextLaterCard extends ConsumerWidget {
@@ -919,56 +638,18 @@ class _ConflictCard extends ConsumerWidget {
   }
 }
 
-/// A part of the day as a section of the timeline: doses and tasks by
-/// time.
-class _Timeline extends StatelessWidget {
-  const _Timeline({
-    required this.title,
-    required this.entries,
-    required this.stock,
-    required this.onOpen,
-  });
-
-  final String title;
-  final List<TimelineEntry> entries;
-  final Map<String, StockLevel> stock;
-  final ValueChanged<DoseSlot> onOpen;
-
-  @override
-  Widget build(BuildContext context) {
-    return _Section(
-      title: title,
-      spacing: 0,
-      children: [
-        for (final (index, entry) in entries.indexed)
-          switch (entry) {
-            DoseEntry(:final slot) => DoseTile(
-              slot: slot,
-              stock: stock[slot.medication.id],
-              isFirst: index == 0,
-              isLast: index == entries.length - 1,
-              onTap: () => onOpen(slot),
-            ),
-            TaskEntry(:final slot) => TaskTile(
-              slot: slot,
-              isFirst: index == 0,
-              isLast: index == entries.length - 1,
-              onTap: () => _openTask(context, slot),
-            ),
-          },
-      ],
-    );
-  }
-}
-
 class _Section extends StatelessWidget {
   const _Section({
     required this.title,
     required this.children,
+    this.trailing,
     this.spacing = AppSpacing.sm,
   });
 
   final String title;
+
+  /// A short count beside the title.
+  final String? trailing;
   final List<Widget> children;
   final double spacing;
 
@@ -982,10 +663,25 @@ class _Section extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-            child: Semantics(
-              container: true,
-              header: true,
-              child: Text(title, style: AppTextStyles.title),
+            // The count drops below the title when large text needs it.
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.end,
+              spacing: AppSpacing.sm,
+              children: [
+                Semantics(
+                  container: true,
+                  header: true,
+                  child: Text(title, style: AppTextStyles.title),
+                ),
+                if (trailing case final String trailing)
+                  Text(
+                    trailing,
+                    style: AppTextStyles.bodyMuted.copyWith(
+                      color: context.colors.inkMuted,
+                    ),
+                  ),
+              ],
             ),
           ),
           ...children,
@@ -995,102 +691,356 @@ class _Section extends StatelessWidget {
   }
 }
 
-/// Opens the handoff summary for whoever takes over next.
-/// The latest notes left for the circle, so whoever takes over reads them
-/// first; opens every note of the week.
-class _RecentNotesCard extends StatelessWidget {
-  const _RecentNotesCard({required this.notes});
+/// Doses recorded more than once, as one line however many: opens the
+/// one, or a list to pick from.
+class _ToReview extends StatelessWidget {
+  const _ToReview({required this.items});
 
-  /// Newest first.
-  final List<CareNoteAdded> notes;
-
-  static const _shown = 2;
+  final List<ConflictItem> items;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    return AppCard(
-      onTap: () => context.push(AppRoutes.handoff),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: AppSpacing.md,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.recentNotesTitle.toUpperCase(),
-                  semanticsLabel: l10n.recentNotesTitle,
-                  style: AppTextStyles.overline.copyWith(
-                    color: context.colors.inkMuted,
-                  ),
-                ),
+    final colors = context.colors;
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      child: AppCard(
+        color: colors.overdueSoft,
+        raised: false,
+        onTap: () => items.length == 1
+            ? _openConflict(context, items.single)
+            : _showConflicts(context, items),
+        child: Row(
+          spacing: AppSpacing.md,
+          children: [
+            Icon(Icons.error, color: colors.overdue),
+            Expanded(
+              child: Text(
+                context.l10n.toReview(items.length),
+                style: AppTextStyles.label.copyWith(color: colors.overdue),
               ),
-              Icon(Icons.chevron_right, color: context.colors.inkMuted),
+            ),
+            Icon(Icons.chevron_right, color: colors.overdue),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<void> _showConflicts(BuildContext context, List<ConflictItem> items) =>
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheet) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            0,
+            AppSpacing.lg,
+            AppSpacing.lg,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: AppSpacing.md,
+            children: [
+              Text(
+                sheet.l10n.toReview(items.length),
+                style: AppTextStyles.headline,
+              ),
+              for (final item in items)
+                _ConflictCard(
+                  item: item,
+                  onTap: () {
+                    Navigator.of(sheet).pop();
+                    unawaited(_openConflict(context, item));
+                  },
+                ),
             ],
           ),
-          for (final note in notes.take(_shown))
-            CareNoteCard(note: note, raised: false),
+        ),
+      ),
+    );
+
+/// Notes left for the circle and the next appointment, a line each.
+class _Links extends ConsumerWidget {
+  const _Links({required this.view});
+
+  final TodayView view;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final notes = view.recentNotes;
+    final latest = notes.firstOrNull;
+    final appointment = view.nextAppointment;
+    final canLeave = ref.watch(canDoProvider(CareAction.leaveNote));
+    final rows = [
+      if (latest != null || canLeave)
+        _LinkRow(
+          icon: Icons.forum_outlined,
+          title: [
+            l10n.handoffTitle,
+            if (notes.isNotEmpty) l10n.notesCount(notes.length),
+          ].join(' · '),
+          detail: latest == null
+              ? l10n.notesRowEmpty
+              : l10n.notePreview(
+                  ref
+                          .watch(membersByIdProvider)[latest.meta.caregiverId]
+                          ?.name ??
+                      l10n.unknownCaregiver,
+                  latest.text,
+                ),
+          onTap: () => context.push(AppRoutes.handoff),
+        ),
+      if (appointment != null)
+        _LinkRow(
+          icon: Icons.event_outlined,
+          title: appointment.details.title,
+          detail: appointmentWhen(
+            l10n,
+            appointment.startsAt,
+            now: ref.watch(nowProvider),
+            locale: locale,
+          ),
+          onTap: () => context.push(AppRoutes.appointmentPath(appointment.id)),
+        ),
+    ];
+    if (rows.isEmpty) return const SizedBox.shrink();
+    return AppCard(
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: [
+          for (final (index, row) in rows.indexed) ...[
+            if (index > 0) const Divider(height: 1),
+            row,
+          ],
         ],
       ),
     );
   }
 }
 
-class _HandoffCard extends StatelessWidget {
-  const _HandoffCard();
+class _LinkRow extends StatelessWidget {
+  const _LinkRow({
+    required this.icon,
+    required this.title,
+    required this.detail,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String detail;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Row(
+          spacing: AppSpacing.md,
+          children: [
+            Icon(icon, color: colors.teal),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: AppSpacing.xxs,
+                children: [
+                  Text(title, style: AppTextStyles.label),
+                  Text(
+                    detail,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.bodyMuted.copyWith(
+                      color: colors.inkMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right, color: colors.inkMuted),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The day's list: what is still to do by time, with what is already
+/// done folded into one line that opens it.
+class _DayList extends StatefulWidget {
+  const _DayList({
+    required this.view,
+    required this.focused,
+    required this.onOpenDose,
+  });
+
+  final TodayView view;
+
+  /// The dose shown as the focus, left out of the list.
+  final DoseSlot? focused;
+  final ValueChanged<DoseSlot> onOpenDose;
+
+  @override
+  State<_DayList> createState() => _DayListState();
+}
+
+class _DayListState extends State<_DayList> {
+  var _showResolved = false;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AppCard(
-      onTap: () => context.push(AppRoutes.handoff),
-      child: Row(
-        spacing: AppSpacing.md,
-        children: [
-          Icon(Icons.forum_outlined, color: context.colors.teal),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: AppSpacing.xxs,
+    final view = widget.view;
+    final resolved = view.resolved;
+    final total =
+        view.pending.length + view.pendingAnyTime.length + resolved.length;
+
+    Widget tile(
+      TimelineEntry entry, {
+      required bool first,
+      required bool last,
+    }) => switch (entry) {
+      DoseEntry(:final slot) => DoseTile(
+        slot: slot,
+        stock: view.stock[slot.medication.id],
+        isFirst: first,
+        isLast: last,
+        onTap: () => widget.onOpenDose(slot),
+      ),
+      TaskEntry(:final slot) when slot.isAnyTime => Padding(
+        padding: const EdgeInsets.only(bottom: AppSpacing.md),
+        child: TaskCard(slot: slot, onTap: () => _openTask(context, slot)),
+      ),
+      TaskEntry(:final slot) => TaskTile(
+        slot: slot,
+        isFirst: first,
+        isLast: last,
+        onTap: () => _openTask(context, slot),
+      ),
+    };
+
+    List<Widget> rail(List<TimelineEntry> entries) => [
+      for (final (index, entry) in entries.indexed)
+        tile(entry, first: index == 0, last: index == entries.length - 1),
+    ];
+
+    return _Section(
+      title: l10n.today,
+      trailing: total == 0 ? null : l10n.doneOfTotal(resolved.length, total),
+      spacing: 0,
+      children: [
+        if (total == 0)
+          Text(
+            l10n.nothingToday,
+            style: AppTextStyles.bodyMuted.copyWith(
+              color: context.colors.inkMuted,
+            ),
+          ),
+        if (resolved.isNotEmpty) ...[
+          _ResolvedToggle(
+            count: resolved.length,
+            expanded: _showResolved,
+            onTap: () => setState(() => _showResolved = !_showResolved),
+          ),
+          if (_showResolved) ...rail(resolved),
+        ],
+        ...rail([
+          for (final entry in view.pending)
+            if (!(entry is DoseEntry && entry.slot == widget.focused)) entry,
+        ]),
+        if (view.pendingAnyTime.isNotEmpty)
+          _AnyTimeTasks(slots: view.pendingAnyTime),
+      ],
+    );
+  }
+}
+
+class _ResolvedToggle extends StatelessWidget {
+  const _ResolvedToggle({
+    required this.count,
+    required this.expanded,
+    required this.onTap,
+  });
+
+  final int count;
+  final bool expanded;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+      child: Semantics(
+        button: true,
+        expanded: expanded,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: AppRadius.pillBorder,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              minHeight: kMinInteractiveDimension,
+            ),
+            child: Row(
+              spacing: AppSpacing.sm,
               children: [
-                Text(l10n.handoffTitle, style: AppTextStyles.label),
-                Text(
-                  l10n.handoffSubtitle,
-                  style: AppTextStyles.bodyMuted.copyWith(
-                    color: context.colors.inkMuted,
+                Icon(Icons.check_circle, color: colors.given),
+                Expanded(
+                  child: Text(
+                    context.l10n.resolvedCount(count),
+                    style: AppTextStyles.label,
                   ),
+                ),
+                Icon(
+                  expanded ? Icons.expand_less : Icons.expand_more,
+                  color: colors.inkMuted,
                 ),
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: context.colors.inkMuted),
-        ],
+        ),
       ),
     );
   }
 }
 
-class _Disclaimer extends StatelessWidget {
-  const _Disclaimer();
+/// Today's untimed tasks still to do, as one line of chips.
+class _AnyTimeTasks extends StatelessWidget {
+  const _AnyTimeTasks({required this.slots});
+
+  final List<TaskSlot> slots;
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      raised: false,
-      color: context.colors.surfaceMuted,
-      child: Row(
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.sm),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: AppSpacing.md,
+        spacing: AppSpacing.sm,
         children: [
-          Icon(Icons.info_outline, color: context.colors.inkMuted),
-          Expanded(
-            child: Text(
-              context.l10n.medicalDisclaimer,
-              style: AppTextStyles.bodyMuted.copyWith(
-                color: context.colors.inkMuted,
-              ),
-            ),
+          Text(
+            context.l10n.duringTheDay,
+            style: AppTextStyles.label.copyWith(color: context.colors.inkMuted),
+          ),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              for (final slot in slots)
+                ActionChip(
+                  avatar: const Icon(Icons.volunteer_activism_outlined),
+                  label: Text(slot.task.details.name),
+                  onPressed: () => _openTask(context, slot),
+                ),
+            ],
           ),
         ],
       ),

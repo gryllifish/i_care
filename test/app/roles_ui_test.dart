@@ -116,7 +116,8 @@ void main() {
       );
       await pumpAs(tester, 'rosa', [anas, rosas]);
 
-      await tester.tap(find.text('Enalapril at 08:00 was recorded 2 times'));
+      // One to review opens straight into it.
+      await tester.tap(find.text('1 thing to review'));
       await tester.pumpAndSettle();
 
       expect(
@@ -152,6 +153,9 @@ void main() {
         events.given('m1', at: eight, slotAt: eight),
       ]);
 
+      // What is given folds into one line until opened.
+      await tester.tap(find.text('1 done'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Enalapril 10 mg').first);
       await tester.pumpAndSettle();
 

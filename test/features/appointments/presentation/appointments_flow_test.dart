@@ -72,8 +72,9 @@ void main() {
   testWidgets('Today shows the next appointment and opens it', (tester) async {
     await pumpApp(tester, repository: repository, now: now);
 
+    // A line on Today: its title and when.
     await tester.scrollUntilVisible(
-      find.text('NEXT APPOINTMENT'),
+      find.text('Tomorrow, 10:30'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
@@ -86,7 +87,7 @@ void main() {
     // Back returns to where it was opened from.
     await tapAndSettle(tester, find.byType(BackButton));
     expect(find.byType(TodayScreen), findsOneWidget);
-    expect(find.text('NEXT APPOINTMENT'), findsOneWidget);
+    expect(find.text('Tomorrow, 10:30'), findsOneWidget);
   });
 
   testWidgets('adds an appointment, requiring a title', (tester) async {

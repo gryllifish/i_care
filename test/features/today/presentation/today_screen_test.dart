@@ -40,8 +40,23 @@ void main() {
     PrefKeys.memberId: 'martin',
   });
 
-  /// Opens the sheet of the dose at [time] on the timeline.
+  /// Unfolds what is already done on the day's list, if anything is.
+  Future<void> showDone(WidgetTester tester) async {
+    final toggle = find.byIcon(Icons.expand_more);
+    await tester.scrollUntilVisible(
+      find.descendant(of: find.byType(ListView), matching: find.text('Today')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    if (toggle.evaluate().isEmpty) return;
+    await tester.ensureVisible(toggle);
+    await tester.tap(toggle);
+    await tester.pumpAndSettle();
+  }
+
+  /// Opens the sheet of the dose at [time] on the timeline, done or not.
   Future<void> openDose(WidgetTester tester, String time) async {
+    await showDone(tester);
     final tile = find.ancestor(
       of: find.text(time),
       matching: find.byType(DoseTile),
@@ -65,9 +80,7 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
 
-  testWidgets('shows the next dose and today by part of the day', (
-    tester,
-  ) async {
+  testWidgets("shows the next dose and the day's list", (tester) async {
     await pumpApp(
       tester,
       repository: circle(),
@@ -77,11 +90,13 @@ void main() {
 
     expect(find.text('NEXT DOSE · DUE NOW'), findsOneWidget);
     expect(find.text('08:00 · Enalapril'), findsOneWidget);
-    expect(find.text('1 of 2 doses recorded today'), findsNothing);
-    expect(find.text('0 of 2 doses recorded today'), findsOneWidget);
-    await scrollTo(tester, find.text('Night'));
-    expect(find.text('Morning'), findsOneWidget);
-    expect(find.text('Due now'), findsOneWidget);
+    await scrollTo(tester, find.text('0 of 2 done'));
+    await scrollTo(tester, find.text('20:00'));
+    // The focus is not listed again below it.
+    expect(
+      find.ancestor(of: find.text('08:00'), matching: find.byType(DoseTile)),
+      findsNothing,
+    );
   });
 
   testWidgets('a medication added after its time says when it starts', (
@@ -101,8 +116,8 @@ void main() {
       prefs: martinsPhone(),
     );
 
-    expect(find.text('No doses scheduled for today'), findsOneWidget);
     expect(find.text('Next dose: Enalapril, Tomorrow, 08:00'), findsOneWidget);
+    await scrollTo(tester, find.text('Nothing scheduled for today.'));
   });
 
   testWidgets("the last day's notes show on Today and open the rest", (
@@ -123,14 +138,15 @@ void main() {
       prefs: martinsPhone(),
     );
 
-    final title = find.text('LEFT FOR YOU');
-    await centerInList(tester, title, list: find.byType(Scrollable).first);
-    expect(find.text('Knee hurts'), findsOneWidget);
-    expect(find.text('Rosa · Yesterday, 21:00'), findsOneWidget);
-    expect(find.text('Too old'), findsNothing);
+    // One line: how many in the last day, and the latest.
+    final row = find.text('Notes for the circle · 2 notes');
+    await centerInList(tester, row, list: find.byType(Scrollable).first);
+    expect(find.text('Ana: Knee hurts'), findsOneWidget);
+    expect(find.textContaining('Too old'), findsNothing);
 
-    await tester.tap(title);
+    await tester.tap(row);
     await tester.pumpAndSettle();
+    expect(find.text('Rosa · Yesterday, 21:00'), findsOneWidget);
     expect(find.text('Too old'), findsOneWidget);
   });
 
@@ -162,6 +178,8 @@ void main() {
     expect(given.slotAt, eight);
     expect(given.meta.caregiverId, 'ana');
     expect(given.knownDoseIds, isEmpty);
+    // Given, it folds into what is done.
+    await showDone(tester);
     expect(find.text('Ana at 08:10'), findsOneWidget);
     expect(find.text('Given'), findsOneWidget);
     // The fake never syncs, so the record stays on this phone only.
@@ -290,6 +308,7 @@ void main() {
     final given = repository.recorded.single as DoseGiven;
     expect(given.givenAt, DateTime(2026, 11, 2, 7, 10));
     expect(given.meta.occurredAt, now);
+    await showDone(tester);
     expect(find.text('Ana at 07:10'), findsOneWidget);
   });
 
@@ -454,19 +473,41 @@ void main() {
       repository = circle([anas, martins]);
     });
 
+    /// One to review opens straight into it.
     Future<void> openConflict(WidgetTester tester) async {
-      await tester.tap(find.text('Enalapril at 08:00 was recorded 2 times'));
+      await tester.tap(find.text('1 thing to review'));
       await tester.pumpAndSettle();
     }
 
     testWidgets('say what happened at the top of Today', (tester) async {
       await pumpApp(tester, repository: repository, now: now);
+      expect(find.text('1 thing to review'), findsOneWidget);
 
-      expect(
-        find.text('Enalapril at 08:00 was recorded 2 times'),
-        findsOneWidget,
+      await openConflict(tester);
+      expect(inSheet('Given twice'), findsWidgets);
+      expect(inSheet('Ana at 08:00'), findsOneWidget);
+      expect(inSheet('Martín at 08:01'), findsOneWidget);
+    });
+
+    testWidgets('several to review are listed to pick one', (tester) async {
+      final twenty = DateTime(2026, 11, 1, 20);
+      await pumpApp(
+        tester,
+        repository: circle([
+          anas,
+          martins,
+          events.given('m1', at: twenty, slotAt: twenty, by: 'martin'),
+        ]),
+        now: now,
       );
+
+      await tester.tap(find.text('2 things to review'));
+      await tester.pumpAndSettle();
       expect(find.text('Ana at 08:00 · Martín at 08:01'), findsOneWidget);
+
+      await tester.tap(find.text('Enalapril at 08:00 was recorded 2 times'));
+      await tester.pumpAndSettle();
+      expect(find.text('Did Elena get both doses?'), findsOneWidget);
     });
 
     testWidgets('"only one" cancels the repeated record', (tester) async {
@@ -487,6 +528,7 @@ void main() {
             .having((e) => e.conflictKey, 'conflictKey', startsWith('dose:')),
       );
       expect(find.text('Repeated record cancelled'), findsOneWidget);
+      await showDone(tester);
       await scrollTo(tester, find.text('Ana at 08:00'));
       expect(find.text('Given'), findsOneWidget);
     });
@@ -552,7 +594,7 @@ void main() {
     );
   });
 
-  testWidgets("yesterday's dose stays visible after giving it today", (
+  testWidgets("yesterday's dose given today stays with what is done", (
     tester,
   ) async {
     final repository = FakeCareRepository([
@@ -572,8 +614,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(repository.recorded.single, isA<DoseGiven>());
+    await showDone(tester);
     await scrollTo(tester, find.text('Martín, today at 08:10'));
-    expect(find.text('From yesterday'), findsOneWidget);
   });
 
   testWidgets('a dose can be skipped with a reason', (tester) async {
@@ -590,6 +632,7 @@ void main() {
       repository.recorded.single,
       isA<DoseSkipped>().having((e) => e.reasonId, 'reason', 'asleep'),
     );
+    await showDone(tester);
     expect(find.text('Ana at 08:10'), findsOneWidget);
     expect(find.text('Skipped'), findsOneWidget);
   });
@@ -633,14 +676,12 @@ void main() {
   group('care tasks', () {
     final day = DateTime(2026, 11, 2);
 
-    /// Opens the sheet of the task named [name].
+    /// Opens the sheet of the task named [name], done or not.
     Future<void> openTask(WidgetTester tester, String name) async {
-      final card = find.ancestor(
-        of: find.text(name),
-        matching: find.byType(TaskCard),
-      );
-      await centerInList(tester, card, list: find.byType(Scrollable).first);
-      await tester.tap(card);
+      await showDone(tester);
+      final task = find.text(name).first;
+      await centerInList(tester, task, list: find.byType(Scrollable).first);
+      await tester.tap(task);
       await tester.pumpAndSettle();
     }
 
@@ -666,8 +707,7 @@ void main() {
         findsOneWidget,
       );
       await scrollTo(tester, find.text('During the day'));
-      expect(find.text('Check her skin'), findsOneWidget);
-      expect(find.text('To do today'), findsOneWidget);
+      expect(find.widgetWithText(ActionChip, 'Check her skin'), findsOneWidget);
     });
 
     testWidgets('are marked done, with undo', (tester) async {
@@ -687,6 +727,7 @@ void main() {
       final done = repository.recorded.single as TaskDone;
       expect(done.slotAt, day);
       expect(find.text('Check her skin: done'), findsOneWidget);
+      await showDone(tester);
       expect(find.text('Ana at 08:10'), findsOneWidget);
 
       await tester.tap(find.text('Undo'));

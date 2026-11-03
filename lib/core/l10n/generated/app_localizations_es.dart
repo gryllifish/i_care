@@ -68,21 +68,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get fromYesterday => 'De ayer';
-
-  @override
-  String get dayPartMorning => 'Mañana';
-
-  @override
-  String get dayPartMidday => 'Mediodía';
-
-  @override
-  String get dayPartAfternoon => 'Tarde';
-
-  @override
-  String get dayPartNight => 'Noche';
-
-  @override
   String get asNeeded => 'Si hace falta';
 
   @override
@@ -405,14 +390,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get moreOptions => 'Más opciones';
-
-  @override
-  String get dayDone => 'Todas las tomas de hoy están registradas';
-
-  @override
-  String dayProgress(int done, int total) {
-    return '$done de $total tomas registradas hoy';
-  }
 
   @override
   String medicationsCount(int count) {
@@ -759,9 +736,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get dayNothingScheduled => 'No hay tomas programadas para hoy';
-
-  @override
   String get editConflictTitle =>
       'Cambiado por más de una persona al mismo tiempo';
 
@@ -941,9 +915,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cancelled => 'Cancelado';
-
-  @override
-  String get nextAppointment => 'Próximo turno';
 
   @override
   String todayAt(String time) {
@@ -1127,9 +1098,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get notesEmpty =>
       'Todavía no hay notas. Lo que escribas acá lo ve todo el círculo.';
-
-  @override
-  String get recentNotesTitle => 'Te dejaron dicho';
 
   @override
   String get copySummary => 'Copiar resumen del día';
@@ -1460,11 +1428,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get memberInvitedStatus => 'Invitado';
 
   @override
-  String circleButtonLabel(String name) {
-    return '$name, en este teléfono. Ver el círculo';
-  }
-
-  @override
   String syncRejected(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -1779,4 +1742,42 @@ class AppLocalizationsEs extends AppLocalizations {
   String phoneNumber(int number) {
     return 'Teléfono $number';
   }
+
+  @override
+  String toReview(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count cosas para revisar',
+      one: '1 cosa para revisar',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get notesRowEmpty => 'Dejá una nota para quien sigue';
+
+  @override
+  String notePreview(String name, String text) {
+    return '$name: $text';
+  }
+
+  @override
+  String doneOfTotal(int done, int total) {
+    return '$done de $total hechas';
+  }
+
+  @override
+  String resolvedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hechas',
+      one: '1 hecha',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get nothingToday => 'No hay nada programado para hoy.';
 }

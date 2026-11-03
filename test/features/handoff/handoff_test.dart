@@ -259,11 +259,10 @@ void main() {
           PrefKeys.memberId: memberId,
         }),
       );
-      final card = find.text(
-        'For whoever takes over. Everyone in the circle sees them.',
-      );
-      await centerInList(tester, card, list: find.byType(Scrollable).first);
-      await tester.tap(card);
+      // The notes' line on Today.
+      final row = find.textContaining('Notes for the circle');
+      await centerInList(tester, row, list: find.byType(Scrollable).first);
+      await tester.tap(row);
       await tester.pumpAndSettle();
       return repository;
     }

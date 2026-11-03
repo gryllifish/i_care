@@ -29,11 +29,6 @@
       }
     }
   },
-  "fromYesterday": "From yesterday",
-  "dayPartMorning": "Morning",
-  "dayPartMidday": "Midday",
-  "dayPartAfternoon": "Afternoon",
-  "dayPartNight": "Night",
   "asNeeded": "As needed",
   "statusUpcoming": "Upcoming",
   "statusDue": "Due now",
@@ -358,18 +353,6 @@
   },
   "nextFromYesterday": "From yesterday · late",
   "moreOptions": "More options",
-  "dayDone": "All of today's doses are recorded",
-  "dayProgress": "{done} of {total} doses recorded today",
-  "@dayProgress": {
-    "placeholders": {
-      "done": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
   "medicationsCount": "{count, plural, =1{1 active medication} other{{count} active medications}}",
   "@medicationsCount": {
     "placeholders": {
@@ -690,7 +673,6 @@
       }
     }
   },
-  "dayNothingScheduled": "No doses scheduled for today",
   "editConflictTitle": "Changed by more than one person at the same time",
   "editConflictBody": "The last change received is the one in use. Choose which one to keep.",
   "keepThis": "Keep this one",
@@ -812,7 +794,6 @@
   "cancelAppointmentBody": "It will no longer appear in the list. Its notes stay in Activity.",
   "keepAppointment": "Keep it",
   "cancelled": "Cancelled",
-  "nextAppointment": "Next appointment",
   "todayAt": "Today, {time}",
   "@todayAt": {
     "placeholders": {
@@ -940,7 +921,6 @@
   "noteFieldHint": "Write something for whoever's next",
   "leaveNote": "Leave note",
   "notesEmpty": "No notes yet. What you write here, everyone in the circle sees.",
-  "recentNotesTitle": "Left for you",
   "copySummary": "Copy the day's summary",
   "activityCareNote": "{name} left a note: {text}",
   "@activityCareNote": {
@@ -1247,14 +1227,6 @@
   "circleTitle": "The circle",
   "thisPhone": "This phone",
   "memberInvitedStatus": "Invited",
-  "circleButtonLabel": "{name}, on this phone. See the circle",
-  "@circleButtonLabel": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "syncRejected": "{count, plural, =1{1 record not sent} other{{count} records not sent}}",
   "@syncRejected": {
     "placeholders": {
@@ -1447,5 +1419,45 @@
         "type": "int"
       }
     }
-  }
+  },
+  "toReview": "{count, plural, =1{1 thing to review} other{{count} things to review}}",
+  "@toReview": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notesRowEmpty": "Leave a note for whoever's next",
+  "notePreview": "{name}: {text}",
+  "@notePreview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "doneOfTotal": "{done} of {total} done",
+  "@doneOfTotal": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "resolvedCount": "{count, plural, =1{1 done} other{{count} done}}",
+  "@resolvedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nothingToday": "Nothing scheduled for today."
 }

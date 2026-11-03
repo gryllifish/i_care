@@ -188,36 +188,6 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 change waiting to sync} other{{count} changes waiting to sync}}'**
   String syncPending(int count);
 
-  /// No description provided for @fromYesterday.
-  ///
-  /// In en, this message translates to:
-  /// **'From yesterday'**
-  String get fromYesterday;
-
-  /// No description provided for @dayPartMorning.
-  ///
-  /// In en, this message translates to:
-  /// **'Morning'**
-  String get dayPartMorning;
-
-  /// No description provided for @dayPartMidday.
-  ///
-  /// In en, this message translates to:
-  /// **'Midday'**
-  String get dayPartMidday;
-
-  /// No description provided for @dayPartAfternoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Afternoon'**
-  String get dayPartAfternoon;
-
-  /// No description provided for @dayPartNight.
-  ///
-  /// In en, this message translates to:
-  /// **'Night'**
-  String get dayPartNight;
-
   /// No description provided for @asNeeded.
   ///
   /// In en, this message translates to:
@@ -685,18 +655,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'More options'**
   String get moreOptions;
-
-  /// No description provided for @dayDone.
-  ///
-  /// In en, this message translates to:
-  /// **'All of today\'s doses are recorded'**
-  String get dayDone;
-
-  /// No description provided for @dayProgress.
-  ///
-  /// In en, this message translates to:
-  /// **'{done} of {total} doses recorded today'**
-  String dayProgress(int done, int total);
 
   /// No description provided for @medicationsCount.
   ///
@@ -1225,12 +1183,6 @@ abstract class AppLocalizations {
   /// **'Next dose: {medication}, {when}'**
   String nextDoseLater(String medication, String when);
 
-  /// No description provided for @dayNothingScheduled.
-  ///
-  /// In en, this message translates to:
-  /// **'No doses scheduled for today'**
-  String get dayNothingScheduled;
-
   /// No description provided for @editConflictTitle.
   ///
   /// In en, this message translates to:
@@ -1530,12 +1482,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancelled'**
   String get cancelled;
-
-  /// No description provided for @nextAppointment.
-  ///
-  /// In en, this message translates to:
-  /// **'Next appointment'**
-  String get nextAppointment;
 
   /// No description provided for @todayAt.
   ///
@@ -1848,12 +1794,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No notes yet. What you write here, everyone in the circle sees.'**
   String get notesEmpty;
-
-  /// No description provided for @recentNotesTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Left for you'**
-  String get recentNotesTitle;
 
   /// No description provided for @copySummary.
   ///
@@ -2377,12 +2317,6 @@ abstract class AppLocalizations {
   /// **'Invited'**
   String get memberInvitedStatus;
 
-  /// No description provided for @circleButtonLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'{name}, on this phone. See the circle'**
-  String circleButtonLabel(String name);
-
   /// No description provided for @syncRejected.
   ///
   /// In en, this message translates to:
@@ -2904,6 +2838,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Phone {number}'**
   String phoneNumber(int number);
+
+  /// No description provided for @toReview.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 thing to review} other{{count} things to review}}'**
+  String toReview(int count);
+
+  /// No description provided for @notesRowEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave a note for whoever\'s next'**
+  String get notesRowEmpty;
+
+  /// No description provided for @notePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: {text}'**
+  String notePreview(String name, String text);
+
+  /// No description provided for @doneOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} done'**
+  String doneOfTotal(int done, int total);
+
+  /// No description provided for @resolvedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 done} other{{count} done}}'**
+  String resolvedCount(int count);
+
+  /// No description provided for @nothingToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing scheduled for today.'**
+  String get nothingToday;
 }
 
 class _AppLocalizationsDelegate

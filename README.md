@@ -27,9 +27,10 @@ Every warning cites values entered by the user. Follow the instructions
 of the treating doctor or pharmacist.
 
 ## Features
-- **Today:** the next dose first, then the day's doses with their status
-  (due, late, given by whom and when, skipped and why). Unresolved doses
-  from yesterday stay visible. Undo for a few seconds after recording.
+- **Today:** what to do now first, then one list of the day with each
+  dose's status (due, late, given by whom and when, skipped and why);
+  what is done folds into one line. Unresolved doses from yesterday
+  stay visible. Undo for a few seconds after recording.
 - **Warnings before a dose:** already given, too soon after the last
   one, or this phone hasn't synced in a while. Doses can be recorded
   late ("given an hour ago").

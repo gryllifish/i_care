@@ -16,6 +16,7 @@ import 'package:i_care/features/care/data/sync/simulated_server.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 
@@ -128,13 +129,13 @@ void main() {
 
   _screenshot('given twice', (tester) async {
     await _pumpPhone(tester);
-    await _tapAndSettle(tester, find.text('Review'));
+    await _tapAndSettle(tester, find.text('1 thing to review'));
     await _capture('double_dose');
   });
 
   _screenshot('notes for the circle', (tester) async {
     await _pumpPhone(tester);
-    await _tapAndSettle(tester, find.text('LEFT FOR YOU'));
+    await _tapAndSettle(tester, find.textContaining('Notes for the circle'));
     await _capture('notes');
   });
 
@@ -171,9 +172,13 @@ void main() {
           owner: owner,
           container: ProviderContainer(
             overrides: [
+              // What the server sends each role (`docs/roles.md`).
               careRepositoryProvider.overrideWithValue(
-                FakeCareRepository(_circle())
-                  ..status = SyncStatus(lastSyncedAt: _now),
+                FakeCareRepository([
+                  for (final event in _circle())
+                    if (audiencesFor(owner.role).contains(audienceOf(event)))
+                      event,
+                ])..status = SyncStatus(lastSyncedAt: _now),
               ),
               simulatedConnectionProvider.overrideWithValue(
                 SimulatedConnection(server, deviceId: 'phone-${owner.id}'),

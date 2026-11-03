@@ -52,7 +52,13 @@ sealed class TimelineEntry with _$TimelineEntry {
     TaskEntry(:final slot) => slot.slotAt,
   };
 
-  DayPart get dayPart => DayPart.of(slotAt);
+  /// Given, done or skipped.
+  bool get isResolved => switch (this) {
+    DoseEntry(:final slot) =>
+      slot.status == DoseStatus.given || slot.status == DoseStatus.skipped,
+    TaskEntry(:final slot) =>
+      slot.status == TaskStatus.done || slot.status == TaskStatus.skipped,
+  };
 }
 
 /// Everything the Today screen shows.
@@ -76,13 +82,17 @@ abstract class TodayView with _$TodayView {
     /// Yesterday's doses still unresolved, or resolved today.
     @Default(<DoseSlot>[]) List<DoseSlot> fromYesterday,
 
-    /// Today's doses and timed tasks by part of the day, in day order;
-    /// empty parts left out. At the same time, doses come first.
-    @Default(<DayPart, List<TimelineEntry>>{})
-    Map<DayPart, List<TimelineEntry>> byDayPart,
+    /// The day's list, still to attend to: yesterday's unresolved doses,
+    /// then today's doses and timed tasks by time (at the same time,
+    /// doses first).
+    @Default(<TimelineEntry>[]) List<TimelineEntry> pending,
 
-    /// Today's tasks with no set time.
-    @Default(<TaskSlot>[]) List<TaskSlot> anyTimeTasks,
+    /// Today's tasks with no set time, still to do.
+    @Default(<TaskSlot>[]) List<TaskSlot> pendingAnyTime,
+
+    /// The day's list, already given, done or skipped: yesterday's doses
+    /// resolved today, then today's doses and tasks, in day order.
+    @Default(<TimelineEntry>[]) List<TimelineEntry> resolved,
 
     /// For the day's summary: doses and tasks past their time and not
     /// resolved (yesterday's too), today's tasks and how many are done or
@@ -122,6 +132,13 @@ TodayView buildTodayView(CareLog log, DateTime now) {
       if (!slot.isAnyTime) TimelineEntry.task(slot),
   ]..sort(_byTimeDosesFirst);
   final fromYesterday = log.fromYesterday(day, now: now);
+  final fromYesterdayEntries = [
+    for (final slot in fromYesterday) TimelineEntry.dose(slot),
+  ];
+  final anyTime = [
+    for (final slot in tasks)
+      if (slot.isAnyTime) slot,
+  ];
   final pending = [
     ...[...fromYesterday, ...slots].where(
       (slot) =>
@@ -180,15 +197,23 @@ TodayView buildTodayView(CareLog log, DateTime now) {
         ? _firstDoseFrom(log, DateTime(day.year, day.month, day.day + 1))
         : null,
     fromYesterday: fromYesterday,
-    byDayPart: {
-      for (final part in DayPart.values)
-        if (timeline.where((entry) => entry.dayPart == part).toList()
-            case final List<TimelineEntry> inPart when inPart.isNotEmpty)
-          part: inPart,
-    },
-    anyTimeTasks: [
-      for (final slot in tasks)
-        if (slot.isAnyTime) slot,
+    pending: [
+      for (final entry in fromYesterdayEntries)
+        if (!entry.isResolved) entry,
+      for (final entry in timeline)
+        if (!entry.isResolved) entry,
+    ],
+    pendingAnyTime: [
+      for (final slot in anyTime)
+        if (!TimelineEntry.task(slot).isResolved) slot,
+    ],
+    resolved: [
+      for (final entry in [
+        ...fromYesterdayEntries,
+        ...timeline,
+        for (final slot in anyTime) TimelineEntry.task(slot),
+      ])
+        if (entry.isResolved) entry,
     ],
     asNeeded: [
       for (final medication in log.medications)

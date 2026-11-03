@@ -246,12 +246,6 @@ void main() {
         ),
       ),
     ),
-    'circle sheet': (
-      AppRoutes.today,
-      (tester) async {
-        await tester.tap(find.bySemanticsLabel(RegExp('See the circle')));
-      },
-    ),
     'recount sheet': (
       '${AppRoutes.medications}/enalapril',
       (tester) => tapText(tester, 'Recount'),

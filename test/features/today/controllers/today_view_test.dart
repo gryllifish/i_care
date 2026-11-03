@@ -109,10 +109,46 @@ void main() {
     expect(view.nextLater?.at, DateTime(2026, 11, 3, 7));
   });
 
-  test('doses are grouped by part of the day, empty parts left out', () {
+  /// The list's entries as medication or task ids.
+  List<String> ids(List<TimelineEntry> entries) => [
+    for (final entry in entries)
+      switch (entry) {
+        DoseEntry(:final slot) => slot.medication.id,
+        TaskEntry(:final slot) => slot.task.id,
+      },
+  ];
+
+  test("yesterday's unresolved doses lead the list, before today's", () {
     final view = viewAt(DateTime(2026, 11, 2, 9));
 
-    expect(view.byDayPart.keys, [DayPart.morning, DayPart.night]);
+    expect(
+      [for (final entry in view.pending) entry.slotAt],
+      [
+        DateTime(2026, 11, 1, 8),
+        DateTime(2026, 11, 1, 20),
+        DateTime(2026, 11, 2, 8),
+        DateTime(2026, 11, 2, 20),
+      ],
+    );
+    expect(view.resolved, isEmpty);
+  });
+
+  test('what is given, done or skipped leaves the list for the folded '
+      'part', () {
+    final yesterday = DateTime(2026, 11, 1, 8);
+    final view = viewAt(DateTime(2026, 11, 2, 9), [
+      events.given('m1', at: DateTime(2026, 11, 2, 7), slotAt: yesterday),
+      events.given('m1', at: eight, slotAt: eight),
+    ]);
+
+    expect(
+      [for (final entry in view.resolved) entry.slotAt],
+      [yesterday, eight],
+    );
+    expect(
+      [for (final entry in view.pending) entry.slotAt],
+      [DateTime(2026, 11, 1, 20), DateTime(2026, 11, 2, 20)],
+    );
   });
 
   test('as-needed medications come with their last dose', () {
@@ -124,7 +160,7 @@ void main() {
   });
 
   test('timed tasks join the doses by time, doses first; untimed ones '
-      'stand apart', () {
+      'stand apart until done', () {
     final view = viewAt(DateTime(2026, 11, 2, 9), [
       events.task(
         't1',
@@ -132,24 +168,13 @@ void main() {
         schedule: const TaskSchedule(minutesOfDay: [8 * 60, 17 * 60]),
       ),
       events.task('t2', name: 'Check her skin', schedule: const TaskSchedule()),
+      events.task('t3', schedule: const TaskSchedule()),
+      events.taskDone('t3', at: eight, slotAt: DateTime(2026, 11, 2)),
     ]);
 
-    expect(
-      [
-        for (final entry in view.byDayPart[DayPart.morning]!)
-          switch (entry) {
-            DoseEntry(:final slot) => slot.medication.id,
-            TaskEntry(:final slot) => slot.task.id,
-          },
-      ],
-      ['m1', 't1'],
-    );
-    expect(view.byDayPart.keys, [
-      DayPart.morning,
-      DayPart.afternoon,
-      DayPart.night,
-    ]);
-    expect(view.anyTimeTasks.single.task.id, 't2');
-    expect(view.totalToday, 2, reason: 'progress counts doses only');
+    expect(ids(view.pending), ['m1', 'm1', 'm1', 't1', 't1', 'm1']);
+    expect(view.pendingAnyTime.single.task.id, 't2');
+    expect(ids(view.resolved), ['t3']);
+    expect(view.totalToday, 2, reason: 'the dose count is doses only');
   });
 }
