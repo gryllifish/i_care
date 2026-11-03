@@ -250,17 +250,15 @@ documented), nursing-home features.
   visit's start), add/edit form with a date-and-time wheel, cancel with
   confirmation, and concurrent edits reviewed like medications. Today
   shows the next appointment within 48 h.
-- Phase 3, emergency card: full-screen card opened from a red pill on
-  Today; allergies first on red, conditions, active medications from
+- Phase 3, emergency card: full-screen card opened from the
+  recipient's avatar on Today; allergies first on red, conditions, active medications from
   the log, doctors and contacts with call buttons (`url_launcher`),
   notes, and "Copy as text". Edited through a versioned
   `RecipientProfileUpdated`; sample phone numbers use the fictional 555
   range.
-- Phase 3, handoff ("te dejo dicho"): a card at the end of Today opens
-  the summary exactly as it will be pasted: doses given (who, when),
-  skipped, still to give (yesterday's too), doses to review, low stock,
-  next appointment within a week and the latest visit note; one button
-  copies it. Plain text, no emoji.
+- Phase 3, handoff ("te dejo dicho"): first a copy-only summary; since
+  the device testing round, notes for the circle (scope item 11), with
+  the day's summary as a secondary copy action. Plain text, no emoji.
 - Phase 3, settings and welcome: per-phone preferences in Hive (who
   you are, language, welcome seen); a first-run welcome with the
   medical disclaimer and "Who's using this phone?"; Settings (gear on
@@ -303,6 +301,18 @@ documented), nursing-home features.
 - Demo without data (scope item 17): creating a circle, the welcome's
   demo choice, the recipient's name from the circle.
 
+- Device testing round (2026-11-03), from a release build on an
+  iPhone: the iOS back swipe restored (go_router fell back to pages
+  without it); back from an appointment opened on Today returns to
+  Today; Today names the next dose when none is left today (a
+  medication added after its time starts tomorrow) and syncs on pull
+  down; questions for the doctor one per field; skip reasons on their
+  own screen, also reached from the reason picker; notes for the
+  circle (`CareNoteAdded`). Signing reads the team from a git-ignored
+  `ios/Flutter/Signing.xcconfig`.
+- Dependencies: freezed 4 with riverpod and json_serializable, Dart
+  3.13, very_good_analysis 11 (constructors keep their class name).
+
 ### Known gaps
 - Routers use `routerNeglect`, so the browser back button never moves
   both demo phones; on the web a deep link to a tab is not honored
@@ -310,8 +320,8 @@ documented), nursing-home features.
 
 ### Next steps, in order
 1. Shifts (who is responsible when): roles phase 4, to design next.
+   Notes for the circle are the handoff between shifts.
 2. Review design details with the user; update README screenshots.
-3. Dependabot PRs #1 and #2 (very_good_analysis 11).
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.
 

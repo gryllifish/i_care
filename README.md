@@ -44,17 +44,20 @@ of the treating doctor or pharmacist.
 - **Appointments:** links to studies and results kept with each visit,
   questions to ask beforehand, visit notes from several
   caregivers afterwards, and a nudge when a past visit has no notes.
-- **Emergency card:** allergies, conditions, medications, doctors and
-  contacts on one screen, with call buttons and "Copy as text".
-- **Handoff summary:** what was given, what is pending and what's next,
-  copied as plain text for a chat message.
+- **Emergency card:** one tap on the recipient's avatar opens
+  allergies, conditions, medications, doctors and contacts on one
+  screen, with call buttons and "Copy as text".
+- **Notes for the circle ("te dejo dicho"):** short notes anyone giving
+  care leaves for whoever takes over, helpers included; the last day's
+  show on Today. The day's summary still copies as plain text for a
+  chat message.
 - **Activity:** the shared log of everything that happened, by day.
 - **Roles:** admins, daily caregivers, occasional helpers and view-only
   relatives, each offered only what their role allows, while the server
   checks every event. Phones join by one-time invitation codes. An
   admin's Today sums up the day instead of asking them to record; a
   helper's app is today's care only, and their phone never receives the
-  team's appointments, notes or documents.
+  team's appointments, visit notes or documents.
 - English and Spanish, a light and a dark theme, and a low-vision
   font. Screen reader labels and contrast are checked in tests.
 
