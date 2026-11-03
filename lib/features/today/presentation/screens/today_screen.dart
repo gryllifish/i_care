@@ -709,7 +709,7 @@ class _ToReview extends StatelessWidget {
         raised: false,
         onTap: () => items.length == 1
             ? _openConflict(context, items.single)
-            : _showConflicts(context, items),
+            : _showConflicts(context),
         child: Row(
           spacing: AppSpacing.md,
           children: [
@@ -728,42 +728,59 @@ class _ToReview extends StatelessWidget {
   }
 }
 
-Future<void> _showConflicts(BuildContext context, List<ConflictItem> items) =>
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (sheet) => SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg,
-            0,
-            AppSpacing.lg,
-            AppSpacing.lg,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: AppSpacing.md,
-            children: [
-              Text(
-                sheet.l10n.toReview(items.length),
-                style: AppTextStyles.headline,
-              ),
-              for (final item in items)
-                _ConflictCard(
-                  item: item,
-                  onTap: () {
-                    Navigator.of(sheet).pop();
-                    unawaited(_openConflict(context, item));
-                  },
-                ),
-            ],
-          ),
+Future<void> _showConflicts(BuildContext context) => showModalBottomSheet<void>(
+  context: context,
+  showDragHandle: true,
+  isScrollControlled: true,
+  builder: (sheet) => _ConflictsSheet(
+    onOpen: (item) {
+      Navigator.of(sheet).pop();
+      unawaited(_openConflict(context, item));
+    },
+  ),
+);
+
+/// The doses to review, kept current while open: a sync may resolve one
+/// or bring another. Closes once none is left.
+class _ConflictsSheet extends ConsumerWidget {
+  const _ConflictsSheet({required this.onOpen});
+
+  final ValueChanged<ConflictItem> onOpen;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(todayViewProvider, (_, next) {
+      if (next.value?.conflicts.isEmpty ?? false) Navigator.of(context).pop();
+    });
+    final items =
+        ref.watch(todayViewProvider).value?.conflicts ?? const <ConflictItem>[];
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          0,
+          AppSpacing.lg,
+          AppSpacing.lg,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: AppSpacing.md,
+          children: [
+            Text(
+              context.l10n.toReview(items.length),
+              style: AppTextStyles.headline,
+            ),
+            for (final item in items)
+              _ConflictCard(item: item, onTap: () => onOpen(item)),
+          ],
         ),
       ),
     );
+  }
+}
 
-/// Notes left for the circle and the next appointment, a line each.
+/// Notes for the circle and the next appointment, a line each.
 class _Links extends ConsumerWidget {
   const _Links({required this.view});
 
@@ -773,29 +790,29 @@ class _Links extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final notes = view.recentNotes;
+    final notes = view.notes;
     final latest = notes.firstOrNull;
     final appointment = view.nextAppointment;
     final canLeave = ref.watch(canDoProvider(CareAction.leaveNote));
     final rows = [
-      if (latest != null || canLeave)
-        _LinkRow(
-          icon: Icons.forum_outlined,
-          title: [
-            l10n.handoffTitle,
-            if (notes.isNotEmpty) l10n.notesCount(notes.length),
-          ].join(' · '),
-          detail: latest == null
-              ? l10n.notesRowEmpty
-              : l10n.notePreview(
-                  ref
-                          .watch(membersByIdProvider)[latest.meta.caregiverId]
-                          ?.name ??
-                      l10n.unknownCaregiver,
-                  latest.text,
-                ),
-          onTap: () => context.push(AppRoutes.handoff),
-        ),
+      // Always there: the notes screen also copies the day's summary.
+      _LinkRow(
+        icon: Icons.forum_outlined,
+        title: [
+          l10n.handoffTitle,
+          if (notes.isNotEmpty) l10n.notesCount(notes.length),
+        ].join(' · '),
+        detail: switch (latest) {
+          null when canLeave => l10n.notesRowEmpty,
+          null => l10n.notesRowNone,
+          final latest => l10n.notePreview(
+            ref.watch(membersByIdProvider)[latest.meta.caregiverId]?.name ??
+                l10n.unknownCaregiver,
+            latest.text,
+          ),
+        },
+        onTap: () => context.push(AppRoutes.handoff),
+      ),
       if (appointment != null)
         _LinkRow(
           icon: Icons.event_outlined,
@@ -809,7 +826,6 @@ class _Links extends ConsumerWidget {
           onTap: () => context.push(AppRoutes.appointmentPath(appointment.id)),
         ),
     ];
-    if (rows.isEmpty) return const SizedBox.shrink();
     return AppCard(
       padding: EdgeInsets.zero,
       child: Column(
@@ -900,8 +916,14 @@ class _DayListState extends State<_DayList> {
     final l10n = context.l10n;
     final view = widget.view;
     final resolved = view.resolved;
-    final total =
-        view.pending.length + view.pendingAnyTime.length + resolved.length;
+    final pending = [
+      for (final entry in view.pending)
+        if (!(entry is DoseEntry && entry.slot == widget.focused)) entry,
+    ];
+    final isEmpty =
+        pending.isEmpty && view.pendingAnyTime.isEmpty && resolved.isEmpty;
+    // The focus above is the day's only item: nothing left to list.
+    if (isEmpty && view.totalToday > 0) return const SizedBox.shrink();
 
     Widget tile(
       TimelineEntry entry, {
@@ -913,6 +935,7 @@ class _DayListState extends State<_DayList> {
         stock: view.stock[slot.medication.id],
         isFirst: first,
         isLast: last,
+        isFromYesterday: slot.slotAt.isBefore(view.day),
         onTap: () => widget.onOpenDose(slot),
       ),
       TaskEntry(:final slot) when slot.isAnyTime => Padding(
@@ -927,17 +950,31 @@ class _DayListState extends State<_DayList> {
       ),
     };
 
-    List<Widget> rail(List<TimelineEntry> entries) => [
-      for (final (index, entry) in entries.indexed)
-        tile(entry, first: index == 0, last: index == entries.length - 1),
-    ];
+    // The rail runs through the timed entries only; tasks with no set
+    // time come last, as cards off the rail.
+    List<Widget> rail(List<TimelineEntry> entries) {
+      final timed = [
+        for (final entry in entries)
+          if (!(entry is TaskEntry && entry.slot.isAnyTime)) entry,
+      ];
+      return [
+        for (final entry in entries)
+          tile(
+            entry,
+            first: identical(entry, timed.firstOrNull),
+            last: identical(entry, timed.lastOrNull),
+          ),
+      ];
+    }
 
     return _Section(
       title: l10n.today,
-      trailing: total == 0 ? null : l10n.doneOfTotal(resolved.length, total),
+      trailing: view.totalToday == 0
+          ? null
+          : l10n.doneOfTotal(view.resolvedToday, view.totalToday),
       spacing: 0,
       children: [
-        if (total == 0)
+        if (isEmpty)
           Text(
             l10n.nothingToday,
             style: AppTextStyles.bodyMuted.copyWith(
@@ -952,10 +989,7 @@ class _DayListState extends State<_DayList> {
           ),
           if (_showResolved) ...rail(resolved),
         ],
-        ...rail([
-          for (final entry in view.pending)
-            if (!(entry is DoseEntry && entry.slot == widget.focused)) entry,
-        ]),
+        ...rail(pending),
         if (view.pendingAnyTime.isNotEmpty)
           _AnyTimeTasks(slots: view.pendingAnyTime),
       ],

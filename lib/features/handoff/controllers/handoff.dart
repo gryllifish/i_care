@@ -21,7 +21,7 @@ typedef GivenDose = ({Medication medication, DoseGiven dose});
 typedef LowStock = ({Medication medication, StockLevel stock});
 
 /// How far ahead the handoff mentions the next appointment, how far back
-/// it quotes a visit note, and how far back the notes screen goes.
+/// it quotes a visit note.
 const handoffHorizon = Duration(days: 7);
 
 /// What the person taking over needs to know, at [at].
@@ -38,8 +38,7 @@ abstract class Handoff with _$Handoff {
     /// day's summary quotes.
     @Default(<CareNoteAdded>[]) List<CareNoteAdded> notes,
 
-    /// Notes left within [handoffHorizon], newest first: the notes screen.
-    /// Older ones are in Activity.
+    /// Notes left within [notesHorizon], newest first: the notes screen.
     @Default(<CareNoteAdded>[]) List<CareNoteAdded> notesThisWeek,
 
     /// Doses still to give: unresolved from yesterday, then today's.
@@ -87,7 +86,7 @@ Handoff buildHandoff(CareLog log, DateTime now) {
   return Handoff(
     at: now,
     notes: log.recentNotes(now: now),
-    notesThisWeek: log.notesWithin(handoffHorizon, now: now),
+    notesThisWeek: log.notesWithin(notesHorizon, now: now),
     given: given,
     skipped: [
       for (final slot in slots)

@@ -39,7 +39,9 @@ abstract class TaskSlot with _$TaskSlot {
 
   bool get isAnyTime => task.schedule.isAnyTime;
 
-  DayPart get dayPart => DayPart.of(slotAt);
+  /// Done or skipped.
+  bool get isResolved =>
+      status == TaskStatus.done || status == TaskStatus.skipped;
 
   /// Whether [caregiverId] already recorded it as done.
   bool isDoneBy(String caregiverId) =>

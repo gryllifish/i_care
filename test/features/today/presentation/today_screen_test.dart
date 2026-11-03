@@ -5,6 +5,7 @@ import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
+import 'package:i_care/features/care/domain/projections/care_log.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_tile.dart';
 import 'package:i_care/features/today/presentation/widgets/task_tile.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
@@ -120,13 +121,13 @@ void main() {
     await scrollTo(tester, find.text('Nothing scheduled for today.'));
   });
 
-  testWidgets("the last day's notes show on Today and open the rest", (
+  testWidgets("the week's notes show on Today and open the list", (
     tester,
   ) async {
     await pumpApp(
       tester,
       repository: circle([
-        events.careNote('Too old', at: DateTime(2026, 11, 1, 7)),
+        events.careNote('Too old', at: DateTime(2026, 10, 26, 7)),
         events.careNote(
           'Slept well',
           at: DateTime(2026, 11, 1, 21),
@@ -138,16 +139,87 @@ void main() {
       prefs: martinsPhone(),
     );
 
-    // One line: how many in the last day, and the latest.
+    // One line: how many there are, as the list it opens has, and the
+    // latest.
     final row = find.text('Notes for the circle · 2 notes');
     await centerInList(tester, row, list: find.byType(Scrollable).first);
     expect(find.text('Ana: Knee hurts'), findsOneWidget);
-    expect(find.textContaining('Too old'), findsNothing);
 
     await tester.tap(row);
     await tester.pumpAndSettle();
     expect(find.text('Rosa · Yesterday, 21:00'), findsOneWidget);
-    expect(find.text('Too old'), findsOneWidget);
+    expect(find.text('Knee hurts'), findsOneWidget);
+    expect(find.text('Too old'), findsNothing);
+  });
+
+  testWidgets("yesterday's late dose is marked as yesterday's on the list", (
+    tester,
+  ) async {
+    final yesterday = DateTime(2026, 11, 1, 8);
+    // An admin's phone: no focus card, so the dose is on the list.
+    await pumpApp(
+      tester,
+      repository: FakeCareRepository([
+        events.created('m1', effectiveFrom: DateTime(2026, 11)),
+        events.given('m1', at: yesterday, slotAt: yesterday),
+      ])..status = SyncStatus(lastSyncedAt: now),
+      now: now,
+    );
+
+    // The count is today's alone.
+    await scrollTo(tester, find.text('0 of 2 done'));
+    await scrollTo(tester, find.text('Yesterday'));
+    final yesterdays = find.ancestor(
+      of: find.text('Yesterday'),
+      matching: find.byType(DoseTile),
+    );
+    expect(yesterdays, findsOneWidget);
+    expect(
+      find.descendant(of: yesterdays, matching: find.text('20:00')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('the rail ends at the last timed entry, before untimed '
+      'tasks', (tester) async {
+    await pumpApp(
+      tester,
+      repository: circle([
+        events.given('m1', at: eight, slotAt: eight),
+        events.task('t1', schedule: const TaskSchedule()),
+        events.taskDone('t1', at: eight, slotAt: DateTime(2026, 11, 2)),
+      ]),
+      now: now,
+      prefs: martinsPhone(),
+    );
+
+    await showDone(tester);
+    final given = tester.widget<DoseTile>(
+      find.ancestor(of: find.text('08:00'), matching: find.byType(DoseTile)),
+    );
+    expect(given.isFirst, isTrue);
+    expect(given.isLast, isTrue);
+  });
+
+  testWidgets('a day whose one dose is the focus lists nothing below it', (
+    tester,
+  ) async {
+    await pumpApp(
+      tester,
+      repository: FakeCareRepository([
+        events.created(
+          'm1',
+          schedule: const DoseSchedule.fixed(minutesOfDay: [8 * 60]),
+          effectiveFrom: eight,
+        ),
+      ])..status = SyncStatus(lastSyncedAt: now),
+      now: now,
+      prefs: martinsPhone(),
+    );
+
+    expect(find.text('NEXT DOSE · DUE NOW'), findsOneWidget);
+    expect(find.text('0 of 1 done'), findsNothing);
+    expect(find.text('Nothing scheduled for today.'), findsNothing);
   });
 
   testWidgets('pulling down syncs now', (tester) async {
@@ -508,6 +580,36 @@ void main() {
       await tester.tap(find.text('Enalapril at 08:00 was recorded 2 times'));
       await tester.pumpAndSettle();
       expect(find.text('Did Elena get both doses?'), findsOneWidget);
+    });
+
+    testWidgets('the list follows a sync and closes when none is left', (
+      tester,
+    ) async {
+      final twenty = DateTime(2026, 11, 1, 20);
+      final repository = circle([
+        anas,
+        martins,
+        events.given('m1', at: twenty, slotAt: twenty, by: 'martin'),
+      ]);
+      await pumpApp(tester, repository: repository, now: now);
+      await tester.tap(find.text('2 things to review'));
+      await tester.pumpAndSettle();
+
+      repository.receive(
+        events.acknowledged(CareLog.doseConflictKey('m1', eight)),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Enalapril at 08:00 was recorded 2 times'),
+        findsNothing,
+      );
+      expect(find.text('1 thing to review'), findsWidgets);
+
+      repository.receive(
+        events.acknowledged(CareLog.doseConflictKey('m1', twenty)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(BottomSheet), findsNothing);
     });
 
     testWidgets('"only one" cancels the repeated record', (tester) async {

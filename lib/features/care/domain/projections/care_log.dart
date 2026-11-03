@@ -10,8 +10,13 @@ import 'package:i_care/features/care/domain/entities/recipient_profile.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
 
-/// How long a note left for the circle shows on Today.
+/// How long a note left for the circle counts as recent: the day's
+/// summary quotes it.
 const recentNotesWindow = Duration(hours: 24);
+
+/// How far back the notes for the circle are listed; older ones are in
+/// Activity.
+const notesHorizon = Duration(days: 7);
 
 /// Current state of the care circle, projected from its event log.
 ///

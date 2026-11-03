@@ -18,8 +18,7 @@ mixin _$Handoff {
  DateTime get at;/// Doses given today, in the order they were given.
  List<GivenDose> get given; List<DoseSlot> get skipped;/// Notes left within [recentNotesWindow], newest first: the ones the
 /// day's summary quotes.
- List<CareNoteAdded> get notes;/// Notes left within [handoffHorizon], newest first: the notes screen.
-/// Older ones are in Activity.
+ List<CareNoteAdded> get notes;/// Notes left within [notesHorizon], newest first: the notes screen.
  List<CareNoteAdded> get notesThisWeek;/// Doses still to give: unresolved from yesterday, then today's.
  List<DoseSlot> get pending; int get conflicts;/// Today's care tasks by what happened to them, in day order.
  List<TaskSlot> get tasksDone; List<TaskSlot> get tasksSkipped; List<TaskSlot> get tasksPending; List<LowStock> get lowStock; Appointment? get nextAppointment;/// The latest visit note within [handoffHorizon], and its appointment.
@@ -275,11 +274,9 @@ class _Handoff implements Handoff {
   return EqualUnmodifiableListView(_notes);
 }
 
-/// Notes left within [handoffHorizon], newest first: the notes screen.
-/// Older ones are in Activity.
+/// Notes left within [notesHorizon], newest first: the notes screen.
  final  List<CareNoteAdded> _notesThisWeek;
-/// Notes left within [handoffHorizon], newest first: the notes screen.
-/// Older ones are in Activity.
+/// Notes left within [notesHorizon], newest first: the notes screen.
 @override@JsonKey() List<CareNoteAdded> get notesThisWeek {
   if (_notesThisWeek is EqualUnmodifiableListView) return _notesThisWeek;
   // ignore: implicit_dynamic_type

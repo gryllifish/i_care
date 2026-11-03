@@ -2851,6 +2851,12 @@ abstract class AppLocalizations {
   /// **'Leave a note for whoever\'s next'**
   String get notesRowEmpty;
 
+  /// No description provided for @notesRowNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes this week'**
+  String get notesRowNone;
+
   /// No description provided for @notePreview.
   ///
   /// In en, this message translates to:

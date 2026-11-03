@@ -458,6 +458,7 @@
   "phoneNumber": "Teléfono {number}",
   "toReview": "{count, plural, =1{1 cosa para revisar} other{{count} cosas para revisar}}",
   "notesRowEmpty": "Dejá una nota para quien sigue",
+  "notesRowNone": "No hay notas esta semana",
   "notePreview": "{name}: {text}",
   "doneOfTotal": "{done} de {total} hechas",
   "resolvedCount": "{count, plural, =1{1 hecha} other{{count} hechas}}",

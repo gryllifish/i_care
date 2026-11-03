@@ -146,6 +146,24 @@ void main() {
       expect(find.text('Recount'), findsNothing);
     });
 
+    testWidgets("with no notes this week still reaches the day's summary", (
+      tester,
+    ) async {
+      await pumpAs(tester, 'pablo');
+
+      final row = find.text('No notes this week');
+      await tester.scrollUntilVisible(
+        row,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(row);
+      await tester.pumpAndSettle();
+
+      expect(find.byTooltip("Copy the day's summary"), findsOneWidget);
+      expect(find.byTooltip('Leave note'), findsNothing);
+    });
+
     testWidgets('opens a dose to read it, without giving or skipping', (
       tester,
     ) async {

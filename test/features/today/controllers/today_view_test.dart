@@ -33,10 +33,40 @@ void main() {
     final view = viewAt(DateTime(2026, 11, 2, 9));
 
     expect(view.next?.slotAt, DateTime(2026, 11, 1, 8));
-    expect(view.fromYesterday.map((s) => s.slotAt), [
-      DateTime(2026, 11, 1, 8),
-      DateTime(2026, 11, 1, 20),
+    expect(
+      [for (final entry in view.pending) entry.slotAt],
+      [
+        DateTime(2026, 11, 1, 8),
+        DateTime(2026, 11, 1, 20),
+        eight,
+        DateTime(2026, 11, 2, 20),
+      ],
+    );
+  });
+
+  test("the day's count is today's doses and tasks, not yesterday's", () {
+    final yesterday = DateTime(2026, 11, 1, 8);
+    final view = viewAt(DateTime(2026, 11, 2, 9), [
+      events.given('m1', at: eight, slotAt: yesterday),
+      events.given('m1', at: eight, slotAt: eight),
+      events.task('t1', schedule: const TaskSchedule()),
     ]);
+
+    expect(view.totalToday, 3);
+    expect(view.resolvedToday, 1);
+  });
+
+  test('notes from the week are listed, newest first', () {
+    final view = viewAt(DateTime(2026, 11, 9, 9), [
+      events.careNote('Too old', at: DateTime(2026, 11, 2, 8)),
+      events.careNote('Slept well', at: DateTime(2026, 11, 7, 21)),
+      events.careNote('Knee hurts', at: DateTime(2026, 11, 9, 8)),
+    ]);
+
+    expect(
+      [for (final note in view.notes) note.text],
+      ['Knee hurts', 'Slept well'],
+    );
   });
 
   test('next is the upcoming dose when nothing is pending', () {
@@ -175,6 +205,7 @@ void main() {
     expect(ids(view.pending), ['m1', 'm1', 'm1', 't1', 't1', 'm1']);
     expect(view.pendingAnyTime.single.task.id, 't2');
     expect(ids(view.resolved), ['t3']);
-    expect(view.totalToday, 2, reason: 'the dose count is doses only');
+    expect(view.totalToday, 6);
+    expect(view.resolvedToday, 1);
   });
 }

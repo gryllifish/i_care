@@ -22,27 +22,6 @@ abstract final class DoseTiming {
   static const window = Duration(minutes: 30);
 }
 
-/// Part of the day a dose belongs to, for grouping.
-enum DayPart {
-  morning,
-  midday,
-  afternoon,
-  night;
-
-  static const _middayFromHour = 12;
-  static const _afternoonFromHour = 15;
-  static const _nightFromHour = 20;
-  static const _morningFromHour = 5;
-
-  static DayPart of(DateTime time) => switch (time.hour) {
-    < _morningFromHour => night,
-    < _middayFromHour => morning,
-    < _afternoonFromHour => midday,
-    < _nightFromHour => afternoon,
-    _ => night,
-  };
-}
-
 /// One scheduled dose and what caregivers recorded for it.
 @freezed
 abstract class DoseSlot with _$DoseSlot {
@@ -62,7 +41,9 @@ abstract class DoseSlot with _$DoseSlot {
 
   const DoseSlot._();
 
-  DayPart get dayPart => DayPart.of(slotAt);
+  /// Given or skipped.
+  bool get isResolved =>
+      status == DoseStatus.given || status == DoseStatus.skipped;
 
   /// Given more than once, knowingly or not; shown even without a
   /// conflict, since the patient did get both doses.

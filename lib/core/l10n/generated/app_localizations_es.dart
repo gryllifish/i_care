@@ -1758,6 +1758,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notesRowEmpty => 'Dejá una nota para quien sigue';
 
   @override
+  String get notesRowNone => 'No hay notas esta semana';
+
+  @override
   String notePreview(String name, String text) {
     return '$name: $text';
   }

@@ -28,6 +28,7 @@ class DoseTile extends ConsumerWidget {
     this.stock,
     this.isFirst = false,
     this.isLast = false,
+    this.isFromYesterday = false,
     super.key,
   });
 
@@ -38,6 +39,10 @@ class DoseTile extends ConsumerWidget {
   /// Whether the rail starts or ends at this dose.
   final bool isFirst;
   final bool isLast;
+
+  /// A dose from yesterday listed with today's: the time alone would pass
+  /// for today's dose at that time.
+  final bool isFromYesterday;
 
   static const _timeWidth = 52.0;
 
@@ -107,6 +112,13 @@ class DoseTile extends ConsumerWidget {
                             color: style.color,
                             background: style.background,
                           ),
+                          if (isFromYesterday)
+                            StatusPill(
+                              icon: Icons.history,
+                              label: l10n.yesterday,
+                              color: context.colors.inkMuted,
+                              background: context.colors.surfaceMuted,
+                            ),
                           if (stock case final StockLevel level
                               when level.isLow)
                             LowStockPill(level: level),

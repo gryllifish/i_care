@@ -1429,6 +1429,7 @@
     }
   },
   "notesRowEmpty": "Leave a note for whoever's next",
+  "notesRowNone": "No notes this week",
   "notePreview": "{name}: {text}",
   "@notePreview": {
     "placeholders": {

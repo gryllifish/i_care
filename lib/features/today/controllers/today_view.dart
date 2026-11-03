@@ -54,10 +54,8 @@ sealed class TimelineEntry with _$TimelineEntry {
 
   /// Given, done or skipped.
   bool get isResolved => switch (this) {
-    DoseEntry(:final slot) =>
-      slot.status == DoseStatus.given || slot.status == DoseStatus.skipped,
-    TaskEntry(:final slot) =>
-      slot.status == TaskStatus.done || slot.status == TaskStatus.skipped,
+    DoseEntry(:final slot) => slot.isResolved,
+    TaskEntry(:final slot) => slot.isResolved,
   };
 }
 
@@ -67,7 +65,9 @@ abstract class TodayView with _$TodayView {
   const factory TodayView({
     required DateTime day,
 
-    /// Today's scheduled doses, and how many are given or skipped.
+    /// Today's doses and tasks, and how many are given, done or skipped.
+    /// Yesterday's doses are listed but not counted: they are not part of
+    /// today's work.
     @Default(0) int totalToday,
     @Default(0) int resolvedToday,
 
@@ -79,9 +79,6 @@ abstract class TodayView with _$TodayView {
     /// so a day with nothing left still says what comes next.
     ({Medication medication, DateTime at})? nextLater,
 
-    /// Yesterday's doses still unresolved, or resolved today.
-    @Default(<DoseSlot>[]) List<DoseSlot> fromYesterday,
-
     /// The day's list, still to attend to: yesterday's unresolved doses,
     /// then today's doses and timed tasks by time (at the same time,
     /// doses first).
@@ -91,7 +88,8 @@ abstract class TodayView with _$TodayView {
     @Default(<TaskSlot>[]) List<TaskSlot> pendingAnyTime,
 
     /// The day's list, already given, done or skipped: yesterday's doses
-    /// resolved today, then today's doses and tasks, in day order.
+    /// resolved today, then today's by time, then today's tasks with no set
+    /// time.
     @Default(<TimelineEntry>[]) List<TimelineEntry> resolved,
 
     /// For the day's summary: doses and tasks past their time and not
@@ -106,8 +104,9 @@ abstract class TodayView with _$TodayView {
     /// The next appointment if it is within [upcomingAppointmentWindow].
     Appointment? nextAppointment,
 
-    /// Notes left within [recentNotesWindow], newest first.
-    @Default(<CareNoteAdded>[]) List<CareNoteAdded> recentNotes,
+    /// Notes left within [notesHorizon], newest first: what the notes
+    /// screen lists.
+    @Default(<CareNoteAdded>[]) List<CareNoteAdded> notes,
 
     /// Stock per medication, for low-stock badges.
     @Default(<String, StockLevel>{}) Map<String, StockLevel> stock,
@@ -139,15 +138,14 @@ TodayView buildTodayView(CareLog log, DateTime now) {
     for (final slot in tasks)
       if (slot.isAnyTime) slot,
   ];
-  final pending = [
-    ...[...fromYesterday, ...slots].where(
-      (slot) =>
-          slot.status == DoseStatus.due || slot.status == DoseStatus.overdue,
-    ),
-  ];
-
   final next =
-      pending.firstOrNull ??
+      [...fromYesterday, ...slots]
+          .where(
+            (slot) =>
+                slot.status == DoseStatus.due ||
+                slot.status == DoseStatus.overdue,
+          )
+          .firstOrNull ??
       slots.where((slot) => slot.status == DoseStatus.upcoming).firstOrNull;
 
   final lastRecord =
@@ -176,27 +174,16 @@ TodayView buildTodayView(CareLog log, DateTime now) {
         ].where((slot) => slot.status == DoseStatus.overdue).length +
         tasks.where((slot) => slot.status == TaskStatus.late).length,
     tasksToday: tasks.length,
-    tasksResolvedToday: tasks
-        .where(
-          (slot) =>
-              slot.status == TaskStatus.done ||
-              slot.status == TaskStatus.skipped,
-        )
-        .length,
+    tasksResolvedToday: tasks.where((slot) => slot.isResolved).length,
     lastRecord: lastRecord,
-    totalToday: slots.length,
-    resolvedToday: slots
-        .where(
-          (slot) =>
-              slot.status == DoseStatus.given ||
-              slot.status == DoseStatus.skipped,
-        )
-        .length,
+    totalToday: slots.length + tasks.length,
+    resolvedToday:
+        slots.where((slot) => slot.isResolved).length +
+        tasks.where((slot) => slot.isResolved).length,
     next: next,
     nextLater: next == null
         ? _firstDoseFrom(log, DateTime(day.year, day.month, day.day + 1))
         : null,
-    fromYesterday: fromYesterday,
     pending: [
       for (final entry in fromYesterdayEntries)
         if (!entry.isResolved) entry,
@@ -205,7 +192,7 @@ TodayView buildTodayView(CareLog log, DateTime now) {
     ],
     pendingAnyTime: [
       for (final slot in anyTime)
-        if (!TimelineEntry.task(slot).isResolved) slot,
+        if (!slot.isResolved) slot,
     ],
     resolved: [
       for (final entry in [
@@ -224,7 +211,7 @@ TodayView buildTodayView(CareLog log, DateTime now) {
             stock: log.stockOf(medication.id),
           ),
     ],
-    recentNotes: log.recentNotes(now: now),
+    notes: log.notesWithin(notesHorizon, now: now),
     stock: {
       for (final medication in log.medications)
         if (log.stockOf(medication.id) case final StockLevel level)
