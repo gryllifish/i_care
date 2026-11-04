@@ -315,7 +315,7 @@ documented), nursing-home features.
   phone that says so before clearing itself.
 - Roles, phase 3: data by role (helpers never receive the team's events),
   a resync when a role change alters that, actions offered by role, the
-  helper's Today-only app, read-only viewers, a day summary for admins,
+  helper's Today-only app, read-only viewers, a day summary for viewers,
   and the demo with Ana (admin) and Rosa (helper).
 - Skip reasons the circle sets (scope item 16), and a note with "Other".
 - Demo without data (scope item 17): creating a circle, the welcome's

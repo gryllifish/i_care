@@ -9,6 +9,7 @@ import 'package:i_care/features/care/domain/entities/medication.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/stock_level.dart';
 import 'package:i_care/features/care/domain/entities/task_slot.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
 import 'package:i_care/shared/providers/now_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -237,10 +238,9 @@ TodayView buildTodayView(CareLog log, DateTime now) {
 }
 
 /// Whether [role] sees a summary of the day at the top of Today instead
-/// of the next dose to give (`docs/roles.md`): admins, who coordinate
-/// rather than record, and viewers, who cannot record.
-bool showsDaySummary(MemberRole role) =>
-    role == MemberRole.admin || role == MemberRole.viewer;
+/// of the next dose to give (`docs/roles.md`): only those who cannot
+/// record one. Whoever can is offered it, admins included.
+bool showsDaySummary(MemberRole role) => !can(role, CareAction.recordCare);
 
 /// The first scheduled dose at or after [from], by time then name.
 ({Medication medication, DateTime at})? _firstDoseFrom(

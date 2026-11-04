@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/core/error/failure.dart';
+import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/care_task.dart';
 import 'package:i_care/features/care/domain/entities/dose_schedule.dart';
+import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
 import 'package:i_care/features/care/domain/projections/care_log.dart';
 import 'package:i_care/features/today/presentation/widgets/dose_tile.dart';
@@ -34,8 +36,7 @@ void main() {
     ])..status = SyncStatus(lastSyncedAt: now);
   }
 
-  /// Martín's phone: a caregiver's, with the next dose to give at the top
-  /// (an admin's shows the day's summary instead).
+  /// Martín's phone: a caregiver's, with the next dose to give at the top.
   MemoryDevicePrefs martinsPhone() => MemoryDevicePrefs({
     PrefKeys.welcomeSeen: 'true',
     PrefKeys.memberId: 'martin',
@@ -55,13 +56,21 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  /// Opens the sheet of the dose at [time] on the timeline, done or not.
+  /// Opens the sheet of the dose at [time] on the timeline, done or not,
+  /// or from the next dose card when it is the focus and so left off the
+  /// timeline.
   Future<void> openDose(WidgetTester tester, String time) async {
     await showDone(tester);
     final tile = find.ancestor(
       of: find.text(time),
       matching: find.byType(DoseTile),
     );
+    if (tile.evaluate().isEmpty) {
+      await tester.ensureVisible(find.text('More options'));
+      await tester.tap(find.text('More options'));
+      await tester.pumpAndSettle();
+      return;
+    }
     await centerInList(tester, tile, list: find.byType(Scrollable).first);
     await tester.tap(
       find.descendant(of: tile.first, matching: find.byType(AppCard)),
@@ -156,14 +165,26 @@ void main() {
     tester,
   ) async {
     final yesterday = DateTime(2026, 11, 1, 8);
-    // An admin's phone: no focus card, so the dose is on the list.
+    // A viewer's phone: no focus card, so the dose is on the list.
     await pumpApp(
       tester,
       repository: FakeCareRepository([
+        ...SampleCircle.circleEvents(DateTime(2025)),
+        events.memberInvited(
+          'pablo',
+          name: 'Pablo',
+          role: MemberRole.viewer,
+          at: DateTime(2025),
+        ),
+        events.memberJoined('pablo', at: DateTime(2025)),
         events.created('m1', effectiveFrom: DateTime(2026, 11)),
         events.given('m1', at: yesterday, slotAt: yesterday),
       ])..status = SyncStatus(lastSyncedAt: now),
       now: now,
+      prefs: MemoryDevicePrefs({
+        PrefKeys.welcomeSeen: 'true',
+        PrefKeys.memberId: 'pablo',
+      }),
     );
 
     // The count is today's alone.

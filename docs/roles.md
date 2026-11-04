@@ -62,13 +62,22 @@ Labels describe what a person does and carry no grammatical gender.
 
 ## What each role sees
 
-- **admin, caregiver**: the whole app. Admins also get a summary at the
-  top of Today (done, pending, late, last record) instead of the large
-  "Mark as given" card.
+- **admin, caregiver**: the whole app, with the large "Mark as given"
+  card at the top of Today.
 - **helper**: Today (doses and tasks, without the next appointment), the
   emergency card, the handoff and Settings. No tab bar, no Activity,
   medications, appointments, notes or documents.
-- **viewer**: the whole app, read-only: no action buttons anywhere.
+- **viewer**: the whole app, read-only: no action buttons anywhere. A
+  summary at the top of Today (done, pending, late, last record) instead
+  of the "Mark as given" card.
+
+What tops Today follows a permission, not a role: whoever can record a
+dose is offered the next one; whoever cannot gets the day's summary.
+Admins first got the summary too, as coordinators. Changed on
+2026-11-04: in a family the admin is usually the primary caregiver, who
+also gives doses, and whoever creates a circle is its admin, so someone
+using the app alone never saw its main action. The day's list, "To
+review" and Activity already show admins how the day goes.
 
 ### Data by role
 Hiding screens is not privacy: the app keeps the log on every phone to
@@ -259,7 +268,7 @@ Supabase, as designed in [`backend.md`](backend.md#supabase-stage-2):
    copy over (`audienceSync`), keeping anything unsent; actions offered
    through `canDo`; the helper's app without tabs (other tabs' routes lead
    to Today); viewers without action buttons; a day summary on Today for
-   admins and viewers instead of the next dose card; the demo with Ana
+   viewers instead of the next dose card (admins too until 2026-11-04); the demo with Ana
    (admin) and Rosa (helper). Demo phones the server has never seen join
    as their owners on start, so older installs keep working.
 4. **Shifts**: who is responsible when. Set aside on 2026-11-03: keeping

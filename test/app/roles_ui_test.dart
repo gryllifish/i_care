@@ -60,20 +60,13 @@ void main() {
   }
 
   group('an admin', () {
-    testWidgets('sees how the day goes instead of the next dose to give', (
+    testWidgets('gives from the next dose card, like whoever cares', (
       tester,
     ) async {
-      await pumpAs(tester, 'ana', [
-        events.given('m1', at: eight, slotAt: eight, by: 'rosa'),
-      ]);
+      await pumpAs(tester, 'ana');
 
-      expect(find.text('TODAY SO FAR'), findsOneWidget);
-      expect(find.text('Nothing late'), findsOneWidget);
-      expect(
-        find.text('Last: Rosa gave the 08:00 Enalapril, at 08:00.'),
-        findsOneWidget,
-      );
-      expect(find.text('Mark as given'), findsNothing);
+      expect(find.text('Mark as given'), findsOneWidget);
+      expect(find.text('TODAY SO FAR'), findsNothing);
     });
   });
 
@@ -182,13 +175,24 @@ void main() {
   });
 
   group('a viewer', () {
-    testWidgets('sees the day and every tab, with nothing to change', (
+    testWidgets('sees how the day goes instead of the next dose to give', (
       tester,
     ) async {
-      await pumpAs(tester, 'pablo');
+      await pumpAs(tester, 'pablo', [
+        events.given('m1', at: eight, slotAt: eight, by: 'rosa'),
+      ]);
 
       expect(find.text('TODAY SO FAR'), findsOneWidget);
+      expect(find.text('Nothing late'), findsOneWidget);
+      expect(
+        find.text('Last: Rosa gave the 08:00 Enalapril, at 08:00.'),
+        findsOneWidget,
+      );
       expect(find.text('Mark as given'), findsNothing);
+    });
+
+    testWidgets('sees every tab, with nothing to change', (tester) async {
+      await pumpAs(tester, 'pablo');
 
       await go(tester, AppRoutes.medications);
       expect(find.text('Enalapril'), findsOneWidget);

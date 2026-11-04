@@ -257,7 +257,7 @@ class _RecipientAvatar extends StatelessWidget {
   }
 }
 
-/// How the day is going, for whoever coordinates rather than gives the
+/// How the day is going, for whoever follows along without giving the
 /// doses: how much is done, what is late, and the latest record.
 class _DaySummaryCard extends ConsumerWidget {
   const _DaySummaryCard({required this.view});
