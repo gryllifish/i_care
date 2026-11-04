@@ -216,7 +216,8 @@ single one is a point of failure:
 - The RPCs compare the JWT's `session_id` with the one last seen for the
   binding. A new one on a protected account writes `AccessRecovered`
   (system, `memberId`, audience `care`) and records it.
-- After recovering, the phone calls `signOut` with scope `others`.
+- After recovering, the phone calls `signOut` with scope `others`, and
+  every RPC refuses a JWT whose session no longer exists.
 - `delete_circle` also deletes its members' auth users, so their linked
   Google identities go with the circle.
 - Users that belong to no circle (the throwaway anonymous user a phone
@@ -228,13 +229,28 @@ Typed `Failure`s, rendered through l10n: sign-in cancelled (not an
 error, nothing shown), Google account already protecting another access,
 no access with that account, and no connection (transient, retried).
 
-### To verify against Supabase before building
-- Linking Google to an anonymous user keeps its `uid`, natively (ID
-  token) as well as through the browser.
-- Signing in with a Google account linked to no one creates a user, and
-  how to avoid or clean it up.
-- The JWT carries `session_id`, and `signOut(scope: others)` ends the
-  other sessions at once.
+### Verified
+On 2026-11-04, against the local stack (GoTrue v2.197.0) and
+`gotrue` 2.27.3, the Dart client the app already uses:
+- **Linking keeps the `uid`.** Both ways send the current session's JWT,
+  so Google is added to the same user: `linkIdentityWithIdToken`
+  (native, with the ID token from Google's sheet) and `linkIdentity`
+  (browser). With manual linking on, the server accepts both for an
+  anonymous user; the browser way asks Google only for `email` and
+  `profile`. The last step needs real Google credentials, so the first
+  real link is checked on the beta project.
+- **`session_id`** is in every JWT and survives refreshes.
+- **`signOut(scope: others)`** removes the other sessions from
+  `auth.sessions` and their refresh tokens stop working. Their access
+  tokens do not: the API keeps accepting them until they expire, up to
+  an hour (`jwt_expiry`). So every RPC also checks that the JWT's
+  session still exists in `auth.sessions`, and a lost phone is locked
+  out at once.
+- **A Google account linked to no one** creates a user when it signs in
+  (signups stay on: anonymous phones need them). The app then calls
+  `discard_unbound_user`, which deletes the caller's user if it is not
+  anonymous and was never bound. Functions owned by `postgres` may
+  delete from `auth.users` and read `auth.sessions`.
 
 ### Setup (the maintainer, once)
 A Google Cloud project with an OAuth consent screen asking only for the
@@ -259,7 +275,8 @@ and secret go to Supabase, and an Android client per signing key
   `session_id` with the one last seen for the binding. A new one on a
   protected account writes the system event (`AccessRecovered`,
   `memberId`, audience `care`) and records it.
-- After recovering, the phone calls `signOut` with scope `others`.
+- After recovering, the phone calls `signOut` with scope `others`, and
+  every RPC refuses a JWT whose session no longer exists.
 - `delete_circle` also deletes its members' auth users, so their emails
   go with the circle.
 - Anonymous users left behind (the throwaway one a phone signs in with
