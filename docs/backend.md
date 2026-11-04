@@ -152,10 +152,11 @@ working on their local log and the outbox uploads everything once the
 project is resumed. A family using it daily never triggers the pause.
 
 ### Region
-`eu-central-1` (Frankfurt). Latency barely matters to an offline-first
-app, and the EU is on Argentina's list of countries with adequate
-protection, so storing there is not a restricted international transfer
-under Ley 25.326 (`privacy.md`). Fixed at project creation.
+`eu-west-1` (Ireland): project `icare_test`, created 2026-11-03, with
+the migration applied. Latency barely matters to an offline-first app,
+and the EU is on Argentina's list of countries with adequate protection,
+so storing there is not a restricted international transfer under Ley
+25.326 (`privacy.md`). Fixed at project creation.
 
 ### Schema
 ```
@@ -255,10 +256,24 @@ membership errors to the exceptions `MembershipGateway` documents.
 ### Push notifications
 Sent by FCM (free without Firebase's Blaze plan); Supabase only decides
 when. The Firebase project is used for messaging only, no data.
-- **Phase 1, by event**: a database webhook on new `events` calls an Edge
-  Function that notifies the other members' devices for the events worth
-  it: a note for the circle, a dose given twice, a new or moved
-  appointment. No schedule logic on the server.
+- **Phase 1, by event** (server built, `*_push_notifications.sql` and
+  `functions/push`): a trigger on `events` decides whether an event is
+  news (`push_kind`: a note for the circle, an appointment created,
+  changed or cancelled, or a dose for a slot that already has one
+  standing that the caregiver did not knowingly confirm) and who is
+  told (`push_targets`: current members' devices whose role reads the
+  event's audience, never its author's). It queues {kind, targets}
+  through pg_net to the `push` Edge Function, which checks a shared
+  secret in constant time and sends through FCM. A failed send never
+  fails the event's insert.
+  - Devices register their token with `register_push_token(token,
+    platform, language)`; `unregister_push_token()` stops them.
+  - Nothing is sent until Vault holds `push_function_url` and
+    `push_hook_secret`; the function needs `PUSH_HOOK_SECRET` and
+    `FCM_SERVICE_ACCOUNT`. Local stacks and tests never call out.
+  - Messages carry only the kind of news, in the device's language
+    ("There is a new note for the circle"): no names, medications or
+    other health data travel through Google's or Apple's servers.
 - **Phase 2, overdue doses** (only if the family needs it): `pg_cron`
   runs an Edge Function every few minutes. It needs the slot logic
   (schedules, `effectiveFrom`, skips, undos) a second time in
@@ -267,8 +282,8 @@ when. The Firebase project is used for messaging only, no data.
 - iOS needs APNs, so an Apple Developer account; web push on iPhone works
   only for a PWA added to the home screen. Android and desktop web work
   for free.
-- Copy cites what happened ("Ana left a note", "the 9:00 dose of X was
-  recorded twice"); never advice.
+- Copy says what kind of news there is, never who or what medication,
+  and never gives advice.
 
 ### Deletion
 The log is append-only for caregivers, but the person cared for can ask

@@ -58,8 +58,10 @@ maintainer's Mac; its `docker` lives in `~/.orbstack/bin`).
 supabase start -x studio,imgproxy,mailpit,storage-api,edge-runtime,logflare,vector,supavisor,postgres-meta
 supabase test db                        # pgTAP suite in supabase/tests/
 flutter test test/features/care/data/sync/supabase_connection_test.dart
-flutter run --dart-define-from-file=env/beta.json   # the beta, one phone
+flutter run --dart-define-from-file=env/beta-local.json  # beta on the local stack
+flutter run --dart-define-from-file=env/beta.json        # beta on the real project
 supabase db reset                       # reapply migrations from scratch
+supabase db push --remote --dry-run     # what a deploy would apply (then --yes)
 supabase stop
 ```
 Local keys printed by `supabase start` are the CLI's fixed demo keys,

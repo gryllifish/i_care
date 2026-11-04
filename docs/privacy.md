@@ -33,7 +33,7 @@ What applies to ICare:
 ## Beta checklist
 Before the family enters real data:
 1. **Written consent** from the person cared for (or representative) and
-   from every member: what is stored, where (Supabase, Frankfurt), who
+   from every member: what is stored, where (Supabase, Ireland), who
    sees it (circle members by role, and the maintainer as operator), that
    it is a beta, and how to ask for a copy or deletion.
 2. **Encrypted local storage** on every device (done): the beta's Hive
