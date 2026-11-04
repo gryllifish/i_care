@@ -347,7 +347,9 @@ demo-only paths in a beta build ("Which gateway runs").
 1. **Device identity.** Local stores are keyed by `deviceId`; on Supabase
    it becomes the auth `uid`. Losing the anonymous session (reinstall,
    cleared browser data) unbinds the device: it needs a new code, and
-   anything unsent on it is lost.
+   anything unsent on it is lost. An only admin cannot get one. Proposed
+   answer: optional Google sign-in, a second admin, and recovery by the
+   operator ([`roles.md`](roles.md#recoverable-access-proposed)).
 2. **Browser storage on iPhone.** Safari may delete a website's storage
    after 7 days without a visit, including the unsent outbox. Testers on
    iPhone should install the PWA to the home screen, or use Android.

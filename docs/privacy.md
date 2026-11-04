@@ -45,7 +45,10 @@ Before the family enters real data:
    storage is the browser's own: it keeps the key out of plain sight,
    not away from code running on the page.
 3. **Minimal data**: only what the features use; no ID numbers, no
-   diagnoses beyond what caregivers choose to note.
+   diagnoses beyond what caregivers choose to note. The optional Google
+   sign-in to recover access (proposed, `roles.md`) keeps the Google
+   email and name in Supabase Auth only, never in the log, and deletes
+   them with the circle. The consent must name it.
 4. **Deletion and export** work end to end. Deletion is done: an admin
    deletes the circle for everyone from Settings (beta only), after a
    confirmation that says it cannot be undone. Still to do: a log export
@@ -60,6 +63,9 @@ Before the family enters real data:
   sees a device token and the kind of news ("a new note"), never names,
   medications or other health data. Each phone's person allows it in
   the system's dialog, and can withdraw it in the system's settings.
+- **Google sign-in** (proposed, `roles.md`): for members who protect
+  their access, Google learns they use ICare. It sees nothing of the
+  circle.
 
 ## Stage 3, before strangers use it
 - Privacy policy and terms in the app and on the site.

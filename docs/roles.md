@@ -17,9 +17,10 @@ basics: [`backend.md`](backend.md).
   The demo's server is simulated, so the demo is not secure, but nothing
   here changes when stage 2 replaces it.
 
-Not goals: accounts and passwords (stage 2 uses anonymous device
-sign-in), a PIN to open the app (a
-possible later circle policy), the person cared for as a user.
+Not goals: passwords (stage 2 uses anonymous device sign-in; an
+optional Google sign-in makes it recoverable, see
+[Recoverable access](#recoverable-access-proposed)), a PIN to open the
+app (a possible later circle policy), the person cared for as a user.
 
 ## Roles
 
@@ -132,6 +133,169 @@ Bindings end; they are never deleted. The server keeps which member each
 device belonged to, so it can still check who wrote a late record.
 
 Admins can revoke an unused code.
+
+## Recoverable access (proposed)
+
+Proposed on 2026-11-04, not built. Phase 5 below.
+
+**The problem.** A phone is an anonymous Supabase user: its `uid` is
+the device. Uninstalling the app, clearing the browser's data or
+changing phones loses that session, and with it the phone's binding.
+What was synced stays on the server; what was unsent is lost
+(`backend.md`, open issue 1). For most members this costs a new code
+from an admin. For **the only admin** it orphans the circle: nobody else
+can issue them a code, so nobody can invite, change roles or recover a
+phone again.
+
+**The goal.** An admin who uninstalls the app or changes phones gets
+back into the circle, with its whole log. Three layers, so that no
+single one is a point of failure:
+1. **Sign in with Google**, optional and asked of admins.
+2. **A second admin**, suggested while there is only one. It already
+   works today: another admin issues a code.
+3. **Recovery by the operator** as the last resort.
+
+### Options considered
+| Option | Verdict |
+|---|---|
+| Google sign-in | **Chosen.** Nothing to remember; Google's own second factor and account recovery; Google is already a processor (push). Android and the web, where the testers are |
+| Email code | Later. Supabase's built-in sender is limited to a couple of emails an hour and to the project's team, so it needs a provider (Resend) and a domain with SPF and DKIM |
+| Password | No. It needs an email reset anyway, so it never raises security above the email's, and adds weak and reused passwords. Used once a year, it is forgotten |
+| Recovery key to keep | Kept in reserve. The simplest to build (a permanent invitation code for oneself), but tired people lose it |
+| SMS code | No: a paid provider and a new processor |
+| Android Block Store | No: Android backups are off on purpose, and the web has nothing like it |
+
+### Decisions
+- **Optional, asked of admins.** Admins see "Protect your access" once
+  after creating a circle, and in Settings until they do it. Other
+  members find it in Settings. Nobody needs it to use the app. Not
+  offered on iOS: an App Store app offering Google sign-in must also
+  offer Sign in with Apple.
+- **The same `uid`.** Protecting links a Google identity to the phone's
+  anonymous user (manual identity linking), so its binding and push
+  token stay as they are.
+- **One phone per account.** Recovering moves the account to the new
+  phone and ends its sessions everywhere else, so a lost or stolen
+  phone is locked out by the recovery itself. A second device of the
+  same member keeps joining with a code, as its own anonymous user.
+- **The circle hears of it.** The first call from a new session of a
+  protected account writes a system event, so the circle sees "Ana is
+  using a new phone" and other admins get a push. The server writes it
+  from the JWT's `session_id`, so it does not depend on the new phone
+  asking for it: whoever took over a Google account cannot skip it.
+- **Native or browser sign-in, decided when building.** The native
+  account sheet is the better experience and needs a new dependency
+  (`google_sign_in`); the browser flow needs none, but leaves the app
+  for a tab and needs a deep link back.
+- **The demo does not offer it.** The demo has no Google project and
+  resets anyway. The simulated gateway implements it for tests and the
+  contract suite.
+
+### Flows
+1. **Protect.** Settings → "Protect your access" → Google's account
+   picker → "Protected with a•••@gmail.com".
+2. **Recover.** On a phone that belongs to nobody, the welcome screen
+   offers "I already have access" next to joining with a code → Google.
+   The phone loads the member and downloads the log from the start, like
+   a phone that has just joined, and registers its push token. A Google
+   account linked to no one gets "No access with this account", and the
+   phone signs out of it.
+3. **Second admin.** While a circle has a single admin, Settings →
+   Members suggests making someone else admin.
+4. **Operator.** The member calls the operator, who confirms who they
+   are by a channel of their own (a phone call, not a message from an
+   unknown number) and runs `private.operator_issue_code` in Supabase's
+   SQL editor. It issues a normal code for that member, which works as
+   any other. Clients cannot call it; `backend.md` documents the steps
+   once it is built.
+5. **Removed or left.** A recovered account whose binding has ended gets
+   the removed device's screen and clears itself, as today.
+
+### Server
+- `config.toml`: Google provider on, `enable_manual_linking = true`.
+- The RPCs compare the JWT's `session_id` with the one last seen for the
+  binding. A new one on a protected account writes `AccessRecovered`
+  (system, `memberId`, audience `care`) and records it.
+- After recovering, the phone calls `signOut` with scope `others`.
+- `delete_circle` also deletes its members' auth users, so their linked
+  Google identities go with the circle.
+- Users that belong to no circle (the throwaway anonymous user a phone
+  starts with before recovering, a Google account linked to no one) are
+  deleted periodically.
+
+### Errors
+Typed `Failure`s, rendered through l10n: sign-in cancelled (not an
+error, nothing shown), Google account already protecting another access,
+no access with that account, and no connection (transient, retried).
+
+### To verify against Supabase before building
+- Linking Google to an anonymous user keeps its `uid`, natively (ID
+  token) as well as through the browser.
+- Signing in with a Google account linked to no one creates a user, and
+  how to avoid or clean it up.
+- The JWT carries `session_id`, and `signOut(scope: others)` ends the
+  other sessions at once.
+
+### Setup (the maintainer, once)
+A Google Cloud project with an OAuth consent screen asking only for the
+email and basic profile (no Google review needed), a web client whose ID
+and secret go to Supabase, and an Android client per signing key
+(package name and SHA-1).
+
+### Later
+- **Email code**, once there is a domain or the beta opens to more
+  families.
+- **Stage 3:** passkeys (`[auth.passkey]` in `config.toml`), a second
+  factor for admins, Sign in with Apple if there is an iOS app.
+
+### What it does not solve
+- An unlocked, stolen phone is still open (no app PIN).
+- Records not yet sent when the app was uninstalled are lost.
+- Taking over someone's Google account takes over their access here.
+  The event to the circle is how it shows.
+
+## Server
+- `public.current_circle` and the other RPCs compare the JWT's
+  `session_id` with the one last seen for the binding. A new one on a
+  protected account writes the system event (`AccessRecovered`,
+  `memberId`, audience `care`) and records it.
+- After recovering, the phone calls `signOut` with scope `others`.
+- `delete_circle` also deletes its members' auth users, so their emails
+  go with the circle.
+- Anonymous users left behind (the throwaway one a phone signs in with
+  before recovering) are deleted periodically.
+- Settings: the email code expires after 10 minutes (`otp_expiry = 600`),
+  6 digits, and the existing per-IP limits on verifications.
+
+### Errors
+Typed `Failure`s, rendered through l10n: wrong code, expired code, too
+many attempts, email already protecting another access, no access with
+that email, and email not sent (transient, retried).
+
+### To verify against Supabase before building
+- Converting an anonymous user with an email code (not a link) keeps
+  its `uid`, and the code arrives with the email change template.
+- The JWT carries `session_id`, and `signOut(scope: others)` ends the
+  other sessions at once.
+- The built-in email sender's hourly limit is enough to try this, and
+  which provider to use for the beta instead (a new processor).
+- Whether Supabase passkeys (`[auth.passkey]` in `config.toml`) are
+  mature enough for stage 3.
+
+### Later
+- **Phase 5b, Google as an option** on Android and the web, next to the
+  email. A native sign-in needs a new dependency, decided then; the
+  browser flow needs none but leaves the app. Supabase's manual
+  identity linking keeps the `uid`. Apple's rule to also offer Sign in
+  with Apple applies only to an App Store app.
+- **Stage 3:** passkeys, a second factor for admins, Sign in with Apple
+  if there is an iOS app.
+
+### What it does not solve
+- An unlocked, stolen phone is still open (no app PIN).
+- Records not yet sent when the app was uninstalled are lost.
+- Taking over someone's email takes over their access here. The event
+  to the circle is how it shows.
 
 ## Server
 
@@ -268,12 +432,16 @@ Supabase, as designed in [`backend.md`](backend.md#supabase-stage-2):
    copy over (`audienceSync`), keeping anything unsent; actions offered
    through `canDo`; the helper's app without tabs (other tabs' routes lead
    to Today); viewers without action buttons; a day summary on Today for
-   viewers instead of the next dose card (admins too until 2026-11-04); the demo with Ana
-   (admin) and Rosa (helper). Demo phones the server has never seen join
-   as their owners on start, so older installs keep working.
+   viewers instead of the next dose card (admins too until 2026-11-04);
+   the demo with Ana (admin) and Rosa (helper). Demo phones the server
+   has never seen join as their owners on start, so older installs keep
+   working.
 4. **Shifts**: who is responsible when. Set aside on 2026-11-03: keeping
    a schedule up adds work to a family's day, and notes for the circle
    already carry the handoff (`product.md`, later candidates).
+5. **Recoverable access** (proposed): optional Google sign-in for any
+   member, asked of admins; the suggestion of a second admin; recovery
+   by the operator ([above](#recoverable-access-proposed)).
 
 Each phase ends with `scripts/verify.sh` green and the gateway contract
 tests covering what changed.
