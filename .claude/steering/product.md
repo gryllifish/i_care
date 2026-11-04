@@ -214,6 +214,11 @@ documented), nursing-home features.
 - Accessibility is a requirement: targets ≥ 48 dp (primary actions 56 dp),
   contrast ≥ 4.5:1, layouts that survive 200 % text, `Semantics` on custom
   controls, plain language, no time pressure except the undo window.
+- Designed for phones. Wider screens (the beta's web on a computer,
+  tablets) keep the same design in a centered column of at most 720 px
+  (`AppLayout`, `ContentWidth`), with the tabs in a side rail from
+  840 px and bottom sheets no wider than 640 px. The width is the app's,
+  not the window's, so the demo's phone frames stay phones.
 - Bottom navigation bar with only tabs that have real content: Today,
   Medications, Activity (Appointments joins in phase 3).
 - Today, simplified after the device round (2026-11-03): header

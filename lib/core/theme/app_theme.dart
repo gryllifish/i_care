@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_care/core/constants/app_layout.dart';
 import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_radius.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
@@ -139,7 +140,21 @@ abstract final class AppTheme {
           ),
         ),
       ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: colors.surface,
+        indicatorColor: colors.tealSoft,
+        indicatorShape: stadium,
+        labelType: NavigationRailLabelType.all,
+        selectedLabelTextStyle: AppTextStyles.pill.copyWith(color: colors.ink),
+        unselectedLabelTextStyle: AppTextStyles.pill.copyWith(
+          color: colors.inkMuted,
+        ),
+        selectedIconTheme: IconThemeData(color: colors.tealDark),
+        unselectedIconTheme: IconThemeData(color: colors.inkMuted),
+      ),
       bottomSheetTheme: BottomSheetThemeData(
+        // On a wide screen a sheet stays the size of a phone's.
+        constraints: const BoxConstraints(maxWidth: AppLayout.sheetMaxWidth),
         backgroundColor: colors.background,
         surfaceTintColor: Colors.transparent,
         shape: const RoundedRectangleBorder(borderRadius: AppRadius.sheetTop),

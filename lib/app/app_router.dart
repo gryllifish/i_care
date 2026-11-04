@@ -25,6 +25,7 @@ import 'package:i_care/features/settings/presentation/screens/welcome_screen.dar
 import 'package:i_care/features/tasks/presentation/screens/task_form_screen.dart';
 import 'package:i_care/features/tasks/presentation/screens/tasks_screen.dart';
 import 'package:i_care/features/today/presentation/screens/today_screen.dart';
+import 'package:i_care/shared/widgets/content_width.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
@@ -97,42 +98,46 @@ GoRouter appRouter(Ref ref) {
     routes: [
       _route(
         path: AppRoutes.join,
-        builder: (context, state) => const JoinScreen(),
+        builder: (context, state) => const ContentWidth(child: JoinScreen()),
       ),
       _route(
         path: AppRoutes.createCircle,
-        builder: (context, state) => const CreateCircleScreen(),
+        builder: (context, state) =>
+            const ContentWidth(child: CreateCircleScreen()),
       ),
       _route(
         path: AppRoutes.removed,
-        builder: (context, state) => const RemovedScreen(),
+        builder: (context, state) => const ContentWidth(child: RemovedScreen()),
       ),
       _route(
         path: AppRoutes.welcome,
-        builder: (context, state) => const WelcomeScreen(),
+        builder: (context, state) => const ContentWidth(child: WelcomeScreen()),
       ),
       _route(
         path: AppRoutes.settings,
-        builder: (context, state) => const SettingsScreen(),
+        builder: (context, state) =>
+            const ContentWidth(child: SettingsScreen()),
       ),
       _route(
         path: AppRoutes.reasons,
-        builder: (context, state) => const ReasonsScreen(),
+        builder: (context, state) => const ContentWidth(child: ReasonsScreen()),
       ),
       // Outside the shell, so they cover the tab bar.
       _route(
         path: AppRoutes.emergency,
-        builder: (context, state) => const EmergencyCardScreen(),
+        builder: (context, state) =>
+            const ContentWidth(child: EmergencyCardScreen()),
         routes: [
           _route(
             path: AppRoutes.editEmergency,
-            builder: (context, state) => const ProfileFormScreen(),
+            builder: (context, state) =>
+                const ContentWidth(child: ProfileFormScreen()),
           ),
         ],
       ),
       _route(
         path: AppRoutes.handoff,
-        builder: (context, state) => const HandoffScreen(),
+        builder: (context, state) => const ContentWidth(child: HandoffScreen()),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(shell: shell),
