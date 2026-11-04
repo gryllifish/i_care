@@ -2434,13 +2434,13 @@ abstract class AppLocalizations {
   /// No description provided for @notificationsBody.
   ///
   /// In en, this message translates to:
-  /// **'A new note, a change in appointments, or a dose recorded twice. Notifications never say who or which medication.'**
+  /// **'A new note, a change in medications or appointments, or a dose recorded twice. Notifications never say who or which medication.'**
   String get notificationsBody;
 
   /// No description provided for @welcomeNotifications.
   ///
   /// In en, this message translates to:
-  /// **'When you start, ICare will ask to notify you of the circle\'s news: a new note, a change in appointments, or a dose recorded twice.'**
+  /// **'When you start, ICare will ask to notify you of the circle\'s news: a new note, a change in medications or appointments, or a dose recorded twice.'**
   String get welcomeNotifications;
 
   /// No description provided for @errorCodeLocked.

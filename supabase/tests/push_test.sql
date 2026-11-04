@@ -5,7 +5,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(14);
+select plan(16);
 
 insert into auth.users (id)
 values
@@ -88,7 +88,8 @@ select pg_temp.act_as('00000000-0000-0000-0000-0000000000a2');
 select public.push_events(jsonb_build_array(
   pg_temp.ev('note-1', 'ana', 'care_note_added', '{"text": "Le subió la presión"}'),
   pg_temp.ev('appt-1', 'ana', 'appointment_created'),
-  pg_temp.ev('med-1', 'ana', 'medication_created')
+  pg_temp.ev('med-1', 'ana', 'medication_created'),
+  pg_temp.ev('stock-1', 'ana', 'stock_counted', '{"medication_id": "m1", "units": 20}')
 ));
 
 reset role;
@@ -102,7 +103,15 @@ select is(
   pg_temp.told('appt-1'), '["token-martin"]'::jsonb,
   'but a helper, who does not read appointments, is not told'
 );
-select is(pg_temp.kind('med-1'), null, 'everyday changes are not news');
+select is(
+  pg_temp.kind('med-1'), 'medication',
+  'a medication added, changed or stopped is news'
+);
+select is(
+  pg_temp.told('med-1'), '["token-martin", "token-rosa"]'::jsonb,
+  'for everyone who gives doses, helpers included'
+);
+select is(pg_temp.kind('stock-1'), null, 'everyday changes are not news');
 
 -- A dose recorded twice --------------------------------------------------------
 

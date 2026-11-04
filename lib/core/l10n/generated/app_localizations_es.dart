@@ -1498,11 +1498,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get notificationsBody =>
-      'Una nota nueva, un cambio en los turnos o una toma registrada dos veces. Los avisos nunca dicen quién ni qué medicamento.';
+      'Una nota nueva, un cambio en los medicamentos o los turnos, o una toma registrada dos veces. Los avisos nunca dicen quién ni qué medicamento.';
 
   @override
   String get welcomeNotifications =>
-      'Al empezar, ICare te va a pedir permiso para avisarte de las novedades del círculo: una nota nueva, un cambio en los turnos o una toma registrada dos veces.';
+      'Al empezar, ICare te va a pedir permiso para avisarte de las novedades del círculo: una nota nueva, un cambio en los medicamentos o los turnos, o una toma registrada dos veces.';
 
   @override
   String get errorCodeLocked =>

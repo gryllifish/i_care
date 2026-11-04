@@ -259,8 +259,11 @@ when. The Firebase project is used for messaging only, no data.
 - **Phase 1, by event** (server built, `*_push_notifications.sql` and
   `functions/push`): a trigger on `events` decides whether an event is
   news (`push_kind`: a note for the circle, an appointment created,
-  changed or cancelled, or a dose for a slot that already has one
-  standing that the caregiver did not knowingly confirm) and who is
+  changed or cancelled, a medication added, changed or stopped (added
+  on 2026-11-04: whoever gives the next dose must know), or a dose for
+  a slot that already has one standing that the caregiver did not
+  knowingly confirm; doses given, stock and tasks stay quiet, since
+  they happen many times a day) and who is
   told (`push_targets`: current members' devices whose role reads the
   event's audience, never its author's). It queues {kind, targets}
   through pg_net to the `push` Edge Function, which checks a shared
