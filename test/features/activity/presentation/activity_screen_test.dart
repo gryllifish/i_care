@@ -40,4 +40,25 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
   });
+
+  testWidgets('says when a member is back on a new phone', (tester) async {
+    final events = EventFactory();
+    await pumpApp(
+      tester,
+      repository: FakeCareRepository([
+        events.accessRecovered('ana', at: DateTime(2026, 11, 2, 8)),
+      ])..status = SyncStatus(lastSyncedAt: now),
+      now: now,
+    );
+
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.text('Activity'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ana is using a new phone'), findsOneWidget);
+  });
 }

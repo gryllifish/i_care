@@ -26,6 +26,8 @@ sealed class AppException implements Exception {
       problem,
       cause: this,
     ),
+    AccountInUseException() => AccountInUseFailure(cause: this),
+    NoAccessException() => NoAccessFailure(cause: this),
   };
 
   @override
@@ -74,4 +76,14 @@ final class InvalidCodeException extends AppException {
   const InvalidCodeException(this.problem, super.message, {super.cause});
 
   final CodeProblem problem;
+}
+
+/// The Google account already protects another member's access.
+final class AccountInUseException extends AppException {
+  const AccountInUseException(super.message, {super.cause});
+}
+
+/// No access is protected with that Google account.
+final class NoAccessException extends AppException {
+  const NoAccessException(super.message, {super.cause});
 }

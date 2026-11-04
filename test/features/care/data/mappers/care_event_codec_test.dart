@@ -172,6 +172,7 @@ void main() {
     ),
     CareEvent.invitationRevoked(meta: meta, memberId: 'rosa'),
     CareEvent.memberJoined(meta: meta, memberId: 'rosa'),
+    CareEvent.accessRecovered(meta: meta, memberId: 'ana'),
     CareEvent.roleChanged(
       meta: meta,
       memberId: 'rosa',

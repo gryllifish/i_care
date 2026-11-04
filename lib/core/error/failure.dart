@@ -91,3 +91,14 @@ final class InvalidCodeFailure extends Failure {
 
   final CodeProblem problem;
 }
+
+/// The Google account already protects another member's access
+/// (`docs/roles.md`, recoverable access).
+final class AccountInUseFailure extends Failure {
+  const AccountInUseFailure({super.cause});
+}
+
+/// No access is protected with that Google account.
+final class NoAccessFailure extends Failure {
+  const NoAccessFailure({super.cause});
+}

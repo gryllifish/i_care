@@ -1,14 +1,18 @@
 import 'package:hive_ce/hive.dart';
 import 'package:i_care/features/care/data/datasources/event_store.dart';
+import 'package:i_care/features/care/data/datasources/google_account_source.dart';
 import 'package:i_care/features/care/data/datasources/rejected_store.dart';
 import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
+import 'package:i_care/features/care/data/repositories/access_repository_impl.dart';
 import 'package:i_care/features/care/data/repositories/care_repository_impl.dart';
 import 'package:i_care/features/care/data/repositories/membership_repository_impl.dart';
+import 'package:i_care/features/care/data/sync/access_gateway.dart';
 import 'package:i_care/features/care/data/sync/membership_gateway.dart';
 import 'package:i_care/features/care/data/sync/simulated_connection.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
 import 'package:i_care/features/care/data/sync/sync_gateway.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
+import 'package:i_care/features/care/domain/repositories/access_repository.dart';
 import 'package:i_care/features/care/domain/repositories/care_repository.dart';
 import 'package:i_care/features/care/domain/repositories/membership_repository.dart';
 import 'package:i_care/features/care/domain/repositories/push_repository.dart';
@@ -104,3 +108,25 @@ MembershipRepository membershipRepository(Ref ref) => MembershipRepositoryImpl(
     occurredAt: ref.read(clockProvider)(),
   ),
 );
+
+@Riverpod(keepAlive: true)
+AccessGateway accessGateway(Ref ref) => ref.watch(simulatedConnectionProvider);
+
+/// Google's account picker; null where it is not offered: the demo, and
+/// builds or platforms without Google sign-in. `bootstrap` provides it
+/// for the beta on Android.
+@Riverpod(keepAlive: true)
+GoogleAccountSource? googleAccountSource(Ref ref) => null;
+
+/// Protecting this phone's access with Google (`docs/roles.md`,
+/// recoverable access); null where Google sign-in is not offered.
+@Riverpod(keepAlive: true)
+AccessRepository? accessRepository(Ref ref) =>
+    switch (ref.watch(googleAccountSourceProvider)) {
+      final GoogleAccountSource google => AccessRepositoryImpl(
+        google: google,
+        gateway: ref.watch(accessGatewayProvider),
+        care: ref.watch(careRepositoryImplProvider),
+      ),
+      null => null,
+    };

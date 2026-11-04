@@ -304,6 +304,12 @@ class EventFactory {
         memberId: memberId,
       ) as MemberJoined;
 
+  AccessRecovered accessRecovered(String memberId, {DateTime? at}) =>
+      CareEvent.accessRecovered(
+        meta: meta(at: at ?? DateTime(2026), by: systemAuthor),
+        memberId: memberId,
+      ) as AccessRecovered;
+
   RoleChanged roleChanged(
     String memberId,
     MemberRole role, {

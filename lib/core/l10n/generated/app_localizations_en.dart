@@ -1408,6 +1408,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String activityAccessRecovered(String member) {
+    return '$member is using a new phone';
+  }
+
+  @override
   String activityRoleChanged(String name, String member, String role) {
     return '$name changed $member\'s role to $role';
   }
@@ -1507,6 +1512,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorCodeLocked =>
       'Too many wrong codes. Wait 15 minutes and try again.';
+
+  @override
+  String get errorAccountInUse =>
+      'That Google account already protects someone else\'s access.';
+
+  @override
+  String get errorNoAccess =>
+      'No access is protected with that Google account. Ask an admin of the circle for a code.';
 
   @override
   String get joinTitle => 'Join a care circle';

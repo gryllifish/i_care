@@ -330,6 +330,14 @@ sealed class CareEvent with _$CareEvent {
     required String memberId,
   }) = MemberJoined;
 
+  /// Written by the server ([systemAuthor]) when [memberId] signs in on
+  /// another phone with their protected access (`docs/roles.md`,
+  /// recoverable access).
+  const factory CareEvent.accessRecovered({
+    required EventMeta meta,
+    required String memberId,
+  }) = AccessRecovered;
+
   const factory CareEvent.roleChanged({
     required EventMeta meta,
     required String memberId,

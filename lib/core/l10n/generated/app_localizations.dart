@@ -2287,6 +2287,12 @@ abstract class AppLocalizations {
   /// **'{member} joined the circle'**
   String activityMemberJoined(String member);
 
+  /// No description provided for @activityAccessRecovered.
+  ///
+  /// In en, this message translates to:
+  /// **'{member} is using a new phone'**
+  String activityAccessRecovered(String member);
+
   /// No description provided for @activityRoleChanged.
   ///
   /// In en, this message translates to:
@@ -2448,6 +2454,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Too many wrong codes. Wait 15 minutes and try again.'**
   String get errorCodeLocked;
+
+  /// No description provided for @errorAccountInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'That Google account already protects someone else\'s access.'**
+  String get errorAccountInUse;
+
+  /// No description provided for @errorNoAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'No access is protected with that Google account. Ask an admin of the circle for a code.'**
+  String get errorNoAccess;
 
   /// No description provided for @joinTitle.
   ///

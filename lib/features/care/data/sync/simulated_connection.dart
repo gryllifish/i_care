@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:i_care/core/error/app_exception.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
+import 'package:i_care/features/care/data/sync/access_gateway.dart';
 import 'package:i_care/features/care/data/sync/membership_gateway.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
 import 'package:i_care/features/care/data/sync/sync_gateway.dart';
@@ -13,7 +14,8 @@ import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 /// an offline switch so the demo can reproduce what real networks do.
 /// The server knows the device by [deviceId], as a real one would by the
 /// signed-in account.
-class SimulatedConnection implements SyncGateway, MembershipGateway {
+class SimulatedConnection
+    implements SyncGateway, MembershipGateway, AccessGateway {
   SimulatedConnection(
     this._server, {
     required this.deviceId,
@@ -149,6 +151,25 @@ class SimulatedConnection implements SyncGateway, MembershipGateway {
     await _travel();
     await _server.deleteCircle(deviceId);
     await _travel();
+  }
+
+  @override
+  Future<String?> protectedWith() async => _server.protectedWith(deviceId);
+
+  @override
+  Future<String> protect(GoogleCredential credential) async {
+    await _travel();
+    _server.protect(deviceId, credential.email);
+    await _travel();
+    return credential.email;
+  }
+
+  @override
+  Future<String> recover(GoogleCredential credential) async {
+    await _travel();
+    final memberId = await _server.recover(deviceId, credential.email);
+    await _travel();
+    return memberId;
   }
 
   /// "K7P4QM" as "K7P-4QM": easier to read aloud and type.

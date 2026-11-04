@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -94,6 +95,74 @@ Future<void> main() async {
       group('membership', () {
         _Device newDevice() =>
             devices['new-${devices.length}'] = _Device(_apiPort);
+
+        test('a phone signed out elsewhere starts over as a new device, '
+            'which belongs to no one', () async {
+          final phone = newDevice();
+          await phone.connection.createCircle(
+            creatorName: 'Ana',
+            recipientName: 'Elena',
+          );
+          final before = phone.client.auth.currentSession;
+          // What recovering on another phone does to this one: its
+          // sessions end on the server, while it still holds a token.
+          final http = HttpClient();
+          addTearDown(http.close);
+          final request = await http.postUrl(
+            Uri.parse('http://127.0.0.1:$_apiPort/auth/v1/logout?scope=global'),
+          );
+          request.headers
+            ..set('apikey', _publishableKey)
+            ..set('Authorization', 'Bearer ${before?.accessToken}');
+          expect((await request.close()).statusCode, 204);
+
+          await expectLater(
+            phone.connection.watch().first,
+            throwsA(isA<NotMemberException>()),
+          );
+          expect(phone.client.auth.currentUser?.id, isNot(before?.user.id));
+        });
+
+        test(
+          "a protected account's session is confirmed without asking",
+          () async {
+            final phone = newDevice();
+            final email =
+                'protected-${DateTime.now().microsecondsSinceEpoch}'
+                '@example.com';
+            // An account that is not anonymous, as a linked Google one is.
+            // Signed up through the public API: the local stack confirms
+            // no emails.
+            final http = HttpClient();
+            addTearDown(http.close);
+            final request = await http.postUrl(
+              Uri.parse('http://127.0.0.1:$_apiPort/auth/v1/signup'),
+            );
+            request.headers
+              ..set('apikey', _publishableKey)
+              ..contentType = ContentType.json;
+            request.write(
+              jsonEncode({'email': email, 'password': 'password-1'}),
+            );
+            expect((await request.close()).statusCode, 200);
+            await phone.client.auth.signInWithPassword(
+              email: email,
+              password: 'password-1',
+            );
+            // Deleting the circle deletes its protected accounts.
+            addTearDown(() => phone.client.rpc<void>('delete_circle'));
+
+            await phone.connection.createCircle(
+              creatorName: 'Ana',
+              recipientName: 'Elena',
+            );
+
+            // The first read meets an unconfirmed session and confirms it.
+            final batch = await phone.connection.watch().first;
+            expect(batch.events, isNotEmpty);
+            expect(await phone.connection.protectedWith(), email);
+          },
+        );
 
         test('a device in no circle is told so when it reads', () async {
           final stranger = newDevice();

@@ -579,3 +579,158 @@ final class MembershipRepositoryProvider
 
 String _$membershipRepositoryHash() =>
     r'8096a04007898be9bba9338a49af19f9a7d601ae';
+
+@ProviderFor(accessGateway)
+final accessGatewayProvider = AccessGatewayProvider._();
+
+final class AccessGatewayProvider
+    extends $FunctionalProvider<AccessGateway, AccessGateway, AccessGateway>
+    with $Provider<AccessGateway> {
+  AccessGatewayProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'accessGatewayProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$accessGatewayHash();
+
+  @$internal
+  @override
+  $ProviderElement<AccessGateway> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AccessGateway create(Ref ref) {
+    return accessGateway(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AccessGateway value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AccessGateway>(value),
+    );
+  }
+}
+
+String _$accessGatewayHash() => r'ad3bca8d3dbea2d46bd9c518a52ff4f9ca879de2';
+
+/// Google's account picker; null where it is not offered: the demo, and
+/// builds or platforms without Google sign-in. `bootstrap` provides it
+/// for the beta on Android.
+
+@ProviderFor(googleAccountSource)
+final googleAccountSourceProvider = GoogleAccountSourceProvider._();
+
+/// Google's account picker; null where it is not offered: the demo, and
+/// builds or platforms without Google sign-in. `bootstrap` provides it
+/// for the beta on Android.
+
+final class GoogleAccountSourceProvider
+    extends
+        $FunctionalProvider<
+          GoogleAccountSource?,
+          GoogleAccountSource?,
+          GoogleAccountSource?
+        >
+    with $Provider<GoogleAccountSource?> {
+  /// Google's account picker; null where it is not offered: the demo, and
+  /// builds or platforms without Google sign-in. `bootstrap` provides it
+  /// for the beta on Android.
+  GoogleAccountSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'googleAccountSourceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$googleAccountSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<GoogleAccountSource?> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  GoogleAccountSource? create(Ref ref) {
+    return googleAccountSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GoogleAccountSource? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GoogleAccountSource?>(value),
+    );
+  }
+}
+
+String _$googleAccountSourceHash() =>
+    r'8ed06e3d09ed49ec258d254e4b2e2045fc23935b';
+
+/// Protecting this phone's access with Google (`docs/roles.md`,
+/// recoverable access); null where Google sign-in is not offered.
+
+@ProviderFor(accessRepository)
+final accessRepositoryProvider = AccessRepositoryProvider._();
+
+/// Protecting this phone's access with Google (`docs/roles.md`,
+/// recoverable access); null where Google sign-in is not offered.
+
+final class AccessRepositoryProvider
+    extends
+        $FunctionalProvider<
+          AccessRepository?,
+          AccessRepository?,
+          AccessRepository?
+        >
+    with $Provider<AccessRepository?> {
+  /// Protecting this phone's access with Google (`docs/roles.md`,
+  /// recoverable access); null where Google sign-in is not offered.
+  AccessRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'accessRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$accessRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<AccessRepository?> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AccessRepository? create(Ref ref) {
+    return accessRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AccessRepository? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AccessRepository?>(value),
+    );
+  }
+}
+
+String _$accessRepositoryHash() => r'e0f96435318b92d092a024ad05a1f6b1ef79599c';

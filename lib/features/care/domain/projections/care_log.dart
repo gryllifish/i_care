@@ -200,6 +200,7 @@ class CareLog {
     TaskSkipped(:final taskId) => task(taskId)?.details.name,
     InvitationRevoked(:final memberId) ||
     MemberJoined(:final memberId) ||
+    AccessRecovered(:final memberId) ||
     RoleChanged(:final memberId) ||
     MemberRemoved(:final memberId) ||
     MemberLeft(:final memberId) => _members[memberId]?.name,
@@ -623,9 +624,10 @@ class _Projector {
         _changeMember(event, memberId, baseVersion, (member) {
           return member.copyWith(status: MemberStatus.removed);
         });
-      case MemberInvited() || MemberLeft():
-        // A repeated invitation stands as the first; a device leaving
-        // changes nothing about the member, who may have others.
+      case MemberInvited() || MemberLeft() || AccessRecovered():
+        // A repeated invitation stands as the first; a device leaving,
+        // or a member back on a new phone, changes nothing about the
+        // member, who may have others.
         break;
       case ConflictAcknowledged(:final conflictKey):
         _acknowledged.add(conflictKey);

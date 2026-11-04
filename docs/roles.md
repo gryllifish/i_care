@@ -228,6 +228,8 @@ Built in `supabase/migrations/*_recoverable_access.sql`.
     `access_recovered` (system, `member_id`, audience `care`). A new
     phone cannot read anything before the circle is told.
 - After recovering, the phone calls `signOut` with scope `others`.
+- `current_member` tells a phone that has just recovered which member
+  it is.
 - `discard_unbound_user` deletes the caller's user when it is not
   anonymous and was never bound: a Google account linked to no one.
 - `delete_circle` also deletes the circle's protected accounts, so their
@@ -472,9 +474,13 @@ Supabase, as designed in [`backend.md`](backend.md#supabase-stage-2):
 4. **Shifts**: who is responsible when. Set aside on 2026-11-03: keeping
    a schedule up adds work to a family's day, and notes for the circle
    already carry the handoff (`product.md`, later candidates).
-5. **Recoverable access** (proposed): optional Google sign-in for any
-   member, asked of admins; the suggestion of a second admin; recovery
-   by the operator ([above](#recoverable-access-proposed)).
+5. **Recoverable access** (in progress): optional Google sign-in for
+   any member, asked of admins; the suggestion of a second admin;
+   recovery by the operator ([above](#recoverable-access-proposed)).
+   Built: the server, `AccessRecovered`, the `AccessGateway` (simulated
+   and Supabase, which settles ended and unconfirmed sessions itself)
+   and `AccessRepository`. Next: the screens, Google's picker on
+   Android, and the push to other admins.
 
 Each phase ends with `scripts/verify.sh` green and the gateway contract
 tests covering what changed.

@@ -6,6 +6,7 @@ import 'package:i_care/core/error/app_exception.dart';
 import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/core/utils/app_logger.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
+import 'package:i_care/features/care/data/sync/access_gateway.dart';
 import 'package:i_care/features/care/data/sync/membership_gateway.dart';
 import 'package:i_care/features/care/data/sync/push_token_gateway.dart';
 import 'package:i_care/features/care/data/sync/sync_gateway.dart';
@@ -16,10 +17,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// This device's link to the Supabase backend (`docs/backend.md`,
 /// "Supabase"): the functions in `supabase/migrations/`, called as the
-/// device's anonymous user, signed in on first use. Supabase types never
-/// leave this class.
+/// device's anonymous user, signed in on first use, or as the Google
+/// account protecting its access (`docs/roles.md`, recoverable access).
+/// Supabase types never leave this class.
 class SupabaseConnection
-    implements SyncGateway, MembershipGateway, PushTokenGateway {
+    implements SyncGateway, MembershipGateway, PushTokenGateway, AccessGateway {
   SupabaseConnection(
     this._client, {
     this._pollInterval = const Duration(seconds: 30),
@@ -208,6 +210,56 @@ class SupabaseConnection
   Future<void> deleteCircle() => _call('delete_circle');
 
   @override
+  Future<String?> protectedWith() async => switch (_client.auth.currentUser) {
+    final User user when !user.isAnonymous => user.email,
+    _ => null,
+  };
+
+  @override
+  Future<String> protect(GoogleCredential credential) async {
+    try {
+      await _auth(
+        () => _client.auth.linkIdentityWithIdToken(
+          provider: OAuthProvider.google,
+          idToken: credential.idToken,
+          accessToken: credential.accessToken,
+        ),
+      );
+    } on ServerException catch (error) {
+      if (error.cause case AuthException(:final code)
+          when code == ErrorCode.identityAlreadyExists.code) {
+        throw AccountInUseException('Account in use', cause: error);
+      }
+      rethrow;
+    }
+    // Linking may start a new session: this phone's, so nobody is told.
+    await _call('confirm_session');
+    return _client.auth.currentUser?.email ?? credential.email;
+  }
+
+  @override
+  Future<String> recover(GoogleCredential credential) async {
+    await _auth(
+      () => _client.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: credential.idToken,
+        accessToken: credential.accessToken,
+      ),
+    );
+    // Confirming is what tells the circle; nothing is read before it.
+    await _call('confirm_session');
+    if (await _call('current_member') case final String memberId) {
+      // The lost phone's sessions end, and the server refuses them at once.
+      await _auth(() => _client.auth.signOut(scope: SignOutScope.others));
+      return memberId;
+    }
+    // Signing in created an account linked to no one: it goes.
+    await _call('discard_unbound_user');
+    await _signOutHere();
+    throw const NoAccessException('No access with this account');
+  }
+
+  @override
   Future<void> registerPushToken({
     required String token,
     required String platform,
@@ -223,33 +275,85 @@ class SupabaseConnection
 
   /// Calls the backend function [name] as this device.
   ///
+  /// A session the server no longer accepts is settled once, then the
+  /// call is repeated: an ended one (signed out from another phone, or
+  /// its account deleted with the circle) makes this device start over
+  /// as a new anonymous one, which the server then tells whether it
+  /// belongs to anyone; an unconfirmed one is confirmed.
+  ///
   /// Throws [NoConnectionException], [RequestTimeoutException],
   /// [ServerException], [NotMemberException], [ForbiddenException] or
   /// [NotFoundException].
   Future<Object?> _call(String name, [Map<String, Object?>? params]) async {
     try {
-      if (_client.auth.currentSession == null) {
-        await _client.auth.signInAnonymously().timeout(_timeout);
+      return await _rpc(name, params);
+    } on _SessionRefused catch (refused) {
+      if (refused.ended) {
+        await _signOutHere();
+      } else {
+        await _rpc('confirm_session');
       }
+    }
+    try {
+      return await _rpc(name, params);
+    } on _SessionRefused catch (refused) {
+      throw ServerException('$name refused the session again', cause: refused);
+    }
+  }
+
+  /// Throws what [_call] does, and [_SessionRefused].
+  Future<Object?> _rpc(String name, [Map<String, Object?>? params]) async {
+    if (_client.auth.currentSession == null) {
+      await _auth(_client.auth.signInAnonymously);
+    }
+    try {
       return await _client.rpc<Object?>(name, params: params).timeout(_timeout);
     } on TimeoutException catch (error) {
       throw RequestTimeoutException('$name timed out', cause: error);
     } on PostgrestException catch (error) {
-      throw _fromPostgrest(name, error);
-    } on AuthRetryableFetchException catch (error) {
-      throw NoConnectionException('Could not sign in', cause: error);
-    } on AuthException catch (error) {
-      throw ServerException(
-        'Sign-in refused: ${error.message}',
-        statusCode: int.tryParse(error.statusCode ?? ''),
-        cause: error,
-      );
+      throw switch (error.message) {
+        'session_ended' => const _SessionRefused(ended: true),
+        'session_unconfirmed' => const _SessionRefused(ended: false),
+        _ => _fromPostgrest(name, error),
+      };
       // The HTTP client reports a lost network as its own exception type
       // (a socket error, or `ClientException` on the web), which the
       // Supabase packages do not export: any other exception here is the
       // transport's.
     } on Exception catch (error) {
       throw NoConnectionException('$name failed to connect', cause: error);
+    }
+  }
+
+  /// Runs [request] against Supabase Auth.
+  ///
+  /// Throws [NoConnectionException], [RequestTimeoutException] or
+  /// [ServerException] (with the [AuthException] as its cause).
+  Future<T> _auth<T>(Future<T> Function() request) async {
+    try {
+      return await request().timeout(_timeout);
+    } on TimeoutException catch (error) {
+      throw RequestTimeoutException('Auth timed out', cause: error);
+    } on AuthRetryableFetchException catch (error) {
+      throw NoConnectionException('Could not reach Auth', cause: error);
+    } on AuthException catch (error) {
+      throw ServerException(
+        'Auth refused: ${error.message}',
+        statusCode: int.tryParse(error.statusCode ?? ''),
+        cause: error,
+      );
+    } on Exception catch (error) {
+      throw NoConnectionException('Auth failed to connect', cause: error);
+    }
+  }
+
+  /// Forgets this device's session; the next call signs in anonymously.
+  /// The session is gone here even when telling the server fails.
+  Future<void> _signOutHere() async {
+    try {
+      await _auth(() => _client.auth.signOut());
+    } on AppException catch (error, stackTrace) {
+      AppLogger.warning('Signed out here only', error, stackTrace);
     }
   }
 
@@ -288,4 +392,12 @@ class SupabaseConnection
   static String _display(String code) =>
       '${code.substring(0, code.length ~/ 2)}-'
       '${code.substring(code.length ~/ 2)}';
+}
+
+/// The server refused this device's session: [ended], or a protected
+/// account's new session not yet confirmed.
+class _SessionRefused implements Exception {
+  const _SessionRefused({required this.ended});
+
+  final bool ended;
 }

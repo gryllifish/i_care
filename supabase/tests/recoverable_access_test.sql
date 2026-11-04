@@ -5,7 +5,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(20);
+select plan(21);
 
 -- Ana's phone starts anonymous; Rosa's stays so. A stranger signed in
 -- with a Google account linked to no one.
@@ -133,6 +133,11 @@ select throws_ok(
 );
 select public.confirm_session();
 select is(pg_temp.recovered(), 1, 'a new phone tells the circle');
+select is(
+  public.current_member(),
+  current_setting('test.ana'),
+  'the new phone learns which member it is'
+);
 select is(
   pg_temp.recovered_field('member_id'),
   current_setting('test.ana'),

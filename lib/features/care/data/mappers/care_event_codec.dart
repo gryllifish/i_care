@@ -227,6 +227,10 @@ abstract final class CareEventCodec {
         'member_id': event.memberId,
       },
       MemberJoined() => {'type': 'member_joined', 'member_id': event.memberId},
+      AccessRecovered() => {
+        'type': 'access_recovered',
+        'member_id': event.memberId,
+      },
       RoleChanged() => {
         'type': 'role_changed',
         'member_id': event.memberId,
@@ -439,6 +443,10 @@ abstract final class CareEventCodec {
         memberId: json.string('member_id'),
       ),
       'member_joined' => CareEvent.memberJoined(
+        meta: meta,
+        memberId: json.string('member_id'),
+      ),
+      'access_recovered' => CareEvent.accessRecovered(
         meta: meta,
         memberId: json.string('member_id'),
       ),

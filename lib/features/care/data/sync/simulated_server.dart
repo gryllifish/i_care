@@ -110,6 +110,11 @@ class SimulatedServer {
   /// where the platform keeps microseconds; `serverSeq` orders the log.
   DateTime? _lastReceivedAt;
   final _bindings = <String, _Binding>{};
+
+  /// Which device each protected access belongs to, by its Google
+  /// account's email (`docs/roles.md`, recoverable access). Kept in
+  /// memory: the demo does not offer it; tests and the contract do.
+  final _accounts = <String, String>{};
   final _issued = <String, _Code>{};
 
   int get _lastSequence => _records.isEmpty ? 0 : _records.last.sequence;
@@ -335,6 +340,60 @@ class SimulatedServer {
     await startEmpty();
   }
 
+  /// The email of the Google account protecting [deviceId]'s access;
+  /// null when none does.
+  String? protectedWith(String deviceId) => _accounts.entries
+      .where((account) => account.value == deviceId)
+      .map((account) => account.key)
+      .firstOrNull;
+
+  /// Protects [deviceId]'s access with the Google account [email].
+  ///
+  /// Throws [NotMemberException] or [AccountInUseException].
+  void protect(String deviceId, String email) {
+    if (!isActive(deviceId)) {
+      throw const NotMemberException('Not in the circle');
+    }
+    if (_accounts[email] case final String owner when owner != deviceId) {
+      throw const AccountInUseException('The account protects another');
+    }
+    _accounts[email] = deviceId;
+  }
+
+  /// Makes [deviceId] the member whose access [email] protects. The
+  /// device that had it becomes a stranger, as a phone whose session
+  /// ended does on Supabase, and the circle is told. Returns the member's
+  /// id.
+  ///
+  /// Throws [NoAccessException] or [StorageException].
+  Future<String> recover(String deviceId, String email) async {
+    final previous = _accounts[email];
+    final memberId = previous == null ? null : activeMemberOf(previous);
+    if (previous == null || memberId == null) {
+      throw const NoAccessException('No access with this account');
+    }
+    if (previous == deviceId) return memberId;
+    _bindings.remove(previous);
+    await hiveGuardAsync('Server devices', () => _devices.delete(previous));
+    _accounts[email] = deviceId;
+    await bind(deviceId, memberId);
+    final at = _clock();
+    await _persist([
+      _store(
+        CareEvent.accessRecovered(
+          meta: EventMeta(
+            id: 'recovered-$deviceId-${at.microsecondsSinceEpoch}',
+            caregiverId: systemAuthor,
+            occurredAt: at,
+          ),
+          memberId: memberId,
+        ),
+        sequence: _lastSequence + 1,
+      ),
+    ]);
+    return memberId;
+  }
+
   /// Empties everything and remembers that the demo started without data.
   ///
   /// Throws [StorageException].
@@ -393,6 +452,7 @@ class SimulatedServer {
     _lastReceivedAt = null;
     _hasCircle = false;
     _bindings.clear();
+    _accounts.clear();
     _issued.clear();
     await hiveGuardAsync('Server log', _box.clear);
     await hiveGuardAsync('Server devices', _devices.clear);

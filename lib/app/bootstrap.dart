@@ -100,6 +100,7 @@ Future<void> _runBeta() async {
       devicePrefsProvider.overrideWithValue(HiveDevicePrefs(phone.prefs)),
       syncGatewayProvider.overrideWithValue(connection),
       membershipGatewayProvider.overrideWithValue(connection),
+      accessGatewayProvider.overrideWithValue(connection),
       isDemoProvider.overrideWithValue(false),
       pushRepositoryProvider.overrideWithValue(push),
     ],

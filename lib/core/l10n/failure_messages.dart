@@ -16,6 +16,8 @@ extension FailureMessage on Failure {
     InvalidCodeFailure(problem: CodeProblem.used) => l10n.errorCodeUsed,
     InvalidCodeFailure(problem: CodeProblem.expired) => l10n.errorCodeExpired,
     InvalidCodeFailure(problem: CodeProblem.locked) => l10n.errorCodeLocked,
+    AccountInUseFailure() => l10n.errorAccountInUse,
+    NoAccessFailure() => l10n.errorNoAccess,
   };
 }
 

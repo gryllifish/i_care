@@ -104,6 +104,7 @@ String eventSentence(
     ),
     InvitationRevoked() => l10n.activityInvitationRevoked(name, member),
     MemberJoined() => l10n.activityMemberJoined(member),
+    AccessRecovered() => l10n.activityAccessRecovered(member),
     RoleChanged(:final role) => l10n.activityRoleChanged(
       name,
       member,
