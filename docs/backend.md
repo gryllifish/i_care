@@ -274,10 +274,16 @@ when. The Firebase project is used for messaging only, no data.
   - Messages carry only the kind of news, in the device's language
     ("There is a new note for the circle"): no names, medications or
     other health data travel through Google's or Apple's servers.
-  - In the app (beta builds with `FIREBASE_*` values, Android and web):
-    Settings → Notifications, off until the person turns it on, which
-    asks the system for permission (`PushRepositoryImpl`). The token is
-    sent again on every start and language change (`pushSync`). The web
+  - In the app (beta builds with `FIREBASE_*` values, Android and web)
+    the system's permission is the only switch. The welcome, shown after
+    joining or creating a circle, says it will ask, and its button asks
+    (a tap, which browsers require). Once allowed, the phone keeps its
+    token on the server by itself on every start and language change;
+    once refused in the system's settings, it has the server forget it
+    (`PushRepositoryImpl.sync`, `pushNotificationsProvider`). Settings
+    only shows the state, with a button while never asked. An in-app
+    switch on top was tried and dropped on 2026-11-04: testers enabled
+    notifications in the system and never found it. The web
     needs `web/firebase-messaging-sw.js`, whose values are the Firebase
     project's public identifiers. Foreground messages are not shown: the
     open app already syncs.

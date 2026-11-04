@@ -17,7 +17,7 @@ class App extends ConsumerWidget {
     ref
       ..watch(audienceSyncProvider)
       // Keeps this phone's push token current on the server.
-      ..watch(pushSyncProvider);
+      ..watch(pushNotificationsProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => context.l10n.appTitle,
       debugShowCheckedModeBanner: false,

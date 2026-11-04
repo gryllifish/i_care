@@ -5,6 +5,7 @@ import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
+import 'package:i_care/features/care/domain/repositories/push_repository.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/features/settings/presentation/widgets/demo_texts.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
@@ -80,6 +81,15 @@ class WelcomeScreen extends ConsumerWidget {
                             color: context.colors.inkMuted,
                           ),
                         ),
+                        // Said before the system asks, so it is no surprise.
+                        if (ref.watch(pushNotificationsProvider).value ==
+                            PushPermission.notAsked)
+                          Text(
+                            l10n.welcomeNotifications,
+                            style: AppTextStyles.bodyMuted.copyWith(
+                              color: context.colors.inkMuted,
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -95,8 +105,7 @@ class WelcomeScreen extends ConsumerWidget {
               child: ref.watch(isSampleCircleProvider)
                   ? const _DemoChoice()
                   : FilledButton(
-                      onPressed: () =>
-                          ref.read(welcomeSeenProvider.notifier).markSeen(),
+                      onPressed: () => _start(ref),
                       child: Text(l10n.welcomeStart),
                     ),
             ),
@@ -105,6 +114,13 @@ class WelcomeScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Asks for notifications, when the system never was, then starts. The
+/// tap that starts also lets browsers show their permission prompt.
+Future<void> _start(WidgetRef ref) async {
+  await ref.read(pushNotificationsProvider.notifier).askOnce();
+  await ref.read(welcomeSeenProvider.notifier).markSeen();
 }
 
 /// Only in the demo, while it shows the sample circle: keep exploring it,

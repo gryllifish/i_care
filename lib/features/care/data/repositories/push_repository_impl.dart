@@ -9,9 +9,9 @@ import 'package:i_care/core/utils/app_logger.dart';
 import 'package:i_care/features/care/data/sync/push_token_gateway.dart';
 import 'package:i_care/features/care/domain/repositories/push_repository.dart';
 
-/// [PushRepository] over Firebase Cloud Messaging, which gives this phone
-/// its token, and the [PushTokenGateway], which keeps it on the server.
-/// Firebase types never leave this class.
+/// [PushRepository] over Firebase Cloud Messaging, which asks for
+/// permission and gives this phone its token, and the [PushTokenGateway],
+/// which keeps it on the server. Firebase types never leave this class.
 ///
 /// Uses registration tokens (`getToken`, `onTokenRefresh`), which the
 /// `push` function sends to through FCM's `messages:send`. firebase_messaging
@@ -38,35 +38,47 @@ class PushRepositoryImpl implements PushRepository {
   StreamSubscription<String>? _refreshes;
 
   @override
-  Future<Result<void>> enable({required String language}) => guard(() async {
-    final settings = await _firebase(_messaging.requestPermission);
-    if (!_allowed(settings)) {
-      throw const NotificationsBlockedException('Notifications not allowed');
-    }
-    await _register(language);
-  });
+  Future<Result<PushPermission>> permission() => guard(
+    () async => _read(await _settings(_messaging.getNotificationSettings)),
+  );
 
   @override
-  Future<Result<void>> refresh({required String language}) => guard(() async {
-    final settings = await _firebase(_messaging.getNotificationSettings);
-    if (_allowed(settings)) await _register(language);
-  });
+  Future<Result<PushPermission>> request({required String language}) =>
+      guard(() async {
+        final permission = _read(await _settings(_messaging.requestPermission));
+        if (permission == PushPermission.allowed) await _register(language);
+        return permission;
+      });
 
   @override
-  Future<Result<void>> disable() => guard(() async {
-    await _refreshes?.cancel();
-    _refreshes = null;
-    await _gateway.unregisterPushToken();
-    await _firebase(_messaging.deleteToken);
-  });
+  Future<Result<PushPermission>> sync({required String language}) =>
+      guard(() async {
+        final permission = _read(
+          await _settings(_messaging.getNotificationSettings),
+        );
+        switch (permission) {
+          case PushPermission.allowed:
+            await _register(language);
+          case PushPermission.denied:
+            // Turned off in the system's settings: stop being sent to.
+            await _refreshes?.cancel();
+            _refreshes = null;
+            await _gateway.unregisterPushToken();
+          case PushPermission.notAsked:
+            break;
+        }
+        return permission;
+      });
 
-  static bool _allowed(NotificationSettings settings) =>
-      switch (settings.authorizationStatus) {
+  static PushPermission _read(NotificationSettings? settings) =>
+      switch (settings?.authorizationStatus) {
         AuthorizationStatus.authorized ||
-        AuthorizationStatus.provisional => true,
+        AuthorizationStatus.provisional => PushPermission.allowed,
+        AuthorizationStatus.notDetermined => PushPermission.notAsked,
+        // Null: the browser blocks notifications for the site.
         AuthorizationStatus.denied ||
         AuthorizationStatus.deniedPermanently ||
-        AuthorizationStatus.notDetermined => false,
+        null => PushPermission.denied,
       };
 
   Future<void> _register(String language) async {
@@ -96,18 +108,35 @@ class PushRepositoryImpl implements PushRepository {
     }
   }
 
+  /// The system's notification settings; null when the browser blocks
+  /// notifications for the site, which Firebase reports as an error.
+  ///
+  /// Throws [NoConnectionException] for other Firebase failures.
+  static Future<NotificationSettings?> _settings(
+    Future<NotificationSettings> Function() call,
+  ) async {
+    try {
+      return await _firebase(call);
+    } on _Blocked {
+      return null;
+    }
+  }
+
   /// Runs a Firebase call, reporting its failures as [AppException]s.
   ///
-  /// Throws [NotificationsBlockedException] when the browser blocks
-  /// notifications, else [NoConnectionException].
+  /// Throws [_Blocked] when the browser blocks notifications, else
+  /// [NoConnectionException].
   static Future<T> _firebase<T>(Future<T> Function() call) async {
     try {
       return await call();
     } on FirebaseException catch (error) {
-      if (error.code.contains('permission-blocked')) {
-        throw NotificationsBlockedException(error.code, cause: error);
-      }
+      if (error.code.contains('permission-blocked')) throw const _Blocked();
       throw NoConnectionException('Firebase: ${error.code}', cause: error);
     }
   }
+}
+
+/// The browser blocks notifications for the site.
+class _Blocked implements Exception {
+  const _Blocked();
 }

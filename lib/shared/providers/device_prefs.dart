@@ -19,9 +19,6 @@ abstract final class PrefKeys {
 
   /// The member this device joined the circle as (`docs/roles.md`).
   static const memberId = 'member_id';
-
-  /// Whether this phone asked for push notifications.
-  static const notifications = 'notifications';
 }
 
 /// Preferences in a Hive box, so they survive restarts.

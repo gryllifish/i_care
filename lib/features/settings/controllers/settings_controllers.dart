@@ -7,6 +7,7 @@ import 'package:i_care/core/utils/app_logger.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/data/care_providers.dart';
 import 'package:i_care/features/care/domain/permissions.dart';
+import 'package:i_care/features/care/domain/repositories/push_repository.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -96,43 +97,47 @@ bool canResetDemo(Ref ref) =>
     (ref.watch(demoLayoutProvider) == DemoLayout.onePhone ||
         ref.watch(canDoProvider(CareAction.resetDemo)));
 
-/// Whether this phone is told about the circle's news. Off until the
-/// person turns it on, which asks the system for permission.
+/// This phone's notification permission, or null where there are no
+/// push notifications (`docs/backend.md`). Lives with the app: on start
+/// and when the language changes it keeps the phone's token on the
+/// server, or has the server forget it once the permission is gone.
 @Riverpod(keepAlive: true)
 class PushNotifications extends _$PushNotifications {
   @override
-  bool build() =>
-      ref.watch(devicePrefsProvider).read(PrefKeys.notifications) == 'true';
+  Future<PushPermission?> build() async {
+    final repository = ref.watch(pushRepositoryProvider);
+    if (repository == null) return null;
+    ref.watch(appLanguageProvider);
+    switch (await repository.sync(language: _pushLanguage(ref))) {
+      case Ok(:final value):
+        return value;
+      case Err(:final failure):
+        // Offline, say: synced on the next start; the answer still holds.
+        AppLogger.warning('Push token not synced', failure);
+        return switch (await repository.permission()) {
+          Ok(:final value) => value,
+          Err() => null,
+        };
+    }
+  }
 
-  /// Turns notifications on or off; stays as it was when that fails.
-  Future<Result<void>> set({required bool enabled}) async {
+  /// Asks the system for permission; its dialog shows only the first time.
+  Future<Result<void>> request() async {
     final repository = ref.read(pushRepositoryProvider);
     if (repository == null) return const Ok(null);
-    final result = enabled
-        ? await repository.enable(language: _pushLanguage(ref))
-        : await repository.disable();
-    if (result case Ok()) {
-      state = enabled;
-      await ref
-          .read(devicePrefsProvider)
-          .write(PrefKeys.notifications, enabled ? 'true' : null);
-    }
+    final result = await repository.request(language: _pushLanguage(ref));
+    if (result case Ok(:final value)) state = AsyncData(value);
     return result;
   }
-}
 
-/// Lives with the app: sends this phone's push token again on start and
-/// when the language changes, since either may have changed.
-@Riverpod(keepAlive: true)
-Future<void> pushSync(Ref ref) async {
-  final repository = ref.watch(pushRepositoryProvider);
-  if (repository == null || !ref.watch(pushNotificationsProvider)) return;
-  ref.watch(appLanguageProvider);
-  if (await repository.refresh(language: _pushLanguage(ref)) case Err(
-    :final failure,
-  )) {
-    // Tried again on the next start.
-    AppLogger.warning('Push token not refreshed', failure);
+  /// Asks only if the system never was: when someone starts using a
+  /// circle. Its outcome shows in Settings; a failure is only logged.
+  Future<void> askOnce() async {
+    final permission = await future;
+    if (permission != PushPermission.notAsked) return;
+    if (await request() case Err(:final failure)) {
+      AppLogger.warning('Notifications not requested', failure);
+    }
   }
 }
 

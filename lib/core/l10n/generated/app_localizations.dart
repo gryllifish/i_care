@@ -2407,29 +2407,41 @@ abstract class AppLocalizations {
   /// **'That code expired. Ask for a new one.'**
   String get errorCodeExpired;
 
-  /// No description provided for @errorNotificationsBlocked.
-  ///
-  /// In en, this message translates to:
-  /// **'Notifications are blocked for ICare. Allow them in this device\'s settings, then try again.'**
-  String get errorNotificationsBlocked;
-
   /// No description provided for @sectionNotifications.
   ///
   /// In en, this message translates to:
   /// **'Notifications'**
   String get sectionNotifications;
 
-  /// No description provided for @notificationsSwitch.
+  /// No description provided for @notificationsOn.
   ///
   /// In en, this message translates to:
-  /// **'Tell me about the circle\'s news'**
-  String get notificationsSwitch;
+  /// **'Notifications are on.'**
+  String get notificationsOn;
+
+  /// No description provided for @notificationsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are off. You can turn them on in this device\'s settings.'**
+  String get notificationsOff;
+
+  /// No description provided for @notificationsTurnOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on notifications'**
+  String get notificationsTurnOn;
 
   /// No description provided for @notificationsBody.
   ///
   /// In en, this message translates to:
   /// **'A new note, a change in appointments, or a dose recorded twice. Notifications never say who or which medication.'**
   String get notificationsBody;
+
+  /// No description provided for @welcomeNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'When you start, ICare will ask to notify you of the circle\'s news: a new note, a change in appointments, or a dose recorded twice.'**
+  String get welcomeNotifications;
 
   /// No description provided for @errorCodeLocked.
   ///

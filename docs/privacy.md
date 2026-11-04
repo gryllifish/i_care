@@ -58,7 +58,8 @@ Before the family enters real data:
 - **Supabase** (database, Ireland) stores the circle's log.
 - **Google (Firebase Cloud Messaging)** delivers push notifications. It
   sees a device token and the kind of news ("a new note"), never names,
-  medications or other health data. Turned on per phone, by its person.
+  medications or other health data. Each phone's person allows it in
+  the system's dialog, and can withdraw it in the system's settings.
 
 ## Stage 3, before strangers use it
 - Privacy policy and terms in the app and on the site.

@@ -7,6 +7,7 @@ import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/core/error/result.dart';
 import 'package:i_care/features/care/data/repositories/push_repository_impl.dart';
 import 'package:i_care/features/care/data/sync/push_token_gateway.dart';
+import 'package:i_care/features/care/domain/repositories/push_repository.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockMessaging extends Mock implements FirebaseMessaging;
@@ -44,6 +45,11 @@ void main() {
     return settings;
   }
 
+  void systemSays(AuthorizationStatus status) {
+    when(() => messaging.getNotificationSettings())
+        .thenAnswer((_) async => settings(status));
+  }
+
   setUp(() {
     messaging = _MockMessaging();
     gateway = _FakeGateway();
@@ -52,7 +58,6 @@ void main() {
     when(() => messaging.getToken(vapidKey: any(named: 'vapidKey')))
         .thenAnswer((_) async => 'token-1');
     when(() => messaging.onTokenRefresh).thenAnswer((_) => refreshes.stream);
-    when(() => messaging.deleteToken()).thenAnswer((_) async {});
     repository = PushRepositoryImpl(
       messaging: messaging,
       gateway: gateway,
@@ -61,12 +66,14 @@ void main() {
     );
   });
 
-  test('turning on asks for permission, then the server keeps the token, '
-      'and later tokens too', () async {
+  test('allowing in the system dialog is all it takes: the server keeps '
+      'the token, and later ones too', () async {
     when(() => messaging.requestPermission())
         .thenAnswer((_) async => settings(AuthorizationStatus.authorized));
 
-    expect(await repository.enable(language: 'es'), isA<Ok<void>>());
+    final result = await repository.request(language: 'es');
+
+    expect((result as Ok<PushPermission>).value, PushPermission.allowed);
     expect(gateway.registered, [
       (token: 'token-1', platform: 'web', language: 'es'),
     ]);
@@ -77,46 +84,31 @@ void main() {
     expect(gateway.registered.last.token, 'token-2');
   });
 
-  test(
-    'a person who says no is told how to allow it, and nothing is sent',
-    () async {
-      when(() => messaging.requestPermission())
-          .thenAnswer((_) async => settings(AuthorizationStatus.denied));
+  test('a no in the dialog is an answer, not an error, and sends '
+      'nothing', () async {
+    when(() => messaging.requestPermission())
+        .thenAnswer((_) async => settings(AuthorizationStatus.denied));
 
-      final result = await repository.enable(language: 'es');
+    final result = await repository.request(language: 'es');
 
-      expect(
-        result,
-        isA<Err<void>>().having(
-          (err) => err.failure,
-          'failure',
-          isA<NotificationsBlockedFailure>(),
-        ),
-      );
-      expect(gateway.registered, isEmpty);
-    },
-  );
+    expect((result as Ok<PushPermission>).value, PushPermission.denied);
+    expect(gateway.registered, isEmpty);
+  });
 
-  test('a browser that blocks notifications says so; other Firebase '
-      'failures read as no connection', () async {
+  test('a browser that blocks notifications reads as denied; other '
+      'Firebase failures as no connection', () async {
     when(() => messaging.requestPermission()).thenThrow(
       FirebaseException(plugin: 'messaging', code: 'permission-blocked'),
     );
-    expect(
-      await repository.enable(language: 'en'),
-      isA<Err<void>>().having(
-        (err) => err.failure,
-        'failure',
-        isA<NotificationsBlockedFailure>(),
-      ),
-    );
+    final blocked = await repository.request(language: 'en');
+    expect((blocked as Ok<PushPermission>).value, PushPermission.denied);
 
     when(() => messaging.requestPermission()).thenThrow(
       FirebaseException(plugin: 'messaging', code: 'token-subscribe-failed'),
     );
     expect(
-      await repository.enable(language: 'en'),
-      isA<Err<void>>().having(
+      await repository.request(language: 'en'),
+      isA<Err<PushPermission>>().having(
         (err) => err.failure,
         'failure',
         isA<NoConnectionFailure>(),
@@ -124,25 +116,33 @@ void main() {
     );
   });
 
-  test(
-    'refreshing sends the token only when notifications are allowed',
-    () async {
-      when(() => messaging.getNotificationSettings())
-          .thenAnswer((_) async => settings(AuthorizationStatus.notDetermined));
-      await repository.refresh(language: 'es');
-      expect(gateway.registered, isEmpty);
+  test('on start, an allowed phone sends its token by itself', () async {
+    systemSays(AuthorizationStatus.authorized);
 
-      when(() => messaging.getNotificationSettings())
-          .thenAnswer((_) async => settings(AuthorizationStatus.authorized));
-      await repository.refresh(language: 'en');
-      expect(gateway.registered.single.language, 'en');
-    },
-  );
+    await repository.sync(language: 'en');
 
-  test('turning off forgets the token on the server and here', () async {
-    expect(await repository.disable(), isA<Ok<void>>());
+    expect(gateway.registered.single.language, 'en');
+    expect(gateway.unregistered, 0);
+  });
 
+  test('on start, a phone never asked sends nothing and is not '
+      'forgotten', () async {
+    systemSays(AuthorizationStatus.notDetermined);
+
+    final result = await repository.sync(language: 'es');
+
+    expect((result as Ok<PushPermission>).value, PushPermission.notAsked);
+    expect(gateway.registered, isEmpty);
+    expect(gateway.unregistered, 0);
+  });
+
+  test('on start, a phone whose notifications were turned off in the '
+      'system is forgotten by the server', () async {
+    systemSays(AuthorizationStatus.denied);
+
+    await repository.sync(language: 'es');
+
+    expect(gateway.registered, isEmpty);
     expect(gateway.unregistered, 1);
-    verify(() => messaging.deleteToken()).called(1);
   });
 }
