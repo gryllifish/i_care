@@ -343,7 +343,9 @@ documented), nursing-home features.
       contract suite; the beta build chosen by `SYNC_BACKEND`.
    3. (done) Encrypted local storage and deleting the circle from
       Settings (`docs/privacy.md`); a log export is still to do.
-   4. Push notifications by event (FCM).
+   4. Push notifications by event (FCM): built and deployed; sending
+      starts once the function and Vault secrets are set, then needs a
+      test on two real devices.
    5. Beta build for the family: web/PWA and Android first; iOS needs an
       Apple Developer account.
 

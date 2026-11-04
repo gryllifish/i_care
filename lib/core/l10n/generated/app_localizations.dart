@@ -2407,6 +2407,30 @@ abstract class AppLocalizations {
   /// **'That code expired. Ask for a new one.'**
   String get errorCodeExpired;
 
+  /// No description provided for @errorNotificationsBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are blocked for ICare. Allow them in this device\'s settings, then try again.'**
+  String get errorNotificationsBlocked;
+
+  /// No description provided for @sectionNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get sectionNotifications;
+
+  /// No description provided for @notificationsSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell me about the circle\'s news'**
+  String get notificationsSwitch;
+
+  /// No description provided for @notificationsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A new note, a change in appointments, or a dose recorded twice. Notifications never say who or which medication.'**
+  String get notificationsBody;
+
   /// No description provided for @errorCodeLocked.
   ///
   /// In en, this message translates to:

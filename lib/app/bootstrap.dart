@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -19,11 +21,14 @@ import 'package:i_care/features/care/data/datasources/rejected_store.dart';
 import 'package:i_care/features/care/data/datasources/storage_key.dart';
 import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
+import 'package:i_care/features/care/data/repositories/push_repository_impl.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
+import 'package:i_care/features/care/data/sync/push_token_gateway.dart';
 import 'package:i_care/features/care/data/sync/secure_session_storage.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
 import 'package:i_care/features/care/data/sync/supabase_connection.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
+import 'package:i_care/features/care/domain/repositories/push_repository.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'
@@ -84,6 +89,7 @@ Future<void> _runBeta() async {
     ),
   );
   final connection = SupabaseConnection(Supabase.instance.client);
+  final push = await _push(connection);
   final container = ProviderContainer(
     retry: retryPolicy,
     overrides: [
@@ -95,9 +101,41 @@ Future<void> _runBeta() async {
       syncGatewayProvider.overrideWithValue(connection),
       membershipGatewayProvider.overrideWithValue(connection),
       isDemoProvider.overrideWithValue(false),
+      pushRepositoryProvider.overrideWithValue(push),
     ],
   );
   runApp(UncontrolledProviderScope(container: container, child: const App()));
+}
+
+/// Push notifications through Firebase, for builds that name a Firebase
+/// project, on Android and the web; null elsewhere (iOS needs APNs and an
+/// Apple Developer account) or when Firebase cannot start.
+Future<PushRepository?> _push(PushTokenGateway gateway) async {
+  final platform = switch (defaultTargetPlatform) {
+    _ when kIsWeb => 'web',
+    TargetPlatform.android => 'android',
+    _ => null,
+  };
+  if (platform == null || !Env.hasFirebase) return null;
+  try {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: Env.firebaseApiKey,
+        appId: kIsWeb ? Env.firebaseWebAppId : Env.firebaseAndroidAppId,
+        messagingSenderId: Env.firebaseSenderId,
+        projectId: Env.firebaseProjectId,
+      ),
+    );
+  } on FirebaseException catch (error, stackTrace) {
+    AppLogger.error('Firebase unavailable', error, stackTrace);
+    return null;
+  }
+  return PushRepositoryImpl(
+    messaging: FirebaseMessaging.instance,
+    gateway: gateway,
+    platform: platform,
+    vapidKey: kIsWeb ? Env.firebaseVapidKey : null,
+  );
 }
 
 /// Names this phone's stores. The server knows the phone by its signed-in

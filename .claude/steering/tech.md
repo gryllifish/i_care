@@ -15,6 +15,7 @@
 | `hive_ce` + `hive_ce_flutter` | Local event log, outbox and the simulated remote (IndexedDB on web). Boxes of JSON strings; no type adapters. |
 | `uuid` | Event ids generated on the device, unique across devices without a server (`docs/backend.md`). |
 | `flutter_secure_storage` | The beta's storage key and Supabase session in Keychain / Android Keystore (`docs/privacy.md`). |
+| `firebase_core` + `firebase_messaging` | Beta push notifications on Android and the web, by event (`docs/backend.md`). Firebase is used for messaging only; no data is stored there. |
 | `supabase_flutter` | Stage 2 beta backend: anonymous sign-in, calls to the backend's functions, Realtime pings, session kept across restarts. Used only in `data/sync/supabase_connection.dart` and `bootstrap`. |
 | `mocktail` (dev) | Mocks without codegen. |
 | `fake_async` (dev) | Deterministic time for sync latency and undo windows. |
@@ -23,12 +24,10 @@
 | `flutter_launcher_icons` (dev) | Platform icons from `tool/icon/icare.svg`, drawn by `tool/icon/render.sh`. |
 
 ### Deliberately not added yet (YAGNI)
-- **FCM** (`firebase_core`, `firebase_messaging`): stage 2 push
-  notifications by event; Firebase is used for messaging only.
 - **`google_fonts`**: Atkinson Hyperlegible Next is bundled in
   `assets/fonts/` instead, so text never waits on a font server.
-- **Notifications**: out of the demo; push by event comes with the stage
-  2 beta, overdue alerts later.
+- **Local notifications** (`flutter_local_notifications`): push comes
+  from the server; overdue alerts would come from it too.
 - **Native flavors**: `--dart-define-from-file` covers dev/staging/prod
   until per-flavor app ids or icons are needed.
 - **Logger package**: `AppLogger` wraps `dart:developer`.

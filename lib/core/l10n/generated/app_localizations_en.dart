@@ -1484,6 +1484,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorCodeExpired => 'That code expired. Ask for a new one.';
 
   @override
+  String get errorNotificationsBlocked =>
+      'Notifications are blocked for ICare. Allow them in this device\'s settings, then try again.';
+
+  @override
+  String get sectionNotifications => 'Notifications';
+
+  @override
+  String get notificationsSwitch => 'Tell me about the circle\'s news';
+
+  @override
+  String get notificationsBody =>
+      'A new note, a change in appointments, or a dose recorded twice. Notifications never say who or which medication.';
+
+  @override
   String get errorCodeLocked =>
       'Too many wrong codes. Wait 15 minutes and try again.';
 

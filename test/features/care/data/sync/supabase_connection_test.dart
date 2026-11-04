@@ -183,6 +183,25 @@ Future<void> main() async {
           }
         });
 
+        test('a device keeps and forgets its push token', () async {
+          final phone = newDevice();
+
+          await phone.connection.registerPushToken(
+            token: 'fcm-token',
+            platform: 'android',
+            language: 'es',
+          );
+          await phone.connection.unregisterPushToken();
+          await expectLater(
+            phone.connection.registerPushToken(
+              token: 'fcm-token',
+              platform: 'fax',
+              language: 'es',
+            ),
+            throwsA(isA<ServerException>()),
+          );
+        });
+
         test('too many wrong codes lock the device out for a while', () async {
           final guesser = newDevice();
           Future<CodeProblem?> attempt() async {

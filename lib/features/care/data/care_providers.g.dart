@@ -432,6 +432,59 @@ final class CareRepositoryProvider
 
 String _$careRepositoryHash() => r'02c1a84b680ae14d3c507bb0ea0202e4f454e64e';
 
+/// Push notifications on this phone; null where there are none: the
+/// demo, and builds without Firebase or on platforms without push.
+/// `bootstrap` provides it for the beta.
+
+@ProviderFor(pushRepository)
+final pushRepositoryProvider = PushRepositoryProvider._();
+
+/// Push notifications on this phone; null where there are none: the
+/// demo, and builds without Firebase or on platforms without push.
+/// `bootstrap` provides it for the beta.
+
+final class PushRepositoryProvider
+    extends
+        $FunctionalProvider<PushRepository?, PushRepository?, PushRepository?>
+    with $Provider<PushRepository?> {
+  /// Push notifications on this phone; null where there are none: the
+  /// demo, and builds without Firebase or on platforms without push.
+  /// `bootstrap` provides it for the beta.
+  PushRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pushRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$pushRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PushRepository?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PushRepository? create(Ref ref) {
+    return pushRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PushRepository? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PushRepository?>(value),
+    );
+  }
+}
+
+String _$pushRepositoryHash() => r'049c62e5926eb2371bd036038fe7dc5a3dc9d06c';
+
 @ProviderFor(membershipGateway)
 final membershipGatewayProvider = MembershipGatewayProvider._();
 

@@ -14,7 +14,10 @@ class App extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Lives with the app: resyncs when a role change changes what this
     // phone may read.
-    ref.watch(audienceSyncProvider);
+    ref
+      ..watch(audienceSyncProvider)
+      // Keeps this phone's push token current on the server.
+      ..watch(pushSyncProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => context.l10n.appTitle,
       debugShowCheckedModeBanner: false,

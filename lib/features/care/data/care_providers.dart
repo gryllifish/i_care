@@ -11,6 +11,7 @@ import 'package:i_care/features/care/data/sync/sync_gateway.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/repositories/care_repository.dart';
 import 'package:i_care/features/care/domain/repositories/membership_repository.dart';
+import 'package:i_care/features/care/domain/repositories/push_repository.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
 import 'package:i_care/shared/providers/id_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -82,6 +83,12 @@ CareRepositoryImpl careRepositoryImpl(Ref ref) {
 
 @Riverpod(keepAlive: true)
 CareRepository careRepository(Ref ref) => ref.watch(careRepositoryImplProvider);
+
+/// Push notifications on this phone; null where there are none: the
+/// demo, and builds without Firebase or on platforms without push.
+/// `bootstrap` provides it for the beta.
+@Riverpod(keepAlive: true)
+PushRepository? pushRepository(Ref ref) => null;
 
 @Riverpod(keepAlive: true)
 MembershipGateway membershipGateway(Ref ref) =>

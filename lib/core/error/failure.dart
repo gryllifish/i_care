@@ -75,6 +75,12 @@ final class ForbiddenFailure extends Failure {
   const ForbiddenFailure({super.cause});
 }
 
+/// The person did not allow notifications on this device, or blocked them
+/// in its settings.
+final class NotificationsBlockedFailure extends Failure {
+  const NotificationsBlockedFailure({super.cause});
+}
+
 /// Why an invitation code cannot be used.
 enum CodeProblem {
   unknown,

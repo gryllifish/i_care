@@ -415,3 +415,106 @@ final class CanResetDemoProvider extends $FunctionalProvider<bool, bool, bool>
 }
 
 String _$canResetDemoHash() => r'8abb5e182f93117f13ea0322c01392bfcc849c0d';
+
+/// Whether this phone is told about the circle's news. Off until the
+/// person turns it on, which asks the system for permission.
+
+@ProviderFor(PushNotifications)
+final pushNotificationsProvider = PushNotificationsProvider._();
+
+/// Whether this phone is told about the circle's news. Off until the
+/// person turns it on, which asks the system for permission.
+final class PushNotificationsProvider
+    extends $NotifierProvider<PushNotifications, bool> {
+  /// Whether this phone is told about the circle's news. Off until the
+  /// person turns it on, which asks the system for permission.
+  PushNotificationsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pushNotificationsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$pushNotificationsHash();
+
+  @$internal
+  @override
+  PushNotifications create() => PushNotifications();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$pushNotificationsHash() => r'eec40512ee5cd4c62bcc85c3311e4c3e1135f23b';
+
+/// Whether this phone is told about the circle's news. Off until the
+/// person turns it on, which asks the system for permission.
+
+abstract class _$PushNotifications extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// Lives with the app: sends this phone's push token again on start and
+/// when the language changes, since either may have changed.
+
+@ProviderFor(pushSync)
+final pushSyncProvider = PushSyncProvider._();
+
+/// Lives with the app: sends this phone's push token again on start and
+/// when the language changes, since either may have changed.
+
+final class PushSyncProvider
+    extends $FunctionalProvider<AsyncValue<void>, void, FutureOr<void>>
+    with $FutureModifier<void>, $FutureProvider<void> {
+  /// Lives with the app: sends this phone's push token again on start and
+  /// when the language changes, since either may have changed.
+  PushSyncProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pushSyncProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$pushSyncHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<void> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<void> create(Ref ref) {
+    return pushSync(ref);
+  }
+}
+
+String _$pushSyncHash() => r'd03c1101b38e9e6dd2e5747029b4c37736f5d178';

@@ -1,6 +1,11 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/material.dart';
 import 'package:i_care/core/config/demo_layout.dart';
+import 'package:i_care/core/error/result.dart';
+import 'package:i_care/core/utils/app_logger.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
+import 'package:i_care/features/care/data/care_providers.dart';
 import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/shared/providers/device_prefs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -90,3 +95,51 @@ bool canResetDemo(Ref ref) =>
     ref.watch(isDemoProvider) &&
     (ref.watch(demoLayoutProvider) == DemoLayout.onePhone ||
         ref.watch(canDoProvider(CareAction.resetDemo)));
+
+/// Whether this phone is told about the circle's news. Off until the
+/// person turns it on, which asks the system for permission.
+@Riverpod(keepAlive: true)
+class PushNotifications extends _$PushNotifications {
+  @override
+  bool build() =>
+      ref.watch(devicePrefsProvider).read(PrefKeys.notifications) == 'true';
+
+  /// Turns notifications on or off; stays as it was when that fails.
+  Future<Result<void>> set({required bool enabled}) async {
+    final repository = ref.read(pushRepositoryProvider);
+    if (repository == null) return const Ok(null);
+    final result = enabled
+        ? await repository.enable(language: _pushLanguage(ref))
+        : await repository.disable();
+    if (result case Ok()) {
+      state = enabled;
+      await ref
+          .read(devicePrefsProvider)
+          .write(PrefKeys.notifications, enabled ? 'true' : null);
+    }
+    return result;
+  }
+}
+
+/// Lives with the app: sends this phone's push token again on start and
+/// when the language changes, since either may have changed.
+@Riverpod(keepAlive: true)
+Future<void> pushSync(Ref ref) async {
+  final repository = ref.watch(pushRepositoryProvider);
+  if (repository == null || !ref.watch(pushNotificationsProvider)) return;
+  ref.watch(appLanguageProvider);
+  if (await repository.refresh(language: _pushLanguage(ref)) case Err(
+    :final failure,
+  )) {
+    // Tried again on the next start.
+    AppLogger.warning('Push token not refreshed', failure);
+  }
+}
+
+/// The language push messages use: the app's, `en` or `es`.
+String _pushLanguage(Ref ref) => switch ((ref.read(appLanguageProvider) ??
+        PlatformDispatcher.instance.locale)
+    .languageCode) {
+  'es' => 'es',
+  _ => 'en',
+};

@@ -41,4 +41,25 @@ abstract final class Env {
   static const supabasePublishableKey = String.fromEnvironment(
     'SUPABASE_PUBLISHABLE_KEY',
   );
+
+  // Firebase, used for push notifications only (`docs/backend.md`). These
+  // identify the project; they are public, shipped in every app.
+  static const firebaseApiKey = String.fromEnvironment('FIREBASE_API_KEY');
+  static const firebaseProjectId = String.fromEnvironment(
+    'FIREBASE_PROJECT_ID',
+  );
+  static const firebaseSenderId = String.fromEnvironment(
+    'FIREBASE_MESSAGING_SENDER_ID',
+  );
+  static const firebaseAndroidAppId = String.fromEnvironment(
+    'FIREBASE_ANDROID_APP_ID',
+  );
+  static const firebaseWebAppId = String.fromEnvironment('FIREBASE_WEB_APP_ID');
+
+  /// The web push certificate's public key.
+  static const firebaseVapidKey = String.fromEnvironment('FIREBASE_VAPID_KEY');
+
+  /// Whether this build can receive push notifications.
+  static bool get hasFirebase =>
+      firebaseApiKey.isNotEmpty && firebaseProjectId.isNotEmpty;
 }

@@ -274,6 +274,20 @@ when. The Firebase project is used for messaging only, no data.
   - Messages carry only the kind of news, in the device's language
     ("There is a new note for the circle"): no names, medications or
     other health data travel through Google's or Apple's servers.
+  - In the app (beta builds with `FIREBASE_*` values, Android and web):
+    Settings → Notifications, off until the person turns it on, which
+    asks the system for permission (`PushRepositoryImpl`). The token is
+    sent again on every start and language change (`pushSync`). The web
+    needs `web/firebase-messaging-sw.js`, whose values are the Firebase
+    project's public identifiers. Foreground messages are not shown: the
+    open app already syncs.
+  - Open: firebase_messaging 17 deprecates registration tokens for
+    installation IDs and direct send. The app keeps tokens until the
+    function moves to the new API.
+  - Deployed to `icare_test` on 2026-11-03; sending starts once the
+    secrets below exist. Function secrets (`supabase secrets set`):
+    `PUSH_HOOK_SECRET`, `FCM_SERVICE_ACCOUNT`. Vault (SQL editor):
+    `push_function_url`, `push_hook_secret` (the same value).
 - **Phase 2, overdue doses** (only if the family needs it): `pg_cron`
   runs an Edge Function every few minutes. It needs the slot logic
   (schedules, `effectiveFrom`, skips, undos) a second time in

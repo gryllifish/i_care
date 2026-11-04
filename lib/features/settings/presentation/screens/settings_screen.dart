@@ -13,6 +13,7 @@ import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/features/settings/presentation/widgets/circle_section.dart';
 import 'package:i_care/features/settings/presentation/widgets/demo_texts.dart';
 import 'package:i_care/features/settings/presentation/widgets/not_sent_section.dart';
+import 'package:i_care/features/settings/presentation/widgets/notifications_section.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
@@ -61,6 +62,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ],
             ),
+          const NotificationsSection(),
           FormSection(
             title: l10n.sectionLanguage,
             children: [

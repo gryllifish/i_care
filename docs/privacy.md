@@ -54,6 +54,12 @@ Before the family enters real data:
 6. The app keeps saying what it is: a record of what caregivers did,
    never medical advice (`product.md`, medical disclaimer).
 
+## Processors
+- **Supabase** (database, Ireland) stores the circle's log.
+- **Google (Firebase Cloud Messaging)** delivers push notifications. It
+  sees a device token and the kind of news ("a new note"), never names,
+  medications or other health data. Turned on per phone, by its person.
+
 ## Stage 3, before strangers use it
 - Privacy policy and terms in the app and on the site.
 - Processor agreement with Supabase (and Google for FCM).

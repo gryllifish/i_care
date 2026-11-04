@@ -26,6 +26,7 @@ sealed class AppException implements Exception {
       problem,
       cause: this,
     ),
+    NotificationsBlockedException() => NotificationsBlockedFailure(cause: this),
   };
 
   @override
@@ -74,4 +75,9 @@ final class InvalidCodeException extends AppException {
   const InvalidCodeException(this.problem, super.message, {super.cause});
 
   final CodeProblem problem;
+}
+
+/// Notifications are not allowed on this device.
+final class NotificationsBlockedException extends AppException {
+  const NotificationsBlockedException(super.message, {super.cause});
 }

@@ -7,6 +7,7 @@ import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/core/utils/app_logger.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/data/sync/membership_gateway.dart';
+import 'package:i_care/features/care/data/sync/push_token_gateway.dart';
 import 'package:i_care/features/care/data/sync/sync_gateway.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/invite_code.dart';
@@ -17,7 +18,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// "Supabase"): the functions in `supabase/migrations/`, called as the
 /// device's anonymous user, signed in on first use. Supabase types never
 /// leave this class.
-class SupabaseConnection implements SyncGateway, MembershipGateway {
+class SupabaseConnection
+    implements SyncGateway, MembershipGateway, PushTokenGateway {
   SupabaseConnection(
     this._client, {
     this._pollInterval = const Duration(seconds: 30),
@@ -204,6 +206,20 @@ class SupabaseConnection implements SyncGateway, MembershipGateway {
 
   @override
   Future<void> deleteCircle() => _call('delete_circle');
+
+  @override
+  Future<void> registerPushToken({
+    required String token,
+    required String platform,
+    required String language,
+  }) => _call('register_push_token', {
+    'p_token': token,
+    'p_platform': platform,
+    'p_language': language,
+  });
+
+  @override
+  Future<void> unregisterPushToken() => _call('unregister_push_token');
 
   /// Calls the backend function [name] as this device.
   ///
