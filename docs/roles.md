@@ -211,23 +211,39 @@ single one is a point of failure:
 5. **Removed or left.** A recovered account whose binding has ended gets
    the removed device's screen and clears itself, as today.
 
-### Server
-- `config.toml`: Google provider on, `enable_manual_linking = true`.
-- The RPCs compare the JWT's `session_id` with the one last seen for the
-  binding. A new one on a protected account writes `AccessRecovered`
-  (system, `memberId`, audience `care`) and records it.
-- After recovering, the phone calls `signOut` with scope `others`, and
-  every RPC refuses a JWT whose session no longer exists.
-- `delete_circle` also deletes its members' auth users, so their linked
-  Google identities go with the circle.
-- Users that belong to no circle (the throwaway anonymous user a phone
-  starts with before recovering, a Google account linked to no one) are
-  deleted periodically.
+### On the server
+Built in `supabase/migrations/*_recoverable_access.sql`.
+- `public.check_request` runs before every API request (PostgREST's
+  `db_pre_request`), so no function can forget it:
+  - a JWT whose session no longer exists gets `session_ended` at once,
+    not when its access token expires. The phone signs out locally and
+    signs in again as a new anonymous device; if that device belongs to
+    no one, the next call says `not_member` and it clears itself, as a
+    removed device does.
+  - a protected account's session other than the one its binding last
+    saw gets `session_unconfirmed`, and may only call
+    `confirm_session`. That records the session and, when it started
+    more than a minute after the account was protected (so it comes from
+    signing in on another phone, not from protecting this one), writes
+    `access_recovered` (system, `member_id`, audience `care`). A new
+    phone cannot read anything before the circle is told.
+- After recovering, the phone calls `signOut` with scope `others`.
+- `discard_unbound_user` deletes the caller's user when it is not
+  anonymous and was never bound: a Google account linked to no one.
+- `delete_circle` also deletes the circle's protected accounts, so their
+  Google identities go with it. Anonymous phones keep their users, which
+  hold nothing, so installed apps behave as before.
+- `private.discard_stray_users` and `private.operator_issue_code` are
+  the operator's (`backend.md`, "Operator").
+- Still to do: `config.toml` with the Google provider and manual
+  linking, once the client side is built.
 
 ### Errors
 Typed `Failure`s, rendered through l10n: sign-in cancelled (not an
 error, nothing shown), Google account already protecting another access,
 no access with that account, and no connection (transient, retried).
+`session_ended` and `session_unconfirmed` never reach the UI: the
+connection handles them and retries once.
 
 ### Verified
 On 2026-11-04, against the local stack (GoTrue v2.197.0) and

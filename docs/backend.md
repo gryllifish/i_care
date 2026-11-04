@@ -252,6 +252,22 @@ membership errors to the exceptions `MembershipGateway` documents.
   channel; a policy on `realtime.messages` lets only current members
   hear `circle:<id>`.
 - `device_tokens` (push phase) will be written through a function too.
+- `public.check_request` runs before every request (`db_pre_request`)
+  and refuses sessions that ended or are not yet confirmed
+  ([`roles.md`](roles.md#on-the-server), recoverable access).
+
+### Operator
+What the maintainer runs in the SQL editor, never a client:
+- **A member lost every way back in** (no Google linked, or no access to
+  it, and no other admin). Confirm who is asking by a channel of your
+  own: call them on the number you know, never trust a message from a
+  new one. Then find the circle and member:
+  `select circle_id, member_id, name, role from private.members where name ilike '%ana%';`
+  and issue a code: `select private.operator_issue_code('<circle_id>', '<member_id>');`
+  It works as an admin's code, once, for 48 hours. Tell it to them on
+  that same call.
+- **Monthly:** `select private.discard_stray_users();` deletes users
+  that belong to no circle.
 
 ### Push notifications
 Sent by FCM (free without Firebase's Blaze plan); Supabase only decides
@@ -312,7 +328,8 @@ when. The Firebase project is used for messaging only, no data.
 The log is append-only for caregivers, but the person cared for can ask
 to delete their data (Ley 25.326, art. 16). `delete_circle` removes the
 circle with everything in it (cascade) and unbinds its devices, which
-then clear themselves as a removed device does today. It is the one
+then clear themselves as a removed device does today. Members' protected
+accounts (recoverable access, `roles.md`) are deleted with it. It is the one
 operation that deletes shared data, and it is not an event. In the app,
 an admin finds it in Settings (beta only); the phone that deletes also
 erases its own copy, unsent records included (`CareRepositoryImpl.erase`).
