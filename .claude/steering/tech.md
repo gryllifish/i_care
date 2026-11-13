@@ -71,8 +71,17 @@ at `10.0.2.2`, not `127.0.0.1`.
 
 ## Environments
 - `env/<env>.json` (git-ignored) holds `APP_ENV`, and for the beta
-  `SYNC_BACKEND` and the Supabase project; copy from
-  `env/*.json.example`. Read them only through `core/config/env.dart`.
+  `SYNC_BACKEND`, the Supabase project, the Firebase values and
+  `GOOGLE_WEB_CLIENT_ID` (Google sign-in is offered only with it, on
+  Android); copy from `env/*.json.example`. `env/beta-local.json` is
+  the same for the local stack, without Firebase or Google. Read them
+  only through `core/config/env.dart`.
+- `.vscode/launch.json` has the three ways to run from Run and Debug:
+  the demo, the beta, and the beta on the local stack.
+- Deploy migrations before installing a build that needs them
+  (`supabase db push --remote`). Auth settings in `config.toml` are the
+  local stack's: on the hosted project they are set in the dashboard
+  (`docs/roles.md`, recoverable access).
 - Never commit secrets. Anything shipped in the binary is not secret anyway.
 
 ## Generated code

@@ -35,7 +35,9 @@ Before the family enters real data:
 1. **Written consent** from the person cared for (or representative) and
    from every member: what is stored, where (Supabase, Ireland), who
    sees it (circle members by role, and the maintainer as operator), that
-   it is a beta, and how to ask for a copy or deletion.
+   it is a beta, and how to ask for a copy or deletion. For members who
+   protect their access with Google, also what is kept of that account
+   (item 3).
 2. **Encrypted local storage** on every device (done): the beta's Hive
    boxes use AES-256 with a key kept in the platform's secure storage
    (`StorageKey`), and the Supabase session lives there too
@@ -46,9 +48,11 @@ Before the family enters real data:
    not away from code running on the page.
 3. **Minimal data**: only what the features use; no ID numbers, no
    diagnoses beyond what caregivers choose to note. The optional Google
-   sign-in to recover access (proposed, `roles.md`) keeps the Google
-   email and name in Supabase Auth only, never in the log, and deletes
-   them with the circle. The consent must name it.
+   sign-in to recover access (`roles.md`) keeps, in Supabase Auth only
+   and never in the log, what Google hands over for that account: its
+   email, name, picture address and Google's id for it. They are deleted
+   when the member leaves on that phone, is removed, or the circle is
+   deleted, without anyone asking. The app shows the email masked.
 4. **Deletion and export** work end to end. Deletion is done: an admin
    deletes the circle for everyone from Settings (beta only), after a
    confirmation that says it cannot be undone. Still to do: a log export
@@ -63,12 +67,11 @@ Before the family enters real data:
   sees a device token and the kind of news ("a new note"), never names,
   medications or other health data. Each phone's person allows it in
   the system's dialog, and can withdraw it in the system's settings.
-- **Google sign-in** (proposed, `roles.md`): for members who protect
-  their access, Google learns they use ICare. It sees nothing of the
-  circle.
+- **Google sign-in** (`roles.md`): for members who protect their
+  access, Google learns they use ICare. It sees nothing of the circle.
 
 ## Stage 3, before strangers use it
 - Privacy policy and terms in the app and on the site.
-- Processor agreement with Supabase (and Google for FCM).
+- Processor agreement with Supabase (and Google for FCM and sign-in).
 - Whether the database must be registered with the AAIP.
 - GDPR if EU users arrive (a separate region and project).

@@ -151,10 +151,13 @@ family portal for residents' relatives is a possible later path.
     with confirmation, and listed in the handoff for the next
     appointment. ICare stores links only, never files.
 
-15. **Roles and membership** (phases 1 to 3 of 4 built): admin, caregiver,
-    helper and view-only members with their own permissions and data,
-    phones joined by one-time invitation codes instead of "Who are you?",
-    and the server checking every event. Design and phases:
+15. **Roles and membership** (phases 1 to 3 and 5 built, 4 set aside):
+    admin, caregiver, helper and view-only members with their own
+    permissions and data, phones joined by one-time invitation codes
+    instead of "Who are you?", and the server checking every event. In
+    the beta on Android, a member can protect their access with a Google
+    account and get back in on a new phone; a circle's only admin is
+    told to name a second one. Design and phases:
     [`docs/roles.md`](../../docs/roles.md).
 
 16. **Skip reasons the circle sets**: the standard reasons (translated)
@@ -317,6 +320,11 @@ documented), nursing-home features.
   a resync when a role change alters that, actions offered by role, the
   helper's Today-only app, read-only viewers, a day summary for viewers,
   and the demo with Ana (admin) and Rosa (helper).
+- Roles, phase 5 (recoverable access): Google sign-in on the beta's
+  Android build to protect an access and recover it on a new phone, the
+  circle told of every recovery, the hint to an only admin, and the
+  operator's code as the last resort. Reviewed on 2026-11-13 and
+  hardened. Not yet tried with a real Google account.
 - Skip reasons the circle sets (scope item 16), and a note with "Other".
 - Demo without data (scope item 17): creating a circle, the welcome's
   demo choice, the recipient's name from the circle.
@@ -351,7 +359,10 @@ documented), nursing-home features.
    4. Push notifications by event (FCM): built and deployed; sending
       starts once the function and Vault secrets are set, then needs a
       test on two real devices.
-   5. Beta build for the family: web/PWA and Android first; iOS needs an
+   5. Recoverable access (`docs/roles.md`): built and reviewed. Still to
+      do: the first real "protect, leave, recover" with a Google account
+      on the beta, and a push to the other admins on a recovery.
+   6. Beta build for the family: web/PWA and Android first; iOS needs an
       Apple Developer account.
 
 Each phase ends with `scripts/verify.sh` green and can be deployed.

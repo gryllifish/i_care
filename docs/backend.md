@@ -329,7 +329,9 @@ The log is append-only for caregivers, but the person cared for can ask
 to delete their data (Ley 25.326, art. 16). `delete_circle` removes the
 circle with everything in it (cascade) and unbinds its devices, which
 then clear themselves as a removed device does today. Members' protected
-accounts (recoverable access, `roles.md`) are deleted with it. It is the one
+accounts (recoverable access, `roles.md`) are deleted with it. A member
+who leaves or is removed does not wait for that: their Google identity
+and email are deleted when their binding ends. It is the one
 operation that deletes shared data, and it is not an event. In the app,
 an admin finds it in Settings (beta only); the phone that deletes also
 erases its own copy, unsent records included (`CareRepositoryImpl.erase`).
@@ -364,9 +366,10 @@ demo-only paths in a beta build ("Which gateway runs").
 1. **Device identity.** Local stores are keyed by `deviceId`; on Supabase
    it becomes the auth `uid`. Losing the anonymous session (reinstall,
    cleared browser data) unbinds the device: it needs a new code, and
-   anything unsent on it is lost. An only admin cannot get one. Proposed
-   answer: optional Google sign-in, a second admin, and recovery by the
-   operator ([`roles.md`](roles.md#recoverable-access-proposed)).
+   anything unsent on it is lost. An only admin cannot get one. Answered
+   by optional Google sign-in, a second admin, and recovery by the
+   operator ([`roles.md`](roles.md#recoverable-access)); what was unsent
+   is still lost.
 2. **Browser storage on iPhone.** Safari may delete a website's storage
    after 7 days without a visit, including the unsent outbox. Testers on
    iPhone should install the PWA to the home screen, or use Android.

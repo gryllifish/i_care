@@ -2,8 +2,8 @@
 
 Design for who belongs to a care circle, what each person can do and see,
 and how a phone becomes someone's. Agreed with the product owner on
-2026-11-02; phases 1 to 3 are built, shifts (4) are set aside (see
-[Phases](#phases)). Sync and backend
+2026-11-02; phases 1 to 3 and 5 are built, shifts (4) are set aside
+(see [Phases](#phases)). Sync and backend
 basics: [`backend.md`](backend.md).
 
 ## Goals
@@ -19,7 +19,7 @@ basics: [`backend.md`](backend.md).
 
 Not goals: passwords (stage 2 uses anonymous device sign-in; an
 optional Google sign-in makes it recoverable, see
-[Recoverable access](#recoverable-access-proposed)), a PIN to open the
+[Recoverable access](#recoverable-access)), a PIN to open the
 app (a possible later circle policy), the person cared for as a user.
 
 ## Roles
@@ -134,9 +134,11 @@ device belonged to, so it can still check who wrote a late record.
 
 Admins can revoke an unused code.
 
-## Recoverable access (proposed)
+## Recoverable access
 
-Proposed on 2026-11-04, not built. Phase 5 below.
+Proposed on 2026-11-04 and built since, except the push to other admins
+(phase 5 below). Reviewed on 2026-11-13; what the review changed is
+marked.
 
 **The problem.** A phone is an anonymous Supabase user: its `uid` is
 the device. Uninstalling the app, clearing the browser's data or
@@ -168,111 +170,131 @@ single one is a point of failure:
 ### Decisions
 - **Optional, asked of admins.** Admins see "Your access" once on their
   welcome (after creating a circle or joining as one), and in Settings
-  until they do it. Other
-  members find it in Settings. Nobody needs it to use the app. Not
-  offered on iOS: an App Store app offering Google sign-in must also
-  offer Sign in with Apple.
+  until they do it. Other members find it in Settings. Nobody needs it
+  to use the app. Not offered on iOS: an App Store app offering Google
+  sign-in must also offer Sign in with Apple.
 - **The same `uid`.** Protecting links a Google identity to the phone's
   anonymous user (manual identity linking), so its binding and push
   token stay as they are.
 - **One phone per account.** Recovering moves the account to the new
   phone and ends its sessions everywhere else, so a lost or stolen
   phone is locked out by the recovery itself. A second device of the
-  same member keeps joining with a code, as its own anonymous user.
-- **The circle hears of it.** The first call from a new session of a
-  protected account writes a system event, so the circle sees "Ana is
-  using a new phone" and other admins get a push. The server writes it
-  from the JWT's `session_id`, so it does not depend on the new phone
-  asking for it: whoever took over a Google account cannot skip it.
+  same member keeps joining with a code, as its own anonymous user, and
+  cannot use the Google account that protects the first.
+- **One member per account** (review). A protected account is one
+  member's way back in and nothing else: it cannot join or create a
+  circle, and stops being protected the moment its binding ends (the
+  phone left, or the member was removed). The server deletes its Google
+  identity, email and profile then, and the phone signs out, so whoever
+  uses it next starts as a new device (`privacy.md`).
+- **The circle hears of it.** A protected account's session from another
+  phone writes a system event before it can read anything, so the circle
+  sees "Ana is using a new phone". The server writes it, once, from the
+  JWT's `session_id`: whoever took over a Google account cannot skip it.
+  A push to the other admins is next.
+- **The server does not rely on the new phone** (review). The same call
+  that tells the circle ends the account's other sessions, and a session
+  older than the one on record is refused, so a lost phone cannot take
+  the access back if the new one drops out halfway.
 - **Native sign-in on Android.** Google's own account sheet
   (`google_sign_in`), without leaving the app. The app keeps no Google
   session: it asks which account every time. The web would use
   Supabase's redirect flow; not built, since the beta web has no public
   URL yet.
 - **The demo does not offer it.** The demo has no Google project and
-  resets anyway. The simulated gateway implements it for tests and the
-  contract suite.
+  resets anyway. The simulated server implements it for the repository
+  and widget tests; the Supabase side has tests of its own against the
+  local stack, with email accounts standing in for Google ones.
 
 ### Flows
-1. **Protect.** Settings → "Protect your access" → Google's account
-   picker → "Protected with a•••@gmail.com".
-2. **Recover.** On a phone that belongs to nobody, the welcome screen
-   offers "I already have access" next to joining with a code → Google.
-   The phone loads the member and downloads the log from the start, like
-   a phone that has just joined, and registers its push token. A Google
-   account linked to no one gets "No access with this account", and the
-   phone signs out of it.
-3. **Second admin.** While a circle has a single admin, Settings →
-   Members suggests making someone else admin.
+1. **Protect.** Settings → "Your access" → "Protect with Google" →
+   Google's account sheet → "Access protected with a•••@gmail.com". Only
+   a member's phone can; repeating it after a dropped connection
+   finishes what was started.
+2. **Recover.** On a phone that belongs to nobody, the join screen
+   offers "I already have access" under joining with a code → Google.
+   The phone becomes the member and downloads the log from the start,
+   like a phone that has just joined. A Google account linked to no one
+   gets "No access is protected with that Google account". Whatever
+   fails, the phone signs out of the account: it is never left signed in
+   while showing that it belongs to nobody.
+3. **Second admin.** While a circle has a single admin with a phone,
+   Settings → The circle suggests making someone else admin.
 4. **Operator.** The member calls the operator, who confirms who they
    are by a channel of their own (a phone call, not a message from an
    unknown number) and runs `private.operator_issue_code` in Supabase's
-   SQL editor. It issues a normal code for that member, which works as
-   any other. Clients cannot call it; `backend.md` documents the steps
-   once it is built.
-5. **Removed or left.** A recovered account whose binding has ended gets
-   the removed device's screen and clears itself, as today.
+   SQL editor (`backend.md`, "Operator"). It issues a normal code for
+   that member. Clients cannot call it.
+5. **Left or removed.** The binding ends, the account stops being
+   protected, and the phone sends what it had pending, clears itself and
+   signs out.
 
 ### On the server
-Built in `supabase/migrations/*_recoverable_access.sql`.
+In `supabase/migrations/`: `*_recoverable_access.sql`,
+`*_current_member.sql` and `*_harden_recoverable_access.sql` (the
+review). Deploy all three before a build that offers Google.
 - `public.check_request` runs before every API request (PostgREST's
   `db_pre_request`), so no function can forget it:
-  - a JWT whose session no longer exists gets `session_ended` at once,
-    not when its access token expires. The phone signs out locally and
+  - a JWT whose session no longer exists, or that started before the
+    one on record for a protected account, gets `session_ended` at
+    once, not when its access token expires. The phone signs out and
     signs in again as a new anonymous device; if that device belongs to
     no one, the next call says `not_member` and it clears itself, as a
     removed device does.
-  - a protected account's session other than the one its binding last
-    saw gets `session_unconfirmed`, and may only call
-    `confirm_session`. That records the session and, when it started
-    more than a minute after the account was protected (so it comes from
-    signing in on another phone, not from protecting this one), writes
-    `access_recovered` (system, `member_id`, audience `care`). A new
-    phone cannot read anything before the circle is told.
-- After recovering, the phone calls `signOut` with scope `others`.
+  - a protected account's session other than the one on record gets
+    `session_unconfirmed`, and may only call `confirm_session`.
+  - a protected account calling `join_circle` or `create_circle` gets
+    `forbidden`.
+- `confirm_session` records the session. The first one on record is the
+  phone that protected the access: linking needs that phone's own
+  session, so it started before the Google identity existed or within
+  ten seconds of it. Any other session is another phone: the function
+  writes `access_recovered` (system, `member_id`, audience `care`) unless
+  that session already has one, and deletes the account's other sessions.
+- A trigger on `device_bindings` unprotects the account when a binding
+  ends: the Google identity, email and profile are deleted and the user
+  is anonymous again. Its sessions stay, so a removed phone can still
+  send its pending records and be told it is no longer a member.
 - `current_member` tells a phone that has just recovered which member
   it is.
 - `discard_unbound_user` deletes the caller's user when it is not
   anonymous and was never bound: a Google account linked to no one.
-- `delete_circle` also deletes the circle's protected accounts, so their
-  Google identities go with it. Anonymous phones keep their users, which
-  hold nothing, so installed apps behave as before.
+- `delete_circle` also deletes the circle's protected accounts.
+  Anonymous phones keep their users, which hold nothing.
+- `current_circle` returns nothing for a session the API would refuse,
+  since Realtime does not run `check_request`.
 - `private.discard_stray_users` and `private.operator_issue_code` are
   the operator's (`backend.md`, "Operator").
-- Manual linking is on in `config.toml`. The Google provider (web
-  client ID and secret, nonce check skipped) is set in the project's
-  dashboard only: the secret stays out of the repository, and the local
-  stack has no Google.
+- `config.toml` only configures the local stack. On the hosted project,
+  the Google provider (web client ID and secret, nonce check skipped)
+  and "Allow manual linking" are set in the dashboard: the secret stays
+  out of the repository.
 
 ### Errors
-Typed `Failure`s, rendered through l10n: sign-in cancelled (not an
-error, nothing shown), Google account already protecting another access,
-no access with that account, and no connection (transient, retried).
-`session_ended` and `session_unconfirmed` never reach the UI: the
-connection handles them and retries once.
+Typed `Failure`s, rendered through l10n: Google's sheet closed (not an
+error, nothing shown), Google could not hand over an account (no account
+on the phone, or a build not set up for it; not transient), the account
+already protects another access, no access with that account, and no
+connection (transient). `session_ended` and `session_unconfirmed` never
+reach the UI: the connection settles them and repeats the call.
 
 ### Verified
-On 2026-11-04, against the local stack (GoTrue v2.197.0) and
-`gotrue` 2.27.3, the Dart client the app already uses:
-- **Linking keeps the `uid`.** Both ways send the current session's JWT,
-  so Google is added to the same user: `linkIdentityWithIdToken`
-  (native, with the ID token from Google's sheet) and `linkIdentity`
-  (browser). With manual linking on, the server accepts both for an
-  anonymous user; the browser way asks Google only for `email` and
-  `profile`. The last step needs real Google credentials, so the first
-  real link is checked on the beta project.
+Against the local stack (GoTrue v2.197.0) with `gotrue` 2.27.3:
+- **Linking keeps the `uid`** (2026-11-04): `linkIdentityWithIdToken`
+  sends the current session's JWT, so Google is added to the same user.
+  The last step needs real Google credentials, so the first real link
+  and recovery are checked on the beta project. Not done yet.
 - **`session_id`** is in every JWT and survives refreshes.
-- **`signOut(scope: others)`** removes the other sessions from
-  `auth.sessions` and their refresh tokens stop working. Their access
-  tokens do not: the API keeps accepting them until they expire, up to
-  an hour (`jwt_expiry`). So every RPC also checks that the JWT's
-  session still exists in `auth.sessions`, and a lost phone is locked
-  out at once.
+- **An ended session's access token** keeps being accepted by the API
+  until it expires, up to an hour (`jwt_expiry`), which is why
+  `check_request` looks the session up.
 - **A Google account linked to no one** creates a user when it signs in
-  (signups stay on: anonymous phones need them). The app then calls
-  `discard_unbound_user`, which deletes the caller's user if it is not
-  anonymous and was never bound. Functions owned by `postgres` may
-  delete from `auth.users` and read `auth.sessions`.
+  (signups stay on: anonymous phones need them), which
+  `discard_unbound_user` deletes.
+- **Unprotecting** (2026-11-13): functions owned by `postgres` may
+  delete from `auth.identities` and update `auth.users`; after it,
+  nobody signs in with that account. To confirm on the hosted project
+  with the first real "protect, then leave".
 
 ### Setup (the maintainer, once)
 A Google Cloud project with an OAuth consent screen asking only for the
@@ -294,50 +316,10 @@ token meant for it. Done for `icare_test` on 2026-11-13, in Testing mode
 - Records not yet sent when the app was uninstalled are lost.
 - Taking over someone's Google account takes over their access here.
   The event to the circle is how it shows.
-
-## Server
-- `public.current_circle` and the other RPCs compare the JWT's
-  `session_id` with the one last seen for the binding. A new one on a
-  protected account writes the system event (`AccessRecovered`,
-  `memberId`, audience `care`) and records it.
-- After recovering, the phone calls `signOut` with scope `others`, and
-  every RPC refuses a JWT whose session no longer exists.
-- `delete_circle` also deletes its members' auth users, so their emails
-  go with the circle.
-- Anonymous users left behind (the throwaway one a phone signs in with
-  before recovering) are deleted periodically.
-- Settings: the email code expires after 10 minutes (`otp_expiry = 600`),
-  6 digits, and the existing per-IP limits on verifications.
-
-### Errors
-Typed `Failure`s, rendered through l10n: wrong code, expired code, too
-many attempts, email already protecting another access, no access with
-that email, and email not sent (transient, retried).
-
-### To verify against Supabase before building
-- Converting an anonymous user with an email code (not a link) keeps
-  its `uid`, and the code arrives with the email change template.
-- The JWT carries `session_id`, and `signOut(scope: others)` ends the
-  other sessions at once.
-- The built-in email sender's hourly limit is enough to try this, and
-  which provider to use for the beta instead (a new processor).
-- Whether Supabase passkeys (`[auth.passkey]` in `config.toml`) are
-  mature enough for stage 3.
-
-### Later
-- **Phase 5b, Google as an option** on Android and the web, next to the
-  email. A native sign-in needs a new dependency, decided then; the
-  browser flow needs none but leaves the app. Supabase's manual
-  identity linking keeps the `uid`. Apple's rule to also offer Sign in
-  with Apple applies only to an App Store app.
-- **Stage 3:** passkeys, a second factor for admins, Sign in with Apple
-  if there is an iOS app.
-
-### What it does not solve
-- An unlocked, stolen phone is still open (no app PIN).
-- Records not yet sent when the app was uninstalled are lost.
-- Taking over someone's email takes over their access here. The event
-  to the circle is how it shows.
+- A recovery attempt with an account linked to no one, cut off before
+  the app discards it, leaves a user holding that Google identity until
+  the operator's monthly cleanup; protecting with it meanwhile says the
+  account is in use.
 
 ## Server
 
@@ -400,6 +382,7 @@ sends only its audiences.
 | `MemberInvited` | `memberId`, name, role, `colorIndex` | care |
 | `InvitationRevoked` | `memberId` | care |
 | `MemberJoined` (system) | `memberId` (a device was bound) | care |
+| `AccessRecovered` (system) | `memberId` (they signed in on another phone) | care |
 | `RoleChanged` | `memberId`, role, `baseVersion` | care |
 | `MemberRemoved` | `memberId`, `baseVersion` | care |
 | `MemberLeft` | `memberId` (one device unbound itself) | care |
@@ -481,16 +464,13 @@ Supabase, as designed in [`backend.md`](backend.md#supabase-stage-2):
 4. **Shifts**: who is responsible when. Set aside on 2026-11-03: keeping
    a schedule up adds work to a family's day, and notes for the circle
    already carry the handoff (`product.md`, later candidates).
-5. **Recoverable access** (in progress): optional Google sign-in for
-   any member, asked of admins; the suggestion of a second admin;
-   recovery by the operator ([above](#recoverable-access-proposed)).
-   Built: the server, `AccessRecovered`, the `AccessGateway` (simulated
-   and Supabase, which settles ended and unconfirmed sessions itself)
-   and `AccessRepository`; "Your access" in Settings and on an admin's
-   welcome, "I already have access" when joining, and the hint to a
-   circle's only admin; Google's account sheet on Android
-   (`google_sign_in`, for builds with `GOOGLE_WEB_CLIENT_ID`). Next: the
-   push to other admins, and the first real link checked on the beta.
+5. **Recoverable access** (built, except the push): optional Google
+   sign-in for any member, asked of admins; the suggestion of a second
+   admin; recovery by the operator ([above](#recoverable-access)).
+   Reviewed on 2026-11-13 by four reviewers (server, data, UI, tests and
+   docs); its findings are fixed in `*_harden_recoverable_access.sql`
+   and the commits after it. Next: the push to other admins, and the
+   first real link and recovery on the beta.
 
 Each phase ends with `scripts/verify.sh` green and the gateway contract
 tests covering what changed.

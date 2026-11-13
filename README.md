@@ -60,10 +60,10 @@ of the treating doctor or pharmacist.
 - **Activity:** the shared log of everything that happened, by day.
 - **Roles:** admins, daily caregivers, occasional helpers and view-only
   relatives, each offered only what their role allows, while the server
-  checks every event. Phones join by one-time invitation codes. An
-  admin's Today sums up the day instead of asking them to record; a
-  helper's app is today's care only, and their phone never receives the
-  team's appointments, visit notes or documents.
+  checks every event. Phones join by one-time invitation codes. A
+  view-only relative's Today sums up the day instead of asking them to
+  record; a helper's app is today's care only, and their phone never
+  receives the team's appointments, visit notes or documents.
 - English and Spanish, a light and a dark theme, and a low-vision
   font. Screen reader labels and contrast are checked in tests.
 
@@ -90,10 +90,11 @@ Decisions that aren't obvious from the code alone.
 - **The backend is simulated, behind a real contract.** Both phones in
   the demo sync through an in-process server with latency and a network
   switch per phone. It talks to them only through serialized JSON,
-  behind the same `SyncGateway` interface a Supabase implementation
-  will use. One contract test suite describes the gateway, so it can
-  run against a local Supabase stack later. The demo needs no accounts
-  and costs nothing to host.
+  behind the same `SyncGateway` interface the Supabase implementation
+  uses in the beta build (`supabase/`, `docs/backend.md`). One contract
+  test suite describes the gateway and runs against both (the Supabase
+  one against a local stack, when it is running). The demo needs no
+  accounts and costs nothing to host.
 - **Sample data, regenerated around today.** On first run the server is
   seeded with a fictional care circle (three caregivers, four
   medications, appointments) relative to the current date, in the
