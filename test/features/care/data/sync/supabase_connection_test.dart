@@ -130,36 +130,21 @@ Future<void> main() async {
             final email =
                 'protected-${DateTime.now().microsecondsSinceEpoch}'
                 '@example.com';
-            // An account that is not anonymous, as a linked Google one is.
-            // Signed up through the public API: the local stack confirms
-            // no emails.
-            final http = HttpClient();
-            addTearDown(http.close);
-            final request = await http.postUrl(
-              Uri.parse('http://127.0.0.1:$_apiPort/auth/v1/signup'),
-            );
-            request.headers
-              ..set('apikey', _publishableKey)
-              ..contentType = ContentType.json;
-            request.write(
-              jsonEncode({'email': email, 'password': 'password-1'}),
-            );
-            expect((await request.close()).statusCode, 200);
-            await phone.client.auth.signInWithPassword(
-              email: email,
-              password: 'password-1',
-            );
-            // Deleting the circle deletes its protected accounts.
-            addTearDown(() => phone.client.rpc<void>('delete_circle'));
-
             await phone.connection.createCircle(
               creatorName: 'Ana',
               recipientName: 'Elena',
             );
+            // Deleting the circle deletes its protected accounts.
+            addTearDown(() => phone.client.rpc<void>('delete_circle'));
+            // The phone's own user stops being anonymous, as when Google
+            // is linked to it: the local stack confirms no emails.
+            await phone.setEmail(email);
 
             // The first read meets an unconfirmed session and confirms it.
             final batch = await phone.connection.watch().first;
             expect(batch.events, isNotEmpty);
+            // Its own phone, so the circle is not told of a new one.
+            expect(batch.events.whereType<AccessRecovered>(), isEmpty);
             expect(await phone.connection.protectedWith(), email);
           },
         );
@@ -330,6 +315,35 @@ class _Device {
     if (client.auth.currentSession == null) {
       await client.auth.signInAnonymously();
     }
+  }
+
+  /// Gives this device's user [email], through the public API: it is no
+  /// longer anonymous, with the same id and session.
+  Future<void> setEmail(String email) async {
+    final http = HttpClient();
+    try {
+      final request = await http.openUrl(
+        'PUT',
+        Uri.parse('http://127.0.0.1:$_apiPort/auth/v1/user'),
+      );
+      request.headers
+        ..set('apikey', _publishableKey)
+        ..set(
+          'Authorization',
+          'Bearer ${client.auth.currentSession?.accessToken}',
+        )
+        ..contentType = ContentType.json;
+      request.write(jsonEncode({'email': email, 'password': 'password-1'}));
+      final response = await request.close();
+      if (response.statusCode != 200) {
+        throw StateError('Could not set the email: ${response.statusCode}');
+      }
+      await response.drain<void>();
+    } finally {
+      http.close();
+    }
+    // The client learns what its user now is.
+    await client.auth.refreshSession();
   }
 }
 
