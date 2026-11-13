@@ -18,6 +18,7 @@ abstract interface class AccessGateway {
   Future<String?> protectedWith();
 
   /// Links [credential] to this device's access and returns its email.
+  /// A device already protected keeps the account it has.
   ///
   /// Throws [NoConnectionException], [NotMemberException] or
   /// [AccountInUseException].
@@ -25,6 +26,7 @@ abstract interface class AccessGateway {
 
   /// Makes this device the member whose access [credential] protects,
   /// ending that access on every other device; returns the member's id.
+  /// When it fails, this device is left as it was: belonging to nobody.
   ///
   /// Throws [NoConnectionException] or [NoAccessException].
   Future<String> recover(GoogleCredential credential);

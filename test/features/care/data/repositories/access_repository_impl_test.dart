@@ -9,12 +9,14 @@ import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
 import 'package:i_care/features/care/data/mappers/care_event_codec.dart';
 import 'package:i_care/features/care/data/repositories/access_repository_impl.dart';
 import 'package:i_care/features/care/data/repositories/care_repository_impl.dart';
+import 'package:i_care/features/care/data/repositories/membership_repository_impl.dart';
 import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/data/sync/access_gateway.dart';
 import 'package:i_care/features/care/data/sync/simulated_connection.dart';
 import 'package:i_care/features/care/data/sync/simulated_server.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 
+import '../../helpers/care_events.dart';
 import '../../helpers/hive_boxes.dart';
 
 /// Google's picker, answering with [account] (null: closed) or throwing
@@ -144,7 +146,112 @@ void main() {
     });
   });
 
+  group('a binding that ends takes the protection with it', () {
+    test('leaving on a protected phone: the account gets nobody back in, '
+        'and whoever joins there next is not protected by it', () async {
+      final (ana, care, connection) = await phone('phone-ana', _FakeGoogle());
+      await ana.protect();
+      final membership = MembershipRepositoryImpl(
+        care: care,
+        gateway: connection,
+        meta: (memberId) => EventFactory().meta(at: now, by: memberId),
+      );
+
+      expect(await membership.leave('ana'), isA<Ok<void>>());
+
+      expect(server.protectedWith('phone-ana'), isNull);
+      final (newPhone, _, _) = await phone('phone-new', _FakeGoogle());
+      expect(
+        await newPhone.recover(),
+        isA<Err<String?>>().having(
+          (err) => err.failure,
+          'failure',
+          isA<NoAccessFailure>(),
+        ),
+      );
+    });
+
+    test('a removed member is no longer protected', () async {
+      final (martin, _, _) = await phone(
+        'phone-martin',
+        _FakeGoogle()..account = 'martin@example.com',
+      );
+      await martin.protect();
+
+      await server.receive('phone-ana', [
+        CareEventCodec.encodeString(
+          EventFactory().memberRemoved('martin', baseVersion: 0),
+        ),
+      ]);
+
+      expect(server.protectedWith('phone-martin'), isNull);
+    });
+  });
+
+  group('when Google hands over no account', () {
+    const failed = GoogleSignInFailedException('No account on the phone');
+
+    test('protecting fails with a failure of its own', () async {
+      final (ana, _, _) = await phone(
+        'phone-ana',
+        _FakeGoogle()..error = failed,
+      );
+
+      expect(
+        await ana.protect(),
+        isA<Err<String?>>().having(
+          (err) => err.failure,
+          'failure',
+          isA<GoogleSignInFailure>(),
+        ),
+      );
+      expect(server.protectedWith('phone-ana'), isNull);
+    });
+
+    test('recovering fails the same way, and changes nothing', () async {
+      final (oldPhone, _, _) = await phone('phone-ana', _FakeGoogle());
+      await oldPhone.protect();
+      final (newPhone, _, _) = await phone(
+        'phone-new',
+        _FakeGoogle()..error = failed,
+      );
+
+      expect(
+        await newPhone.recover(),
+        isA<Err<String?>>().having(
+          (err) => err.failure,
+          'failure',
+          isA<GoogleSignInFailure>(),
+        ),
+      );
+      expect(server.isActive('phone-ana'), isTrue);
+    });
+  });
+
   group('recovering on a new phone', () {
+    test(
+      'offline, it fails as a transient failure and changes nothing',
+      () async {
+        final (oldPhone, _, _) = await phone('phone-ana', _FakeGoogle());
+        await oldPhone.protect();
+        final (newPhone, _, connection) = await phone(
+          'phone-new',
+          _FakeGoogle(),
+        );
+        connection.isOnline = false;
+
+        expect(
+          await newPhone.recover(),
+          isA<Err<String?>>().having(
+            (err) => err.failure.isTransient,
+            'transient',
+            isTrue,
+          ),
+        );
+        expect(server.isActive('phone-ana'), isTrue);
+      },
+    );
+
     test(
       'makes it the member, tells the circle and ends the old phone',
       () async {

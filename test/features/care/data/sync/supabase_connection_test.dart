@@ -16,6 +16,31 @@ import 'sync_gateway_contract.dart';
 const _apiPort = 54321;
 const _publishableKey = 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH';
 
+/// For accounts that stand in for Google ones: the local stack has no
+/// Google, and confirms no emails.
+const _password = 'password-1';
+
+/// Signs [email] up through the public API: an account linked to no one.
+Future<void> _signUp(String email) async {
+  final http = HttpClient();
+  try {
+    final request = await http.postUrl(
+      Uri.parse('http://127.0.0.1:$_apiPort/auth/v1/signup'),
+    );
+    request.headers
+      ..set('apikey', _publishableKey)
+      ..contentType = ContentType.json;
+    request.write(jsonEncode({'email': email, 'password': _password}));
+    final response = await request.close();
+    if (response.statusCode != 200) {
+      throw StateError('Could not sign up: ${response.statusCode}');
+    }
+    await response.drain<void>();
+  } finally {
+    http.close();
+  }
+}
+
 /// Runs the gateway contract against the backend in `supabase/`, when
 /// the local stack is running; skipped otherwise (`docs/backend.md`).
 Future<void> main() async {
@@ -148,6 +173,166 @@ Future<void> main() async {
             expect(await phone.connection.protectedWith(), email);
           },
         );
+
+        group('recoverable access (docs/roles.md)', () {
+          String newEmail() =>
+              'protected-${DateTime.now().microsecondsSinceEpoch}'
+              '@example.com';
+          const google = (
+            idToken: 'unused',
+            accessToken: null,
+            email: 'unused@example.com',
+          );
+
+          /// A phone whose member protected their access: its own user
+          /// with [email], as with Google linked, and its session on
+          /// record.
+          Future<(_Device, String)> protectedPhone(String email) async {
+            final phone = newDevice();
+            final memberId = await phone.connection.createCircle(
+              creatorName: 'Ana',
+              recipientName: 'Elena',
+            );
+            await phone.setEmail(email);
+            await phone.connection.watch().first;
+            return (phone, memberId);
+          }
+
+          test(
+            'a new phone signed in as the account becomes the member, '
+            'the circle is told once, and the old phone is out at once',
+            () async {
+              final email = newEmail();
+              final (oldPhone, memberId) = await protectedPhone(email);
+              final newPhone = newDevice();
+              addTearDown(() => newPhone.client.rpc<void>('delete_circle'));
+              await newPhone.client.auth.signInWithPassword(
+                email: email,
+                password: _password,
+              );
+
+              expect(await newPhone.connection.recoverSignedIn(), memberId);
+              // Asked twice, as after a dropped answer.
+              expect(await newPhone.connection.recoverSignedIn(), memberId);
+
+              final batch = await newPhone.connection.watch().first;
+              expect(
+                batch.events.whereType<AccessRecovered>().map(
+                  (event) => event.memberId,
+                ),
+                [memberId],
+              );
+              // The server ended the old phone's session: it starts over
+              // as a device that belongs to nobody.
+              await expectLater(
+                oldPhone.connection.watch().first,
+                throwsA(isA<NotMemberException>()),
+              );
+              expect(oldPhone.client.auth.currentUser?.isAnonymous, isTrue);
+            },
+          );
+
+          test('an account protecting nobody gets no access, is deleted, '
+              'and the phone is left signed out', () async {
+            final email = newEmail();
+            final phone = newDevice();
+            await _signUp(email);
+            await phone.client.auth.signInWithPassword(
+              email: email,
+              password: _password,
+            );
+
+            await expectLater(
+              phone.connection.recoverSignedIn(),
+              throwsA(isA<NoAccessException>()),
+            );
+
+            expect(phone.client.auth.currentSession, isNull);
+            await expectLater(
+              phone.client.auth.signInWithPassword(
+                email: email,
+                password: _password,
+              ),
+              throwsA(isA<AuthException>()),
+            );
+          });
+
+          test('only a member protects their access', () async {
+            final stranger = newDevice();
+
+            await expectLater(
+              stranger.connection.protect(google),
+              throwsA(isA<NotMemberException>()),
+            );
+          });
+
+          test('protecting again keeps the account the phone has', () async {
+            final email = newEmail();
+            final (phone, _) = await protectedPhone(email);
+            addTearDown(() => phone.client.rpc<void>('delete_circle'));
+
+            expect(await phone.connection.protect(google), email);
+          });
+
+          test('a protected account cannot join or create a circle', () async {
+            final email = newEmail();
+            final phone = newDevice();
+            await _signUp(email);
+            await phone.client.auth.signInWithPassword(
+              email: email,
+              password: _password,
+            );
+            addTearDown(() => phone.client.rpc<void>('discard_unbound_user'));
+
+            await expectLater(
+              phone.connection.createCircle(
+                creatorName: 'Ana',
+                recipientName: 'Elena',
+              ),
+              throwsA(isA<ForbiddenException>()),
+            );
+            await expectLater(
+              phone.connection.join('K7P-4QM'),
+              throwsA(isA<ForbiddenException>()),
+            );
+          });
+
+          test('leaving takes the protection with it: the account is '
+              'gone, and the phone is a new device', () async {
+            final email = newEmail();
+            final (phone, memberId) = await protectedPhone(email);
+            final before = phone.client.auth.currentUser?.id;
+
+            final result = await phone.connection.push([
+              CareEvent.memberLeft(
+                meta: EventMeta(
+                  id: 'left-$memberId',
+                  caregiverId: memberId,
+                  occurredAt: DateTime(2026, 11, 13, 9),
+                ),
+                memberId: memberId,
+              ),
+            ]);
+            expect(result.stored, hasLength(1));
+            await phone.connection.forgetDevice();
+
+            expect(await phone.connection.protectedWith(), isNull);
+            await expectLater(
+              phone.connection.watch().first,
+              throwsA(isA<NotMemberException>()),
+            );
+            expect(phone.client.auth.currentUser?.id, isNot(before));
+            // Nobody signs in with it any more.
+            final other = newDevice();
+            await expectLater(
+              other.client.auth.signInWithPassword(
+                email: email,
+                password: _password,
+              ),
+              throwsA(isA<AuthException>()),
+            );
+          });
+        });
 
         test('a device in no circle is told so when it reads', () async {
           final stranger = newDevice();
@@ -333,7 +518,7 @@ class _Device {
           'Bearer ${client.auth.currentSession?.accessToken}',
         )
         ..contentType = ContentType.json;
-      request.write(jsonEncode({'email': email, 'password': 'password-1'}));
+      request.write(jsonEncode({'email': email, 'password': _password}));
       final response = await request.close();
       if (response.statusCode != 200) {
         throw StateError('Could not set the email: ${response.statusCode}');

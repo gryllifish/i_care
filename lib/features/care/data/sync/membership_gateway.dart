@@ -34,4 +34,11 @@ abstract interface class MembershipGateway {
   /// Throws [NoConnectionException], [NotMemberException] or
   /// [ForbiddenException].
   Future<void> deleteCircle();
+
+  /// Ends this device's own session with the server, once it left, was
+  /// removed or deleted its circle: whoever uses it next starts as a new
+  /// device, with nothing of the account before (`docs/roles.md`,
+  /// recoverable access). Never fails: the session is gone here even
+  /// when the server cannot be told.
+  Future<void> forgetDevice();
 }

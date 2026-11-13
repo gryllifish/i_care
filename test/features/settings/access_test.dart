@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/core/utils/formatters.dart';
+import 'package:i_care/features/care/data/sample/sample_circle.dart';
 import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/member.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
@@ -59,7 +60,10 @@ void main() {
       await tapInSettings(tester, find.text('Protect with Google'));
 
       expect(access.protectedBy, 'ana@example.com');
-      expect(find.text('Protected with a•••@example.com'), findsOneWidget);
+      expect(
+        find.text('Access protected with a•••@example.com'),
+        findsOneWidget,
+      );
       expect(find.text('Protect with Google'), findsNothing);
     });
 
@@ -78,10 +82,10 @@ void main() {
       await tapInSettings(tester, find.text('Protect with Google'));
 
       expect(find.text('Protect with Google'), findsOneWidget);
-      expect(find.textContaining('Protected with'), findsNothing);
+      expect(find.textContaining('protected with'), findsNothing);
     });
 
-    testWidgets("an account protecting someone else's access is refused", (
+    testWidgets('an account protecting another access is refused', (
       tester,
     ) async {
       await pumpApp(
@@ -96,8 +100,29 @@ void main() {
       await tapInSettings(tester, find.text('Protect with Google'));
 
       expect(
+        find.text('That Google account already protects another access.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('says so when Google cannot hand over an account', (
+      tester,
+    ) async {
+      await pumpApp(
+        tester,
+        repository: circle(),
+        now: now,
+        prefs: phoneOf('ana'),
+        access: FakeAccessRepository()..failure = const GoogleSignInFailure(),
+      );
+      await openSettings(tester);
+
+      await tapInSettings(tester, find.text('Protect with Google'));
+
+      expect(
         find.text(
-          "That Google account already protects someone else's access.",
+          'Could not sign in with Google. Check that this phone has a '
+          'Google account, then try again.',
         ),
         findsOneWidget,
       );
@@ -137,7 +162,7 @@ void main() {
       expect(find.text('Welcome to ICare'), findsOneWidget);
       // Already protected, so the welcome does not ask again.
       await tester.scrollUntilVisible(
-        find.text('Protected with a•••@example.com'),
+        find.text('Access protected with a•••@example.com'),
         200,
         scrollable: find.byType(Scrollable).first,
       );
@@ -238,6 +263,24 @@ void main() {
       await openSettings(tester);
 
       expect(find.text(hint), findsNothing);
+    });
+
+    testWidgets('still suggests it while the second has no phone yet', (
+      tester,
+    ) async {
+      await pumpApp(
+        tester,
+        repository: circle([
+          // The sample members, and an admin invited but not joined.
+          ...SampleCircle.circleEvents(DateTime(2025)),
+          events.memberInvited('lucia', role: MemberRole.admin),
+        ]),
+        now: now,
+        prefs: phoneOf('ana'),
+      );
+      await openSettings(tester);
+
+      expect(find.text(hint), findsOneWidget);
     });
 
     testWidgets('stops suggesting once there are two', (tester) async {

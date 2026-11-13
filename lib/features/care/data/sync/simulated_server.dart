@@ -170,6 +170,7 @@ class SimulatedServer {
               memberId: event.memberId,
               ended: true,
             );
+            _unprotect(deviceId);
           }
       }
     }
@@ -628,9 +629,15 @@ class SimulatedServer {
       if (_bindings[deviceId] case _Binding(memberId: final bound, ended: false)
           when bound == memberId) {
         _bindings[deviceId] = _Binding(memberId: memberId, ended: true);
+        _unprotect(deviceId);
       }
     }
   }
+
+  /// A binding that ends takes the device's protection with it: the next
+  /// person on that phone has an access of their own.
+  void _unprotect(String deviceId) =>
+      _accounts.removeWhere((_, protected) => protected == deviceId);
 }
 
 /// The outcome of checking one event.

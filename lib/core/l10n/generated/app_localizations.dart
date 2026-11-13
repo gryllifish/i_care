@@ -2458,8 +2458,14 @@ abstract class AppLocalizations {
   /// No description provided for @errorAccountInUse.
   ///
   /// In en, this message translates to:
-  /// **'That Google account already protects someone else\'s access.'**
+  /// **'That Google account already protects another access.'**
   String get errorAccountInUse;
+
+  /// No description provided for @errorGoogleSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sign in with Google. Check that this phone has a Google account, then try again.'**
+  String get errorGoogleSignIn;
 
   /// No description provided for @errorNoAccess.
   ///
@@ -2686,7 +2692,7 @@ abstract class AppLocalizations {
   /// No description provided for @accessProtected.
   ///
   /// In en, this message translates to:
-  /// **'Protected with {email}'**
+  /// **'Access protected with {email}'**
   String accessProtected(String email);
 
   /// No description provided for @accessProtectedBody.

@@ -64,10 +64,12 @@ class _AccessSectionState extends ConsumerState<AccessSection> {
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _busy = true);
     final result = await ref.read(protectedAccessProvider.notifier).protect();
-    if (!mounted) return;
-    setState(() => _busy = false);
+    // Said even if the screen moved on meanwhile: silence would read as
+    // protected.
     if (result case Err(:final failure)) {
       messenger.showError(failure.message(l10n));
     }
+    if (!mounted) return;
+    setState(() => _busy = false);
   }
 }

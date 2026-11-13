@@ -28,6 +28,7 @@ sealed class AppException implements Exception {
     ),
     AccountInUseException() => AccountInUseFailure(cause: this),
     NoAccessException() => NoAccessFailure(cause: this),
+    GoogleSignInFailedException() => GoogleSignInFailure(cause: this),
   };
 
   @override
@@ -78,7 +79,8 @@ final class InvalidCodeException extends AppException {
   final CodeProblem problem;
 }
 
-/// The Google account already protects another member's access.
+/// The Google account already protects another access: someone else's,
+/// or this person's on another phone.
 final class AccountInUseException extends AppException {
   const AccountInUseException(super.message, {super.cause});
 }
@@ -86,4 +88,10 @@ final class AccountInUseException extends AppException {
 /// No access is protected with that Google account.
 final class NoAccessException extends AppException {
   const NoAccessException(super.message, {super.cause});
+}
+
+/// Google's account sheet could not hand over an account: none on the
+/// phone, the build is not set up for it, or Google is unreachable.
+final class GoogleSignInFailedException extends AppException {
+  const GoogleSignInFailedException(super.message, {super.cause});
 }

@@ -153,6 +153,10 @@ class SimulatedConnection
     await _travel();
   }
 
+  // The simulated server knows a device by its id, which has no session.
+  @override
+  Future<void> forgetDevice() async {}
+
   @override
   Future<String?> protectedWith() async => _server.protectedWith(deviceId);
 

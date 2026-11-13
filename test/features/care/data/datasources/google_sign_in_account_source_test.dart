@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:i_care/core/error/app_exception.dart';
@@ -57,20 +58,43 @@ void main() {
     expect(await source.pick(), isNull);
   });
 
-  test('any other trouble with Google is a server error', () async {
+  test('any other trouble with Google is its own failure, which trying '
+      'again does not fix', () async {
     when(() => google.authenticate()).thenThrow(
       const GoogleSignInException(
         code: GoogleSignInExceptionCode.clientConfigurationError,
       ),
     );
 
-    await expectLater(source.pick(), throwsA(isA<ServerException>()));
+    await expectLater(
+      source.pick(),
+      throwsA(
+        isA<GoogleSignInFailedException>().having(
+          (error) => error.toFailure().isTransient,
+          'transient',
+          isFalse,
+        ),
+      ),
+    );
   });
 
-  test('an account without a token is a server error', () async {
+  test("the plugin's own errors are typed too", () async {
+    when(() => google.authenticate())
+        .thenThrow(PlatformException(code: 'channel-error'));
+
+    await expectLater(
+      source.pick(),
+      throwsA(isA<GoogleSignInFailedException>()),
+    );
+  });
+
+  test('an account without a token is a failure', () async {
     when(() => google.authenticate())
         .thenAnswer((_) async => account(idToken: null));
 
-    await expectLater(source.pick(), throwsA(isA<ServerException>()));
+    await expectLater(
+      source.pick(),
+      throwsA(isA<GoogleSignInFailedException>()),
+    );
   });
 }

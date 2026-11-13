@@ -92,8 +92,9 @@ final class InvalidCodeFailure extends Failure {
   final CodeProblem problem;
 }
 
-/// The Google account already protects another member's access
-/// (`docs/roles.md`, recoverable access).
+/// The Google account already protects another access: someone else's,
+/// or this person's on another phone (`docs/roles.md`, recoverable
+/// access).
 final class AccountInUseFailure extends Failure {
   const AccountInUseFailure({super.cause});
 }
@@ -101,4 +102,10 @@ final class AccountInUseFailure extends Failure {
 /// No access is protected with that Google account.
 final class NoAccessFailure extends Failure {
   const NoAccessFailure({super.cause});
+}
+
+/// Google's account sheet could not hand over an account. Not transient:
+/// trying again changes nothing until the phone has a Google account.
+final class GoogleSignInFailure extends Failure {
+  const GoogleSignInFailure({super.cause});
 }

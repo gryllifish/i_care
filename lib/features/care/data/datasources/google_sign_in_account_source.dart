@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:i_care/core/error/app_exception.dart';
 import 'package:i_care/core/utils/app_logger.dart';
@@ -22,13 +23,19 @@ class GoogleSignInAccountSource implements GoogleAccountSource {
       final account = await _google.authenticate();
       final idToken = account.authentication.idToken;
       if (idToken == null) {
-        throw const ServerException('Google gave no ID token');
+        throw const GoogleSignInFailedException('Google gave no ID token');
       }
       return (idToken: idToken, accessToken: null, email: account.email);
     } on GoogleSignInException catch (error) {
       if (error.code == GoogleSignInExceptionCode.canceled) return null;
-      throw ServerException(
+      throw GoogleSignInFailedException(
         'Google sign-in failed: ${error.code.name}',
+        cause: error,
+      );
+      // The plugin's channel reports some failures as its own type.
+    } on PlatformException catch (error) {
+      throw GoogleSignInFailedException(
+        'Google sign-in failed: ${error.code}',
         cause: error,
       );
     } finally {

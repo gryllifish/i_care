@@ -68,13 +68,18 @@ class MembershipRepositoryImpl implements MembershipRepository {
   }
 
   @override
-  Future<Result<void>> forget() => _care.restart();
+  Future<Result<void>> forget() async {
+    // Whoever uses this phone next is a new device to the server.
+    await _gateway.forgetDevice();
+    return await _care.restart();
+  }
 
   @override
   Future<Result<void>> deleteCircle() async {
     if (await guard(_gateway.deleteCircle) case Err(:final failure)) {
       return Err(failure);
     }
+    await _gateway.forgetDevice();
     return await _care.erase();
   }
 }

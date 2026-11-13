@@ -18,6 +18,7 @@ extension FailureMessage on Failure {
     InvalidCodeFailure(problem: CodeProblem.locked) => l10n.errorCodeLocked,
     AccountInUseFailure() => l10n.errorAccountInUse,
     NoAccessFailure() => l10n.errorNoAccess,
+    GoogleSignInFailure() => l10n.errorGoogleSignIn,
   };
 }
 

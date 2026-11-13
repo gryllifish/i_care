@@ -1264,7 +1264,8 @@
   "notificationsBody": "A new note, a change in medications or appointments, or a dose recorded twice. Notifications never say who or which medication.",
   "welcomeNotifications": "When you start, ICare will ask to notify you of the circle's news: a new note, a change in medications or appointments, or a dose recorded twice.",
   "errorCodeLocked": "Too many wrong codes. Wait 15 minutes and try again.",
-  "errorAccountInUse": "That Google account already protects someone else's access.",
+  "errorAccountInUse": "That Google account already protects another access.",
+  "errorGoogleSignIn": "Could not sign in with Google. Check that this phone has a Google account, then try again.",
   "errorNoAccess": "No access is protected with that Google account. Ask an admin of the circle for a code.",
   "joinTitle": "Join a care circle",
   "joinBody": "Ask an admin of the circle for a code. It works once, for 48 hours.",
@@ -1330,7 +1331,7 @@
   "sectionAccess": "Your access",
   "accessBody": "If you lose this phone or uninstall the app, a Google account gets you back into the circle, with nobody having to send you a code.",
   "accessProtect": "Protect with Google",
-  "accessProtected": "Protected with {email}",
+  "accessProtected": "Access protected with {email}",
   "@accessProtected": {
     "placeholders": {
       "email": {

@@ -82,7 +82,9 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
             Text(l10n.createCircleBody, style: AppTextStyles.body),
             const SizedBox(height: AppSpacing.md),
             OutlinedButton(
-              onPressed: () => context.push(AppRoutes.createCircle),
+              onPressed: _busy
+                  ? null
+                  : () => context.push(AppRoutes.createCircle),
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size.fromHeight(_buttonHeight),
               ),

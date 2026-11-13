@@ -1515,7 +1515,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get errorAccountInUse =>
-      'Esa cuenta de Google ya protege el acceso de otra persona.';
+      'Esa cuenta de Google ya protege otro acceso.';
+
+  @override
+  String get errorGoogleSignIn =>
+      'No se pudo entrar con Google. Revisá que este teléfono tenga una cuenta de Google y probá de nuevo.';
 
   @override
   String get errorNoAccess =>
@@ -1648,7 +1652,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String accessProtected(String email) {
-    return 'Protegido con $email';
+    return 'Acceso protegido con $email';
   }
 
   @override

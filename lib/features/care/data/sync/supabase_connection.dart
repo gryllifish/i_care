@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:i_care/core/error/app_exception.dart';
 import 'package:i_care/core/error/failure.dart';
 import 'package:i_care/core/utils/app_logger.dart';
@@ -216,21 +217,31 @@ class SupabaseConnection
   };
 
   @override
+  Future<void> forgetDevice() => _signOutHere();
+
+  @override
   Future<String> protect(GoogleCredential credential) async {
-    try {
-      await _auth(
-        () => _client.auth.linkIdentityWithIdToken(
-          provider: OAuthProvider.google,
-          idToken: credential.idToken,
-          accessToken: credential.accessToken,
-        ),
-      );
-    } on ServerException catch (error) {
-      if (error.cause case AuthException(:final code)
-          when code == ErrorCode.identityAlreadyExists.code) {
-        throw AccountInUseException('Account in use', cause: error);
+    if (await _call('current_member') == null) {
+      throw const NotMemberException('Not in a circle');
+    }
+    // Linked before, but not recorded (the connection dropped in
+    // between): the account it has stays, and only the record is made.
+    if (_client.auth.currentUser?.isAnonymous ?? true) {
+      try {
+        await _auth(
+          () => _client.auth.linkIdentityWithIdToken(
+            provider: OAuthProvider.google,
+            idToken: credential.idToken,
+            accessToken: credential.accessToken,
+          ),
+        );
+      } on ServerException catch (error) {
+        if (error.cause case AuthException(:final code)
+            when code == ErrorCode.identityAlreadyExists.code) {
+          throw AccountInUseException('Account in use', cause: error);
+        }
+        rethrow;
       }
-      rethrow;
     }
     // Linking may start a new session: this phone's, so nobody is told.
     await _call('confirm_session');
@@ -246,17 +257,30 @@ class SupabaseConnection
         accessToken: credential.accessToken,
       ),
     );
-    // Confirming is what tells the circle; nothing is read before it.
-    await _call('confirm_session');
-    if (await _call('current_member') case final String memberId) {
-      // The lost phone's sessions end, and the server refuses them at once.
-      await _auth(() => _client.auth.signOut(scope: SignOutScope.others));
-      return memberId;
+    return await recoverSignedIn();
+  }
+
+  /// What [recover] does once this device is signed in as the account:
+  /// apart from it so tests reach it without Google.
+  ///
+  /// Whatever fails, this device signs out: it never stays signed in as
+  /// an account while showing that it belongs to nobody.
+  @visibleForTesting
+  Future<String> recoverSignedIn() async {
+    try {
+      // Confirming tells the circle and ends the account's sessions on
+      // every other phone, on the server; nothing is read before it.
+      await _call('confirm_session');
+      if (await _call('current_member') case final String memberId) {
+        return memberId;
+      }
+      // Signing in created an account linked to no one: it goes.
+      await _call('discard_unbound_user');
+      throw const NoAccessException('No access with this account');
+    } on AppException {
+      await _signOutHere();
+      rethrow;
     }
-    // Signing in created an account linked to no one: it goes.
-    await _call('discard_unbound_user');
-    await _signOutHere();
-    throw const NoAccessException('No access with this account');
   }
 
   @override
@@ -275,30 +299,44 @@ class SupabaseConnection
 
   /// Calls the backend function [name] as this device.
   ///
-  /// A session the server no longer accepts is settled once, then the
-  /// call is repeated: an ended one (signed out from another phone, or
-  /// its account deleted with the circle) makes this device start over
-  /// as a new anonymous one, which the server then tells whether it
-  /// belongs to anyone; an unconfirmed one is confirmed.
+  /// A session the server no longer accepts is settled, then the call is
+  /// repeated (a refused call never ran): an ended one (signed out from
+  /// another phone, or its account deleted with the circle) makes this
+  /// device start over as a new anonymous one, which the server then
+  /// tells whether it belongs to anyone; an unconfirmed one is confirmed.
   ///
   /// Throws [NoConnectionException], [RequestTimeoutException],
   /// [ServerException], [NotMemberException], [ForbiddenException] or
   /// [NotFoundException].
   Future<Object?> _call(String name, [Map<String, Object?>? params]) async {
-    try {
-      return await _rpc(name, params);
-    } on _SessionRefused catch (refused) {
-      if (refused.ended) {
-        await _signOutHere();
-      } else {
-        await _rpc('confirm_session');
+    // Unconfirmed, then ended while confirming, is the longest way round.
+    const settlements = 2;
+    for (var settled = 0; ; settled++) {
+      try {
+        return await _rpc(name, params);
+      } on _SessionRefused catch (refused) {
+        if (settled == settlements) {
+          throw ServerException('$name: session refused', cause: refused);
+        }
+        await _settle(refused);
       }
     }
-    try {
-      return await _rpc(name, params);
-    } on _SessionRefused catch (refused) {
-      throw ServerException('$name refused the session again', cause: refused);
+  }
+
+  /// Does what the server asked for when it refused this device's
+  /// session.
+  ///
+  /// Throws what [_call] does.
+  Future<void> _settle(_SessionRefused refused) async {
+    if (!refused.ended) {
+      try {
+        await _rpc('confirm_session');
+        return;
+      } on _SessionRefused {
+        // Ended while confirming: another phone recovered the access.
+      }
     }
+    await _signOutHere();
   }
 
   /// Throws what [_call] does, and [_SessionRefused].
