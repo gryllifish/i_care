@@ -184,10 +184,11 @@ single one is a point of failure:
   using a new phone" and other admins get a push. The server writes it
   from the JWT's `session_id`, so it does not depend on the new phone
   asking for it: whoever took over a Google account cannot skip it.
-- **Native or browser sign-in, decided when building.** The native
-  account sheet is the better experience and needs a new dependency
-  (`google_sign_in`); the browser flow needs none, but leaves the app
-  for a tab and needs a deep link back.
+- **Native sign-in on Android.** Google's own account sheet
+  (`google_sign_in`), without leaving the app. The app keeps no Google
+  session: it asks which account every time. The web would use
+  Supabase's redirect flow; not built, since the beta web has no public
+  URL yet.
 - **The demo does not offer it.** The demo has no Google project and
   resets anyway. The simulated gateway implements it for tests and the
   contract suite.
@@ -238,8 +239,10 @@ Built in `supabase/migrations/*_recoverable_access.sql`.
   hold nothing, so installed apps behave as before.
 - `private.discard_stray_users` and `private.operator_issue_code` are
   the operator's (`backend.md`, "Operator").
-- Still to do: `config.toml` with the Google provider and manual
-  linking, once the client side is built.
+- Manual linking is on in `config.toml`. The Google provider (web
+  client ID and secret, nonce check skipped) is set in the project's
+  dashboard only: the secret stays out of the repository, and the local
+  stack has no Google.
 
 ### Errors
 Typed `Failure`s, rendered through l10n: sign-in cancelled (not an
@@ -275,7 +278,10 @@ On 2026-11-04, against the local stack (GoTrue v2.197.0) and
 A Google Cloud project with an OAuth consent screen asking only for the
 email and basic profile (no Google review needed), a web client whose ID
 and secret go to Supabase, and an Android client per signing key
-(package name and SHA-1).
+(package name and SHA-1). The web client's ID also goes in
+`env/beta.json` as `GOOGLE_WEB_CLIENT_ID`: the app asks Google for a
+token meant for it. Done for `icare_test` on 2026-11-13, in Testing mode
+(only listed test users can sign in).
 
 ### Later
 - **Email code**, once there is a domain or the beta opens to more
@@ -482,8 +488,9 @@ Supabase, as designed in [`backend.md`](backend.md#supabase-stage-2):
    and Supabase, which settles ended and unconfirmed sessions itself)
    and `AccessRepository`; "Your access" in Settings and on an admin's
    welcome, "I already have access" when joining, and the hint to a
-   circle's only admin. Next: Google's picker on Android, and the push
-   to other admins.
+   circle's only admin; Google's account sheet on Android
+   (`google_sign_in`, for builds with `GOOGLE_WEB_CLIENT_ID`). Next: the
+   push to other admins, and the first real link checked on the beta.
 
 Each phase ends with `scripts/verify.sh` green and the gateway contract
 tests covering what changed.

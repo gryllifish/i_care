@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 import 'package:i_care/app/app.dart';
 import 'package:i_care/app/demo_shell.dart';
@@ -17,6 +18,8 @@ import 'package:i_care/core/utils/app_logger.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/data/care_providers.dart';
 import 'package:i_care/features/care/data/datasources/event_store.dart';
+import 'package:i_care/features/care/data/datasources/google_account_source.dart';
+import 'package:i_care/features/care/data/datasources/google_sign_in_account_source.dart';
 import 'package:i_care/features/care/data/datasources/rejected_store.dart';
 import 'package:i_care/features/care/data/datasources/storage_key.dart';
 import 'package:i_care/features/care/data/datasources/sync_state_store.dart';
@@ -101,12 +104,26 @@ Future<void> _runBeta() async {
       syncGatewayProvider.overrideWithValue(connection),
       membershipGatewayProvider.overrideWithValue(connection),
       accessGatewayProvider.overrideWithValue(connection),
+      googleAccountSourceProvider.overrideWithValue(_googleAccounts()),
       isDemoProvider.overrideWithValue(false),
       pushRepositoryProvider.overrideWithValue(push),
     ],
   );
   runApp(UncontrolledProviderScope(container: container, child: const App()));
 }
+
+/// Google's account sheet, for builds that name the Google client, on
+/// Android; null elsewhere (the web needs a redirect flow, and an App
+/// Store app would also have to offer Sign in with Apple).
+GoogleAccountSource? _googleAccounts() =>
+    !kIsWeb &&
+        defaultTargetPlatform == TargetPlatform.android &&
+        Env.googleWebClientId.isNotEmpty
+    ? GoogleSignInAccountSource(
+        GoogleSignIn.instance,
+        serverClientId: Env.googleWebClientId,
+      )
+    : null;
 
 /// Push notifications through Firebase, for builds that name a Firebase
 /// project, on Android and the web; null elsewhere (iOS needs APNs and an

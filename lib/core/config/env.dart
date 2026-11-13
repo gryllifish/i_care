@@ -59,6 +59,13 @@ abstract final class Env {
   /// The web push certificate's public key.
   static const firebaseVapidKey = String.fromEnvironment('FIREBASE_VAPID_KEY');
 
+  /// The Google OAuth web client the backend checks ID tokens against,
+  /// for protecting access with Google (`docs/roles.md`). Public: it
+  /// only names the client.
+  static const googleWebClientId = String.fromEnvironment(
+    'GOOGLE_WEB_CLIENT_ID',
+  );
+
   /// Whether this build can receive push notifications.
   static bool get hasFirebase =>
       firebaseApiKey.isNotEmpty && firebaseProjectId.isNotEmpty;

@@ -17,6 +17,7 @@
 | `flutter_secure_storage` | The beta's storage key and Supabase session in Keychain / Android Keystore (`docs/privacy.md`). |
 | `firebase_core` + `firebase_messaging` | Beta push notifications on Android and the web, by event (`docs/backend.md`). Firebase is used for messaging only; no data is stored there. |
 | `supabase_flutter` | Stage 2 beta backend: anonymous sign-in, calls to the backend's functions, Realtime pings, session kept across restarts. Used only in `data/sync/supabase_connection.dart` and `bootstrap`. |
+| `google_sign_in` | Google's account sheet on Android, to protect and recover a member's access (`docs/roles.md`, recoverable access). Used only in `data/datasources/google_sign_in_account_source.dart` and `bootstrap`. |
 | `mocktail` (dev) | Mocks without codegen. |
 | `fake_async` (dev) | Deterministic time for sync latency and undo windows. |
 | `very_good_analysis` (dev) | Strict lint set. |
