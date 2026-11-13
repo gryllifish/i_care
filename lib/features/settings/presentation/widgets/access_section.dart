@@ -48,7 +48,8 @@ class _AccessSectionState extends ConsumerState<AccessSection> {
           Text(l10n.accessProtectedBody, style: muted),
         ] else ...[
           Text(l10n.accessBody, style: muted),
-          FilledButton.icon(
+          // Optional, so never as loud as the screen's own action.
+          OutlinedButton.icon(
             onPressed: _busy ? null : _protect,
             icon: const Icon(Icons.shield_outlined),
             label: Text(l10n.accessProtect),
