@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "ICare demo",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "ICare beta",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": ["--dart-define-from-file=env/beta.json"]
+    },
+    {
+      "name": "ICare beta (local Supabase)",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": ["--dart-define-from-file=env/beta-local.json"]
+    }
+  ]
+}
