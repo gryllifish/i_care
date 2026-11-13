@@ -417,23 +417,29 @@ final class CanResetDemoProvider extends $FunctionalProvider<bool, bool, bool>
 String _$canResetDemoHash() => r'8abb5e182f93117f13ea0322c01392bfcc849c0d';
 
 /// This phone's notification permission, or null where there are no
-/// push notifications (`docs/backend.md`). Lives with the app: on start
-/// and when the language changes it keeps the phone's token on the
-/// server, or has the server forget it once the permission is gone.
+/// push notifications (`docs/backend.md`). Lives with the app: on start,
+/// when the language changes and when someone joins on this phone (the
+/// server then knows it as another device, or forgot its token on a
+/// recovery) it keeps the phone's token on the server, or has the server
+/// forget it once the permission is gone.
 
 @ProviderFor(PushNotifications)
 final pushNotificationsProvider = PushNotificationsProvider._();
 
 /// This phone's notification permission, or null where there are no
-/// push notifications (`docs/backend.md`). Lives with the app: on start
-/// and when the language changes it keeps the phone's token on the
-/// server, or has the server forget it once the permission is gone.
+/// push notifications (`docs/backend.md`). Lives with the app: on start,
+/// when the language changes and when someone joins on this phone (the
+/// server then knows it as another device, or forgot its token on a
+/// recovery) it keeps the phone's token on the server, or has the server
+/// forget it once the permission is gone.
 final class PushNotificationsProvider
     extends $AsyncNotifierProvider<PushNotifications, PushPermission?> {
   /// This phone's notification permission, or null where there are no
-  /// push notifications (`docs/backend.md`). Lives with the app: on start
-  /// and when the language changes it keeps the phone's token on the
-  /// server, or has the server forget it once the permission is gone.
+  /// push notifications (`docs/backend.md`). Lives with the app: on start,
+  /// when the language changes and when someone joins on this phone (the
+  /// server then knows it as another device, or forgot its token on a
+  /// recovery) it keeps the phone's token on the server, or has the server
+  /// forget it once the permission is gone.
   PushNotificationsProvider._()
     : super(
         from: null,
@@ -453,12 +459,14 @@ final class PushNotificationsProvider
   PushNotifications create() => PushNotifications();
 }
 
-String _$pushNotificationsHash() => r'f7d86b748db3f3829df426b7c61fbb61ccfcf283';
+String _$pushNotificationsHash() => r'6f95f2b1f92fb5ba7ab4a4a5b46689c1db1ff11e';
 
 /// This phone's notification permission, or null where there are no
-/// push notifications (`docs/backend.md`). Lives with the app: on start
-/// and when the language changes it keeps the phone's token on the
-/// server, or has the server forget it once the permission is gone.
+/// push notifications (`docs/backend.md`). Lives with the app: on start,
+/// when the language changes and when someone joins on this phone (the
+/// server then knows it as another device, or forgot its token on a
+/// recovery) it keeps the phone's token on the server, or has the server
+/// forget it once the permission is gone.
 
 abstract class _$PushNotifications extends $AsyncNotifier<PushPermission?> {
   FutureOr<PushPermission?> build();

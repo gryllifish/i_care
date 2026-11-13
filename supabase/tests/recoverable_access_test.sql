@@ -6,7 +6,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(38);
+select plan(39);
 
 -- Ana's phone starts anonymous; Rosa's stays so. A stranger signed in
 -- with a Google account linked to no one.
@@ -88,6 +88,8 @@ language sql security definer as $$
     when 'session' then
       (select session_id::text from private.device_bindings
         where uid = p_uid::uuid)
+    when 'token' then
+      (select token from private.device_tokens where uid = p_uid::uuid)
   end;
 $$;
 
@@ -215,6 +217,13 @@ select is(
 
 -- Ana recovers on a new phone ------------------------------------------------
 
+-- Her old phone had notifications on.
+select pg_temp.act_as(
+  '00000000-0000-0000-0000-0000000000a1',
+  '00000000-0000-0000-0000-00000000a5a1'
+);
+select public.register_push_token('token-old-phone', 'android', 'es');
+
 select pg_temp.act_as(
   '00000000-0000-0000-0000-0000000000a1',
   '00000000-0000-0000-0000-00000000a5a2'
@@ -234,6 +243,11 @@ select is(
   pg_temp.account('00000000-0000-0000-0000-0000000000a1', 'sessions'),
   '1',
   'and the server ends the account''s other sessions itself'
+);
+select is(
+  pg_temp.account('00000000-0000-0000-0000-0000000000a1', 'token'),
+  null,
+  'and forgets the old phone''s push token'
 );
 select is(
   public.current_member(),

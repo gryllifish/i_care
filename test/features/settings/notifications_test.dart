@@ -115,6 +115,32 @@ void main() {
     expect(push.syncedIn, ['en']);
   });
 
+  testWidgets('keeps the token again when someone joins on this phone: '
+      'the server knows it as another device by then', (tester) async {
+    final push = _FakePush(PushPermission.allowed);
+    await pumpApp(
+      tester,
+      repository: circle(),
+      now: now,
+      prefs: MemoryDevicePrefs(),
+      membership: FakeMembershipRepository()..joinsAs = 'ana',
+      overrides: [pushRepositoryProvider.overrideWithValue(push)],
+    );
+    // The app already kept it on start, as the device it was then.
+    final before = push.syncedIn.length;
+    expect(before, 1);
+
+    await tester.enterText(
+      find.byType(TextField),
+      FakeMembershipRepository.validCode,
+    );
+    await tester.tap(find.text('Join'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Welcome to ICare'), findsOneWidget);
+    expect(push.syncedIn.length, before + 1);
+  });
+
   testWidgets('Settings shows that notifications are on, with no switch', (
     tester,
   ) async {

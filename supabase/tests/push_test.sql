@@ -5,7 +5,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(16);
+select plan(18);
 
 insert into auth.users (id)
 values
@@ -142,6 +142,22 @@ select is(
   'unless the caregiver confirmed it knowing the others'
 );
 select is(pg_temp.kind('dose-other-slot'), null, 'another slot is not news');
+
+-- A recovered access -----------------------------------------------------------
+
+select private.system_event(
+  (select circle_id from private.device_bindings
+    where uid = '00000000-0000-0000-0000-0000000000a2'),
+  'recovered-rosa', 'access_recovered', '{"member_id": "rosa"}'
+);
+select is(
+  pg_temp.kind('recovered-rosa'), 'access',
+  'someone on a new phone is news'
+);
+select is(
+  pg_temp.told('recovered-rosa'), '["token-ana", "token-rosa"]'::jsonb,
+  'for admins and the member''s own phones, not the rest of the circle'
+);
 
 -- Sending ----------------------------------------------------------------------
 

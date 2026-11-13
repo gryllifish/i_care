@@ -9,7 +9,12 @@
 // Messages say only what kind of news there is: no names, medications or
 // other health data travel through Google's or Apple's servers.
 
-type Kind = "note" | "appointment" | "medication" | "double_dose";
+type Kind =
+  | "note"
+  | "appointment"
+  | "medication"
+  | "double_dose"
+  | "access";
 type Target = { token: string; platform: string; language: "en" | "es" };
 type ServiceAccount = {
   project_id: string;
@@ -33,6 +38,10 @@ const texts: Record<Kind, Record<Target["language"], string>> = {
   double_dose: {
     en: "A dose was recorded twice. Please check it.",
     es: "Se registró dos veces una toma. Revisala.",
+  },
+  access: {
+    en: "Someone in the circle is using a new phone. Check it was them.",
+    es: "Alguien del círculo está usando un teléfono nuevo. Revisá que haya sido esa persona.",
   },
 };
 

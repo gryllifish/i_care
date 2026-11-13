@@ -322,8 +322,8 @@ documented), nursing-home features.
   and the demo with Ana (admin) and Rosa (helper).
 - Roles, phase 5 (recoverable access): Google sign-in on the beta's
   Android build to protect an access and recover it on a new phone, the
-  circle told of every recovery, the hint to an only admin, and the
-  operator's code as the last resort. Reviewed on 2026-11-13 and
+  circle told of every recovery (with a push to admins), the hint to an
+  only admin, and the operator's code as the last resort. Reviewed on 2026-11-13 and
   hardened. Not yet tried with a real Google account.
 - Skip reasons the circle sets (scope item 16), and a note with "Other".
 - Demo without data (scope item 17): creating a circle, the welcome's
@@ -361,7 +361,7 @@ documented), nursing-home features.
       test on two real devices.
    5. Recoverable access (`docs/roles.md`): built and reviewed. Still to
       do: the first real "protect, leave, recover" with a Google account
-      on the beta, and a push to the other admins on a recovery.
+      on the beta.
    6. Beta build for the family: web/PWA and Android first; iOS needs an
       Apple Developer account.
 

@@ -136,9 +136,8 @@ Admins can revoke an unused code.
 
 ## Recoverable access
 
-Proposed on 2026-11-04 and built since, except the push to other admins
-(phase 5 below). Reviewed on 2026-11-13; what the review changed is
-marked.
+Proposed on 2026-11-04 and built since (phase 5 below). Reviewed on
+2026-11-13; what the review changed is marked.
 
 **The problem.** A phone is an anonymous Supabase user: its `uid` is
 the device. Uninstalling the app, clearing the browser's data or
@@ -191,7 +190,9 @@ single one is a point of failure:
   phone writes a system event before it can read anything, so the circle
   sees "Ana is using a new phone". The server writes it, once, from the
   JWT's `session_id`: whoever took over a Google account cannot skip it.
-  A push to the other admins is next.
+  Admins and the member's other phones get a push ("Someone in the
+  circle is using a new phone. Check it was them."), without names; the
+  phone left behind gets none, its token being forgotten first.
 - **The server does not rely on the new phone** (review). The same call
   that tells the circle ends the account's other sessions, and a session
   older than the one on record is refused, so a lost phone cannot take
@@ -231,8 +232,9 @@ single one is a point of failure:
 
 ### On the server
 In `supabase/migrations/`: `*_recoverable_access.sql`,
-`*_current_member.sql` and `*_harden_recoverable_access.sql` (the
-review). Deploy all three before a build that offers Google.
+`*_current_member.sql`, `*_harden_recoverable_access.sql` (the review)
+and `*_push_access_recovered.sql`. Deploy all four, and the `push`
+function, before a build that offers Google.
 - `public.check_request` runs before every API request (PostgREST's
   `db_pre_request`), so no function can forget it:
   - a JWT whose session no longer exists, or that started before the
@@ -464,13 +466,13 @@ Supabase, as designed in [`backend.md`](backend.md#supabase-stage-2):
 4. **Shifts**: who is responsible when. Set aside on 2026-11-03: keeping
    a schedule up adds work to a family's day, and notes for the circle
    already carry the handoff (`product.md`, later candidates).
-5. **Recoverable access** (built, except the push): optional Google
+5. **Recoverable access** (built): optional Google
    sign-in for any member, asked of admins; the suggestion of a second
    admin; recovery by the operator ([above](#recoverable-access)).
    Reviewed on 2026-11-13 by four reviewers (server, data, UI, tests and
    docs); its findings are fixed in `*_harden_recoverable_access.sql`
-   and the commits after it. Next: the push to other admins, and the
-   first real link and recovery on the beta.
+   and the commits after it. Next: the first real link and recovery
+   on the beta.
 
 Each phase ends with `scripts/verify.sh` green and the gateway contract
 tests covering what changed.

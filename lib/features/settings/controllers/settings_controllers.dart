@@ -98,16 +98,20 @@ bool canResetDemo(Ref ref) =>
         ref.watch(canDoProvider(CareAction.resetDemo)));
 
 /// This phone's notification permission, or null where there are no
-/// push notifications (`docs/backend.md`). Lives with the app: on start
-/// and when the language changes it keeps the phone's token on the
-/// server, or has the server forget it once the permission is gone.
+/// push notifications (`docs/backend.md`). Lives with the app: on start,
+/// when the language changes and when someone joins on this phone (the
+/// server then knows it as another device, or forgot its token on a
+/// recovery) it keeps the phone's token on the server, or has the server
+/// forget it once the permission is gone.
 @Riverpod(keepAlive: true)
 class PushNotifications extends _$PushNotifications {
   @override
   Future<PushPermission?> build() async {
     final repository = ref.watch(pushRepositoryProvider);
     if (repository == null) return null;
-    ref.watch(appLanguageProvider);
+    ref
+      ..watch(appLanguageProvider)
+      ..watch(deviceMembershipProvider);
     switch (await repository.sync(language: _pushLanguage(ref))) {
       case Ok(:final value):
         return value;

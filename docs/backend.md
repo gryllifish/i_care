@@ -281,7 +281,10 @@ when. The Firebase project is used for messaging only, no data.
   knowingly confirm; doses given, stock and tasks stay quiet, since
   they happen many times a day) and who is
   told (`push_targets`: current members' devices whose role reads the
-  event's audience, never its author's). It queues {kind, targets}
+  event's audience, never its author's). A recovered access
+  (`roles.md`, added on 2026-11-13) is news for admins, who can remove
+  the member, and for the member's other phones; the token the account
+  had is forgotten first, since it is the phone left behind's. It queues {kind, targets}
   through pg_net to the `push` Edge Function, which checks a shared
   secret in constant time and sends through FCM. A failed send never
   fails the event's insert.
