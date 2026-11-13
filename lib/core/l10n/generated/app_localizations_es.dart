@@ -1637,6 +1637,32 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lastAdminNote => 'El círculo necesita al menos una persona admin.';
 
   @override
+  String get sectionAccess => 'Tu acceso';
+
+  @override
+  String get accessBody =>
+      'Si perdés este teléfono o desinstalás la app, una cuenta de Google te devuelve al círculo, sin que nadie tenga que mandarte un código.';
+
+  @override
+  String get accessProtect => 'Proteger con Google';
+
+  @override
+  String accessProtected(String email) {
+    return 'Protegido con $email';
+  }
+
+  @override
+  String get accessProtectedBody =>
+      'En un teléfono nuevo, elegí \"Ya tengo acceso\" y entrá con esa cuenta. El teléfono que usabas antes dejará de tener acceso.';
+
+  @override
+  String get alreadyHaveAccess => 'Ya tengo acceso';
+
+  @override
+  String get onlyAdminHint =>
+      'Sos la única persona admin. Si no pudieras usar este teléfono, nadie más podría invitar ni dar códigos. Considerá hacer admin a alguien más.';
+
+  @override
   String get leaveCircle => 'Salir del círculo en este teléfono';
 
   @override

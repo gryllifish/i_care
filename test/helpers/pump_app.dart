@@ -13,6 +13,7 @@ import 'package:i_care/features/care/domain/entities/care_event.dart';
 import 'package:i_care/features/care/domain/entities/invite_code.dart';
 import 'package:i_care/features/care/domain/entities/rejected_event.dart';
 import 'package:i_care/features/care/domain/entities/sync_status.dart';
+import 'package:i_care/features/care/domain/repositories/access_repository.dart';
 import 'package:i_care/features/care/domain/repositories/care_repository.dart';
 import 'package:i_care/features/care/domain/repositories/membership_repository.dart';
 import 'package:i_care/shared/providers/clock_provider.dart';
@@ -154,6 +155,37 @@ class FakeMembershipRepository implements MembershipRepository {
   }
 }
 
+/// Google's picker and the server in one: [account] is the account the
+/// person picks (null: they close the picker), and [recoversAs] the
+/// member whose access it protects (null: nobody's).
+class FakeAccessRepository implements AccessRepository {
+  String? account = 'ana@example.com';
+  String? recoversAs;
+  String? protectedBy;
+
+  /// When set, protecting and recovering fail with it.
+  Failure? failure;
+
+  @override
+  Future<Result<String?>> protectedWith() async => Ok(protectedBy);
+
+  @override
+  Future<Result<String?>> protect() async {
+    if (failure case final Failure failure) return Err(failure);
+    if (account != null) protectedBy = account;
+    return Ok(account);
+  }
+
+  @override
+  Future<Result<String?>> recover() async {
+    if (failure case final Failure failure) return Err(failure);
+    if (account == null) return const Ok(null);
+    if (recoversAs == null) return const Err(NoAccessFailure());
+    protectedBy = account;
+    return Ok(recoversAs);
+  }
+}
+
 /// Logical size of a typical phone.
 const phoneSize = Size(393, 852);
 
@@ -169,6 +201,10 @@ Future<void> pumpApp(
   /// This phone's preferences; by default, Ana's phone past the welcome.
   DevicePrefs? prefs,
   MembershipRepository? membership,
+
+  /// Protecting access with Google; not offered when null, as in the
+  /// demo.
+  AccessRepository? access,
 }) async {
   tester.view
     ..physicalSize = size * 3
@@ -192,6 +228,7 @@ Future<void> pumpApp(
                 PrefKeys.memberId: 'ana',
               }),
         ),
+        if (access != null) accessRepositoryProvider.overrideWithValue(access),
         ...overrides,
       ],
       // Riverpod retries failed providers by default; tests want the raw

@@ -9,9 +9,11 @@ import 'package:i_care/core/router/app_routes.dart';
 import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
+import 'package:i_care/features/care/controllers/access_actions.dart';
 import 'package:i_care/features/care/controllers/membership_actions.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
+import 'package:i_care/shared/widgets/app_snack_bars.dart';
 import 'package:i_care/shared/widgets/labeled_field.dart';
 
 /// A phone that belongs to nobody: joins a circle with an invitation code
@@ -69,6 +71,11 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
               onPressed: _busy ? null : _join,
               child: Text(l10n.join),
             ),
+            if (ref.watch(accessOfferedProvider))
+              TextButton(
+                onPressed: _busy ? null : _recover,
+                child: Text(l10n.alreadyHaveAccess),
+              ),
             const SizedBox(height: AppSpacing.xxl),
             Text(l10n.createCircleLead, style: AppTextStyles.title),
             const SizedBox(height: AppSpacing.xs),
@@ -119,6 +126,20 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
     setState(() => _busy = true);
     await ref.read(demoResetProvider)();
     if (mounted) setState(() => _busy = false);
+  }
+
+  /// Back in with the Google account protecting one's access.
+  Future<void> _recover() async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _busy = true);
+    final result = await ref.read(protectedAccessProvider.notifier).recover();
+    if (!mounted) return;
+    // On success the router moves on to the welcome.
+    setState(() => _busy = false);
+    if (result case Err(:final failure)) {
+      messenger.showError(failure.message(l10n));
+    }
   }
 
   Future<void> _join() async {

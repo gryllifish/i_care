@@ -5,8 +5,10 @@ import 'package:i_care/core/theme/app_colors.dart';
 import 'package:i_care/core/theme/app_spacing.dart';
 import 'package:i_care/core/theme/app_text_styles.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
+import 'package:i_care/features/care/domain/permissions.dart';
 import 'package:i_care/features/care/domain/repositories/push_repository.dart';
 import 'package:i_care/features/settings/controllers/settings_controllers.dart';
+import 'package:i_care/features/settings/presentation/widgets/access_section.dart';
 import 'package:i_care/features/settings/presentation/widgets/demo_texts.dart';
 import 'package:i_care/shared/widgets/app_card.dart';
 import 'package:i_care/shared/widgets/confirm_dialog.dart';
@@ -97,6 +99,9 @@ class WelcomeScreen extends ConsumerWidget {
                     title: l10n.circleTitle,
                     children: const [MemberList()],
                   ),
+                  // Whoever organizes the circle is asked once, here.
+                  if (ref.watch(canDoProvider(CareAction.manageMembers)))
+                    const AccessSection(),
                 ],
               ),
             ),

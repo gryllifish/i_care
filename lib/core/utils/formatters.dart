@@ -43,4 +43,11 @@ abstract final class Formatters {
   /// "28", "0.5" or "1,5", as the locale writes numbers.
   static String units(double units, String locale) =>
       NumberFormat.decimalPattern(locale).format(units);
+
+  /// "a•••@gmail.com": enough to recognize one's own address, without
+  /// showing it to whoever looks at the screen.
+  static String maskedEmail(String email) {
+    final at = email.indexOf('@');
+    return at < 1 ? email : '${email[0]}•••${email.substring(at)}';
+  }
 }

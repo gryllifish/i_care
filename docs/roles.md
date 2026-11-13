@@ -166,8 +166,9 @@ single one is a point of failure:
 | Android Block Store | No: Android backups are off on purpose, and the web has nothing like it |
 
 ### Decisions
-- **Optional, asked of admins.** Admins see "Protect your access" once
-  after creating a circle, and in Settings until they do it. Other
+- **Optional, asked of admins.** Admins see "Your access" once on their
+  welcome (after creating a circle or joining as one), and in Settings
+  until they do it. Other
   members find it in Settings. Nobody needs it to use the app. Not
   offered on iOS: an App Store app offering Google sign-in must also
   offer Sign in with Apple.
@@ -479,8 +480,10 @@ Supabase, as designed in [`backend.md`](backend.md#supabase-stage-2):
    recovery by the operator ([above](#recoverable-access-proposed)).
    Built: the server, `AccessRecovered`, the `AccessGateway` (simulated
    and Supabase, which settles ended and unconfirmed sessions itself)
-   and `AccessRepository`. Next: the screens, Google's picker on
-   Android, and the push to other admins.
+   and `AccessRepository`; "Your access" in Settings and on an admin's
+   welcome, "I already have access" when joining, and the hint to a
+   circle's only admin. Next: Google's picker on Android, and the push
+   to other admins.
 
 Each phase ends with `scripts/verify.sh` green and the gateway contract
 tests covering what changed.

@@ -1327,6 +1327,20 @@
   },
   "removeMemberBody": "Their phones stop syncing and clear what they kept. Their records stay in Activity.",
   "lastAdminNote": "The circle needs at least one admin.",
+  "sectionAccess": "Your access",
+  "accessBody": "If you lose this phone or uninstall the app, a Google account gets you back into the circle, with nobody having to send you a code.",
+  "accessProtect": "Protect with Google",
+  "accessProtected": "Protected with {email}",
+  "@accessProtected": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "accessProtectedBody": "On a new phone, choose \"I already have access\" and sign in with that account. The phone you used before will no longer have access.",
+  "alreadyHaveAccess": "I already have access",
+  "onlyAdminHint": "You are the only admin. If you could not use this phone, nobody else could invite people or give out codes. Consider making someone else an admin too.",
   "leaveCircle": "Leave the circle on this phone",
   "leaveTitle": "Leave the circle on this phone?",
   "leaveBody": "Anything not sent yet is sent first, then this phone's copy is cleared. Coming back takes a new code.",

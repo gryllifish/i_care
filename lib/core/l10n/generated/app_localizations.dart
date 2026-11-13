@@ -2665,6 +2665,48 @@ abstract class AppLocalizations {
   /// **'The circle needs at least one admin.'**
   String get lastAdminNote;
 
+  /// No description provided for @sectionAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your access'**
+  String get sectionAccess;
+
+  /// No description provided for @accessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If you lose this phone or uninstall the app, a Google account gets you back into the circle, with nobody having to send you a code.'**
+  String get accessBody;
+
+  /// No description provided for @accessProtect.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect with Google'**
+  String get accessProtect;
+
+  /// No description provided for @accessProtected.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected with {email}'**
+  String accessProtected(String email);
+
+  /// No description provided for @accessProtectedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'On a new phone, choose \"I already have access\" and sign in with that account. The phone you used before will no longer have access.'**
+  String get accessProtectedBody;
+
+  /// No description provided for @alreadyHaveAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'I already have access'**
+  String get alreadyHaveAccess;
+
+  /// No description provided for @onlyAdminHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You are the only admin. If you could not use this phone, nobody else could invite people or give out codes. Consider making someone else an admin too.'**
+  String get onlyAdminHint;
+
   /// No description provided for @leaveCircle.
   ///
   /// In en, this message translates to:

@@ -5,6 +5,8 @@ import 'package:i_care/core/error/result.dart';
 import 'package:i_care/core/l10n/failure_messages.dart';
 import 'package:i_care/core/l10n/l10n.dart';
 import 'package:i_care/core/theme/app_colors.dart';
+import 'package:i_care/core/theme/app_text_styles.dart';
+import 'package:i_care/features/care/controllers/access_actions.dart';
 import 'package:i_care/features/care/controllers/care_controllers.dart';
 import 'package:i_care/features/care/controllers/membership_actions.dart';
 import 'package:i_care/features/care/domain/permissions.dart';
@@ -44,6 +46,13 @@ class CircleSection extends ConsumerWidget {
               onPressed: () => showInviteSheet(context),
               icon: const Icon(Icons.person_add_alt),
               label: Text(l10n.inviteSomeone),
+            ),
+          ),
+        if (manages && ref.watch(hasSingleAdminProvider))
+          Text(
+            l10n.onlyAdminHint,
+            style: AppTextStyles.bodyMuted.copyWith(
+              color: context.colors.inkMuted,
             ),
           ),
         if (me != null)
